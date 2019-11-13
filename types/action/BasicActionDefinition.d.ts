@@ -1,0 +1,38 @@
+import AbstractEntityDefinition from '../context/AbstractEntityDefinition';
+import ActionDefinition from './ActionDefinition';
+import ActionCommandList from './ActionCommandList';
+import TreeMask from './TreeMask';
+import GroupIdentifier from './GroupIdentifier';
+import Permissions from '../security/Permissions';
+import ActionCommand from './ActionCommand';
+import StringIdentifier from './StringIdentifier';
+export default class BasicActionDefinition extends AbstractEntityDefinition implements ActionDefinition, ActionCommandList {
+    private actionClass;
+    private enabled;
+    private _isDefault;
+    private hidden;
+    private executionGroup;
+    private dropSources;
+    private commandList;
+    private concurrent;
+    constructor(name: string);
+    compareTo(o: any): number;
+    getCommands(): Array<ActionCommand> | null;
+    getDropSources(): Array<TreeMask> | null;
+    getPermissions(): Permissions | null;
+    isConcurrent(): boolean;
+    isDefault(): boolean;
+    isEnabled(): boolean;
+    isHeadless(): boolean;
+    isHidden(): boolean;
+    getExecutionGroup(): StringIdentifier | null;
+    setDefault(isDefault: boolean): void;
+    setEnabled(enabled: boolean): void;
+    setDropSources(dropSources: Array<TreeMask>): void;
+    setHidden(hidden: boolean): void;
+    setExecutionGroup(groupIdentifier: GroupIdentifier): void;
+    getAccelerator(): any;
+    setActionClass(actionClass: any | null): void;
+    instantiate(): any;
+    getEntityType(): number;
+}

@@ -1,0 +1,31 @@
+import JObject from '../util/java/JObject';
+import DataTable from '../datatable/DataTable';
+import ReferenceResolver from './ReferenceResolver';
+import Reference from './Reference';
+import EvaluationEnvironment from './EvaluationEnvironment';
+import ContextManager from '../context/ContextManager';
+import Evaluator from './Evaluator';
+import Context from '../context/Context';
+import CallerController from '../context/CallerController';
+export default abstract class AbstractReferenceResolver extends JObject implements ReferenceResolver {
+    private contextManager;
+    private callerController;
+    private defaultContext;
+    private evaluator;
+    private defaultRow;
+    private defaultTable;
+    setDefaultTable(defaultTable: DataTable | null): void;
+    getDefaultTable(): DataTable | null;
+    abstract resolveReference(ref: Reference, environment: EvaluationEnvironment): any;
+    setContextManager(contextManager: ContextManager<Context<any, any>> | null): void;
+    setCallerController(callerController: CallerController | null): void;
+    setDefaultContext(defaultContext: Context<any, any> | null): void;
+    setEvaluator(evaluator: Evaluator): void;
+    getCallerController(): CallerController | null;
+    getDefaultContext(): Context<any, any> | null;
+    getContextManager(): ContextManager<any> | null;
+    getDefaultRow(): number | null;
+    getEvaluator(): Evaluator | null;
+    addContextManager(schema: string, cm: ContextManager<any>): void;
+    setDefaultRow(defaultRow: number): void;
+}

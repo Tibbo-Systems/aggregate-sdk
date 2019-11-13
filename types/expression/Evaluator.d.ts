@@ -1,0 +1,34 @@
+import JObject from '../util/java/JObject';
+import Expression from './Expression';
+import ContextManager from '../context/ContextManager';
+import Context from '../context/Context';
+import DataTable from '../datatable/DataTable';
+import CallerController from '../context/CallerController';
+import ReferenceResolver from './ReferenceResolver';
+import EnvironmentReferenceResolver from './EnvironmentReferenceResolver';
+import EvaluationEnvironment from './EvaluationEnvironment';
+export default class Evaluator extends JObject {
+    private static readonly ENVIRONMENT_PREVIOUS;
+    private static readonly ENVIRONMENT_COUNT;
+    private readonly resolvers;
+    private keepPreviousResult;
+    private previousResult;
+    private count;
+    private setKeepPreviousResult;
+    private getKeepPreviousResult;
+    private getCount;
+    private getPreviousResult;
+    private readonly environmentResolver;
+    constructor(cm?: ContextManager<any> | null, defaultContext?: Context<any, any> | null, defaultTable?: DataTable | null, caller?: CallerController | null);
+    evaluateToString(expression: Expression | null): string;
+    private init;
+    setResolver(schema: string, resolver: ReferenceResolver | null): void;
+    static createWithResolver(resolver: ReferenceResolver): Evaluator;
+    evaluate(expression: Expression | null, environment?: EvaluationEnvironment, attributed?: boolean): any;
+    evaluateToBoolean(prefilter: Expression): boolean;
+    getEnvironmentResolver(): EnvironmentReferenceResolver;
+    evaluateToDataTable(expression: Expression): DataTable;
+    setDefaultTable(data: DataTable | null): void;
+    getDefaultResolver(): ReferenceResolver;
+    evaluateToBooleanOrNull(expression: Expression): boolean | null;
+}

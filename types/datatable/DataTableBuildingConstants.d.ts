@@ -1,0 +1,34 @@
+export default class DataTableBuildingConstants {
+    static readonly FIELD_TABLE_FORMAT_MIN_RECORDS: string;
+    static readonly FIELD_TABLE_FORMAT_MAX_RECORDS: string;
+    static readonly FIELD_TABLE_FORMAT_FIELDS: string;
+    static readonly FIELD_TABLE_FORMAT_REORDERABLE: string;
+    static readonly FIELD_TABLE_FORMAT_UNRESIZABLE: string;
+    static readonly FIELD_TABLE_FORMAT_BINDINGS: string;
+    static readonly FIELD_TABLE_FORMAT_ENCODED: string;
+    static readonly FIELD_TABLE_FORMAT_NAMING_EXPRESSION: string;
+    static readonly FIELD_FIELDS_FORMAT_OLDNAME: string;
+    static readonly FIELD_FIELDS_FORMAT_NAME: string;
+    static readonly FIELD_FIELDS_FORMAT_TYPE: string;
+    static readonly FIELD_FIELDS_FORMAT_DESCRIPTION: string;
+    static readonly FIELD_FIELDS_FORMAT_GROUP: string;
+    static readonly FIELD_FIELDS_FORMAT_DEFAULT_VALUE: string;
+    static readonly FIELD_FIELDS_FORMAT_HIDDEN: string;
+    static readonly FIELD_FIELDS_FORMAT_INLINE: string;
+    static readonly FIELD_FIELDS_FORMAT_READONLY: string;
+    static readonly FIELD_FIELDS_FORMAT_NULLABLE: string;
+    static readonly FIELD_FIELDS_FORMAT_KEY: string;
+    static readonly FIELD_FIELDS_FORMAT_SELVALS: string;
+    static readonly FIELD_FIELDS_FORMAT_EXTSELVALS: string;
+    static readonly FIELD_FIELDS_FORMAT_HELP: string;
+    static readonly FIELD_FIELDS_FORMAT_EDITOR: string;
+    static readonly FIELD_FIELDS_FORMAT_EDITOR_OPTIONS: string;
+    static readonly FIELD_FIELDS_FORMAT_VALIDATORS: string;
+    static readonly FIELD_SELECTION_VALUES_VALUE: string;
+    static readonly FIELD_SELECTION_VALUES_DESCRIPTION: string;
+    static readonly FIELD_BINDINGS_TARGET: string;
+    static readonly FIELD_BINDINGS_EXPRESSION: string;
+    static readonly FIELD_VALIDATORS_VALIDATOR: string;
+    static readonly FIELD_VALIDATORS_OPTIONS: string;
+    static FIELD_EDITOR_OPTIONS_SIMPLE_FORMAT_OPTIONS: string;
+}

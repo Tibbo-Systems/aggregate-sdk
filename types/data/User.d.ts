@@ -1,0 +1,32 @@
+import JObject from '../util/java/JObject';
+export default class User extends JObject {
+    static readonly FIELD_NAME: string;
+    static readonly FIELD_FIRSTNAME: string;
+    static readonly FIELD_LASTNAME: string;
+    static readonly FIELD_PASSWORD: string;
+    static readonly FIELD_PASSWORD_EXPIRATION_DATE: string;
+    static readonly FIELD_PASSWORD_UPDATED: string;
+    static readonly FIELD_USE_EXTERNAL_AUTHENTICATION: string;
+    static readonly FIELD_COUNTRY: string;
+    static readonly FIELD_REGION: string;
+    static readonly FIELD_ZIP: string;
+    static readonly FIELD_CITY: string;
+    static readonly FIELD_ADDRESS1: string;
+    static readonly FIELD_ADDRESS2: string;
+    static readonly FIELD_COMMENTS: string;
+    static readonly FIELD_COMPANY: string;
+    static readonly FIELD_DEPARTMENT: string;
+    static readonly FIELD_EMAIL: string;
+    static readonly FIELD_PHONE: string;
+    static readonly FIELD_FAX: string;
+    static readonly FIELD_TIMEZONE: string;
+    static readonly FIELD_LOCALE: string;
+    static readonly FIELD_DATEPATTERN: string;
+    static readonly FIELD_TIMEPATTERN: string;
+    static readonly FIELD_WEEK_START: string;
+    static readonly FIELD_CAPTCHA: string;
+    static readonly FIELD_EXTERNAL_USER: string;
+    static readonly DEFAULT_ADMIN_USERNAME: string;
+    static readonly DEFAULT_ADMIN_PASSWORD: string;
+    static readonly DEFAULT_LOCALE: string;
+}

@@ -1,0 +1,30 @@
+import VariableDefinition from './VariableDefinition';
+import Comparable from '../util/java/Comparable';
+export default class VariableData implements Comparable<VariableData> {
+    private definition;
+    private value;
+    private getCount;
+    private setCount;
+    private getterCached;
+    private setterCached;
+    private getterMethod;
+    private setterMethod;
+    constructor(definition: VariableDefinition);
+    registerGetOperation(): void;
+    registerSetOperation(): void;
+    getDefinition(): VariableDefinition;
+    getValue(): any;
+    setValue(value: any): void;
+    getGetCount(): number;
+    getSetCount(): number;
+    isGetterCached(): boolean;
+    setGetterCached(getterCached: boolean): void;
+    isSetterCached(): boolean;
+    setSetterCached(setterCached: boolean): void;
+    getGetterMethod(): PropertyDescriptor | null;
+    setGetterMethod(getter: PropertyDescriptor): void;
+    getSetterMethod(): PropertyDescriptor | null;
+    setSetterMethod(setter: PropertyDescriptor): void;
+    compareTo(d: VariableData): number;
+    setDefinition(definition: VariableDefinition): void;
+}

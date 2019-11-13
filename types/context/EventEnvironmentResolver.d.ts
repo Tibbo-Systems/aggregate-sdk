@@ -1,0 +1,33 @@
+import AbstractReferenceResolver from '../expression/AbstractReferenceResolver';
+import EvaluationEnvironment from '../expression/EvaluationEnvironment';
+import Reference from '../expression/Reference';
+import EnvironmentReferenceResolver from '../expression/EnvironmentReferenceResolver';
+import Event from '../data/Event';
+import CallerController from './CallerController';
+import Context from './Context';
+import ContextManager from './ContextManager';
+import Evaluator from '../expression/Evaluator';
+import DataTable from '../datatable/DataTable';
+export default class EventEnvironmentResolver extends AbstractReferenceResolver {
+    private resolver;
+    private ev;
+    constructor(environmentResolver: EnvironmentReferenceResolver, ev: Event);
+    resolveReference(ref: Reference, environment: EvaluationEnvironment): any;
+    getCallerController(): CallerController | null;
+    getDefaultContext(): Context<any, any> | null;
+    getContextManager(): ContextManager<any> | null;
+    getDefaultRow(): number | null;
+    getEvaluator(): Evaluator | null;
+    addContextManager(schema: string, cm: ContextManager<any>): void;
+    setCallerController(callerController: CallerController | null): void;
+    setDefaultContext(defaultContext: Context<any, any>): void;
+    setContextManager(contextManager: ContextManager<any>): void;
+    setDefaultRow(defaultRow: number): void;
+    setEvaluator(evaluator: Evaluator): void;
+    setDefaultTable(defaultTable: DataTable | null): void;
+    getDefaultTable(): DataTable | null;
+    set(variable: string, value: any): void;
+    get(variable: string): any;
+    setEnvironment(environment: Map<string, any>): void;
+    getEnvironment(): Map<string | null, any>;
+}

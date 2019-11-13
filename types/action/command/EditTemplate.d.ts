@@ -1,0 +1,38 @@
+import GenericActionCommand from '../GenericActionCommand';
+import TableFormat from '../../datatable/TableFormat';
+import DataTable from '../../datatable/DataTable';
+export default class EditTemplate extends GenericActionCommand {
+    static readonly EDIT_WIDGET: number;
+    static readonly EDIT_ST: number;
+    static readonly EDIT_SFC: number;
+    static readonly EDIT_FBD: number;
+    static readonly EDIT_LD: number;
+    static readonly EDIT_WORKFLOW: number;
+    static readonly CF_DEFAULT_CONTEXT: string;
+    static readonly CF_WIDGET_CONTEXT: string;
+    static readonly CF_WIDGET: string;
+    static readonly CF_EDIT_MODE: string;
+    static readonly RF_WIDGET: string;
+    static readonly RF_RESULT: string;
+    static CFT_EDIT_TEMPLATE: TableFormat;
+    static __static_initializer_0(): void;
+    static RFT_EDIT_WIDGET: TableFormat;
+    static __static_initializer_1(): void;
+    private defaultContext;
+    private widgetContext;
+    private widget;
+    private editMode;
+    private static _init;
+    static initialize(): void;
+    constructor(type: string, titleOrFormat?: string | null | TableFormat, responseFormat?: TableFormat | null);
+    static createEditTemplateWithDataTable(type: string, title: string, parameters: DataTable): EditTemplate;
+    static createEditTemplate(type: string, title: string | null, defaultContext: string, widgetContext: string, widget: string, editMode: number): EditTemplate;
+    getDefaultContext(): string | null;
+    setDefaultContext(defaultContext: string): void;
+    getWidgetContext(): string | null;
+    setWidgetContext(widgetContext: string): void;
+    getWidget(): string | null;
+    setWidget(widget: string): void;
+    getEditMode(): number | null;
+    setEditMode(editMode: number): void;
+}
