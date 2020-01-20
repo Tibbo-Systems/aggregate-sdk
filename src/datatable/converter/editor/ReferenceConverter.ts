@@ -6,7 +6,7 @@ import FieldFormat from '../../FieldFormat';
 import Cres from '../../../Cres';
 import Reference from '../../../expression/Reference';
 import DataTableBindingProvider from '../../DataTableBindingProvider';
-import Functions from '../../../expression/Functions';
+import Functions from '../../../expression/functions/Functions';
 import Contexts from '../../../context/Contexts';
 import UtilitiesContextConstants from '../../../server/UtilitiesContextConstants';
 import SimpleDataTable from '../../SimpleDataTable';
@@ -35,38 +35,20 @@ export default class ReferenceConverter extends AbstractEditorOptionsConverter {
   public static readonly VFT_ENTITY_PARAMETERS: TableFormat = new TableFormat(0, Number.MAX_VALUE);
 
   private static __static_initializer_0() {
-    ReferenceConverter.VFT_ENTITY_PARAMETERS.addField(
-      FieldFormatFactory.createWith(
-        ReferenceConverter.FIELD_ENTITY_PARAMETERS_VALUE,
-        FieldConstants.STRING_FIELD,
-        Cres.get().getString('value')
-      )
-    );
+    ReferenceConverter.VFT_ENTITY_PARAMETERS.addField(FieldFormatFactory.createWith(ReferenceConverter.FIELD_ENTITY_PARAMETERS_VALUE, FieldConstants.STRING_FIELD, Cres.get().getString('value')));
   }
 
   private static __static_initializer_1() {
-    let exp: string, ref: string, tableExp: string, valueExp: string, descriptionExp;
+    let exp: string, tableExp: string, valueExp: string, descriptionExp;
 
-    let ff: FieldFormat<any> = FieldFormatFactory.createWith(
-      ReferenceConverter.FIELD_APPEARANCE,
-      FieldConstants.INTEGER_FIELD,
-      Cres.get().getString('appearance')
-    );
+    let ff: FieldFormat<any> = FieldFormatFactory.createWith(ReferenceConverter.FIELD_APPEARANCE, FieldConstants.INTEGER_FIELD, Cres.get().getString('appearance'));
     ff.addSelectionValue(Reference.APPEARANCE_LINK, Cres.get().getString('link'));
     ff.addSelectionValue(Reference.APPEARANCE_BUTTON, Cres.get().getString('wButton'));
     ff.setDefault(Reference.APPEARANCE_LINK);
 
     ReferenceConverter.FORMAT.addField(ff);
 
-    ff = FieldFormatFactory.create(
-      '<' +
-        ReferenceConverter.FIELD_REFERENCE_TYPE +
-        '><I><A=' +
-        ContextUtilsConstants.ENTITY_ACTION +
-        '><D=' +
-        Cres.get().getString('referenceType') +
-        '>'
-    );
+    ff = FieldFormatFactory.create('<' + ReferenceConverter.FIELD_REFERENCE_TYPE + '><I><A=' + ContextUtilsConstants.ENTITY_ACTION + '><D=' + Cres.get().getString('referenceType') + '>');
     ff.addSelectionValue(ContextUtilsConstants.ENTITY_VARIABLE, Cres.get().getString('variable'));
     ff.addSelectionValue(ContextUtilsConstants.ENTITY_FUNCTION, Cres.get().getString('function'));
     ff.addSelectionValue(ContextUtilsConstants.ENTITY_EVENT, Cres.get().getString('event'));
@@ -74,100 +56,40 @@ export default class ReferenceConverter extends AbstractEditorOptionsConverter {
     ff.setDefault(ContextUtilsConstants.ENTITY_VARIABLE);
     ReferenceConverter.FORMAT.addField(ff);
 
-    ff = FieldFormatFactory.create(
-      '<' + ReferenceConverter.FIELD_CONTEXT_TYPE + '><S><D=' + Cres.get().getString('contextType') + '>'
-    );
+    ff = FieldFormatFactory.create('<' + ReferenceConverter.FIELD_CONTEXT_TYPE + '><S><D=' + Cres.get().getString('contextType') + '>');
     ff.addSelectionValue(ReferenceConverter.STATIC, Cres.get().getString('static'));
     ff.addSelectionValue(ReferenceConverter.DYNAMIC, Cres.get().getString('dynamic'));
     ff.setDefault(ReferenceConverter.STATIC);
     ReferenceConverter.FORMAT.addField(ff);
 
-    ReferenceConverter.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' + ReferenceConverter.FIELD_CONTEXT + '><S><D=' + Cres.get().getString('context') + '>'
-      ).setEditor(FieldConstants.EDITOR_CONTEXT)
-    );
+    ReferenceConverter.FORMAT.addField(FieldFormatFactory.create('<' + ReferenceConverter.FIELD_CONTEXT + '><S><D=' + Cres.get().getString('context') + '>').setEditor(FieldConstants.EDITOR_CONTEXT));
 
-    ReferenceConverter.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' + ReferenceConverter.FIELD_CONTEXT_EXPRESSION + '><S><D=' + Cres.get().getString('contextExpression') + '>'
-      ).setEditor(FieldConstants.EDITOR_EXPRESSION)
-    );
+    ReferenceConverter.FORMAT.addField(FieldFormatFactory.create('<' + ReferenceConverter.FIELD_CONTEXT_EXPRESSION + '><S><D=' + Cres.get().getString('contextExpression') + '>').setEditor(FieldConstants.EDITOR_EXPRESSION));
 
-    ff = FieldFormatFactory.create(
-      '<' + ReferenceConverter.FIELD_ENTITY_TYPE + '><S><D=' + Cres.get().getString('entityType') + '>'
-    );
+    ff = FieldFormatFactory.create('<' + ReferenceConverter.FIELD_ENTITY_TYPE + '><S><D=' + Cres.get().getString('entityType') + '>');
     ff.addSelectionValue(ReferenceConverter.STATIC, Cres.get().getString('static'));
     ff.addSelectionValue(ReferenceConverter.DYNAMIC, Cres.get().getString('dynamic'));
     ff.setDefault(ReferenceConverter.STATIC);
     ReferenceConverter.FORMAT.addField(ff);
 
-    ReferenceConverter.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' + ReferenceConverter.FIELD_ENTITY + '><S><D=' + Cres.get().getString('entity') + '>'
-      )
-    );
-    ReferenceConverter.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' + ReferenceConverter.FIELD_ENTITY_EXPRESSION + '><S><D=' + Cres.get().getString('entityExpression') + '>'
-      ).setEditor(FieldConstants.EDITOR_EXPRESSION)
-    );
+    ReferenceConverter.FORMAT.addField(FieldFormatFactory.create('<' + ReferenceConverter.FIELD_ENTITY + '><S><D=' + Cres.get().getString('entity') + '>'));
+    ReferenceConverter.FORMAT.addField(FieldFormatFactory.create('<' + ReferenceConverter.FIELD_ENTITY_EXPRESSION + '><S><D=' + Cres.get().getString('entityExpression') + '>').setEditor(FieldConstants.EDITOR_EXPRESSION));
 
     ReferenceConverter.FORMAT.addField(
-      FieldFormatFactory.createWith(
-        ReferenceConverter.FIELD_ENTITY_PARAMETERS,
-        FieldConstants.DATATABLE_FIELD,
-        Cres.get().getString('entityParameters')
-      ).setDefault(new SimpleDataTable(ReferenceConverter.VFT_ENTITY_PARAMETERS))
+      FieldFormatFactory.createWith(ReferenceConverter.FIELD_ENTITY_PARAMETERS, FieldConstants.DATATABLE_FIELD, Cres.get().getString('entityParameters')).setDefault(new SimpleDataTable(ReferenceConverter.VFT_ENTITY_PARAMETERS))
     );
 
-    ReferenceConverter.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' + ReferenceConverter.FIELD_ICON + '><S><F=N><D=' + Cres.get().getString('icon') + '>'
-      )
-    );
+    ReferenceConverter.FORMAT.addField(FieldFormatFactory.create('<' + ReferenceConverter.FIELD_ICON + '><S><F=N><D=' + Cres.get().getString('icon') + '>'));
 
-    ReferenceConverter.FORMAT.addBinding(
-      ReferenceConverter.FIELD_CONTEXT + '#' + DataTableBindingProvider.PROPERTY_HIDDEN,
-      '{' + ReferenceConverter.FIELD_CONTEXT_TYPE + "} == '" + 'dynamic' + "'"
-    );
-    ReferenceConverter.FORMAT.addBinding(
-      ReferenceConverter.FIELD_CONTEXT_EXPRESSION + '#' + DataTableBindingProvider.PROPERTY_HIDDEN,
-      '{' + ReferenceConverter.FIELD_CONTEXT_TYPE + "} == '" + 'static' + "'"
-    );
+    ReferenceConverter.FORMAT.addBinding(ReferenceConverter.FIELD_CONTEXT + '#' + DataTableBindingProvider.PROPERTY_HIDDEN, '{' + ReferenceConverter.FIELD_CONTEXT_TYPE + "} == '" + 'dynamic' + "'");
+    ReferenceConverter.FORMAT.addBinding(ReferenceConverter.FIELD_CONTEXT_EXPRESSION + '#' + DataTableBindingProvider.PROPERTY_HIDDEN, '{' + ReferenceConverter.FIELD_CONTEXT_TYPE + "} == '" + 'static' + "'");
 
-    ReferenceConverter.FORMAT.addBinding(
-      ReferenceConverter.FIELD_ENTITY + '#' + DataTableBindingProvider.PROPERTY_HIDDEN,
-      '{' + ReferenceConverter.FIELD_ENTITY_TYPE + "} == '" + 'dynamic' + "'"
-    );
-    ReferenceConverter.FORMAT.addBinding(
-      ReferenceConverter.FIELD_ENTITY_EXPRESSION + '#' + DataTableBindingProvider.PROPERTY_HIDDEN,
-      '{' + ReferenceConverter.FIELD_ENTITY_TYPE + "} == '" + 'static' + "'"
-    );
+    ReferenceConverter.FORMAT.addBinding(ReferenceConverter.FIELD_ENTITY + '#' + DataTableBindingProvider.PROPERTY_HIDDEN, '{' + ReferenceConverter.FIELD_ENTITY_TYPE + "} == '" + 'dynamic' + "'");
+    ReferenceConverter.FORMAT.addBinding(ReferenceConverter.FIELD_ENTITY_EXPRESSION + '#' + DataTableBindingProvider.PROPERTY_HIDDEN, '{' + ReferenceConverter.FIELD_ENTITY_TYPE + "} == '" + 'static' + "'");
 
-    let contextTypeExpression =
-      '(' +
-      '{' +
-      ReferenceConverter.FIELD_CONTEXT_TYPE +
-      '} == ' +
-      "'static'" +
-      ' ? {' +
-      ReferenceConverter.FIELD_CONTEXT +
-      '} : {' +
-      ReferenceConverter.FIELD_CONTEXT_EXPRESSION +
-      '}' +
-      ')';
-    contextTypeExpression =
-      '{' +
-      ReferenceConverter.FIELD_CONTEXT_TYPE +
-      '} == ' +
-      "'static'" +
-      ' ? {' +
-      ReferenceConverter.FIELD_CONTEXT +
-      '} : evaluate({' +
-      ReferenceConverter.FIELD_CONTEXT_EXPRESSION +
-      '})';
-    ref = ReferenceConverter.FIELD_ENTITY + '#' + DataTableBindingProvider.PROPERTY_CHOICES;
+    let contextTypeExpression = '(' + '{' + ReferenceConverter.FIELD_CONTEXT_TYPE + '} == ' + "'static'" + ' ? {' + ReferenceConverter.FIELD_CONTEXT + '} : {' + ReferenceConverter.FIELD_CONTEXT_EXPRESSION + '}' + ')';
+    contextTypeExpression = '{' + ReferenceConverter.FIELD_CONTEXT_TYPE + '} == ' + "'static'" + ' ? {' + ReferenceConverter.FIELD_CONTEXT + '} : evaluate({' + ReferenceConverter.FIELD_CONTEXT_EXPRESSION + '})';
+    const ref = ReferenceConverter.FIELD_ENTITY + '#' + DataTableBindingProvider.PROPERTY_CHOICES;
 
     const exp1: string =
       '{' +
@@ -229,17 +151,7 @@ export default class ReferenceConverter extends AbstractEditorOptionsConverter {
       contextTypeExpression +
       ')' +
       ':';
-    const exp5: string =
-      Functions.CALL_FUNCTION +
-      "('" +
-      Contexts.CTX_UTILITIES +
-      "','" +
-      UtilitiesContextConstants.F_VARIABLES_BY_MASK +
-      "'," +
-      contextTypeExpression +
-      ')' +
-      '' +
-      ')))';
+    const exp5: string = Functions.CALL_FUNCTION + "('" + Contexts.CTX_UTILITIES + "','" + UtilitiesContextConstants.F_VARIABLES_BY_MASK + "'," + contextTypeExpression + ')' + '' + ')))';
 
     const sb: StringBuilder = new StringBuilder();
     sb.append(exp1)

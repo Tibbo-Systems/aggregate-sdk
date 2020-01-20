@@ -8,20 +8,19 @@ import ActionCommand from './ActionCommand';
 import StringIdentifier from './StringIdentifier';
 import ContextUtilsConstants from '../context/ContextUtilsConstants';
 
-export default class BasicActionDefinition extends AbstractEntityDefinition
-  implements ActionDefinition, ActionCommandList {
+export default class BasicActionDefinition extends AbstractEntityDefinition implements ActionDefinition, ActionCommandList {
   //TODO Java PropertyChangeSupport
   // private propertyChangeListeners: PropertyChangeSupport = new PropertyChangeSupport(this);
 
   //TODO using Class in Java
   private actionClass: any = null;
-  private enabled: boolean = true;
-  private _isDefault: boolean = false;
-  private hidden: boolean = false;
+  private enabled = true;
+  private _isDefault = false;
+  private hidden = false;
   private executionGroup: GroupIdentifier | null = null;
   private dropSources: Array<TreeMask> | null = null;
   private commandList: Array<ActionCommand> | null = null;
-  private concurrent: boolean = true;
+  private concurrent = true;
 
   constructor(name: string) {
     super();

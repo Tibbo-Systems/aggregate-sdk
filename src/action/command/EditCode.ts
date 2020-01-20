@@ -1,12 +1,13 @@
 import TableFormat from '../../datatable/TableFormat';
 import GenericActionCommand from '../GenericActionCommand';
 import EditText from './EditText';
-import ActionUtils from '../ActionUtils';
 import DataTable from '../../datatable/DataTable';
 import FieldFormatFactory from '../../datatable/FieldFormatFactory';
 import SimpleDataTable from '../../datatable/SimpleDataTable';
 import FieldConstants from '../../datatable/field/FieldConstants';
 import FieldFormat from '../../datatable/FieldFormat';
+import JObject from '../../util/java/JObject';
+import ActionUtilsConstants from '../ActionUtilsConstants';
 
 export default class EditCode extends GenericActionCommand {
   public static readonly CF_CODE: string = 'code';
@@ -18,11 +19,9 @@ export default class EditCode extends GenericActionCommand {
   public static readonly CFT_EDIT_CODE: TableFormat = new TableFormat(1, 1);
 
   static __static_initializer_0() {
-    EditCode.CFT_EDIT_CODE.addField(
-      FieldFormatFactory.create('<' + EditCode.CF_CODE + '><S>').setEditor(FieldConstants.EDITOR_TEXT)
-    );
+    EditCode.CFT_EDIT_CODE.addField(FieldFormatFactory.create('<' + EditCode.CF_CODE + '><S>').setEditor(FieldConstants.EDITOR_TEXT));
 
-    let ff: FieldFormat<Object> = FieldFormatFactory.create('<' + EditCode.CF_MODE + '><S><F=N>')
+    const ff: FieldFormat<JObject> = FieldFormatFactory.create('<' + EditCode.CF_MODE + '><S><F=N>')
       .setSelectionValues(EditText.modes())
       .setExtendableSelectionValues(true)
       .setDefaultOverride(true);
@@ -49,7 +48,7 @@ export default class EditCode extends GenericActionCommand {
   private mode: string | null = null;
 
   public constructor() {
-    super(ActionUtils.CMD_EDIT_CODE);
+    super(ActionUtilsConstants.CMD_EDIT_CODE);
     EditCode.initialize();
   }
 

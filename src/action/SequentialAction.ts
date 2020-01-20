@@ -5,11 +5,7 @@ import ActionResponse from './ActionResponse';
 import Action from './Action';
 import ActionContext from './ActionContext';
 
-export default abstract class SequentialAction<
-  I extends InitialRequest,
-  C extends ActionCommand,
-  R extends ActionResponse
-> implements Action<I, C, R> {
+export default abstract class SequentialAction<I extends InitialRequest, C extends ActionCommand, R extends ActionResponse> implements Action<I, C, R> {
   /**
    * Override this method to provide action functionality.
    */

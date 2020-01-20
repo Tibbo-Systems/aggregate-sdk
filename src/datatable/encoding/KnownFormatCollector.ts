@@ -8,8 +8,7 @@ export default class KnownFormatCollector extends JObject {
   }
 
   public isMarked(formatId: number): boolean {
-    const marked: boolean | null =
-      this.formatIds.get(formatId) !== undefined ? (this.formatIds.get(formatId) as boolean) : null;
+    const marked: boolean | null = this.formatIds.get(formatId) !== undefined ? (this.formatIds.get(formatId) as boolean) : null;
 
     return marked != null ? marked : false;
   }

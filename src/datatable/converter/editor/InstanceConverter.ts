@@ -6,7 +6,7 @@ import Cres from '../../../Cres';
 import StringFieldFormat from '../../field/StringFieldFormat';
 import Contexts from '../../../context/Contexts';
 import DataTableBindingProvider from '../../DataTableBindingProvider';
-import Functions from '../../../expression/Functions';
+import Functions from '../../../expression/functions/Functions';
 import DataTableBuildingConstants from '../../DataTableBuildingConstants';
 import UtilitiesContextConstants from '../../../server/UtilitiesContextConstants';
 import StorageHelper from '../../../view/StorageHelper';
@@ -21,49 +21,21 @@ export default class InstanceConverter extends AbstractEditorOptionsConverter {
   private static readonly FORMAT: TableFormat = new TableFormat(1, 1);
 
   private static __static_initializer_0() {
-    let exp: string | null;
-    let ref: string | null;
-    let tableExp: string | null;
-    let valueExp: string | null;
-    let descriptionExp: string | null;
+    InstanceConverter.FORMAT.addField(FieldFormatFactory.create('<' + InstanceConverter.FIELD_STORAGE_CONTEXT + '><S><F=N><D=' + Cres.get().getString('storageContext') + '>').setEditor(FieldConstants.EDITOR_CONTEXT));
+    InstanceConverter.FORMAT.addField(FieldFormatFactory.create('<' + InstanceConverter.FIELD_STORAGE_TABLE + '><S><F=N><D=' + Cres.get().getString('acClassTable') + '>'));
 
     InstanceConverter.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' + InstanceConverter.FIELD_STORAGE_CONTEXT + '><S><F=N><D=' + Cres.get().getString('storageContext') + '>'
-      ).setEditor(FieldConstants.EDITOR_CONTEXT)
-    );
-    InstanceConverter.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' + InstanceConverter.FIELD_STORAGE_TABLE + '><S><F=N><D=' + Cres.get().getString('acClassTable') + '>'
-      )
-    );
-
-    InstanceConverter.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' + InstanceConverter.FIELD_DASHBOARD + '><S><F=N><D=' + Cres.get().getString('dashboard') + '>'
-      )
+      FieldFormatFactory.create('<' + InstanceConverter.FIELD_DASHBOARD + '><S><F=N><D=' + Cres.get().getString('dashboard') + '>')
         .setEditor(FieldConstants.EDITOR_CONTEXT)
-        .setEditorOptions(
-          StringFieldFormat.encodeMaskEditorOptionsFromStrings(Contexts.TYPE_DASHBOARD, Contexts.CTX_DASHBOARDS)
-        )
+        .setEditorOptions(StringFieldFormat.encodeMaskEditorOptionsFromStrings(Contexts.TYPE_DASHBOARD, Contexts.CTX_DASHBOARDS))
     );
 
-    InstanceConverter.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' + InstanceConverter.FIELD_ICON + '><S><F=N><D=' + Cres.get().getString('icon') + '>'
-      )
-    );
-    ref = InstanceConverter.FIELD_STORAGE_TABLE + '#' + DataTableBindingProvider.PROPERTY_CHOICES;
-    tableExp =
-      Functions.CALL_FUNCTION +
-      '(\'" + {' +
-      InstanceConverter.FIELD_STORAGE_CONTEXT +
-      "} + \"', '" +
-      StorageHelper.F_STORAGE_TABLES +
-      "')";
-    valueExp = '{' + DataTableBuildingConstants.FIELD_SELECTION_VALUES_VALUE + '}';
-    descriptionExp = '{' + DataTableBuildingConstants.FIELD_SELECTION_VALUES_DESCRIPTION + '}';
-    exp =
+    InstanceConverter.FORMAT.addField(FieldFormatFactory.create('<' + InstanceConverter.FIELD_ICON + '><S><F=N><D=' + Cres.get().getString('icon') + '>'));
+    const ref = InstanceConverter.FIELD_STORAGE_TABLE + '#' + DataTableBindingProvider.PROPERTY_CHOICES;
+    const tableExp = Functions.CALL_FUNCTION + '(\'" + {' + InstanceConverter.FIELD_STORAGE_CONTEXT + "} + \"', '" + StorageHelper.F_STORAGE_TABLES + "')";
+    const valueExp = '{' + DataTableBuildingConstants.FIELD_SELECTION_VALUES_VALUE + '}';
+    const descriptionExp = '{' + DataTableBuildingConstants.FIELD_SELECTION_VALUES_DESCRIPTION + '}';
+    const exp =
       '({' +
       InstanceConverter.FIELD_STORAGE_CONTEXT +
       '} != null && length({' +
@@ -87,9 +59,7 @@ export default class InstanceConverter extends AbstractEditorOptionsConverter {
   public static readonly TF_PARAMETERS: TableFormat = new TableFormat(1, 1);
 
   private static __static_initializer_1() {
-    InstanceConverter.TF_PARAMETERS.addField(
-      FieldFormatFactory.create('<' + StorageHelper.CLASS_FIELD_INSTANCE_ID + '><S><F=N>')
-    );
+    InstanceConverter.TF_PARAMETERS.addField(FieldFormatFactory.create('<' + StorageHelper.CLASS_FIELD_INSTANCE_ID + '><S><F=N>'));
   }
 
   private static _init = false;

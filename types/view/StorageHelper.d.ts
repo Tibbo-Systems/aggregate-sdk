@@ -12,6 +12,10 @@ export default class StorageHelper {
     static readonly MANY_TO_MANY_FIELD_LEFT_ID: string;
     static readonly MANY_TO_MANY_FIELD_RIGTH_ID: string;
     static readonly MANY_TO_MANY_TABLE_PREFIX: string;
+    static readonly CF_STORAGE_CONTEXT: string;
+    static readonly CF_INLUDE_RECORD: string;
+    static readonly CF_RECORD_INDEX: string;
+    static readonly CF_RECORD_DESCRIPTION: string;
     static readonly SORT_ASCENDING: number;
     static readonly SORT_DESCENDING: number;
     static readonly VISIBILITY_DISABLED: number;

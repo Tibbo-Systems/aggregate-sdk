@@ -2,9 +2,7 @@ import ServerContext from './ServerContext';
 import ServerContextManager from './ServerContextManager';
 import GroupContextConstants from './GroupContextConstants';
 
-export default interface GroupContext<C extends ServerContext, M extends ServerContextManager>
-  extends ServerContext,
-    GroupContextConstants {
+export default interface GroupContext<C extends ServerContext, M extends ServerContextManager> extends ServerContext, GroupContextConstants {
   isHidesMembers(): boolean;
 
   addMember(path: string): void;

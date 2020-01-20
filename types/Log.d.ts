@@ -13,6 +13,7 @@ export default class Log {
     static readonly CONTEXT_VARIABLES: LoggerAdapter;
     static readonly PERFORMANCE: LoggerAdapter;
     static readonly CONTEXT_FUNCTIONS: LoggerAdapter;
+    static readonly EXPRESSIONS: LoggerAdapter;
     static readonly CORE: LoggerAdapter;
     static readonly CONVERTER: LoggerAdapter;
     static readonly CLIENTS: LoggerAdapter;

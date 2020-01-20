@@ -2,7 +2,7 @@ import TableFormat from '../TableFormat';
 import JObject from '../../util/java/JObject';
 
 export default class EncodingSettings extends JObject {
-  private encodeFormat: boolean = true;
+  private encodeFormat = true;
   private format: TableFormat | null = null;
 
   constructor(encodeFormat: boolean, format: TableFormat | null = null) {

@@ -25,5 +25,5 @@ export default class CloseDashboard extends GenericActionCommand {
     setCloseAll(closeAll: boolean): void;
     getDeepSearch(): boolean;
     setDeepSearch(deepSearch: boolean): void;
-    protected constructParameters(): DataTable | null;
+    protected constructParameters(): DataTable;
 }

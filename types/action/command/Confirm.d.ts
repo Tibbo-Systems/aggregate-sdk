@@ -16,13 +16,14 @@ export default class Confirm extends GenericActionCommand {
     private optionType;
     private messageType;
     constructor();
+    protected constructParameters(): DataTable;
     static createDefault(): Confirm;
     static createConfirmWithDataTable(title: string, parameters: DataTable): Confirm;
     static createConfirm(title: string, message: string, optionType: number, messageType: number): Confirm;
     createDefaultResponse(): GenericActionResponse;
     getMessage(): string | null;
-    getOptionType(): number | null;
-    getMessageType(): number | null;
+    getOptionType(): number;
+    getMessageType(): number;
     setMessage(message: string): void;
     setOptionType(optionType: number): void;
     setMessageType(messageType: number): void;

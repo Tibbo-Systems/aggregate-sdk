@@ -7,7 +7,13 @@ import FieldFormat from './FieldFormat';
 import DataTableQuery from './DataTableQuery';
 import JObject from '../util/java/JObject';
 import TableFormat from './TableFormat';
-export default abstract class AbstractDataTable extends JObject implements DataTable {
+import DataTableSorter from './DataTableSorter';
+import CallerController from '../context/CallerController';
+import ContextManager from '../context/ContextManager';
+import Context from '../context/Context';
+import Evaluator from '../expression/Evaluator';
+import ElementList from '../util/ElementList';
+export default abstract class AbstractDataTable extends DataTable {
     private static readonly ELEMENT_FORMAT;
     private static readonly ELEMENT_FORMAT_ID;
     private static readonly ELEMENT_QUALITY;
@@ -24,7 +30,7 @@ export default abstract class AbstractDataTable extends JObject implements DataT
     protected id: number | null;
     protected namingEvaluator: Evaluator | null;
     static DEFAULT_FORMAT: TableFormat;
-    format: TableFormat;
+    protected format: TableFormat;
     isImmutable(): boolean;
     abstract getRecordCount(): number;
     abstract get(): JObject;
@@ -63,7 +69,7 @@ export default abstract class AbstractDataTable extends JObject implements DataT
     isInvalid(): boolean;
     setInvalidationMessage(invalidationMessage: string | null): void;
     getInvalidationMessage(): string;
-    encode(finalSB: StringBuilder | undefined, settings: ClassicEncodingSettings, isTransferEncode: boolean | undefined, encodeLevel: number): StringBuilder | null;
+    encode(finalSB: StringBuilder | undefined, settings: ClassicEncodingSettings, isTransferEncode: boolean | undefined, encodeLevel: number): StringBuilder;
     encodeDataTable(useVisibleSeparators?: boolean, settings?: ClassicEncodingSettings): string | null;
     getEncodedData(finalSB: StringBuilder, settings: ClassicEncodingSettings, isTransferEncode: boolean, encodeLevel: number): StringBuilder;
     getEncodedDataFromEncodingSettings(settings: ClassicEncodingSettings): string;
@@ -98,7 +104,6 @@ export default abstract class AbstractDataTable extends JObject implements DataT
     abstract makeImmutable(): DataTable;
     ensureMutable(): void;
     validateRecord(record: DataRecord): void;
-    clone(): DataTable;
     abstract equals(obj: JObject | null): boolean;
     cloneIfImmutable(): DataTable;
     close(): void;
@@ -109,9 +114,3 @@ export default abstract class AbstractDataTable extends JObject implements DataT
         next(): IteratorResult<DataRecord | null, any>;
     };
 }
-import DataTableSorter from './DataTableSorter';
-import CallerController from '../context/CallerController';
-import ContextManager from '../context/ContextManager';
-import Context from '../context/Context';
-import Evaluator from '../expression/Evaluator';
-import ElementList from '../util/ElementList';

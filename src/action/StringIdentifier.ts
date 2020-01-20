@@ -15,7 +15,7 @@ export default class StringIdentifier extends JObject {
     return this.id;
   }
 
-  public equals(o: Object | null): boolean {
+  public equals(o: JObject | null): boolean {
     if (!(o instanceof StringIdentifier)) {
       return false;
     }

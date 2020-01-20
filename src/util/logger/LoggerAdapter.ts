@@ -20,31 +20,58 @@ export default class LoggerAdapter {
     return this.logger.levelVal === LevelAdapter.INFO;
   }
 
-  public info(message: any, error?: Error): void {
-    this.logger.info(message);
+  public info(message: string, error?: Error): void {
+    if (error != null) this.logger.info(error, message);
+    else this.logger.info(message);
   }
 
-  public debug(message: any, error?: Error): void {
-    this.logger.debug(message);
+  public debug(message: string, error?: Error): void {
+    if (error != null) this.logger.debug(error, message);
+    else this.logger.debug(message);
   }
 
-  public error(message: any, error?: Error): void {
-    this.logger.error(message);
+  public error(message: string, error?: Error): void {
+    if (error != null) this.logger.error(error, message);
+    else this.logger.error(message);
   }
 
-  public warn(message: any, error?: Error): void {
-    this.logger.warn(message);
+  public warn(message: string, error?: Error): void {
+    if (error != null) this.logger.warn(error, message);
+    else this.logger.warn(message);
   }
 
-  public trace(message: any, error?: Error): void {
-    this.logger.trace(message);
+  public trace(message: string, error?: Error): void {
+    if (error != null) this.logger.trace(error, message);
+    else this.logger.trace(message);
   }
 
-  public fatal(message: any, error?: Error): void {
-    this.logger.fatal(message);
+  public fatal(message: string, error?: Error): void {
+    if (error != null) this.logger.fatal(error, message);
+    else this.logger.fatal(message);
   }
 
-  public log(level: LevelAdapter, message: any, error?: Error): void {
-    this.logger.fatal(message);
+  public log(level: LevelAdapter, message: string, error?: Error): void {
+    switch (level) {
+      case LevelAdapter.DEBUG:
+        this.debug(message, error);
+        break;
+      case LevelAdapter.INFO:
+        this.info(message, error);
+        break;
+      case LevelAdapter.FATAL:
+        this.fatal(message, error);
+        break;
+      case LevelAdapter.ERROR:
+        this.error(message, error);
+        break;
+      case LevelAdapter.WARN:
+        this.warn(message, error);
+        break;
+      case LevelAdapter.TRACE:
+        this.trace(message, error);
+        break;
+      default:
+        this.error(message, error);
+    }
   }
 }

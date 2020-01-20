@@ -1,7 +1,7 @@
 import Util from './Util';
 
 export default class ErrorCollector {
-  private readonly errors: Array<Error> = new Array();
+  private readonly errors: Array<Error> = [];
 
   public addError(error: Error): void {
     this.errors.push(error);

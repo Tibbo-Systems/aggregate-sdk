@@ -42,14 +42,7 @@ export default class IntFieldFormat extends FieldFormat<number> {
   }
 
   public getSuitableEditors(): Array<string> {
-    return new Array<string>(
-      FieldConstants.EDITOR_LIST,
-      FieldConstants.EDITOR_BAR,
-      FieldConstants.EDITOR_BYTES,
-      FieldConstants.EDITOR_SPINNER,
-      FieldConstants.EDITOR_EVENT_LEVEL,
-      FieldConstants.EDITOR_INSTANCE
-    );
+    return new Array<string>(FieldConstants.EDITOR_LIST, FieldConstants.EDITOR_BAR, FieldConstants.EDITOR_BYTES, FieldConstants.EDITOR_SPINNER, FieldConstants.EDITOR_EVENT_LEVEL, FieldConstants.EDITOR_INSTANCE);
   }
 
   public isAssignableFrom(value: any): boolean {

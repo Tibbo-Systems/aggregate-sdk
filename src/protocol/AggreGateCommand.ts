@@ -57,12 +57,12 @@ export default abstract class AggreGateCommand extends Command {
 
   public static readonly CLIENT_COMMAND_SEPARATOR: string = '\u0017';
 
-  private static GENERATED_ID: number = 0;
+  private static GENERATED_ID = 0;
 
   private static readonly MAX_PRINTED_LENGTH: number = 10000;
 
   public toString(): string {
-    let b = this.data.clone();
+    const b = this.data.clone();
     b.offset = 0;
     let s = b.toUTF8();
 
@@ -76,18 +76,9 @@ export default abstract class AggreGateCommand extends Command {
 
     s = s.replace(AggreGateCommand.convert(AggreGateCommand.CLIENT_COMMAND_SEPARATOR), '/');
 
-    s = s.replace(
-      AggreGateCommand.convert(DataTableUtils.ELEMENT_START),
-      AggreGateCommand.convert(DataTableUtils.ELEMENT_VISIBLE_START)
-    );
-    s = s.replace(
-      AggreGateCommand.convert(DataTableUtils.ELEMENT_END),
-      AggreGateCommand.convert(DataTableUtils.ELEMENT_VISIBLE_END)
-    );
-    s = s.replace(
-      AggreGateCommand.convert(DataTableUtils.ELEMENT_NAME_VALUE_SEPARATOR),
-      AggreGateCommand.convert(DataTableUtils.ELEMENT_VISIBLE_NAME_VALUE_SEPARATOR)
-    );
+    s = s.replace(AggreGateCommand.convert(DataTableUtils.ELEMENT_START), AggreGateCommand.convert(DataTableUtils.ELEMENT_VISIBLE_START));
+    s = s.replace(AggreGateCommand.convert(DataTableUtils.ELEMENT_END), AggreGateCommand.convert(DataTableUtils.ELEMENT_VISIBLE_END));
+    s = s.replace(AggreGateCommand.convert(DataTableUtils.ELEMENT_NAME_VALUE_SEPARATOR), AggreGateCommand.convert(DataTableUtils.ELEMENT_VISIBLE_NAME_VALUE_SEPARATOR));
 
     s = s.replace(AggreGateCommand.convert(DataTableUtils.DATA_TABLE_NULL), DataTableUtils.DATA_TABLE_VISIBLE_NULL);
 

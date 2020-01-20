@@ -1,5 +1,4 @@
 import ContextManager from '../context/ContextManager';
-import AbstractContext from '../context/AbstractContext';
 import JObject from '../util/java/JObject';
 import DefaultContextEventListener from '../context/DefaultContextEventListener';
 import ContextEventListenerInfo from './ContextEventListenerInfo';
@@ -9,6 +8,7 @@ import EventData from '../context/EventData';
 import Log from '../Log';
 import Expression from '../expression/Expression';
 import Event from '../data/Event';
+import Context from '../context/Context';
 
 export default class ContextEventListenerSet extends JObject {
   // Cannot use Collections.newSetFromMap(WeakHashMap) here since filterListeners order must be preserved!
@@ -18,20 +18,30 @@ export default class ContextEventListenerSet extends JObject {
 
   private contextManager: ContextManager<any> | null = null;
   // 'ContextManager' can be available also via 'context' (this avoid problems when contexts are [de]attached)
-  private context: AbstractContext<any, any> | null = null;
+  private context: Context<any, any> | null = null;
 
-  constructor(value: AbstractContext<any, any> | ContextManager<any>) {
+  constructor() {
     super();
-    if (value instanceof AbstractContext) this.context = value;
-    else this.contextManager = value;
+  }
+
+  public static fromContextManager(value: ContextManager<any>): ContextEventListenerSet {
+    const set = new ContextEventListenerSet();
+    set.contextManager = value;
+    return set;
+  }
+
+  public static fromContext(value: Context<any, any>): ContextEventListenerSet {
+    const set = new ContextEventListenerSet();
+    set.context = value;
+    return set;
   }
 
   public getListeners(): Set<DefaultContextEventListener> {
     const localListeners = new Set<DefaultContextEventListener>();
 
-    for (let listeners of this.allListenerQueues()) {
-      let set = this.getListenersFrom(listeners);
-      for (let item of set) {
+    for (const listeners of this.allListenerQueues()) {
+      const set = this.getListenersFrom(listeners);
+      for (const item of set) {
         localListeners.add(item);
       }
     }
@@ -57,20 +67,15 @@ export default class ContextEventListenerSet extends JObject {
     }
   }
 
-  private dispatchEventToListeners(
-    event: Event,
-    eventDefinition: EventDefinition,
-    eventData: EventData,
-    listeners: Array<DefaultContextEventListener>
-  ): void {
+  private dispatchEventToListeners(event: Event, eventDefinition: EventDefinition, eventData: EventData, listeners: Array<DefaultContextEventListener>): void {
     for (let i = 0; i < listeners.length; i++) {
       const ref = listeners[i];
-      let li: ContextEventListenerInfo = ContextEventListenerSet.getListenerInfo(ref);
+      const li: ContextEventListenerInfo = ContextEventListenerSet.getListenerInfo(ref);
       if (li == null) {
         listeners.splice(i, 1);
         continue;
       }
-      let eventListener: DefaultContextEventListener = li.getListener();
+      const eventListener: DefaultContextEventListener = li.getListener();
       const contextManager: ContextManager<any> = this.getContextManager();
       if (eventListener.isAsync() && contextManager != null) {
         new Promise((resolve, reject) => {
@@ -83,24 +88,20 @@ export default class ContextEventListenerSet extends JObject {
     }
   }
 
-  private fingerprintListeners(
-    event: Event,
-    eventDefinition: EventDefinition
-  ): Array<DefaultContextEventListener> | null {
-    if (eventDefinition.getFingerprintExpression() != null) {
+  private fingerprintListeners(event: Event, eventDefinition: EventDefinition): Array<DefaultContextEventListener> | null {
+    const fingerprintExpression = eventDefinition.getFingerprintExpression();
+    if (fingerprintExpression != null) {
       const contextManager: ContextManager<any> = this.getContextManager();
       if (contextManager != null) {
         if (this.evaluator == null) {
           this.evaluator = new Evaluator(contextManager, null, null, contextManager.getCallerController());
         }
 
-        let fingerprint: string;
-
         this.evaluator.setDefaultTable(event.getData());
-        fingerprint = this.evaluator.evaluateToString(new Expression(eventDefinition.getFingerprintExpression()));
+        const fingerprint = this.evaluator.evaluateToString(new Expression(fingerprintExpression));
         this.evaluator.setDefaultTable(null);
 
-        let res = this._fingerprintListeners.get(fingerprint);
+        const res = this._fingerprintListeners.get(fingerprint);
 
         if (!res) return null;
         return res;
@@ -111,12 +112,7 @@ export default class ContextEventListenerSet extends JObject {
     return null;
   }
 
-  private handleInListener(
-    event: Event,
-    eventDefinition: EventDefinition,
-    eventListener: DefaultContextEventListener,
-    eventData: EventData
-  ): void {
+  private handleInListener(event: Event, eventDefinition: EventDefinition, eventListener: DefaultContextEventListener, eventData: EventData): void {
     try {
       eventData.registerHandleOffer();
 
@@ -135,9 +131,7 @@ export default class ContextEventListenerSet extends JObject {
         const listenerSessionID = caller != null && caller.getSessionID() != null ? caller.getSessionID() : -1;
         if (eventSessionId != null && eventSessionId !== listenerSessionID) {
           if (Log.CONTEXT_EVENTS.isDebugEnabled()) {
-            Log.CONTEXT_EVENTS.debug(
-              "Listener '" + eventListener + "' should not handle a session bound event: " + event
-            );
+            Log.CONTEXT_EVENTS.debug("Listener '" + eventListener + "' should not handle a session bound event: " + event);
           }
           return;
         }
@@ -153,11 +147,11 @@ export default class ContextEventListenerSet extends JObject {
   }
 
   getListenersInfo(): Set<ContextEventListenerInfo> {
-    let localListeners = new Set<ContextEventListenerInfo>();
+    const localListeners = new Set<ContextEventListenerInfo>();
 
-    for (let listeners of this.allListenerQueues()) {
-      let set = this.getListenersInfoFrom(listeners);
-      for (let item of set) {
+    for (const listeners of this.allListenerQueues()) {
+      const set = this.getListenersInfoFrom(listeners);
+      for (const item of set) {
         localListeners.add(item);
       }
     }
@@ -165,7 +159,7 @@ export default class ContextEventListenerSet extends JObject {
     return localListeners;
   }
 
-  public addListener(listener: DefaultContextEventListener, weak: boolean = false) {
+  public addListener(listener: DefaultContextEventListener, weak = false) {
     if (this.contains(listener)) {
       return false;
     }
@@ -188,7 +182,7 @@ export default class ContextEventListenerSet extends JObject {
   }
 
   public removeListener(listener: DefaultContextEventListener) {
-    for (let listeners of this.allListenerQueues()) {
+    for (const listeners of this.allListenerQueues()) {
       if (this.removeFrom(listener, listeners)) {
         return true;
       }
@@ -198,7 +192,7 @@ export default class ContextEventListenerSet extends JObject {
   }
 
   public contains(listener: DefaultContextEventListener): boolean {
-    for (let listeners of this.allListenerQueues()) {
+    for (const listeners of this.allListenerQueues()) {
       if (this.containsIn(listener, listeners)) {
         return true;
       }
@@ -207,7 +201,7 @@ export default class ContextEventListenerSet extends JObject {
   }
 
   clear() {
-    for (let listeners of this.allListenerQueues()) {
+    for (const listeners of this.allListenerQueues()) {
       listeners.splice(0);
     }
   }
@@ -215,7 +209,7 @@ export default class ContextEventListenerSet extends JObject {
   public size(): number {
     let size = 0;
 
-    for (let listeners of this.allListenerQueues()) {
+    for (const listeners of this.allListenerQueues()) {
       size += listeners.length;
     }
 
@@ -223,7 +217,7 @@ export default class ContextEventListenerSet extends JObject {
   }
 
   private getListenersFrom(listeners: Array<DefaultContextEventListener>): Set<DefaultContextEventListener> {
-    let result: Set<DefaultContextEventListener> = new Set();
+    const result: Set<DefaultContextEventListener> = new Set();
     for (let i = 0; i < listeners.length; i++) {
       const li: ContextEventListenerInfo = ContextEventListenerSet.getListenerInfo(listeners[i]);
       if (li == null) {
@@ -236,7 +230,7 @@ export default class ContextEventListenerSet extends JObject {
   }
 
   private getListenersInfoFrom(listeners: Array<DefaultContextEventListener>): Set<ContextEventListenerInfo> {
-    let result: Set<ContextEventListenerInfo> = new Set();
+    const result: Set<ContextEventListenerInfo> = new Set();
     for (let i = 0; i < listeners.length; i++) {
       const li: ContextEventListenerInfo = ContextEventListenerSet.getListenerInfo(listeners[i]);
       if (li == null) {
@@ -280,7 +274,7 @@ export default class ContextEventListenerSet extends JObject {
   private allListenerQueues(): Set<Array<DefaultContextEventListener>> {
     const queues = new Set<Array<DefaultContextEventListener>>();
     queues.add(this.filterListeners);
-    for (let queue of this._fingerprintListeners.values()) {
+    for (const queue of this._fingerprintListeners.values()) {
       queues.add(queue);
     }
     return queues;

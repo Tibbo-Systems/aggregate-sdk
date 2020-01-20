@@ -2,6 +2,7 @@ import ActionContext from './ActionContext';
 import CallerController from '../context/CallerController';
 import ActionDefinition from './ActionDefinition';
 import ServerContext from '../server/ServerContext';
+import CallerData from '../context/CallerData';
 
 export default class ServerActionContext extends ActionContext {
   private callerController: CallerController;
@@ -10,8 +11,7 @@ export default class ServerActionContext extends ActionContext {
   private definingContext: ServerContext;
 
   public constructor(actionDefinition: ActionDefinition, context: ServerContext, callerController: CallerController) {
-    const cc = callerController.getCallerData();
-    cc && super(actionDefinition, cc.getActionManager());
+    super(actionDefinition, (callerController.getCallerData() as CallerData).getActionManager());
     this.callerController = callerController;
     this.definingContext = context;
 

@@ -1,11 +1,11 @@
 import GenericActionCommand from '../GenericActionCommand';
-import ActionUtils from '../ActionUtils';
 import TableFormat from '../../datatable/TableFormat';
 import FieldFormatFactory from '../../datatable/FieldFormatFactory';
 import FieldConstants from '../../datatable/field/FieldConstants';
 import DataTable from '../../datatable/DataTable';
 import SimpleDataTable from '../../datatable/SimpleDataTable';
 import DataRecord from '../../datatable/DataRecord';
+import ActionUtilsConstants from '../ActionUtilsConstants';
 
 export default class ShowDiff extends GenericActionCommand {
   public static readonly CF_FIRST_FILE_TITLE: string = 'firstFileTitle';
@@ -16,22 +16,10 @@ export default class ShowDiff extends GenericActionCommand {
   public static readonly CFT_SHOW_DIFF: TableFormat = new TableFormat(1, 1);
 
   static __static_initializer_0() {
-    ShowDiff.CFT_SHOW_DIFF.addField(
-      FieldFormatFactory.createType(ShowDiff.CF_FIRST_FILE_TITLE, FieldConstants.STRING_FIELD)
-    );
-    ShowDiff.CFT_SHOW_DIFF.addField(
-      FieldFormatFactory.createType(ShowDiff.CF_FIRST_FILE, FieldConstants.STRING_FIELD).setEditor(
-        FieldConstants.EDITOR_TEXT
-      )
-    );
-    ShowDiff.CFT_SHOW_DIFF.addField(
-      FieldFormatFactory.createType(ShowDiff.CF_SECOND_FILE_TITLE, FieldConstants.STRING_FIELD)
-    );
-    ShowDiff.CFT_SHOW_DIFF.addField(
-      FieldFormatFactory.createType(ShowDiff.CF_SECOND_FILE, FieldConstants.STRING_FIELD).setEditor(
-        FieldConstants.EDITOR_TEXT
-      )
-    );
+    ShowDiff.CFT_SHOW_DIFF.addField(FieldFormatFactory.createType(ShowDiff.CF_FIRST_FILE_TITLE, FieldConstants.STRING_FIELD));
+    ShowDiff.CFT_SHOW_DIFF.addField(FieldFormatFactory.createType(ShowDiff.CF_FIRST_FILE, FieldConstants.STRING_FIELD).setEditor(FieldConstants.EDITOR_TEXT));
+    ShowDiff.CFT_SHOW_DIFF.addField(FieldFormatFactory.createType(ShowDiff.CF_SECOND_FILE_TITLE, FieldConstants.STRING_FIELD));
+    ShowDiff.CFT_SHOW_DIFF.addField(FieldFormatFactory.createType(ShowDiff.CF_SECOND_FILE, FieldConstants.STRING_FIELD).setEditor(FieldConstants.EDITOR_TEXT));
   }
 
   private firstFileTitle: string | null = null;
@@ -47,14 +35,8 @@ export default class ShowDiff extends GenericActionCommand {
     ShowDiff._init = true;
   }
 
-  public constructor(
-    title: string | TableFormat = ShowDiff.CFT_SHOW_DIFF,
-    firstFileTitle?: string,
-    firstFile?: string,
-    secondFileTitle?: string,
-    secondFile?: string
-  ) {
-    super(ActionUtils.CMD_SHOW_DIFF, title, null);
+  public constructor(title: string | TableFormat = ShowDiff.CFT_SHOW_DIFF, firstFileTitle?: string, firstFile?: string, secondFileTitle?: string, secondFile?: string) {
+    super(ActionUtilsConstants.CMD_SHOW_DIFF, title, null);
     if (firstFileTitle && firstFile && secondFileTitle && secondFile) {
       this.firstFileTitle = firstFileTitle;
       this.firstFile = firstFile;

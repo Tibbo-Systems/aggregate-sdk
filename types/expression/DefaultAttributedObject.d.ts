@@ -1,5 +1,5 @@
-import AttributedObject from "./AttributedObject";
-export default class DefaultAttributedObject implements AttributedObject {
+import AttributedObject from './AttributedObject';
+export default class DefaultAttributedObject extends AttributedObject {
     private value;
     private timestamp;
     private quality;
@@ -9,5 +9,5 @@ export default class DefaultAttributedObject implements AttributedObject {
     getValue(): any;
     setQuality(quality: number): void;
     setTimestamp(timestamp: Date): void;
-    toString(): String;
+    toString(): string;
 }

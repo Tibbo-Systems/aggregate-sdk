@@ -1,9 +1,19 @@
-import { ParserRuleContext } from "antlr4";
-import AttributedObject from "./AttributedObject";
+import { ParserRuleContext } from 'antlr4';
+import AttributedObject from './AttributedObject';
+import Evaluator from './Evaluator';
+import Function from './functions/Function';
+import EvaluationEnvironment from './EvaluationEnvironment';
 declare const AggregateExpressionVisitor: any;
 export default class AbstractEvaluatingVisitor extends AggregateExpressionVisitor {
+    static DEFAULT_FUNCTIONS: Map<string, Function>;
+    private static __static_init;
+    static _static_init(): void;
+    private static registerDefaultFunction;
     protected top: number;
     private readonly stack;
+    private evaluator;
+    private environment;
+    constructor(evaluator: Evaluator, environment: EvaluationEnvironment);
     protected set(delta: number, value: AttributedObject | null): void;
     getResult(): any;
     protected get(delta: number): AttributedObject | null;
@@ -44,5 +54,8 @@ export default class AbstractEvaluatingVisitor extends AggregateExpressionVisito
     visitTrueNode(ctx: ParserRuleContext): any;
     visitFalseNode(ctx: ParserRuleContext): any;
     visitNullNode(ctx: ParserRuleContext): any;
+    visitTerminal(ctx: ParserRuleContext): any;
+    private visitBinaryOperators;
+    private visitEqualityOperators;
 }
 export {};

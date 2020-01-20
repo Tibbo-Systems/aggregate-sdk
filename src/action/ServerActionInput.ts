@@ -6,11 +6,11 @@ import GenericActionResponse from './GenericActionResponse';
 
 export default class ServerActionInput implements InitialRequest {
   private data: DataTable = new SimpleDataTable();
-  private remember: boolean = false;
+  private remember = false;
   private requestId: RequestIdentifier | null = null;
 
-  public constructor(dataTable: DataTable) {
-    this.data = dataTable.clone();
+  public constructor(dataTable?: DataTable) {
+    if (dataTable) this.data = dataTable.clone();
   }
 
   public createWithRequest(request: GenericActionResponse) {

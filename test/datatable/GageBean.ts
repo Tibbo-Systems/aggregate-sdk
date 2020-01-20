@@ -2,13 +2,13 @@ import DataTable from '../../src/datatable/DataTable';
 import Data from '../../src/data/Data';
 
 export default class GageBean {
-  private intField: number = 0;
+  private intField = 0;
   private str: string | null = null;
-  private floatField: number = 0.0;
+  private floatField = 0.0;
   private table: DataTable | null = null;
-  private booleanField: boolean = false;
-  private longField: number = 0;
-  private doubleField: number = 0.0;
+  private booleanField = false;
+  private longField = 0;
+  private doubleField = 0.0;
   private date: Date | null = null;
   // TODO: not implemented
   // private color: Color | null = null;

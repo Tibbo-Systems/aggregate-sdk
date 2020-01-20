@@ -12,7 +12,7 @@ export default class Enrichment extends JObject {
     private value;
     private date;
     private author;
-    constructor(name: string | null, value: string, date: Date, author: string | null);
+    constructor(name: string, value: string, date: Date, author: string | null);
     getName(): string;
     setName(name: string): void;
     getValue(): string;

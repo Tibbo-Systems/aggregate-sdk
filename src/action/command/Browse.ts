@@ -1,21 +1,19 @@
 import GenericActionCommand from '../GenericActionCommand';
 import TableFormat from '../../datatable/TableFormat';
 import FieldFormatFactory from '../../datatable/FieldFormatFactory';
-import ActionUtils from '../ActionUtils';
 import SimpleDataTable from '../../datatable/SimpleDataTable';
 import DataTable from '../../datatable/DataTable';
+import ActionUtilsConstants from '../ActionUtilsConstants';
 
 export default class Browse extends GenericActionCommand {
   public static readonly CF_BROWSE_URI: string = 'uri';
 
-  public static readonly CFT_BROWSE: TableFormat = FieldFormatFactory.create(
-    '<' + Browse.CF_BROWSE_URI + '><S>'
-  ).wrap();
+  public static readonly CFT_BROWSE: TableFormat = FieldFormatFactory.create('<' + Browse.CF_BROWSE_URI + '><S>').wrap();
 
   private url: string | null = null;
 
   public constructor(url?: string) {
-    super(ActionUtils.CMD_BROWSE, null);
+    super(ActionUtilsConstants.CMD_BROWSE, null);
     if (url) this.url = url;
   }
 

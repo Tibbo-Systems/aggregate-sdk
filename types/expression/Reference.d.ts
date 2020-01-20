@@ -1,6 +1,11 @@
 import JObject from '../util/java/JObject';
 import Expression from './Expression';
 export default class Reference extends JObject {
+    static readonly PARAM_ESCAPE_SINGLE: string;
+    static readonly PARAM_ESCAPE_DOUBLE: string;
+    private static readonly PARAMS_DELIM;
+    private static readonly PARAMS_ESCAPE;
+    static readonly NULL_PARAM: string;
     static readonly SCHEMA_FORM: string;
     static readonly SCHEMA_TABLE: string;
     static readonly SCHEMA_STATISTICS: string;
@@ -57,4 +62,7 @@ export default class Reference extends JObject {
     setServer(server: string): void;
     clone(): Reference;
     equals(obj: JObject | null): boolean;
+    static getFunctionParametersFromArray(params: Array<any>): string;
+    static getFunctionParameters(paramsString: string, allowExpressions: boolean): any[];
+    private static prepareParameter;
 }

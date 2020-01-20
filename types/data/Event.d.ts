@@ -41,7 +41,7 @@ export default class Event extends JObject {
     addEnrichment(enrichment: Enrichment): void;
     getEnrichments(): Array<Enrichment>;
     setId(id: number): void;
-    setCreationtime(creationtime: Date): void;
+    setCreationtime(creationtime: Date | null): void;
     setName(name: string): void;
     setContext(context: string): void;
     setExpirationtime(expirationtime: Date): void;
@@ -49,7 +49,7 @@ export default class Event extends JObject {
     setListener(listener: number | null): void;
     setLevel(level: number): void;
     setOriginator(originator: any): void;
-    getData(): DataTable | null;
+    getData(): DataTable;
     getListener(): number | null;
     getLevel(): number;
     getPermissions(): Permissions | null;

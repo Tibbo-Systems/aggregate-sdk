@@ -109,15 +109,9 @@ export default class UserSettings extends JObject {
     }
 
     // Distributed: ok, getting info from directly connected server
-    const userContext: Context<any, any> | null = cm.get(
-      ContextUtils.userContextPath(callerController.getUsername() as string),
-      callerController
-    );
+    const userContext: Context<any, any> | null = cm.get(ContextUtils.userContextPath(callerController.getUsername() as string), callerController);
 
-    if (
-      userContext == null ||
-      userContext.getVariableDefinition(EditableChildContextConstants.V_CHILD_INFO, null) == null
-    ) {
+    if (userContext == null || userContext.getVariableDefinition(EditableChildContextConstants.V_CHILD_INFO, null) == null) {
       return;
     }
 

@@ -124,11 +124,7 @@ export default class ContextUtils {
   }
 
   static pluginUserConfigContextPath(username: string, pluginId: string): string {
-    return this.createName(
-      this.userContextPath(username),
-      Contexts.CTX_PLUGINS_CONFIG,
-      this.pluginIdToContextName(pluginId)
-    );
+    return this.createName(this.userContextPath(username), Contexts.CTX_PLUGINS_CONFIG, this.pluginIdToContextName(pluginId));
   }
 
   static devicesContextPath(owner: string): string {
@@ -146,7 +142,7 @@ export default class ContextUtils {
   static createName(...parts: Array<string>): string {
     const res = new StringBuilder();
 
-    for (let i: number = 0; i < parts.length; i++) {
+    for (let i = 0; i < parts.length; i++) {
       if (i > 0) {
         res.append(ContextUtilsConstants.CONTEXT_NAME_SEPARATOR);
       }
@@ -160,7 +156,7 @@ export default class ContextUtils {
   static createGroup(...parts: Array<string>): string {
     const res = new StringBuilder();
 
-    for (let i: number = 0; i < parts.length; i++) {
+    for (let i = 0; i < parts.length; i++) {
       if (i == parts.length - 1 && parts[i] == null) {
         break;
       }
@@ -179,12 +175,7 @@ export default class ContextUtils {
     return pluginId.replace('.', '_').replace('-', '');
   }
 
-  static matchesToMask(
-    mask: string,
-    context: string,
-    contextMayExtendMask: boolean = false,
-    maskMayExtendContext: boolean = false
-  ): boolean {
+  static matchesToMask(mask: string, context: string, contextMayExtendMask = false, maskMayExtendContext = false): boolean {
     if (mask == null || context == null) {
       return true;
     }
@@ -197,19 +188,9 @@ export default class ContextUtils {
         const equals: boolean = mask === context;
 
         if (maskMayExtendContext) {
-          return (
-            equals ||
-            (mask.length > context.length &&
-              mask.startsWith(context) &&
-              mask.charAt(context.length) == ContextUtilsConstants.CONTEXT_NAME_SEPARATOR.charAt(0))
-          );
+          return equals || (mask.length > context.length && mask.startsWith(context) && mask.charAt(context.length) == ContextUtilsConstants.CONTEXT_NAME_SEPARATOR.charAt(0));
         } else if (contextMayExtendMask) {
-          return (
-            equals ||
-            (context.length > mask.length &&
-              context.startsWith(mask) &&
-              context.charAt(mask.length) == ContextUtilsConstants.CONTEXT_NAME_SEPARATOR.charAt(0))
-          );
+          return equals || (context.length > mask.length && context.startsWith(mask) && context.charAt(mask.length) == ContextUtilsConstants.CONTEXT_NAME_SEPARATOR.charAt(0));
         } else {
           return equals;
         }
@@ -227,11 +208,8 @@ export default class ContextUtils {
       return false;
     }
 
-    for (let i: number = 0; i < Math.min(maskParts.length, nameParts.length); i++) {
-      if (
-        maskParts[i] === ContextUtilsConstants.CONTEXT_GROUP_MASK &&
-        nameParts[i] !== ContextUtilsConstants.CONTEXT_GROUP_MASK
-      ) {
+    for (let i = 0; i < Math.min(maskParts.length, nameParts.length); i++) {
+      if (maskParts[i] === ContextUtilsConstants.CONTEXT_GROUP_MASK && nameParts[i] !== ContextUtilsConstants.CONTEXT_GROUP_MASK) {
         continue;
       } else {
         if (maskParts[i] !== nameParts[i]) {
@@ -250,38 +228,23 @@ export default class ContextUtils {
     return name.indexOf(ContextUtilsConstants.CONTEXT_GROUP_MASK.charAt(0)) > -1;
   }
 
-  static expandMaskListToContexts(
-    masks: string,
-    contextManager: ContextManager<any>,
-    caller: any = null,
-    useVisibleChildren: boolean = false
-  ): Array<Context<any, any>> {
-    const result: Array<Context<any, any>> = new Array();
+  static expandMaskListToContexts(masks: string, contextManager: ContextManager<any>, caller: any = null, useVisibleChildren = false): Array<Context<any, any>> {
+    const result: Array<Context<any, any>> = [];
     const maskList: Array<string> = StringUtils.split(masks, ContextUtilsConstants.MASK_LIST_SEPARATOR.charAt(0));
 
-    for (let mask of maskList) {
-      const contexts: Array<Context<any, any>> = this.expandMaskToContexts(
-        mask,
-        contextManager,
-        caller,
-        useVisibleChildren
-      );
+    for (const mask of maskList) {
+      const contexts: Array<Context<any, any>> = this.expandMaskToContexts(mask, contextManager, caller, useVisibleChildren);
       result.push(...contexts);
     }
 
     return result;
   }
 
-  static expandMaskToContexts(
-    mask: string,
-    contextManager: ContextManager<any>,
-    caller: CallerController | null = null,
-    useVisibleChildren: boolean = false
-  ): Array<Context<any, any>> {
-    const res: Array<Context<any, any>> = new Array();
+  static expandMaskToContexts(mask: string, contextManager: ContextManager<any>, caller: CallerController | null = null, useVisibleChildren = false): Array<Context<any, any>> {
+    const res: Array<Context<any, any>> = [];
     const paths: Array<string> = this.expandMaskToPaths(mask, contextManager, caller, useVisibleChildren);
 
-    for (let path of paths) {
+    for (const path of paths) {
       const con: Context<any, any> = contextManager.get(path, caller);
       if (con != null) {
         res.push(con);
@@ -291,19 +254,14 @@ export default class ContextUtils {
     return res;
   }
 
-  static expandMaskToPaths(
-    mask: string,
-    contextManager: ContextManager<any>,
-    caller: CallerController | null,
-    useVisibleChildren: boolean = false
-  ): Array<string> {
+  static expandMaskToPaths(mask: string, contextManager: ContextManager<any>, caller: CallerController | null, useVisibleChildren = false): Array<string> {
     const result: Array<string> = new Array<string>();
     const parts: Array<string> = StringUtils.split(mask, ContextUtilsConstants.CONTEXT_NAME_SEPARATOR.charAt(0));
-    for (let i: number = 0; i < parts.length; i++) {
+    for (let i = 0; i < parts.length; i++) {
       if (parts[i] === ContextUtilsConstants.CONTEXT_GROUP_MASK) {
         const head: StringBuilder = new StringBuilder();
         const tail: StringBuilder = new StringBuilder();
-        for (let j: number = 0; j < i; j++) {
+        for (let j = 0; j < i; j++) {
           if (j > 0) {
             head.append(ContextUtilsConstants.CONTEXT_NAME_SEPARATOR);
           }
@@ -315,13 +273,7 @@ export default class ContextUtils {
           tail.append(parts[j]);
         }
 
-        const res: Array<string> = this.expandMaskPart(
-          head.toString(),
-          tail.toString(),
-          contextManager,
-          caller,
-          useVisibleChildren
-        );
+        const res: Array<string> = this.expandMaskPart(head.toString(), tail.toString(), contextManager, caller, useVisibleChildren);
         return [...result, ...res];
       }
     }
@@ -331,13 +283,7 @@ export default class ContextUtils {
     return result;
   }
 
-  static expandMaskPart(
-    head: string,
-    tail: string,
-    contextManager: ContextManager<any>,
-    caller: CallerController | null,
-    useVisibleChildren: boolean
-  ): Array<string> {
+  static expandMaskPart(head: string, tail: string, contextManager: ContextManager<any>, caller: CallerController | null, useVisibleChildren: boolean): Array<string> {
     // logger.debug("Expanding context mask part '" + head + " * " + tail + "'");
     const result: Array<string> = new Array<string>();
     const con: Context<any, any> = contextManager.get(head, caller);
@@ -348,37 +294,23 @@ export default class ContextUtils {
 
     if (con.isMapped()) {
       const mappedChildren: Array<Context<any, any>> = con.getMappedChildren(caller);
-      for (let child of mappedChildren) {
+      for (const child of mappedChildren) {
         result.push(child.getPath());
       }
     } else {
-      const children: Array<Context<any, any>> = useVisibleChildren
-        ? con.getVisibleChildren(caller)
-        : con.getChildren(caller);
-      for (let child of children) {
+      const children: Array<Context<any, any>> = useVisibleChildren ? con.getVisibleChildren(caller) : con.getChildren(caller);
+      for (const child of children) {
         if (useVisibleChildren) {
           const realChild: Context<any, any> | null = con.getChild(child.getName(), null);
 
           if (realChild == null || realChild.getPath() !== child.getPath()) {
-            const res: Array<string> = this.expandMaskToPaths(
-              child.getPath() + tail,
-              contextManager,
-              caller,
-              useVisibleChildren
-            );
+            const res: Array<string> = this.expandMaskToPaths(child.getPath() + tail, contextManager, caller, useVisibleChildren);
             result.push(...res);
             continue;
           }
         }
 
-        result.push(
-          ...this.expandMaskToPaths(
-            head + ContextUtilsConstants.CONTEXT_NAME_SEPARATOR + child.getName() + tail,
-            contextManager,
-            caller,
-            useVisibleChildren
-          )
-        );
+        result.push(...this.expandMaskToPaths(head + ContextUtilsConstants.CONTEXT_NAME_SEPARATOR + child.getName() + tail, contextManager, caller, useVisibleChildren));
       }
     }
 
@@ -449,10 +381,7 @@ export default class ContextUtils {
       return null;
     }
     if (entityName.endsWith(ContextUtilsConstants.ENTITY_GROUP_SUFFIX)) {
-      const group: string = entityName.substring(
-        0,
-        entityName.length - ContextUtilsConstants.ENTITY_GROUP_SUFFIX.length
-      );
+      const group: string = entityName.substring(0, entityName.length - ContextUtilsConstants.ENTITY_GROUP_SUFFIX.length);
       return group;
     }
     return null;

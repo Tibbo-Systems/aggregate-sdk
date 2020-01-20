@@ -37,7 +37,7 @@ export default class EntityReference extends JObject implements Comparable<Entit
     if (this == obj) return true;
     if (obj == null) return false;
 
-    let other: EntityReference = obj;
+    const other: EntityReference = obj;
     if (this.context == null) {
       if (other.context != null) return false;
     } else if (!Util.equals(this.context, other.context)) return false;

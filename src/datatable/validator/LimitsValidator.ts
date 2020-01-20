@@ -9,7 +9,6 @@ import Cres from '../../Cres';
 import MessageFormat from '../../util/java/MessageFormat';
 import Util from '../../util/Util';
 import FieldConstants from '../field/FieldConstants';
-import Log from '../../Log';
 
 export default class LimitsValidator extends AbstractFieldValidator<any> {
   private static readonly MIN_MAX_SEPARATOR: string = ' ';
@@ -42,10 +41,7 @@ export default class LimitsValidator extends AbstractFieldValidator<any> {
       }
     } else {
       if (minMax.length > 1) {
-        return new LimitsValidator(
-          fieldFormat.valueFromString(minMax[0], null, false),
-          fieldFormat.valueFromString(minMax[1], null, false)
-        );
+        return new LimitsValidator(fieldFormat.valueFromString(minMax[0], null, false), fieldFormat.valueFromString(minMax[1], null, false));
       } else {
         return new LimitsValidator(null, fieldFormat.valueFromString(minMax[0], null, false));
       }
@@ -61,23 +57,14 @@ export default class LimitsValidator extends AbstractFieldValidator<any> {
   }
 
   public encode(): string {
-    return this.min != null
-      ? this.min.toString() + (this.max != null ? LimitsValidator.MIN_MAX_SEPARATOR + this.max.toString() : '')
-      : this.max != null
-      ? this.max.toString()
-      : '';
+    return this.min != null ? this.min.toString() + (this.max != null ? LimitsValidator.MIN_MAX_SEPARATOR + this.max.toString() : '') : this.max != null ? this.max.toString() : '';
   }
 
   public getType(): string {
     return FieldConstants.VALIDATOR_LIMITS;
   }
 
-  public validate(
-    context: Context<any, any>,
-    contextManager: ContextManager<Context<any, any>>,
-    caller: CallerController,
-    value: any
-  ): any {
+  public validate(context: Context<any, any>, contextManager: ContextManager<Context<any, any>>, caller: CallerController, value: any): any {
     if (value == null) {
       return value;
     }
@@ -91,11 +78,7 @@ export default class LimitsValidator extends AbstractFieldValidator<any> {
         this.compare(size, null, null);
       }
     } else if (Util.isString(value)) {
-      this.compare(
-        value.toString().length,
-        Cres.get().getString('dtValueTooShort'),
-        Cres.get().getString('dtValueTooLong')
-      );
+      this.compare(value.toString().length, Cres.get().getString('dtValueTooShort'), Cres.get().getString('dtValueTooLong'));
     } else {
       const cv: number = value as number;
       this.compare(cv, null, null);
@@ -107,21 +90,13 @@ export default class LimitsValidator extends AbstractFieldValidator<any> {
   private compare(cv: number, smallMessage: string | null, bigMessage: string | null): void {
     if (this.min != null) {
       if (Util.compare(cv, this.min) < 0) {
-        throw new Error(
-          MessageFormat.format(
-            smallMessage != null ? smallMessage : Cres.get().getString('dtValueTooSmall'),
-            cv,
-            this.min
-          )
-        );
+        throw new Error(MessageFormat.format(smallMessage != null ? smallMessage : Cres.get().getString('dtValueTooSmall'), cv, this.min));
       }
     }
 
     if (this.max != null) {
       if (Util.compare(cv, this.max) > 0) {
-        throw new Error(
-          MessageFormat.format(bigMessage != null ? bigMessage : Cres.get().getString('dtValueTooBig'), cv, this.max)
-        );
+        throw new Error(MessageFormat.format(bigMessage != null ? bigMessage : Cres.get().getString('dtValueTooBig'), cv, this.max));
       }
     }
   }

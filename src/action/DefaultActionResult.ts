@@ -2,7 +2,7 @@ import ActionResult from './ActionResult';
 import JObject from '../util/java/JObject';
 
 export default class DefaultActionResult extends JObject implements ActionResult {
-  private successful: boolean = true;
+  private successful = true;
 
   public constructor() {
     super();

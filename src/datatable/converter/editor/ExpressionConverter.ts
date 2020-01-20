@@ -10,10 +10,8 @@ export default class ExpressionConverter extends AbstractEditorOptionsConverter 
   public static readonly FIELD_DEFAULT_TABLE: string = FieldConstants.FIELD_DEFAULT_TABLE;
   public static readonly FIELD_REFERENCES: string = FieldConstants.FIELD_REFERENCES;
 
-  public static readonly FIELD_ADDITIONAL_REFERENCES_DESCRIPTION: string =
-    FieldConstants.FIELD_ADDITIONAL_REFERENCES_DESCRIPTION;
-  public static readonly FIELD_ADDITIONAL_REFERENCES_REFERENCE: string =
-    FieldConstants.FIELD_ADDITIONAL_REFERENCES_REFERENCE;
+  public static readonly FIELD_ADDITIONAL_REFERENCES_DESCRIPTION: string = FieldConstants.FIELD_ADDITIONAL_REFERENCES_DESCRIPTION;
+  public static readonly FIELD_ADDITIONAL_REFERENCES_REFERENCE: string = FieldConstants.FIELD_ADDITIONAL_REFERENCES_REFERENCE;
 
   public static FORMAT: TableFormat = StringFieldFormat.EXPRESSION_BUILDER_OPTIONS_FORMAT;
   public static REFERENCES_FORMAT: TableFormat = StringFieldFormat.ADDITIONAL_REFERENCES_FORMAT;
@@ -33,11 +31,7 @@ export default class ExpressionConverter extends AbstractEditorOptionsConverter 
     const references: DataTable = options.rec().getDataTable(StringFieldFormat.FIELD_REFERENCES);
 
     if (references !== null) {
-      for (let rec of references)
-        additionalReferences.set(
-          new Reference(rec.getString(StringFieldFormat.FIELD_ADDITIONAL_REFERENCES_REFERENCE)),
-          rec.getString(StringFieldFormat.FIELD_ADDITIONAL_REFERENCES_DESCRIPTION)
-        );
+      for (const rec of references) additionalReferences.set(new Reference(rec.getString(StringFieldFormat.FIELD_ADDITIONAL_REFERENCES_REFERENCE)), rec.getString(StringFieldFormat.FIELD_ADDITIONAL_REFERENCES_DESCRIPTION));
     }
 
     return StringFieldFormat.encodeExpressionEditorOptions(null, null, additionalReferences);

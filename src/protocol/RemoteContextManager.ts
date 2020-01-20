@@ -14,11 +14,7 @@ export default class RemoteContextManager extends DefaultContextManager<ProxyCon
 
   private readonly deviceController: AbstractAggreGateDeviceController<AggreGateDevice, ContextManager<any>>;
 
-  public constructor(
-    controller: AbstractAggreGateDeviceController<AggreGateDevice, ContextManager<any>>,
-    async: boolean,
-    eventQueueLength: number
-  ) {
+  public constructor(controller: AbstractAggreGateDeviceController<AggreGateDevice, ContextManager<any>>, async: boolean, eventQueueLength: number) {
     super(async, eventQueueLength, null);
     this.deviceController = controller;
   }
@@ -50,14 +46,14 @@ export default class RemoteContextManager extends DefaultContextManager<ProxyCon
   }
 
   private sendAddListener(context: string, event: string, listener: DefaultContextEventListener): void {
-    let protocolVersion = this.getController().getProtocolVersion();
+    const protocolVersion = this.getController().getProtocolVersion();
     if (protocolVersion == null || protocolVersion < ProtocolVersion.V3) {
       return;
     }
 
     try {
       const expr = listener.getFilter();
-      let filterText: string | null = expr != null ? expr.getText() : null;
+      const filterText: string | null = expr != null ? expr.getText() : null;
       const fingerprint: string | null = listener.getFingerprint();
       this.getController().sendCommandAndCheckReplyCode(
         this.getController()
@@ -71,15 +67,15 @@ export default class RemoteContextManager extends DefaultContextManager<ProxyCon
   }
 
   private sendRemoveListener(context: string, event: string, listener: DefaultContextEventListener): void {
-    let protocolVersion = this.getController().getProtocolVersion();
+    const protocolVersion = this.getController().getProtocolVersion();
     if (protocolVersion == null || protocolVersion < ProtocolVersion.V3) {
       return;
     }
 
     try {
       const expr = listener.getFilter();
-      let filter = expr != null ? expr.getText() : null;
-      let fingerprint = listener.getFingerprint();
+      const filter = expr != null ? expr.getText() : null;
+      const fingerprint = listener.getFingerprint();
       this.getController().sendCommandAndCheckReplyCode(
         this.getController()
           .getCommandBuilder()
@@ -91,31 +87,15 @@ export default class RemoteContextManager extends DefaultContextManager<ProxyCon
     }
   }
 
-  protected addListenerToContext(
-    con: ProxyContext<any, any>,
-    event: string,
-    listener: DefaultContextEventListener,
-    mask: boolean,
-    weak: boolean
-  ): void {
+  protected addListenerToContext(con: ProxyContext<any, any>, event: string, listener: DefaultContextEventListener, mask: boolean, weak: boolean): void {
     con.addEventListenerToProxy(event, listener, false, !mask); // Don't sent remote command if adding as mask listener
   }
 
-  protected removeListenerFromContext(
-    con: ProxyContext<any, any>,
-    event: string,
-    listener: DefaultContextEventListener,
-    mask: boolean
-  ): void {
+  protected removeListenerFromContext(con: ProxyContext<any, any>, event: string, listener: DefaultContextEventListener, mask: boolean): void {
     con.removeEventListenerToProxy(event, listener, !mask); // Don't sent remote command if adding as mask listener
   }
 
-  addMaskEventListener(
-    mask: string,
-    event: string,
-    listener: DefaultContextEventListener,
-    weak: boolean = false
-  ): void {
+  addMaskEventListener(mask: string, event: string, listener: DefaultContextEventListener, weak = false): void {
     super.addMaskEventListener(mask, event, listener);
     this.sendAddListener(mask, event, listener);
   }

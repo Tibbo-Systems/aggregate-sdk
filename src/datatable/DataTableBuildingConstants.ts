@@ -34,5 +34,5 @@ export default class DataTableBuildingConstants {
 
   public static readonly FIELD_VALIDATORS_VALIDATOR: string = 'validator';
   public static readonly FIELD_VALIDATORS_OPTIONS: string = 'options';
-  public static FIELD_EDITOR_OPTIONS_SIMPLE_FORMAT_OPTIONS: string = 'options';
+  public static FIELD_EDITOR_OPTIONS_SIMPLE_FORMAT_OPTIONS = 'options';
 }

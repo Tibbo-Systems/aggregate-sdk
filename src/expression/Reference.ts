@@ -1,10 +1,17 @@
-import ExpressionUtils from './ExpressionUtils';
+//import ExpressionUtils from './ExpressionUtils';
 import StringBuilder from '../util/java/StringBuilder';
 import JObject from '../util/java/JObject';
 import Expression from './Expression';
 import ContextUtilsConstants from '../context/ContextUtilsConstants';
 
 export default class Reference extends JObject {
+  public static readonly PARAM_ESCAPE_SINGLE: string = "'";
+  public static readonly PARAM_ESCAPE_DOUBLE: string = '"';
+  private static readonly PARAMS_DELIM: string = ',';
+  private static readonly PARAMS_ESCAPE: string = '\\';
+
+  public static readonly NULL_PARAM: string = 'null';
+
   // Format: schema/server^context:entity('param1', expression, null, ...)$field[row]#property
 
   public static readonly SCHEMA_FORM: string = 'form';
@@ -46,15 +53,7 @@ export default class Reference extends JObject {
   private property: string | null = null;
   private appearance: number = Reference.APPEARANCE_LINK;
 
-  constructor(
-    source?: string,
-    server?: string | null,
-    context?: string | null,
-    entity?: string | null,
-    entityType?: number | null,
-    field?: string | null,
-    ...parameters: any[]
-  ) {
+  constructor(source?: string, server?: string | null, context?: string | null, entity?: string | null, entityType?: number | null, field?: string | null, ...parameters: any[]) {
     super();
     if (source) {
       this.parse(source);
@@ -82,9 +81,9 @@ export default class Reference extends JObject {
   protected parse(source: string) {
     source = source.trim();
 
-    let isFunction: boolean = false;
-    let isEvent: boolean = false;
-    let isAction: boolean = false;
+    let isFunction = false;
+    let isEvent = false;
+    let isAction = false;
 
     this.image = source;
 
@@ -105,7 +104,7 @@ export default class Reference extends JObject {
 
         const paramsSrc = src.substring(paramsBegin + 1, paramsEnd);
 
-        this.parameters = ExpressionUtils.getFunctionParameters(paramsSrc, true);
+        this.parameters = Reference.getFunctionParameters(paramsSrc, true);
 
         this.entityType = ContextUtilsConstants.ENTITY_ACTION;
 
@@ -115,7 +114,7 @@ export default class Reference extends JObject {
 
         const paramsSrc: string = src.substring(paramsBegin + 1, paramsEnd);
 
-        this.parameters = ExpressionUtils.getFunctionParameters(paramsSrc, true);
+        this.parameters = Reference.getFunctionParameters(paramsSrc, true);
 
         this.entityType = ContextUtilsConstants.ENTITY_FUNCTION;
 
@@ -243,7 +242,7 @@ export default class Reference extends JObject {
   }
 
   private createImage(): string {
-    let sb: StringBuilder = new StringBuilder();
+    const sb: StringBuilder = new StringBuilder();
 
     if (this.schema != null) {
       sb.append(this.schema);
@@ -265,7 +264,7 @@ export default class Reference extends JObject {
 
       if (this.entityType === ContextUtilsConstants.ENTITY_FUNCTION) {
         sb.append(Reference.PARAMS_BEGIN);
-        sb.append(ExpressionUtils.getFunctionParametersFromArray(this.parameters));
+        sb.append(Reference.getFunctionParametersFromArray(this.parameters));
         sb.append(Reference.PARAMS_END);
       }
 
@@ -276,7 +275,7 @@ export default class Reference extends JObject {
       if (this.entityType === ContextUtilsConstants.ENTITY_ACTION) {
         if (this.parameters.length > 0) {
           sb.append(Reference.PARAMS_BEGIN);
-          sb.append(ExpressionUtils.getFunctionParametersFromArray(this.parameters));
+          sb.append(Reference.getFunctionParametersFromArray(this.parameters));
           sb.append(Reference.PARAMS_END);
         }
 
@@ -286,7 +285,7 @@ export default class Reference extends JObject {
       if (this.entityType === ContextUtilsConstants.ENTITY_INSTANCE) {
         if (this.parameters.length > 0) {
           sb.append(Reference.PARAMS_BEGIN);
-          sb.append(ExpressionUtils.getFunctionParametersFromArray(this.parameters));
+          sb.append(Reference.getFunctionParametersFromArray(this.parameters));
           sb.append(Reference.PARAMS_END);
         }
       }
@@ -376,5 +375,134 @@ export default class Reference extends JObject {
   public equals(obj: JObject | null): boolean {
     const isReferenceNotNull = !(obj == null || !(obj instanceof Reference));
     return isReferenceNotNull && this.getImage() === (obj as Reference).getImage();
+  }
+
+  public static getFunctionParametersFromArray(params: Array<any>): string {
+    const sb: StringBuilder = new StringBuilder();
+
+    let i = 0;
+
+    params.forEach(param => {
+      if (param == null) {
+        sb.append(Reference.NULL_PARAM);
+      } else {
+        if (param instanceof Expression) {
+          const value: string = param.toString();
+
+          if (value.indexOf(Reference.PARAMS_DELIM) !== -1) {
+            sb.append(Reference.PARAM_ESCAPE_SINGLE);
+            sb.append(value);
+            sb.append(Reference.PARAM_ESCAPE_SINGLE);
+          } else {
+            sb.append(value);
+          }
+        } else {
+          sb.append(Reference.PARAM_ESCAPE_DOUBLE);
+          sb.append(param.toString());
+          sb.append(this.PARAM_ESCAPE_DOUBLE);
+        }
+      }
+      if (i < params.length - 1) {
+        sb.append(Reference.PARAMS_DELIM);
+      }
+      i++;
+    });
+
+    return sb.toString();
+  }
+
+  public static getFunctionParameters(paramsString: string, allowExpressions: boolean) {
+    const params: Array<any> = new Array<any>();
+    let insideSingleQuotedLiteral = false;
+    let insideDoubleQuotedLiteral = false;
+    let escaped = false;
+    let buf: StringBuilder | null = new StringBuilder();
+    for (let i = 0; i < paramsString.length; i++) {
+      const c: string = paramsString.charAt(i);
+      if (c === Reference.PARAMS_ESCAPE) {
+        if (escaped) {
+          escaped = false;
+          if (buf) buf.append(c);
+          continue;
+        } else {
+          escaped = true;
+          continue;
+        }
+      } else if (insideSingleQuotedLiteral) {
+        if (c == Reference.PARAM_ESCAPE_SINGLE) {
+          if (!escaped) {
+            insideSingleQuotedLiteral = false;
+            let param = '';
+            if (buf) param = buf.toString();
+            if (allowExpressions) {
+              params.push(new Expression(Reference.prepareParameter(param)));
+            } else {
+              params.push(Reference.prepareParameter(param));
+            }
+            buf = null;
+          }
+        }
+      } else if (insideDoubleQuotedLiteral) {
+        if (c == Reference.PARAM_ESCAPE_DOUBLE) {
+          if (!escaped) {
+            insideDoubleQuotedLiteral = false;
+            let param = '';
+            if (buf) param = buf.toString();
+            params.push(Reference.prepareParameter(param));
+            buf = null;
+          }
+        }
+      } else if (c == Reference.PARAMS_DELIM) {
+        if (!insideSingleQuotedLiteral && !insideDoubleQuotedLiteral) {
+          if (buf != null) {
+            let param = '';
+            if (buf) param = buf.toString().trim();
+            if (param.length > 0) {
+              params.push(new Expression(Reference.prepareParameter(param)));
+            }
+          }
+
+          buf = new StringBuilder();
+          continue;
+        }
+      } else if (c == Reference.PARAM_ESCAPE_SINGLE && !insideDoubleQuotedLiteral) {
+        insideSingleQuotedLiteral = true;
+        buf = new StringBuilder();
+        continue;
+      } else if (c == Reference.PARAM_ESCAPE_DOUBLE && !insideSingleQuotedLiteral) {
+        insideDoubleQuotedLiteral = true;
+        buf = new StringBuilder();
+        continue;
+      }
+
+      if (c != Reference.PARAMS_ESCAPE) {
+        escaped = false;
+      }
+
+      if (buf != null) {
+        buf.append(c);
+      }
+    }
+
+    if (buf != null) {
+      const param: string = buf.toString().trim();
+      if (param.length > 0) {
+        params.push(new Expression(Reference.prepareParameter(param)));
+      }
+    }
+
+    if (insideSingleQuotedLiteral) {
+      throw new Error('Illegal function parameters: ' + params);
+    }
+
+    if (insideDoubleQuotedLiteral) {
+      throw new Error('Illegal function parameters: ' + params);
+    }
+
+    return params;
+  }
+
+  private static prepareParameter(parameter: string): string {
+    return parameter;
   }
 }

@@ -20,8 +20,9 @@ export default class DashboardProperties extends AggreGateBean {
     static readonly LAYOUT_DOCKABLE: number;
     static readonly LAYOUT_SCROLLABLE: number;
     static readonly LAYOUT_GRID: number;
+    private static init;
     static FORMAT: TableFormat;
-    static static_initializer_0(): void;
+    static _static_initializer_0(): void;
     private name;
     private description;
     private layout;

@@ -31,13 +31,9 @@ export default abstract class ProtocolHandler {
   private static readonly FORMAT_ACTION_RESPONSE: TableFormat = new TableFormat(1, 1);
 
   static __static_initializer_1() {
-    ProtocolHandler.FORMAT_ACTION_RESPONSE.addField(
-      '<' + ProtocolHandler.FIELD_ACTION_RESPONSE_PARAMETERS + '><T><F=N>'
-    );
+    ProtocolHandler.FORMAT_ACTION_RESPONSE.addField('<' + ProtocolHandler.FIELD_ACTION_RESPONSE_PARAMETERS + '><T><F=N>');
     ProtocolHandler.FORMAT_ACTION_RESPONSE.addField('<' + ProtocolHandler.FIELD_ACTION_RESPONSE_REMEMBER + '><B>');
-    ProtocolHandler.FORMAT_ACTION_RESPONSE.addField(
-      '<' + ProtocolHandler.FIELD_ACTION_RESPONSE_REQUEST_ID + '><S><F=N>'
-    );
+    ProtocolHandler.FORMAT_ACTION_RESPONSE.addField('<' + ProtocolHandler.FIELD_ACTION_RESPONSE_REQUEST_ID + '><S><F=N>');
   }
 
   private static _init = false;
@@ -56,25 +52,20 @@ export default abstract class ProtocolHandler {
 
     const type: string = table.rec().getString(ProtocolHandler.FIELD_ACTION_COMMAND_TYPE);
 
-    const actionCmd: GenericActionCommand = new GenericActionCommand(
-      type,
-      table.rec().getString(ProtocolHandler.FIELD_ACTION_COMMAND_TITLE)
-    );
+    const actionCmd: GenericActionCommand = new GenericActionCommand(type, table.rec().getString(ProtocolHandler.FIELD_ACTION_COMMAND_TITLE));
 
     actionCmd.setParameters(table.rec().getDataTable(ProtocolHandler.FIELD_ACTION_COMMAND_PARAMETERS));
     actionCmd.setLast(table.rec().getBoolean(ProtocolHandler.FIELD_ACTION_COMMAND_LAST));
     actionCmd.setBatchEntry(table.rec().getBoolean(ProtocolHandler.FIELD_ACTION_COMMAND_BATCH_MEMBER));
 
     const requestIdString: string = table.rec().getString(ProtocolHandler.FIELD_ACTION_COMMAND_REQUEST_ID);
-    actionCmd.setRequestId(
-      requestIdString && requestIdString.length > 0 ? new RequestIdentifier(requestIdString) : null
-    );
+    actionCmd.setRequestId(requestIdString && requestIdString.length > 0 ? new RequestIdentifier(requestIdString) : null);
 
     return actionCmd;
   }
 
   public static actionResponseToDataTable(response: GenericActionResponse | null): DataTable {
-    let table: DataTable = new SimpleDataTable(ProtocolHandler.FORMAT_ACTION_RESPONSE);
+    const table: DataTable = new SimpleDataTable(ProtocolHandler.FORMAT_ACTION_RESPONSE);
 
     if (response == null) {
       return table;
@@ -86,10 +77,7 @@ export default abstract class ProtocolHandler {
 
     rec.setValue(ProtocolHandler.FIELD_ACTION_RESPONSE_PARAMETERS, response.getParameters());
     rec.setValue(ProtocolHandler.FIELD_ACTION_RESPONSE_REMEMBER, response.shouldRemember());
-    rec.setValue(
-      ProtocolHandler.FIELD_ACTION_RESPONSE_REQUEST_ID,
-      responseRequestId != null ? responseRequestId.toString() : null
-    );
+    rec.setValue(ProtocolHandler.FIELD_ACTION_RESPONSE_REQUEST_ID, responseRequestId != null ? responseRequestId.toString() : null);
 
     return table;
   }

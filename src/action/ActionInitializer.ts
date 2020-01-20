@@ -11,10 +11,10 @@ export default interface ActionInitializer {
     context: Context<any, any>,
     actionName: string,
     initialParameters: ServerActionInput,
-    inputData: DataTable,
+    inputData: DataTable | null,
     environment: Map<string, any> | null,
     mode: ActionExecutionMode,
-    callerController: CallerController,
+    callerController: CallerController | null,
     collector: ErrorCollector | null
   ): Promise<ActionIdentifier>;
 }

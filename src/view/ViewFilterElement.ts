@@ -7,7 +7,7 @@ import FieldConstants from '../datatable/field/FieldConstants';
 import DataTableBindingProvider from '../datatable/DataTableBindingProvider';
 import DefaultReferenceResolver from '../expression/DefaultReferenceResolver';
 import StorageHelper from './StorageHelper';
-import Functions from '../expression/Functions';
+import Functions from '../expression/functions/Functions';
 import DataRecord from '../datatable/DataRecord';
 
 export default class ViewFilterElement extends AggreGateBean {
@@ -78,49 +78,22 @@ export default class ViewFilterElement extends AggreGateBean {
 
   static __static_initializer_0() {
     ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_EQUALS, Cres.get().getString('viewOpEquals'));
-    ViewFilterElement.OPERATIONS.set(
-      ViewFilterElement.OPERATION_DOES_NOT_EQUAL,
-      Cres.get().getString('viewOpDoesNotEqual')
-    );
+    ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_DOES_NOT_EQUAL, Cres.get().getString('viewOpDoesNotEqual'));
     ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_IS_NULL, Cres.get().getString('viewOpIsNull'));
     ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_IS_NOT_NULL, Cres.get().getString('viewOpIsNotNull'));
     ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_CONTAINS, Cres.get().getString('viewOpContains'));
-    ViewFilterElement.OPERATIONS.set(
-      ViewFilterElement.OPERATION_DOES_NOT_CONTAIN,
-      Cres.get().getString('viewOpDoesNotContain')
-    );
+    ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_DOES_NOT_CONTAIN, Cres.get().getString('viewOpDoesNotContain'));
     ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_BEGINS_WITH, Cres.get().getString('viewOpBeginsWith'));
-    ViewFilterElement.OPERATIONS.set(
-      ViewFilterElement.OPERATION_DOES_NOT_BEGIN_WITH,
-      Cres.get().getString('viewOpDoesNotBeginWith')
-    );
+    ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_DOES_NOT_BEGIN_WITH, Cres.get().getString('viewOpDoesNotBeginWith'));
     ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_ENDS_WITH, Cres.get().getString('viewOpEndsWith'));
-    ViewFilterElement.OPERATIONS.set(
-      ViewFilterElement.OPERATION_DOES_NOT_END_WITH,
-      Cres.get().getString('viewOpDoesNotEndWith')
-    );
-    ViewFilterElement.OPERATIONS.set(
-      ViewFilterElement.OPERATION_IS_GREATER_THAN,
-      Cres.get().getString('viewOpIsGreaterThan')
-    );
-    ViewFilterElement.OPERATIONS.set(
-      ViewFilterElement.OPERATION_IS_GREATER_OR_EQUAL_THAN,
-      Cres.get().getString('viewOpIsGreaterThanOrEqualTo')
-    );
-    ViewFilterElement.OPERATIONS.set(
-      ViewFilterElement.OPERATION_IS_LESS_THAN,
-      Cres.get().getString('viewOpIsLessThan')
-    );
-    ViewFilterElement.OPERATIONS.set(
-      ViewFilterElement.OPERATION_IS_LESS_OR_EQUAL_THAN,
-      Cres.get().getString('viewOpIsLessThanOrEqualTo')
-    );
+    ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_DOES_NOT_END_WITH, Cres.get().getString('viewOpDoesNotEndWith'));
+    ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_IS_GREATER_THAN, Cres.get().getString('viewOpIsGreaterThan'));
+    ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_IS_GREATER_OR_EQUAL_THAN, Cres.get().getString('viewOpIsGreaterThanOrEqualTo'));
+    ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_IS_LESS_THAN, Cres.get().getString('viewOpIsLessThan'));
+    ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_IS_LESS_OR_EQUAL_THAN, Cres.get().getString('viewOpIsLessThanOrEqualTo'));
     ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_ON, Cres.get().getString('viewOpOn'));
     ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_ON_OR_AFTER, Cres.get().getString('viewOpOnOrAfter'));
-    ViewFilterElement.OPERATIONS.set(
-      ViewFilterElement.OPERATION_ON_OR_BEFORE,
-      Cres.get().getString('viewOpOnOrBefore')
-    );
+    ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_ON_OR_BEFORE, Cres.get().getString('viewOpOnOrBefore'));
     ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_LAST_HOUR, Cres.get().getString('viewOpLastHour'));
     ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_THIS_HOUR, Cres.get().getString('viewOpThisHour'));
     ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_NEXT_HOUR, Cres.get().getString('viewOpNextHour'));
@@ -136,100 +109,48 @@ export default class ViewFilterElement extends AggreGateBean {
     ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_LAST_YEAR, Cres.get().getString('viewOpLastYear'));
     ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_THIS_YEAR, Cres.get().getString('viewOpThisYear'));
     ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_NEXT_YEAR, Cres.get().getString('viewOpNextYear'));
-    ViewFilterElement.OPERATIONS.set(
-      ViewFilterElement.OPERATION_LAST_X_HOURS,
-      Cres.get().getString('viewOpLastXHours')
-    );
-    ViewFilterElement.OPERATIONS.set(
-      ViewFilterElement.OPERATION_NEXT_X_HOURS,
-      Cres.get().getString('viewOpNextXHours')
-    );
+    ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_LAST_X_HOURS, Cres.get().getString('viewOpLastXHours'));
+    ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_NEXT_X_HOURS, Cres.get().getString('viewOpNextXHours'));
     ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_LAST_X_DAYS, Cres.get().getString('viewOpLastXDays'));
     ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_NEXT_X_DAYS, Cres.get().getString('viewOpNextXDays'));
-    ViewFilterElement.OPERATIONS.set(
-      ViewFilterElement.OPERATION_LAST_X_WEEKS,
-      Cres.get().getString('viewOpLastXWeeks')
-    );
-    ViewFilterElement.OPERATIONS.set(
-      ViewFilterElement.OPERATION_NEXT_X_WEEKS,
-      Cres.get().getString('viewOpNextXWeeks')
-    );
-    ViewFilterElement.OPERATIONS.set(
-      ViewFilterElement.OPERATION_LAST_X_MONTHS,
-      Cres.get().getString('viewOpLastXMonths')
-    );
-    ViewFilterElement.OPERATIONS.set(
-      ViewFilterElement.OPERATION_NEXT_X_MONTHS,
-      Cres.get().getString('viewOpNextXMonths')
-    );
-    ViewFilterElement.OPERATIONS.set(
-      ViewFilterElement.OPERATION_LAST_X_YEARS,
-      Cres.get().getString('viewOpLastXYears')
-    );
-    ViewFilterElement.OPERATIONS.set(
-      ViewFilterElement.OPERATION_NEXT_X_YEARS,
-      Cres.get().getString('viewOpNextXYears')
-    );
+    ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_LAST_X_WEEKS, Cres.get().getString('viewOpLastXWeeks'));
+    ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_NEXT_X_WEEKS, Cres.get().getString('viewOpNextXWeeks'));
+    ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_LAST_X_MONTHS, Cres.get().getString('viewOpLastXMonths'));
+    ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_NEXT_X_MONTHS, Cres.get().getString('viewOpNextXMonths'));
+    ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_LAST_X_YEARS, Cres.get().getString('viewOpLastXYears'));
+    ViewFilterElement.OPERATIONS.set(ViewFilterElement.OPERATION_NEXT_X_YEARS, Cres.get().getString('viewOpNextXYears'));
   }
 
   static __static_initializer_1() {
-    let ff: FieldFormat<any> = FieldFormatFactory.create(
-      '<' +
-        ViewFilterElement.FIELD_LOGICAL +
-        '><I><A=' +
-        ViewFilterElement.LOGICAL_OPERATION_AND +
-        '><D=' +
-        Cres.get().getString('viewLogicalOperation') +
-        '>'
-    );
+    let ff: FieldFormat<any> = FieldFormatFactory.create('<' + ViewFilterElement.FIELD_LOGICAL + '><I><A=' + ViewFilterElement.LOGICAL_OPERATION_AND + '><D=' + Cres.get().getString('viewLogicalOperation') + '>');
     ff.addSelectionValue(ViewFilterElement.LOGICAL_OPERATION_NONE, ' ');
     ff.addSelectionValue(ViewFilterElement.LOGICAL_OPERATION_AND, Cres.get().getString('viewLogicalAnd'));
     ff.addSelectionValue(ViewFilterElement.LOGICAL_OPERATION_OR, Cres.get().getString('viewLogicalOr'));
     ViewFilterElement.FORMAT.addField(ff);
 
-    ff = FieldFormatFactory.create(
-      '<' +
-        ViewFilterElement.FIELD_TYPE +
-        '><I><A=' +
-        ViewFilterElement.TYPE_CONDITION +
-        '><D=' +
-        Cres.get().getString('type') +
-        '>'
-    );
+    ff = FieldFormatFactory.create('<' + ViewFilterElement.FIELD_TYPE + '><I><A=' + ViewFilterElement.TYPE_CONDITION + '><D=' + Cres.get().getString('type') + '>');
     ff.addSelectionValue(ViewFilterElement.TYPE_CONDITION, Cres.get().getString('condition'));
     ff.addSelectionValue(ViewFilterElement.TYPE_NESTED_CONDITIONS, Cres.get().getString('viewNestedConditions'));
     ViewFilterElement.FORMAT.addField(ff);
 
-    ff = FieldFormatFactory.create(
-      '<' + ViewFilterElement.FIELD_STORAGE + '><S><F=H><D=' + Cres.get().getString('storage') + '>'
-    );
+    ff = FieldFormatFactory.create('<' + ViewFilterElement.FIELD_STORAGE + '><S><F=H><D=' + Cres.get().getString('storage') + '>');
     ViewFilterElement.FORMAT.addField(ff);
 
-    ff = FieldFormatFactory.create(
-      '<' + ViewFilterElement.FIELD_TABLE + '><S><F=H><D=' + Cres.get().getString('table') + '>'
-    );
+    ff = FieldFormatFactory.create('<' + ViewFilterElement.FIELD_TABLE + '><S><F=H><D=' + Cres.get().getString('table') + '>');
     ViewFilterElement.FORMAT.addField(ff);
 
-    ff = FieldFormatFactory.create(
-      '<' + ViewFilterElement.FIELD_COLUMN + '><S><F=E><D=' + Cres.get().getString('column') + '>'
-    );
+    ff = FieldFormatFactory.create('<' + ViewFilterElement.FIELD_COLUMN + '><S><F=E><D=' + Cres.get().getString('column') + '>');
     ViewFilterElement.FORMAT.addField(ff);
 
-    ff = FieldFormatFactory.create(
-      '<' + ViewFilterElement.FIELD_OPERATION + '><S><D=' + Cres.get().getString('operation') + '>'
-    );
+    ff = FieldFormatFactory.create('<' + ViewFilterElement.FIELD_OPERATION + '><S><D=' + Cres.get().getString('operation') + '>');
     ff.setSelectionValues(ViewFilterElement.OPERATIONS);
     ViewFilterElement.FORMAT.addField(ff);
 
-    ff = FieldFormatFactory.create(
-      '<' + ViewFilterElement.FIELD_VALUE + '><S><D=' + Cres.get().getString('value') + '>'
-    );
+    ff = FieldFormatFactory.create('<' + ViewFilterElement.FIELD_VALUE + '><S><D=' + Cres.get().getString('value') + '>');
     ff.setEditor(FieldConstants.EDITOR_EXPRESSION);
     ViewFilterElement.FORMAT.addField(ff);
 
-    ff = FieldFormatFactory.create(
-      '<' + ViewFilterElement.FIELD_NESTED + '><T><F=NI><D=' + Cres.get().getString('viewNestedConditions') + '>'
-    );
+    ff = FieldFormatFactory.create('<' + ViewFilterElement.FIELD_NESTED + '><T><F=NI><D=' + Cres.get().getString('viewNestedConditions') + '>');
     ViewFilterElement.FORMAT.addField(ff);
 
     let ref: string = ViewFilterElement.FIELD_LOGICAL + '#' + DataTableBindingProvider.PROPERTY_ENABLED;
@@ -237,18 +158,7 @@ export default class ViewFilterElement extends AggreGateBean {
     ViewFilterElement.FORMAT.addBinding(ref, exp);
 
     ref = ViewFilterElement.FIELD_LOGICAL;
-    exp =
-      '{' +
-      ViewFilterElement.FIELD_TYPE +
-      '#' +
-      DefaultReferenceResolver.ROW +
-      '} != 0 ? {' +
-      ViewFilterElement.FIELD_LOGICAL +
-      '} : ' +
-      Functions.INTEGER +
-      '(' +
-      ViewFilterElement.LOGICAL_OPERATION_NONE +
-      ')';
+    exp = '{' + ViewFilterElement.FIELD_TYPE + '#' + DefaultReferenceResolver.ROW + '} != 0 ? {' + ViewFilterElement.FIELD_LOGICAL + '} : ' + Functions.INTEGER + '(' + ViewFilterElement.LOGICAL_OPERATION_NONE + ')';
     ViewFilterElement.FORMAT.addBinding(ref, exp);
 
     ref = ViewFilterElement.FIELD_COLUMN + '#' + DataTableBindingProvider.PROPERTY_ENABLED;
@@ -260,17 +170,7 @@ export default class ViewFilterElement extends AggreGateBean {
     ViewFilterElement.FORMAT.addBinding(ref, exp);
 
     ref = ViewFilterElement.FIELD_OPERATION + '#' + DataTableBindingProvider.PROPERTY_CHOICES;
-    exp =
-      Functions.CALL_FUNCTION +
-      '({' +
-      ViewFilterElement.FIELD_STORAGE +
-      "}, '" +
-        ViewFilterElement.F_STORAGE_OPERATIONS +
-      "', {" +
-      ViewFilterElement.FIELD_TABLE +
-      '}, {' +
-      ViewFilterElement.FIELD_COLUMN +
-      '})';
+    exp = Functions.CALL_FUNCTION + '({' + ViewFilterElement.FIELD_STORAGE + "}, '" + ViewFilterElement.F_STORAGE_OPERATIONS + "', {" + ViewFilterElement.FIELD_TABLE + '}, {' + ViewFilterElement.FIELD_COLUMN + '})';
     ViewFilterElement.FORMAT.addBinding(ref, exp);
 
     ref = ViewFilterElement.FIELD_VALUE + '#' + DataTableBindingProvider.PROPERTY_ENABLED;
@@ -318,7 +218,7 @@ export default class ViewFilterElement extends AggreGateBean {
   private value: string | null = null;
   private nested: Array<ViewFilterElement> | null = null;
 
-  private local: boolean = false;
+  private local = false;
 
   public constructor(data: DataRecord) {
     super(ViewFilterElement.FORMAT, data);
@@ -393,7 +293,7 @@ export default class ViewFilterElement extends AggreGateBean {
       throw new Error('Filter element is not switched into nested conditions mode');
     }
     if (this.nested == null) {
-      this.nested = new Array();
+      this.nested = [];
     }
     this.nested.push(nestedElement);
   }

@@ -1,8 +1,8 @@
 import TableFormat from '../../datatable/TableFormat';
 import GenericActionCommand from '../GenericActionCommand';
-import ActionUtils from '../ActionUtils';
 import DataTable from '../../datatable/DataTable';
 import SimpleDataTable from '../../datatable/SimpleDataTable';
+import ActionUtilsConstants from '../ActionUtilsConstants';
 
 export default class ShowError extends GenericActionCommand {
   public static readonly CF_LEVEL: string = 'level';
@@ -18,7 +18,7 @@ export default class ShowError extends GenericActionCommand {
   }
 
   private exception: Error | null = null;
-  private level: number = 0;
+  private level = 0;
   private message: string | null = null;
 
   private static _init = false;
@@ -29,13 +29,8 @@ export default class ShowError extends GenericActionCommand {
     ShowError._init = true;
   }
 
-  public constructor(
-    title: string | TableFormat = ShowError.CFT_SHOW_ERROR,
-    message?: string,
-    level?: number,
-    exception?: Error
-  ) {
-    super(ActionUtils.CMD_SHOW_ERROR, title, null);
+  public constructor(title: string | TableFormat = ShowError.CFT_SHOW_ERROR, message?: string, level?: number, exception?: Error) {
+    super(ActionUtilsConstants.CMD_SHOW_ERROR, title, null);
     if (message && level && exception) {
       this.message = message;
       this.level = level;

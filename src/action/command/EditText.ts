@@ -2,16 +2,16 @@ import TableFormat from '../../datatable/TableFormat';
 import FieldFormat from '../../datatable/FieldFormat';
 import FieldFormatFactory from '../../datatable/FieldFormatFactory';
 import GenericActionCommand from '../GenericActionCommand';
-import ActionUtils from '../ActionUtils';
-import { FieldConstants, StringFieldFormat } from '../..';
 import SimpleDataTable from '../../datatable/SimpleDataTable';
 import DataTable from '../../datatable/DataTable';
+import FieldConstants from '../../datatable/field/FieldConstants';
+import ActionUtilsConstants from '../ActionUtilsConstants';
 
 export default class EditText extends GenericActionCommand {
-  public static CF_TEXT: string = 'text';
-  public static CF_MODE: string = 'mode';
-  public static RF_RESULT: string = 'result';
-  public static RF_TEXT: string = 'text';
+  public static CF_TEXT = 'text';
+  public static CF_MODE = 'mode';
+  public static RF_RESULT = 'result';
+  public static RF_TEXT = 'text';
 
   public static CFT_EDIT_TEXT: TableFormat = new TableFormat(1, 1);
 
@@ -56,7 +56,7 @@ export default class EditText extends GenericActionCommand {
   }
 
   public constructor() {
-    super(ActionUtils.CMD_EDIT_TEXT);
+    super(ActionUtilsConstants.CMD_EDIT_TEXT);
   }
 
   public static createEditTextWithDataTable(title: string, parameters: DataTable) {

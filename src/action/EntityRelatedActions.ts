@@ -30,13 +30,7 @@ export default class EntityRelatedActions {
     EntityRelatedActions._init = true;
   }
 
-  public static getTargetContext(
-    ad: EntityRelatedActionDescriptor,
-    context: Context<any, any>,
-    entity: string,
-    entityType: number,
-    caller: CallerController
-  ): Context<any, any> | null {
+  public static getTargetContext(ad: EntityRelatedActionDescriptor, context: Context<any, any>, entity: string, entityType: number, caller: CallerController): Context<any, any> | null {
     const adGetMask = ad.getMask();
     if (adGetMask != null && !ContextUtils.matchesToMask(adGetMask, context.getPath())) {
       return null;
@@ -51,20 +45,12 @@ export default class EntityRelatedActions {
     return EntityRelatedActions.allowedContextOrNull(entity, entityType, ad.getEntity(), con);
   }
 
-  protected static allowedContextOrNull(
-    entity: string,
-    entityType: number,
-    allowedEntities: string | null,
-    con: Context<any, any>
-  ): Context<any, any> | null {
+  protected static allowedContextOrNull(entity: string, entityType: number, allowedEntities: string | null, con: Context<any, any>): Context<any, any> | null {
     if (allowedEntities == null) {
       return con;
     }
 
-    const allowedEntitiesArray: Array<string> = StringUtils.split(
-      allowedEntities,
-      ContextUtilsConstants.MASK_LIST_SEPARATOR
-    );
+    const allowedEntitiesArray: Array<string> = StringUtils.split(allowedEntities, ContextUtilsConstants.MASK_LIST_SEPARATOR);
     for (let allowedEntity of allowedEntitiesArray) {
       allowedEntity = allowedEntity.trim();
       const allowedGroup: string | null = ContextUtils.getGroupName(allowedEntity);
@@ -74,9 +60,7 @@ export default class EntityRelatedActions {
           return con;
         }
       } else {
-        const entityBaseGroup: string | null = ContextUtils.getBaseGroup(
-          EntityRelatedActions.entityGroup(entity, entityType, con)
-        );
+        const entityBaseGroup: string | null = ContextUtils.getBaseGroup(EntityRelatedActions.entityGroup(entity, entityType, con));
 
         if (Util.equals(allowedGroup, entityBaseGroup)) {
           return con;

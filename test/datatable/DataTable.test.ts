@@ -20,9 +20,9 @@ const createFormat = (format: string) => {
 
 describe('TestDataTable', () => {
   it('testDatatable', () => {
-    let format: TableFormat = createFormat('<<val><I>> <<str><S>> <<bool><B>>');
-    const emptyRecords: number = 20;
-    let dt: DataTable = DataTableFactory.of(format, emptyRecords);
+    const format: TableFormat = createFormat('<<val><I>> <<str><S>> <<bool><B>>');
+    const emptyRecords = 20;
+    const dt: DataTable = DataTableFactory.of(format, emptyRecords);
 
     expect(dt.getRecordCount()).toBe(emptyRecords);
     expect(dt.getFieldCount()).toBe(3);
@@ -58,7 +58,7 @@ describe('TestDataTable', () => {
     ).wrap();
     const dt: DataTable = DataTableFactory.of(format, 5);
 
-    let selectionValues: Map<any, string> = dt
+    const selectionValues: Map<any, string> = dt
       .getFormat()
       .getField('s1')
       .getSelectionValues() as Map<any, string>;
@@ -68,7 +68,7 @@ describe('TestDataTable', () => {
 
     expect(format === clone.getFormat()).toBeTruthy();
 
-    let selectionValuesFromClone: Map<any, string> = clone
+    const selectionValuesFromClone: Map<any, string> = clone
       .getFormat()
       .getField('s1')
       .getSelectionValues() as Map<any, string>;
@@ -154,7 +154,7 @@ describe('TestDataTable', () => {
   });
 
   it('testTransfer', () => {
-    const data: string = 'FDATATABLE_FIELDTAF';
+    const data = 'FDATATABLE_FIELDTAF';
 
     const res: string = (TransferEncodingHelper.encode(data) as StringBuilder).toString();
     const res2: string = (TransferEncodingHelper.encode(res) as StringBuilder).toString();

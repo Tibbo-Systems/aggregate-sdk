@@ -16,23 +16,17 @@ export default class DefaultActionInitializer implements ActionInitializer {
     context: Context<any, any>,
     actionName: string,
     initialParametrs: ServerActionInput,
-    inputData: DataTable,
+    inputData: DataTable | null,
     environment: Map<string, any>,
     mode: ActionExecutionMode,
-    callerController: CallerController,
+    callerController: CallerController | null,
     collector: ErrorCollector
   ): Promise<ActionIdentifier> {
     const def: FunctionDefinition | null = context.getFunctionDefinition(ServerContextConstants.F_INIT_ACTION, null);
     const FIELD_COUNT = 3;
 
     if (def == null) {
-      throw new Error(
-        Cres.get().getString('conActNotAvail') +
-          ServerContextConstants.F_INIT_ACTION +
-          ' (' +
-          context.toDetailedString() +
-          ')'
-      );
+      throw new Error(Cres.get().getString('conActNotAvail') + ServerContextConstants.F_INIT_ACTION + ' (' + context.toDetailedString() + ')');
     }
     const defInput = def.getInputFormat();
     const rec: DataRecord = new DataRecord(defInput);
@@ -43,12 +37,7 @@ export default class DefaultActionInitializer implements ActionInitializer {
       rec.addValue(mode.getCode());
     }
 
-    const res: DataTable = await context.callFunction(
-      ServerContextConstants.F_INIT_ACTION,
-      rec.wrap(),
-      callerController,
-      null
-    );
+    const res: DataTable = await context.callFunction(ServerContextConstants.F_INIT_ACTION, rec.wrap(), callerController, null);
 
     return new ActionIdentifier(res.rec().getString(ServerContextConstants.FOF_INIT_ACTION_ACTION_ID));
   }

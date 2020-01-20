@@ -103,20 +103,20 @@ export default abstract class FieldFormat<T> extends JObject {
   }
 
   private name: string;
-  private transferEncode: boolean = false;
-  private nullable: boolean = false;
-  private optional: boolean = false;
-  private extendableSelectionValues: boolean = false;
-  private readonly: boolean = false;
-  private notReplicated: boolean = false;
-  private hidden: boolean = false;
-  private keyField: boolean = false;
-  private inlineData: boolean = false;
-  private advanced: boolean = false;
-  private defaultOverride: boolean = false;
-  private shallow: boolean = false;
+  private transferEncode = false;
+  private nullable = false;
+  private optional = false;
+  private extendableSelectionValues = false;
+  private readonly = false;
+  private notReplicated = false;
+  private hidden = false;
+  private keyField = false;
+  private inlineData = false;
+  private advanced = false;
+  private defaultOverride = false;
+  private shallow = false;
   private defaultValue: T | null = null;
-  private immutable: boolean = false;
+  private immutable = false;
   private description: string | null = null;
   private help: string | null = null;
   private editor: string | null = null;
@@ -132,11 +132,7 @@ export default abstract class FieldFormat<T> extends JObject {
 
   public abstract valueToString(value: T | string | number | null, settings?: ClassicEncodingSettings): string | null;
 
-  public abstract valueFromString(
-    value: string | null,
-    settings?: ClassicEncodingSettings | null,
-    validate?: boolean
-  ): T | null;
+  public abstract valueFromString(value: string | null, settings?: ClassicEncodingSettings | null, validate?: boolean): T | null;
 
   public abstract getType(): string;
 
@@ -177,6 +173,154 @@ export default abstract class FieldFormat<T> extends JObject {
         throw new Error('Cannot create field validator with type: ' + type);
     }
   }
+
+  //TODO fix this
+  /* public static create(name: string, valueClass: Class): FieldFormat<any> {
+    const type = this.CLASS_TO_TYPE.get(valueClass.getName());
+    if (type == null) {
+      throw new Error('Unknown field class: ' + valueClass.getName());
+    }
+    return this.createFromType(name, type);
+  }
+
+  public static createWithSettings(format: string): FieldFormat<any> {
+    return this._createWithSettings(format, new ClassicEncodingSettings(true), true);
+  }
+
+  private static _createWithSettings(format: string, settings: ClassicEncodingSettings, validate: boolean): FieldFormat<any> {
+    const els = StringUtils.elements(format, settings.isUseVisibleSeparators());
+
+    let name: string | null;
+    let type: string | null;
+
+    try {
+      name = els.get(0).getValue();
+      type = els.get(1).getValue();
+    } catch (ex1) {
+      throw new Error(ex1.getMessage() + ", format was '" + format + "'" + ex1);
+    }
+
+    if (name != null && type != null) {
+      const ff = this.create(name, Reflection.getClass(type));
+
+      if (validate) {
+        ff.validateName();
+      }
+
+      let el = els.getElement(FieldFormat.ELEMENT_FLAGS);
+
+      if (el != null) {
+        const flags = el.getValue();
+        if (flags != null) {
+          ff.setNullable(flags.indexOf(FieldFormat.NULLABLE_FLAG) != -1 ? true : false);
+          ff.setOptional(flags.indexOf(FieldFormat.OPTIONAL_FLAG) != -1 ? true : false);
+          ff.setExtendableSelectionValues(flags.indexOf(FieldFormat.EXTENDABLE_SELECTION_VALUES_FLAG) != -1 ? true : false);
+          ff.setReadonly(flags.indexOf(FieldFormat.READ_ONLY_FLAG) != -1 ? true : false);
+          ff.setNotReplicated(flags.indexOf(FieldFormat.NOT_REPLICATED_FLAG) != -1 ? true : false);
+          ff.setHidden(flags.indexOf(FieldFormat.HIDDEN_FLAG) != -1 ? true : false);
+          ff.setKeyField(flags.indexOf(FieldFormat.KEY_FIELD_FLAG) != -1 ? true : false);
+          ff.setInlineData(flags.indexOf(FieldFormat.INLINE_DATA_FLAG) != -1 ? true : false);
+          ff.setAdvanced(flags.indexOf(FieldFormat.ADVANCED_FLAG) != -1 ? true : false);
+          ff.setDefaultOverride(flags.indexOf(FieldFormat.DEFAULT_OVERRIDE) != -1 ? true : false);
+          ff.setShallow(flags.indexOf(FieldFormat.SHALLOW_FLAG) != -1 ? true : false);
+        }
+      }
+
+      el = els.getElement(FieldFormat.ELEMENT_DEFAULT_VALUE);
+
+      if (el != null) {
+        ff.setDefaultFromString(el.getValue(), settings, validate);
+      }
+
+      el = els.getElement(FieldFormat.ELEMENT_DESCRIPTION);
+
+      if (el != null) {
+        ff.setDescription(DataTableUtils.transferDecode(el.getValue()));
+      }
+
+      el = els.getElement(FieldFormat.ELEMENT_HELP);
+
+      if (el != null) {
+        ff.setHelp(DataTableUtils.transferDecode(el.getValue()));
+      }
+
+      el = els.getElement(FieldFormat.ELEMENT_SELECTION_VALUES);
+
+      if (el != null) {
+        ff.createSelectionValues(el.getValue(), settings);
+      }
+
+      el = els.getElement(FieldFormat.ELEMENT_VALIDATORS);
+
+      if (el != null) {
+        ff.createValidators(el.getValue(), settings);
+      }
+
+      el = els.getElement(FieldFormat.ELEMENT_EDITOR);
+
+      if (el != null) {
+        ff.setEditor(DataTableUtils.transferDecode(el.getValue()));
+      }
+
+      el = els.getElement(FieldFormat.ELEMENT_EDITOR_OPTIONS);
+
+      if (el != null) {
+        ff.setEditorOptions(DataTableUtils.transferDecode(el.getValue()));
+      }
+
+      el = els.getElement(FieldFormat.ELEMENT_ICON);
+
+      if (el != null) {
+        ff.setIcon(DataTableUtils.transferDecode(el.getValue()));
+      }
+
+      el = els.getElement(FieldFormat.ELEMENT_GROUP);
+
+      if (el != null) {
+        ff.setGroup(DataTableUtils.transferDecode(el.getValue()));
+      }
+
+      return ff;
+    }
+    throw Error('Empty elements flags');
+  }*/
+
+  /* public static createFromType(name: string, type: string): FieldFormat<any> {
+    switch (type) {
+      case FieldConstants.INTEGER_FIELD:
+        return new IntFieldFormat(name);
+
+      case FieldConstants.STRING_FIELD:
+        return new StringFieldFormat(name);
+
+      case FieldConstants.BOOLEAN_FIELD:
+        return new BooleanFieldFormat(name);
+
+      case FieldConstants.LONG_FIELD:
+        return new LongFieldFormat(name);
+
+      case FieldConstants.FLOAT_FIELD:
+        return new FloatFieldFormat(name);
+
+      case FieldConstants.DOUBLE_FIELD:
+        return new DoubleFieldFormat(name);
+
+      case FieldConstants.DATE_FIELD:
+        return new DateFieldFormat(name);
+
+      case FieldConstants.DATATABLE_FIELD:
+        return new DataTableFieldFormat(name);
+
+      case FieldConstants.COLOR_FIELD:
+        return new ColorFieldFormat(name);
+
+      case FieldConstants.DATA_FIELD:
+        return new DataFieldFormat(name);
+
+      default:
+        throw new Error('Unknown field type: ' + type);
+    }
+  }*/
 
   protected setTransferEncode(transferEncode: boolean): FieldFormat<T> {
     this.transferEncode = transferEncode;
@@ -250,9 +394,7 @@ export default abstract class FieldFormat<T> extends JObject {
   }
 
   public toDetailedString(): string {
-    return (
-      (this.description != null ? this.description + ' (' + this.name + ')' : this.name) + ', ' + this.getTypeName()
-    );
+    return (this.description != null ? this.description + ' (' + this.name + ')' : this.name) + ', ' + this.getTypeName();
   }
 
   public removeGroup(): void {
@@ -263,10 +405,7 @@ export default abstract class FieldFormat<T> extends JObject {
     try {
       ValidatorHelper.NAME_SYNTAX_VALIDATOR.validate(null, null, null, this.getName());
     } catch (ve) {
-      throw new Error(
-        MessageFormat.format(Cres.get().getString('dtIllegalFieldValue'), this.getName(), this.toDetailedString()) +
-          ve.message
-      );
+      throw new Error(MessageFormat.format(Cres.get().getString('dtIllegalFieldValue'), this.getName(), this.toDetailedString()) + ve.message);
     }
   }
 
@@ -379,13 +518,7 @@ export default abstract class FieldFormat<T> extends JObject {
     return this;
   }
 
-  public checkAndConvertValue(
-    context: Context<any, any> | null,
-    contextManager: ContextManager<Context<any, any>> | null,
-    caller: CallerController | null,
-    value: T | null,
-    validate: boolean
-  ): T | null {
+  public checkAndConvertValue(context: Context<any, any> | null, contextManager: ContextManager<Context<any, any>> | null, caller: CallerController | null, value: T | null, validate: boolean): T | null {
     if (!this.isNullable() && value == null) {
       throw new Error(MessageFormat.format(Cres.get().getString('dtNullsNotPermitted'), this.toString()));
     }
@@ -393,12 +526,7 @@ export default abstract class FieldFormat<T> extends JObject {
     // TODO continue then type Class will be added
     value = this.convertValue(value);
 
-    if (
-      value != null &&
-      !this.isExtendableSelectionValues() &&
-      this.selectionValues != null &&
-      !this.selectionValues.has(value)
-    ) {
+    if (value != null && !this.isExtendableSelectionValues() && this.selectionValues != null && !this.selectionValues.has(value)) {
       if (validate) {
         // TODO uncomment then type Class will be added
         // throw new Error(Cres.get().getString("dtValueNotInSelVals") + value + " (" + value.getClass().getName() + ")");
@@ -409,7 +537,7 @@ export default abstract class FieldFormat<T> extends JObject {
     }
 
     if (validate && this.validators !== null) {
-      for (let fv of this.validators) {
+      for (const fv of this.validators) {
         value = (fv as FieldValidator<T>).validate(context, contextManager, caller, value);
       }
     }
@@ -417,23 +545,15 @@ export default abstract class FieldFormat<T> extends JObject {
     return value;
   }
 
-  public valueFromEncodedString(
-    source: string | null,
-    settings: ClassicEncodingSettings = new ClassicEncodingSettings(false),
-    validate: boolean = true
-  ): T | null {
-    const nullElement: string = settings.isUseVisibleSeparators()
-      ? DataTableUtils.DATA_TABLE_VISIBLE_NULL
-      : DataTableUtils.DATA_TABLE_NULL;
+  public valueFromEncodedString(source: string | null, settings: ClassicEncodingSettings = new ClassicEncodingSettings(false), validate = true): T | null {
+    const nullElement: string = settings.isUseVisibleSeparators() ? DataTableUtils.DATA_TABLE_VISIBLE_NULL : DataTableUtils.DATA_TABLE_NULL;
     const sourceIsNull: boolean = source === nullElement;
 
     if (sourceIsNull) {
       return null;
     }
 
-    return this.isTransferEncode()
-      ? this.valueFromString(DataTableUtils.transferDecode(source), null, false)
-      : this.valueFromString(source, settings, validate);
+    return this.isTransferEncode() ? this.valueFromString(DataTableUtils.transferDecode(source), null, false) : this.valueFromString(source, settings, validate);
   }
 
   /**
@@ -452,11 +572,7 @@ export default abstract class FieldFormat<T> extends JObject {
     return this;
   }
 
-  public setDefaultFromString(
-    value: string | null,
-    settings: ClassicEncodingSettings = new ClassicEncodingSettings(false),
-    validate: boolean = true
-  ): void {
+  public setDefaultFromString(value: string | null, settings: ClassicEncodingSettings = new ClassicEncodingSettings(false), validate = true): void {
     if (value === null || value.length === 0) {
       return;
     }
@@ -738,13 +854,7 @@ export default abstract class FieldFormat<T> extends JObject {
     return this.shallow;
   }
 
-  public static encAppend(
-    buffer: StringBuilder,
-    name: string,
-    value: string | null,
-    settings: ClassicEncodingSettings,
-    allowEmptyString: boolean = false
-  ) {
+  public static encAppend(buffer: StringBuilder, name: string, value: string | null, settings: ClassicEncodingSettings, allowEmptyString = false) {
     if (value != null && (allowEmptyString || value.length !== 0)) {
       new Element(name, value).encode(buffer, settings);
     }
@@ -790,28 +900,12 @@ export default abstract class FieldFormat<T> extends JObject {
       new Element(FieldFormat.ELEMENT_DEFAULT_VALUE, encodedString).encode(data, settings);
     }
 
-    FieldFormat.encAppend(
-      data,
-      FieldFormat.ELEMENT_DESCRIPTION,
-      DataTableUtils.transferEncode(this.description),
-      settings
-    );
+    FieldFormat.encAppend(data, FieldFormat.ELEMENT_DESCRIPTION, DataTableUtils.transferEncode(this.description), settings);
     FieldFormat.encAppend(data, FieldFormat.ELEMENT_HELP, DataTableUtils.transferEncode(this.help), settings);
-    FieldFormat.encAppend(
-      data,
-      FieldFormat.ELEMENT_SELECTION_VALUES,
-      this.getEncodedSelectionValues(settings),
-      settings
-    );
+    FieldFormat.encAppend(data, FieldFormat.ELEMENT_SELECTION_VALUES, this.getEncodedSelectionValues(settings), settings);
     FieldFormat.encAppend(data, FieldFormat.ELEMENT_VALIDATORS, this.getEncodedValidators(settings), settings);
     FieldFormat.encAppend(data, FieldFormat.ELEMENT_EDITOR, DataTableUtils.transferEncode(this.editor), settings);
-    FieldFormat.encAppend(
-      data,
-      FieldFormat.ELEMENT_EDITOR_OPTIONS,
-      DataTableUtils.transferEncode(this.editorOptions),
-      settings,
-      true
-    );
+    FieldFormat.encAppend(data, FieldFormat.ELEMENT_EDITOR_OPTIONS, DataTableUtils.transferEncode(this.editorOptions), settings, true);
     FieldFormat.encAppend(data, FieldFormat.ELEMENT_ICON, DataTableUtils.transferEncode(this.icon), settings);
     FieldFormat.encAppend(data, FieldFormat.ELEMENT_GROUP, DataTableUtils.transferEncode(this.group), settings);
 
@@ -841,8 +935,7 @@ export default abstract class FieldFormat<T> extends JObject {
 
     const enc: StringBuilder = new StringBuilder();
     this.selectionValues.forEach((value, key) => {
-      const valueDesc: string | null =
-        this.selectionValues !== null ? (this.selectionValues.get(key) as string | null) : null;
+      const valueDesc: string | null = this.selectionValues !== null ? (this.selectionValues.get(key) as string | null) : null;
 
       const encodedBuilder = this.valueToEncodedString(key, settings);
       const encodedString = encodedBuilder ? encodedBuilder.toString() : encodedBuilder;
@@ -852,18 +945,10 @@ export default abstract class FieldFormat<T> extends JObject {
     return enc.toString();
   }
 
-  public valueToEncodedString(
-    value: T | string | number | null,
-    settings: ClassicEncodingSettings,
-    sb: StringBuilder = new StringBuilder(),
-    encodeLevel: number = 1
-  ): StringBuilder | null {
+  public valueToEncodedString(value: T | string | number | null, settings: ClassicEncodingSettings, sb: StringBuilder = new StringBuilder(), encodeLevel = 1): StringBuilder | null {
     const strVal: string | null = this.valueToString(value, settings);
 
-    if (strVal == null)
-      return settings == null || !settings.isUseVisibleSeparators()
-        ? sb.append(DataTableUtils.DATA_TABLE_NULL)
-        : sb.append(DataTableUtils.DATA_TABLE_VISIBLE_NULL);
+    if (strVal == null) return settings == null || !settings.isUseVisibleSeparators() ? sb.append(DataTableUtils.DATA_TABLE_NULL) : sb.append(DataTableUtils.DATA_TABLE_VISIBLE_NULL);
 
     if (this.isTransferEncode()) TransferEncodingHelper.encode(strVal, sb, encodeLevel);
     else sb.append(strVal);
@@ -919,11 +1004,7 @@ export default abstract class FieldFormat<T> extends JObject {
    * Returns map containing selection values and their textual descriptions.
    */
   public getSelectionValues(): Map<T | string | number | null, string | null> | null {
-    return this.immutable
-      ? this.selectionValues != null
-        ? new Map(this.selectionValues)
-        : null
-      : this.selectionValues;
+    return this.immutable ? (this.selectionValues != null ? new Map(this.selectionValues) : null) : this.selectionValues;
   }
 
   /**
@@ -1011,10 +1092,9 @@ export default abstract class FieldFormat<T> extends JObject {
     }
 
     if (!this.isExtendableSelectionValues() || !other.isExtendableSelectionValues()) {
-      let selectionValuesOk: boolean =
-        other.getSelectionValues() == null || Util.equals(this.getSelectionValues(), other.getSelectionValues());
+      let selectionValuesOk: boolean = other.getSelectionValues() == null || Util.equals(this.getSelectionValues(), other.getSelectionValues());
       if (!selectionValuesOk && this.getSelectionValues() != null) {
-        let foundMissingValues: boolean = false,
+        let foundMissingValues = false,
           value: any;
         const selectionValues: Map<T | null, string> = this.getSelectionValues() as Map<T | null, string>;
         const otherSelectionValues: Map<T | null, string> = other.getSelectionValues() as Map<T | null, string>;
@@ -1029,9 +1109,7 @@ export default abstract class FieldFormat<T> extends JObject {
       }
 
       if (!selectionValuesOk) {
-        return (
-          'Different selection values: need ' + other.getSelectionValues() + ', found ' + this.getSelectionValues()
-        );
+        return 'Different selection values: need ' + other.getSelectionValues() + ', found ' + this.getSelectionValues();
       }
     }
 
@@ -1057,18 +1135,11 @@ export default abstract class FieldFormat<T> extends JObject {
       }
     }
 
-    const AbstractDataTable = require('./AbstractDataTable').default;
-    if (
-      this.getDefaultValue() !== null &&
-      this.getDefaultValue() instanceof AbstractDataTable &&
-      other.getDefaultValue() != null &&
-      other.getDefaultValue() instanceof AbstractDataTable
-    ) {
+    if (this.getDefaultValue() !== null && this.getDefaultValue() instanceof DataTable && other.getDefaultValue() != null && other.getDefaultValue() instanceof DataTable) {
       const defaultValue: T | null = this.getDefaultValue();
       const my: DataTable | null = defaultValue instanceof JObject ? ((defaultValue as unknown) as DataTable) : null;
       const anotherDefaultValue = other.getDefaultValue();
-      const another: DataTable | null =
-        anotherDefaultValue instanceof JObject ? ((anotherDefaultValue as unknown) as DataTable) : null;
+      const another: DataTable | null = anotherDefaultValue instanceof JObject ? ((anotherDefaultValue as unknown) as DataTable) : null;
       if (my !== null && another !== null) {
         const msg: string | null = my.getFormat().extendMessage(another.getFormat());
         if (msg != null) {
@@ -1092,8 +1163,7 @@ export default abstract class FieldFormat<T> extends JObject {
 
     cl.defaultValue = CloneUtils.genericClone(this.getDefaultValue());
     cl.selectionValues = CloneUtils.deepClone(this.selectionValues);
-    if (this.validators != null)
-      cl.validators = CloneUtils.deepClone(this.validators as Array<FieldValidator<T>>) as Array<FieldValidator<T>>;
+    if (this.validators != null) cl.validators = CloneUtils.deepClone(this.validators as Array<FieldValidator<T>>) as Array<FieldValidator<T>>;
 
     cl.immutable = false;
 

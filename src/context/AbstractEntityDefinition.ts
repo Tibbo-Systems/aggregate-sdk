@@ -5,11 +5,11 @@ import ValidatorHelper from '../datatable/validator/ValidatorHelper';
 
 export default abstract class AbstractEntityDefinition extends JObject implements EntityDefinition {
   //TODO can be null
-  private name: string = '';
+  private name = '';
   private description: string | null = null;
   private help: string | null = null;
   //TODO can be null
-  private group: string = '';
+  private group = '';
   protected index: number | null = null;
   private iconId: string | null = null;
   private owner: any | null = null;
@@ -55,10 +55,7 @@ export default abstract class AbstractEntityDefinition extends JObject implement
       try {
         ValidatorHelper.NAME_SYNTAX_VALIDATOR.validate(null, null, null, name);
       } catch (e) {
-        Log.CONTEXT.debug(
-          " name '" + name + "' breaks naming policy. The entity can be broken after ecnoding->decoding sequence.",
-          e
-        );
+        Log.CONTEXT.debug(" name '" + name + "' breaks naming policy. The entity can be broken after ecnoding->decoding sequence.", e);
       }
     }
     this.name = name;

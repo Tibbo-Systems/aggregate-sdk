@@ -10,7 +10,7 @@ import ByteBuffer from 'bytebuffer';
 import MegaGageBean from './MegaGageBean';
 
 class GageCreator {
-  private static initGageCreator: boolean = false;
+  private static initGageCreator = false;
 
   public static GG_TEST_TABLE_FORMAT: TableFormat;
 

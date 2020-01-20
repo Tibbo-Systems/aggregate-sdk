@@ -176,7 +176,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
     /**
      * Set the bindings.
      */
-    setBindings(in_bindings: Array<Binding>): void;
+    setBindings(bindings: Array<Binding>): void;
     createTableValidators(source: string | null, settings: ClassicEncodingSettings): void;
     private createRecordValidators;
     private createBindings;

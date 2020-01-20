@@ -3,6 +3,7 @@ import TableFormat from '../../datatable/TableFormat';
 import DataTable from '../../datatable/DataTable';
 import SimpleDataTable from '../../datatable/SimpleDataTable';
 import ActionUtils from '../ActionUtils';
+import ActionUtilsConstants from '../ActionUtilsConstants';
 
 export default class EditReport extends GenericActionCommand {
   public static readonly CF_TEMPLATE: string = 'template';
@@ -11,7 +12,7 @@ export default class EditReport extends GenericActionCommand {
   public static readonly CF_RESOURCES: string = 'resources';
   public static readonly RF_TEMPLATE: string = 'template';
   public static readonly RF_RESULT: string = 'result';
-  public static readonly CFT_EDIT_REPORT: TableFormat;
+  public static readonly CFT_EDIT_REPORT: TableFormat = new TableFormat(1, 1);
 
   static __static_initializer_0() {
     EditReport.CFT_EDIT_REPORT.addField('<' + EditReport.CF_TEMPLATE + '><S>');
@@ -27,9 +28,9 @@ export default class EditReport extends GenericActionCommand {
     EditReport.RFT_EDIT_REPORT.addField('<' + EditReport.RF_TEMPLATE + '><S><F=N>');
   }
 
-  public static CF_SUBREPORTS_NAME: string = 'name';
-  public static CF_SUBREPORTS_TEMPLATE: string = 'template';
-  public static CF_SUBREPORTS_DATA: string = 'data';
+  public static CF_SUBREPORTS_NAME = 'name';
+  public static CF_SUBREPORTS_TEMPLATE = 'template';
+  public static CF_SUBREPORTS_DATA = 'data';
   public static CFT_SUBREPORTS: TableFormat = new TableFormat();
 
   static __static_initializer_2() {
@@ -38,7 +39,7 @@ export default class EditReport extends GenericActionCommand {
     EditReport.CFT_SUBREPORTS.addField('<' + EditReport.CF_SUBREPORTS_DATA + '><T>');
   }
 
-  public static CF_RESOURCES_DATA: string = 'data';
+  public static CF_RESOURCES_DATA = 'data';
 
   public static CFT_RESOURCES: TableFormat = new TableFormat();
 
@@ -63,7 +64,7 @@ export default class EditReport extends GenericActionCommand {
   private resources: DataTable | null = null;
 
   public constructor() {
-    super(ActionUtils.CMD_EDIT_REPORT);
+    super(ActionUtilsConstants.CMD_EDIT_REPORT);
     EditReport.initialize();
   }
 
@@ -81,13 +82,7 @@ export default class EditReport extends GenericActionCommand {
     return editReport;
   }
 
-  public static createEditReport(
-    title: string,
-    template: string,
-    data: DataTable,
-    subreports: DataTable,
-    resources: DataTable
-  ) {
+  public static createEditReport(title: string, template: string, data: DataTable, subreports: DataTable, resources: DataTable) {
     const editReport = new EditReport();
     editReport.setTitle(title);
     editReport.setTemplate(template);
@@ -98,13 +93,7 @@ export default class EditReport extends GenericActionCommand {
   }
 
   constructParameters(): DataTable {
-    return SimpleDataTable.createSimpleDataTable(
-      EditReport.CFT_EDIT_REPORT,
-      this.template,
-      this.data,
-      this.subreports,
-      this.resources
-    );
+    return SimpleDataTable.createSimpleDataTable(EditReport.CFT_EDIT_REPORT, this.template, this.data, this.subreports, this.resources);
   }
 
   public getTemplate(): string | null {

@@ -57,7 +57,7 @@ export default class FieldConstants {
   public static readonly FIELD_DEFAULT_CONTEXT_DESCRIPTION: string = 'contextDescription';
   public static readonly FIELD_ADDITIONAL_REFERENCES_REFERENCE: string = 'reference';
   public static readonly FIELD_ADDITIONAL_REFERENCES_DESCRIPTION: string = 'description';
-  static CONTEXT_EDITOR_TYPES_SEPARATOR: string = ' ';
+  static CONTEXT_EDITOR_TYPES_SEPARATOR = ' ';
 
   public static readonly TEXT_EDITOR_MODE_AGGREGATE: string = 'aggregate';
   public static readonly TEXT_EDITOR_MODE_JAVA: string = 'java';

@@ -3,8 +3,8 @@ import TableFormat from '../../datatable/TableFormat';
 import FieldFormat from '../../datatable/FieldFormat';
 import FieldFormatFactory from '../../datatable/FieldFormatFactory';
 import FieldConstants from '../../datatable/field/FieldConstants';
-import ActionUtils from '../ActionUtils';
 import DataTable from '../../datatable/DataTable';
+import ActionUtilsConstants from '../ActionUtilsConstants';
 
 export default class OpenGridDashboard extends GridDashboardActionCommand {
   public static readonly V_ELEMENTS: string = 'elements';
@@ -15,10 +15,7 @@ export default class OpenGridDashboard extends GridDashboardActionCommand {
   public static VFT_GRID_PROPS: TableFormat = new TableFormat();
 
   static __static_initializer_0() {
-    let ff: FieldFormat<any> = FieldFormatFactory.createType(
-      OpenGridDashboard.V_ELEMENTS,
-      FieldConstants.DATATABLE_FIELD
-    );
+    let ff: FieldFormat<any> = FieldFormatFactory.createType(OpenGridDashboard.V_ELEMENTS, FieldConstants.DATATABLE_FIELD);
     ff.setNullable(true);
     OpenGridDashboard.VFT_GRID_PROPS.addField(ff);
     ff = FieldFormatFactory.createType(OpenGridDashboard.V_CONTEXT_PATH, FieldConstants.STRING_FIELD);
@@ -41,7 +38,7 @@ export default class OpenGridDashboard extends GridDashboardActionCommand {
   }
 
   public constructor(parameters: DataTable) {
-    super(ActionUtils.CMD_OPEN_GRID_DASHBOARD, null, parameters);
+    super(ActionUtilsConstants.CMD_OPEN_GRID_DASHBOARD, null, parameters);
   }
 
   public static createOpenGridDashboardWithDataTable(title: string, parameters: DataTable) {

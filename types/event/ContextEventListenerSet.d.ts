@@ -1,18 +1,20 @@
 import ContextManager from '../context/ContextManager';
-import AbstractContext from '../context/AbstractContext';
 import JObject from '../util/java/JObject';
 import DefaultContextEventListener from '../context/DefaultContextEventListener';
 import ContextEventListenerInfo from './ContextEventListenerInfo';
 import EventDefinition from '../context/EventDefinition';
 import EventData from '../context/EventData';
 import Event from '../data/Event';
+import Context from '../context/Context';
 export default class ContextEventListenerSet extends JObject {
     private readonly filterListeners;
     private evaluator;
     private _fingerprintListeners;
     private contextManager;
     private context;
-    constructor(value: AbstractContext<any, any> | ContextManager<any>);
+    constructor();
+    static fromContextManager(value: ContextManager<any>): ContextEventListenerSet;
+    static fromContext(value: Context<any, any>): ContextEventListenerSet;
     getListeners(): Set<DefaultContextEventListener>;
     dispatch(event: Event, eventDefinition: EventDefinition, eventData: EventData): void;
     private dispatchEventToListeners;

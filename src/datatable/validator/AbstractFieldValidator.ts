@@ -55,10 +55,5 @@ export default abstract class AbstractFieldValidator<T extends JObject> extends 
     return this.validate(null, null, null, value);
   }
 
-  abstract validate(
-    context?: Context<any, any> | null,
-    contextManager?: ContextManager<Context<any, any>> | null,
-    caller?: CallerController | null,
-    value?: T
-  ): T;
+  abstract validate(context?: Context<any, any> | null, contextManager?: ContextManager<Context<any, any>> | null, caller?: CallerController | null, value?: T): T;
 }

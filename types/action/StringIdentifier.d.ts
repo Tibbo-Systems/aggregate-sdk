@@ -3,6 +3,6 @@ export default class StringIdentifier extends JObject {
     private id;
     constructor(id?: string);
     getId(): string;
-    equals(o: Object | null): boolean;
+    equals(o: JObject | null): boolean;
     toString(): string;
 }

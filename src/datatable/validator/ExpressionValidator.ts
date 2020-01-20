@@ -28,21 +28,12 @@ export default class ExpressionValidator extends AbstractFieldValidator<any> {
     }
   }
 
-  public validate(
-    context: Context<any, any>,
-    contextManager: ContextManager<Context<any, any>>,
-    caller: CallerController,
-    value: any
-  ): any {
-    let evaluationResult: boolean = false;
+  public validate(context: Context<any, any>, contextManager: ContextManager<Context<any, any>>, caller: CallerController, value: any): any {
+    let evaluationResult = false;
     try {
       evaluationResult = this.evaluateExpression(context, contextManager, caller, value);
       if (!evaluationResult) {
-        throw new Error(
-          this.message != null
-            ? this.message
-            : MessageFormat.format(Cres.get().getString('dtValueDoesNotMatchExpression'), value, this.expression)
-        );
+        throw new Error(this.message != null ? this.message : MessageFormat.format(Cres.get().getString('dtValueDoesNotMatchExpression'), value, this.expression));
       }
     } catch (ex) {
       throw new Error(ex.message);
@@ -55,12 +46,7 @@ export default class ExpressionValidator extends AbstractFieldValidator<any> {
     return this.expression + (this.message != null ? ExpressionValidator.SEPARATOR + this.message : '');
   }
 
-  public evaluateExpression(
-    context: Context<any, any>,
-    contextManager: ContextManager<Context<any, any>>,
-    caller: CallerController,
-    value: any
-  ): boolean {
+  public evaluateExpression(context: Context<any, any>, contextManager: ContextManager<Context<any, any>>, caller: CallerController, value: any): boolean {
     let result = false;
     const evaluator: Evaluator = new Evaluator(contextManager, context, null, caller);
     evaluator

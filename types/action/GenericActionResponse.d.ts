@@ -11,5 +11,5 @@ export default class GenericActionResponse implements ActionResponse {
     getRequestId(): RequestIdentifier | null;
     setParameters(parameters: DataTable): void;
     setRemember(remember: boolean): void;
-    setRequestId(requestId: RequestIdentifier): void;
+    setRequestId(requestId: RequestIdentifier | null): void;
 }

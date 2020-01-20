@@ -1,7 +1,7 @@
 export default interface BindingProcessor {
-  // start(): boolean;
+  start(): boolean;
   //
-  // stop(): void;
+  stop(): void;
   //
   // setEnabled(enabled: boolean): void;
   //

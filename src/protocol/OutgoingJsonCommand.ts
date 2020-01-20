@@ -4,7 +4,7 @@ import ByteBuffer from 'bytebuffer';
 import AggreGateCommand from './AggreGateCommand';
 
 export default class OutgoingJsonCommand extends OutgoingAggreGateCommand {
-  private parameters: Array<String> = new Array<String>();
+  private parameters: Array<string> = new Array<string>();
 
   addParam(param: string): OutgoingAggreGateCommand {
     if (this.completed) {
@@ -24,7 +24,7 @@ export default class OutgoingJsonCommand extends OutgoingAggreGateCommand {
 
     try {
       this.data = ByteBuffer.wrap(JSON.stringify(this.parameters));
-      this.parameters = new Array<String>();
+      this.parameters = new Array<string>();
     } catch (e) {
       Log.COMMANDS.warn(e);
     }

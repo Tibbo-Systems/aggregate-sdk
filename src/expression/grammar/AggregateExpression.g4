@@ -1,12 +1,11 @@
 grammar AggregateExpression;
 
-
 compilationUnit
     : expression? EOF
     ;
 
 expression:
-     LBRAKET expression RBRAKET                                  # ExpressionNode
+     LPAREN expression RPAREN                                  # ExpressionNode
     | functionExpression                                         # FunctionNode
     | LBRACE valueReference RBRACE                               # ValueReferenceNode
     | MINUS expression                                           # UnaryNode
@@ -38,12 +37,63 @@ expression:
 
 
 functionExpression:
-    IDENTIFIER LBRAKET (expression ( <COMMA> expression )*)? RBRAKET
+    IDENTIFIER arguments
     ;
 
+functionReferenceExpression:
+    agIdentifier arguments
+    ;
+
+actionReferenceExpression:
+    agIdentifier arguments? NOT
+    ;
+
+eventReferenceExpression:
+    agIdentifier AT
+    ;
+
+referenceSchema:
+    IDENTIFIER DIV
+    ;
+
+referenceServer:
+    ~BITWISE_XOR* BITWISE_XOR
+    ;
+
+referenceContextMask:
+    (agIdentifier | FLOATING_POINT_LITERAL | MUL | DOT)+
+    | DOT
+    ;
+
+referenceEntity:
+    agIdentifier
+    | functionReferenceExpression
+    | actionReferenceExpression
+    | eventReferenceExpression
+    ;
+
+referenceRow:
+    LBRACKET INTEGER_LITERAL RBRACKET
+    ;
+
+referenceProperty:
+    HASH agIdentifier
+    ;
 
 valueReference
-    :IDENTIFIER
+    : referenceSchema? referenceServer? (referenceContextMask? COLON referenceEntity? (DOLLAR agIdentifier)? | agIdentifier) referenceRow? referenceProperty?
+    ;
+
+arguments:
+    LPAREN (expression ( COMMA expression )* )? RPAREN
+    ;
+
+agIdentifier:
+    IDENTIFIER
+    | INTEGER_LITERAL
+    | TRUE
+    | FALSE
+    | NULL
     ;
 
 literal
@@ -59,18 +109,17 @@ literal
 
 INTEGER_LITERAL:    DECIMAL_LITERAL | HEX_LITERAL | OCTAL_LITERAL | BINARY_LITERAL ;
 
-
-FLOATING_POINT_LITERAL: (Digit+ '.' Digit* | '.' Digit+) Exponent? [fFdD]?
-                 |       Digit+ (Exponent [fFdD]? | [fFdD])
+FLOATING_POINT_LITERAL: (DIGIT+ '.' DIGIT* | '.' DIGIT+) EXPONENT? [fFdD]?
+                 |       DIGIT+ (EXPONENT [fFdD]? | [fFdD])
                  ;
 
-STRING_LITERAL:     '"' (~["\\\r\n\t\f\b] | EscapeSequence)* '"' | '\'' (~['\\\r\n\t\f\b] | EscapeSequence)* '\'' ;
-UNCLOSED_STRING_LITERAL: '"' (~["\\\r\n\t\f\b] | EscapeSequence)* | '\'' (~['\\\r\n\t\f\b] | EscapeSequence)* ;
+STRING_LITERAL:     '"' (~["\\\r\n\t\f\b] | ESCAPE_SEQUENCE)* '"' | '\'' (~['\\\r\n\t\f\b] | ESCAPE_SEQUENCE)* '\'' ;
+UNCLOSED_STRING_LITERAL: '"' (~["\\\r\n\t\f\b] | ESCAPE_SEQUENCE)* | '\'' (~['\\\r\n\t\f\b] | ESCAPE_SEQUENCE)* ;
 
 // Separators
 
-LBRAKET:             '(' ;
-RBRAKET:             ')' ;
+LPAREN:             '(' ;
+RPAREN:             ')' ;
 LBRACE:             '{' ;
 RBRACE:             '}' ;
 LBRACKET:           '[' ;
@@ -124,21 +173,21 @@ COMMENT_LINE:       '//' ~[\r\n]*         -> channel(HIDDEN) ;
 
 // Identifiers
 
-IDENTIFIER:         Letter LetterOrDigit* ;
+IDENTIFIER:         LETTER LETTER_OR_DIGIT* ;
 
-UNMATCHED        : .  -> channel(HIDDEN);
+UNMATCHED        : .  -> channel(HIDDEN) ;
 
 // Fragment rules
 
-fragment Digit : [0-9] ;
-fragment HexDigit : [0-9a-fA-F] ;
-fragment Letter : [_a-zA-Z] ;
-fragment LetterOrDigit : Letter | Digit ;
-fragment EscapeSequence: '\\' [btnfr"'\\] | '\\' 'u' HexDigit HexDigit HexDigit HexDigit ;
+fragment DIGIT : [0-9] ;
+fragment HEX_DIGIT : [0-9a-fA-F] ;
+fragment LETTER : [_a-zA-Z] ;
+fragment LETTER_OR_DIGIT : LETTER | DIGIT ;
+fragment ESCAPE_SEQUENCE: '\\' [btnfr"'\\] | '\\' 'u' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT ;
 
-fragment DECIMAL_LITERAL:    '0' | [1-9] Digit* ;
-fragment HEX_LITERAL:        '0' [xX] HexDigit+ ;
+fragment DECIMAL_LITERAL:    '0' | [1-9] DIGIT* ;
+fragment HEX_LITERAL:        '0' [xX] HEX_DIGIT+ ;
 fragment OCTAL_LITERAL:      '0' [0-7]+ ;
 fragment BINARY_LITERAL:     '0' [bB] [01]+ ;
 
-fragment Exponent : [eE] [+-]? Digit+ ;
+fragment EXPONENT : [eE] [+-]? DIGIT+ ;

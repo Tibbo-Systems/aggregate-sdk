@@ -22,69 +22,23 @@ export default class StringFieldFormat extends FieldFormat<string> {
   public static readonly ADDITIONAL_REFERENCES_FORMAT: TableFormat = new TableFormat();
 
   private static staticStringFormatInitializer0() {
-    this.ADDITIONAL_REFERENCES_FORMAT.addField(
-      FieldFormatFactory.createWith(
-        FieldConstants.FIELD_ADDITIONAL_REFERENCES_REFERENCE,
-        FieldConstants.STRING_FIELD,
-        Cres.get().getString('reference')
-      )
-    );
-    this.ADDITIONAL_REFERENCES_FORMAT.addField(
-      FieldFormatFactory.createWith(
-        FieldConstants.FIELD_ADDITIONAL_REFERENCES_DESCRIPTION,
-        FieldConstants.STRING_FIELD,
-        Cres.get().getString('description')
-      )
-    );
+    this.ADDITIONAL_REFERENCES_FORMAT.addField(FieldFormatFactory.createWith(FieldConstants.FIELD_ADDITIONAL_REFERENCES_REFERENCE, FieldConstants.STRING_FIELD, Cres.get().getString('reference')));
+    this.ADDITIONAL_REFERENCES_FORMAT.addField(FieldFormatFactory.createWith(FieldConstants.FIELD_ADDITIONAL_REFERENCES_DESCRIPTION, FieldConstants.STRING_FIELD, Cres.get().getString('description')));
   }
 
   public static readonly EXPRESSION_BUILDER_OPTIONS_FORMAT: TableFormat = new TableFormat(1, 1);
 
   private static staticStringFormatInitializer1() {
+    this.EXPRESSION_BUILDER_OPTIONS_FORMAT.addField(FieldFormatFactory.createWith(FieldConstants.FIELD_DEFAULT_CONTEXT, FieldConstants.STRING_FIELD, Cres.get().getString('conDefaultContext')).setNullable(true));
+    this.EXPRESSION_BUILDER_OPTIONS_FORMAT.addField(FieldFormatFactory.createWith(FieldConstants.FIELD_DEFAULT_TABLE, FieldConstants.DATATABLE_FIELD, Cres.get().getString('defaultTable')).setNullable(true));
     this.EXPRESSION_BUILDER_OPTIONS_FORMAT.addField(
-      FieldFormatFactory.createWith(
-        FieldConstants.FIELD_DEFAULT_CONTEXT,
-        FieldConstants.STRING_FIELD,
-        Cres.get().getString('conDefaultContext')
-      ).setNullable(true)
-    );
-    this.EXPRESSION_BUILDER_OPTIONS_FORMAT.addField(
-      FieldFormatFactory.createWith(
-        FieldConstants.FIELD_DEFAULT_TABLE,
-        FieldConstants.DATATABLE_FIELD,
-        Cres.get().getString('defaultTable')
-      ).setNullable(true)
-    );
-    this.EXPRESSION_BUILDER_OPTIONS_FORMAT.addField(
-      FieldFormatFactory.createWith(
-        FieldConstants.FIELD_REFERENCES,
-        FieldConstants.DATATABLE_FIELD,
-        Cres.get().getString('references')
-      )
+      FieldFormatFactory.createWith(FieldConstants.FIELD_REFERENCES, FieldConstants.DATATABLE_FIELD, Cres.get().getString('references'))
         .setNullable(true)
         .setDefault(DataTableFactory.of(this.ADDITIONAL_REFERENCES_FORMAT))
     );
-    this.EXPRESSION_BUILDER_OPTIONS_FORMAT.addField(
-      FieldFormatFactory.createWith(
-        FieldConstants.FIELD_EXPECTED_RESULT,
-        FieldConstants.STRING_FIELD,
-        Cres.get().getString('expectedResultType')
-      ).setNullable(true)
-    );
-    this.EXPRESSION_BUILDER_OPTIONS_FORMAT.addField(
-      FieldFormatFactory.createWith(
-        FieldConstants.FIELD_DEFAULT_CONTEXT_DESCRIPTION,
-        FieldConstants.STRING_FIELD,
-        Cres.get().getString('defaultContextDesc')
-      ).setNullable(true)
-    );
-    this.EXPRESSION_BUILDER_OPTIONS_FORMAT.addField(
-      FieldFormatFactory.createWith(
-        FieldConstants.FIELD_DEFAULT_TABLE_DESCRIPTION,
-        FieldConstants.STRING_FIELD,
-        Cres.get().getString('defaultTableDesc')
-      ).setNullable(true)
-    );
+    this.EXPRESSION_BUILDER_OPTIONS_FORMAT.addField(FieldFormatFactory.createWith(FieldConstants.FIELD_EXPECTED_RESULT, FieldConstants.STRING_FIELD, Cres.get().getString('expectedResultType')).setNullable(true));
+    this.EXPRESSION_BUILDER_OPTIONS_FORMAT.addField(FieldFormatFactory.createWith(FieldConstants.FIELD_DEFAULT_CONTEXT_DESCRIPTION, FieldConstants.STRING_FIELD, Cres.get().getString('defaultContextDesc')).setNullable(true));
+    this.EXPRESSION_BUILDER_OPTIONS_FORMAT.addField(FieldFormatFactory.createWith(FieldConstants.FIELD_DEFAULT_TABLE_DESCRIPTION, FieldConstants.STRING_FIELD, Cres.get().getString('defaultTableDesc')).setNullable(true));
   }
 
   private static initStringFormat = false;
@@ -143,10 +97,8 @@ export default class StringFieldFormat extends FieldFormat<string> {
 
     if (references != null) {
       const refs: DataTable = DataTableFactory.of(StringFieldFormat.ADDITIONAL_REFERENCES_FORMAT);
-      for (let entry of references.entries()) {
-        (refs.addRecord() as DataRecord)
-          .addString(entry[0].getImage())
-          .addString(entry[1] != null ? entry[1] : entry[0].getImage());
+      for (const entry of references.entries()) {
+        (refs.addRecord() as DataRecord).addString(entry[0].getImage()).addString(entry[1] != null ? entry[1] : entry[0].getImage());
       }
       op.addValue(refs);
     }
@@ -162,15 +114,7 @@ export default class StringFieldFormat extends FieldFormat<string> {
 
   public static encodeMaskEditorOptionsFromStrings(contextType: string, containerName: string): string {
     const masks: Array<string> = new Array<string>();
-    masks.push(
-      ContextUtils.createName(
-        Contexts.CTX_USERS,
-        ContextUtilsConstants.CONTEXT_GROUP_MASK,
-        containerName,
-        ContextUtilsConstants.CONTEXT_GROUP_MASK,
-        ContextUtilsConstants.CONTEXT_GROUP_MASK
-      )
-    );
+    masks.push(ContextUtils.createName(Contexts.CTX_USERS, ContextUtilsConstants.CONTEXT_GROUP_MASK, containerName, ContextUtilsConstants.CONTEXT_GROUP_MASK, ContextUtilsConstants.CONTEXT_GROUP_MASK));
     masks.push(
       ContextUtils.createName(
         Contexts.CTX_USERS,
@@ -185,15 +129,8 @@ export default class StringFieldFormat extends FieldFormat<string> {
     return StringFieldFormat.encodeMaskEditorOptions(null, [contextType], masks);
   }
 
-  public static encodeMaskEditorOptions(
-    rootContext: string | null = null,
-    contextTypes: Array<string>,
-    contextMasks: Array<string>
-  ): string {
-    const options: DataTable = EditorOptionsUtils.createEditorOptionsTable(
-      FieldConstants.STRING_FIELD,
-      FieldConstants.EDITOR_CONTEXT_MASK
-    );
+  public static encodeMaskEditorOptions(rootContext: string | null = null, contextTypes: Array<string>, contextMasks: Array<string>): string {
+    const options: DataTable = EditorOptionsUtils.createEditorOptionsTable(FieldConstants.STRING_FIELD, FieldConstants.EDITOR_CONTEXT_MASK);
 
     options.addRecord();
     options.rec().setValue(ContextMaskConverter.FIELD_ROOT_CONTEXT, rootContext);
@@ -203,7 +140,7 @@ export default class StringFieldFormat extends FieldFormat<string> {
         .rec()
         .getDataTable(ContextMaskConverter.FIELD_CONTEXT_TYPES)
         .clone();
-      for (let contextType of contextTypes) {
+      for (const contextType of contextTypes) {
         typesTable.addRecordWith(contextType);
       }
       options.rec().setValue(ContextMaskConverter.FIELD_CONTEXT_TYPES, typesTable);
@@ -214,7 +151,7 @@ export default class StringFieldFormat extends FieldFormat<string> {
         .rec()
         .getDataTable(ContextMaskConverter.FIELD_CONTEXT_MASKS)
         .clone();
-      for (let contextMask of contextMasks) {
+      for (const contextMask of contextMasks) {
         masksTable.addRecordWith(contextMask);
       }
       options.rec().setValue(ContextMaskConverter.FIELD_CONTEXT_MASKS, masksTable);
@@ -274,10 +211,7 @@ export default class StringFieldFormat extends FieldFormat<string> {
         // Ignore
       }
     } else if (options != null) {
-      const contextTypes: Array<string> = StringUtils.split(
-        options,
-        FieldConstants.CONTEXT_EDITOR_TYPES_SEPARATOR.charAt(0)
-      );
+      const contextTypes: Array<string> = StringUtils.split(options, FieldConstants.CONTEXT_EDITOR_TYPES_SEPARATOR.charAt(0));
       const editorOptions: Options = new Options();
       editorOptions.setContextTypes(contextTypes);
       return editorOptions;

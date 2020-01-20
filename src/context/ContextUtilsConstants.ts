@@ -55,17 +55,13 @@ export default class ContextUtilsConstants {
 
   public static readonly ENTITY_GROUP_SHIFT: number = 200;
 
-  public static readonly ENTITY_VARIABLE_GROUP: number =
-    ContextUtilsConstants.ENTITY_VARIABLE + ContextUtilsConstants.ENTITY_GROUP_SHIFT; // 201
+  public static readonly ENTITY_VARIABLE_GROUP: number = ContextUtilsConstants.ENTITY_VARIABLE + ContextUtilsConstants.ENTITY_GROUP_SHIFT; // 201
 
-  public static readonly ENTITY_FUNCTION_GROUP: number =
-    ContextUtilsConstants.ENTITY_FUNCTION + ContextUtilsConstants.ENTITY_GROUP_SHIFT; // 202
+  public static readonly ENTITY_FUNCTION_GROUP: number = ContextUtilsConstants.ENTITY_FUNCTION + ContextUtilsConstants.ENTITY_GROUP_SHIFT; // 202
 
-  public static readonly ENTITY_EVENT_GROUP: number =
-    ContextUtilsConstants.ENTITY_EVENT + ContextUtilsConstants.ENTITY_GROUP_SHIFT; // 204
+  public static readonly ENTITY_EVENT_GROUP: number = ContextUtilsConstants.ENTITY_EVENT + ContextUtilsConstants.ENTITY_GROUP_SHIFT; // 204
 
-  public static readonly ENTITY_ACTION_GROUP: number =
-    ContextUtilsConstants.ENTITY_ACTION + ContextUtilsConstants.ENTITY_GROUP_SHIFT; // 208
+  public static readonly ENTITY_ACTION_GROUP: number = ContextUtilsConstants.ENTITY_ACTION + ContextUtilsConstants.ENTITY_GROUP_SHIFT; // 208
 
   public static readonly USERNAME_PATTERN: string = '%';
 

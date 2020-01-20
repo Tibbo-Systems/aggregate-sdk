@@ -135,8 +135,7 @@ export default class UtilitiesContextConstants {
 
   public static readonly FIF_INIT_ACTIONS_ACTION_NAME: string = ServerContextConstants.FIF_INIT_ACTION_ACTION_NAME;
 
-  public static readonly FIF_INIT_ACTIONS_PARAMETERS: string =
-    ServerContextConstants.FIF_INIT_ACTION_INITIAL_PARAMETERS;
+  public static readonly FIF_INIT_ACTIONS_PARAMETERS: string = ServerContextConstants.FIF_INIT_ACTION_INITIAL_PARAMETERS;
 
   public static readonly FIF_GET_DATA_ID: string = 'id';
 

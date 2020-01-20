@@ -20,7 +20,7 @@ export default class EventLevel {
 
   private static _init = false;
 
-  static _init_static() {
+  static _static_init() {
     if (EventLevel._init) return;
     EventLevel.LEVELS.set(EventLevel.NOTICE, Cres.get().getString('conElNotice'));
     EventLevel.LEVELS.set(EventLevel.INFO, Cres.get().getString('conElInfo'));
@@ -50,4 +50,4 @@ export default class EventLevel {
   }
 }
 
-EventLevel._init_static();
+EventLevel._static_init();

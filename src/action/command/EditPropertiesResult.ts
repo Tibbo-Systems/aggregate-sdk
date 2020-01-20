@@ -3,6 +3,7 @@ import GenericActionResponse from '../GenericActionResponse';
 import DataTable from '../../datatable/DataTable';
 import ActionUtils from '../ActionUtils';
 import EditProperties from './EditProperties';
+import ActionUtilsConstants from '../ActionUtilsConstants';
 
 export default class EditPropertiesResult extends DefaultActionResult {
   private readonly code: string | null = null;
@@ -27,14 +28,14 @@ export default class EditPropertiesResult extends DefaultActionResult {
   public static parse(resp: GenericActionResponse): EditPropertiesResult {
     const ps: DataTable | null = resp.getParameters();
     if (ps == null || ps.getRecordCount() === 0) {
-      return new EditPropertiesResult(ActionUtils.RESPONSE_CLOSED);
+      return new EditPropertiesResult(ActionUtilsConstants.RESPONSE_CLOSED);
     }
 
     const result: string = ps.rec().getString(EditProperties.RF_EDIT_PROPERTIES_RESULT);
     ActionUtils.checkResponseCode(result);
     const savedProperties: Array<string> = new Array<string>();
 
-    for (let rec of ps.rec().getDataTable(EditProperties.RF_EDIT_PROPERTIES_CHANGED_PROPERTIES)) {
+    for (const rec of ps.rec().getDataTable(EditProperties.RF_EDIT_PROPERTIES_CHANGED_PROPERTIES)) {
       savedProperties.push(rec.getString(EditProperties.FIELD_PROPERTIES_PROPERTY));
     }
 

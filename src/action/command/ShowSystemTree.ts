@@ -10,9 +10,9 @@ import WindowLocation from '../../util/WindowLocation';
 import DashboardProperties from '../../util/DashboardProperties';
 import DashboardsHierarchyInfo from '../../util/DashboardsHierarchyInfo';
 import DataTableBindingProvider from '../../datatable/DataTableBindingProvider';
-import ActionUtils from '../ActionUtils';
 import Context from '../../context/Context';
 import DataRecord from '../../datatable/DataRecord';
+import ActionUtilsConstants from '../ActionUtilsConstants';
 
 export default class ShowSystemTree extends GenericActionCommand {
   public static readonly CF_ROOT: string = 'root';
@@ -30,40 +30,24 @@ export default class ShowSystemTree extends GenericActionCommand {
 
   public static readonly CF_ROOTS_ROOT: string = 'root';
 
-  public static readonly CFT_SHOW_SYSTEM_TREE_ROOTS: TableFormat = FieldFormatFactory.create(
-    '<' + ShowSystemTree.CF_ROOTS_ROOT + '><S>'
-  ).wrap();
+  public static readonly CFT_SHOW_SYSTEM_TREE_ROOTS: TableFormat = FieldFormatFactory.create('<' + ShowSystemTree.CF_ROOTS_ROOT + '><S>').wrap();
 
   public static readonly CFT_SHOW_SYSTEM_TREE: TableFormat = new TableFormat(1, 1);
 
   static __static_initializer_0() {
-    ShowSystemTree.CFT_SHOW_SYSTEM_TREE.addField(
-      '<' +
-        ShowSystemTree.CF_ROOT +
-        '><S><F=N><D=' +
-        Cres.get().getString('root') +
-        '><E=' +
-        FieldConstants.EDITOR_CONTEXT +
-        '>'
-    );
+    ShowSystemTree.CFT_SHOW_SYSTEM_TREE.addField('<' + ShowSystemTree.CF_ROOT + '><S><F=N><D=' + Cres.get().getString('root') + '><E=' + FieldConstants.EDITOR_CONTEXT + '>');
 
     let ff: FieldFormat<DataTable> = FieldFormatFactory.create('<' + ShowSystemTree.CF_ROOTS + '><T>');
     ff.setDefault(new SimpleDataTable(ShowSystemTree.CFT_SHOW_SYSTEM_TREE_ROOTS, true));
     ShowSystemTree.CFT_SHOW_SYSTEM_TREE.addField(ff);
 
-    ff = FieldFormatFactory.create(
-      '<' + ShowSystemTree.CF_RELATED_ACTIONS + '><B><A=1><D=' + Cres.get().getString('relatedActions') + '>'
-    );
+    ff = FieldFormatFactory.create('<' + ShowSystemTree.CF_RELATED_ACTIONS + '><B><A=1><D=' + Cres.get().getString('relatedActions') + '>');
     ShowSystemTree.CFT_SHOW_SYSTEM_TREE.addField(ff);
 
-    ff = FieldFormatFactory.create(
-      '<' + ShowSystemTree.CF_CONTEXT_MENU + '><B><A=1><D=' + Cres.get().getString('contextMenu') + '>'
-    );
+    ff = FieldFormatFactory.create('<' + ShowSystemTree.CF_CONTEXT_MENU + '><B><A=1><D=' + Cres.get().getString('contextMenu') + '>');
     ShowSystemTree.CFT_SHOW_SYSTEM_TREE.addField(ff);
 
-    ff = FieldFormatFactory.create(
-      '<' + ShowSystemTree.CF_SHOW_TOOLBAR + '><B><A=1><D=' + Cres.get().getString('showToolbar') + '>'
-    );
+    ff = FieldFormatFactory.create('<' + ShowSystemTree.CF_SHOW_TOOLBAR + '><B><A=1><D=' + Cres.get().getString('showToolbar') + '>');
     ShowSystemTree.CFT_SHOW_SYSTEM_TREE.addField(ff);
 
     ff = FieldFormatFactory.create('<' + ShowSystemTree.CF_LOCATION + '><T><F=N>');
@@ -74,50 +58,34 @@ export default class ShowSystemTree extends GenericActionCommand {
     ff.setDefault(new DashboardProperties().toDataTable());
     ShowSystemTree.CFT_SHOW_SYSTEM_TREE.addField(ff);
 
-    ShowSystemTree.CFT_SHOW_SYSTEM_TREE.addField(
-      '<' + ShowSystemTree.CF_KEY + '><S><F=NH><D=' + Cres.get().getString('key') + '>'
-    );
+    ShowSystemTree.CFT_SHOW_SYSTEM_TREE.addField('<' + ShowSystemTree.CF_KEY + '><S><F=NH><D=' + Cres.get().getString('key') + '>');
 
     ff = FieldFormatFactory.create('<' + ShowSystemTree.CF_DASHBOARDS_HIERARCHY_INFO + '><T><F=N>');
     ff.setDefault(new DashboardsHierarchyInfo().toDataTable());
     ShowSystemTree.CFT_SHOW_SYSTEM_TREE.addField(ff);
 
     ShowSystemTree.CFT_SHOW_SYSTEM_TREE.addField(
-      FieldFormatFactory.createWith(
-        ShowSystemTree.CF_NODE_CLICK_EXPRESSION,
-        FieldConstants.STRING_FIELD,
-        Cres.get().getString('nodeClickExpression')
-      )
+      FieldFormatFactory.createWith(ShowSystemTree.CF_NODE_CLICK_EXPRESSION, FieldConstants.STRING_FIELD, Cres.get().getString('nodeClickExpression'))
         .setNullable(true)
         .setDefault(null)
         .setEditor(FieldConstants.EDITOR_EXPRESSION)
     );
 
     ShowSystemTree.CFT_SHOW_SYSTEM_TREE.addField(
-      FieldFormatFactory.createWith(
-        ShowSystemTree.CF_NODE_FILTER_EXPRESSION,
-        FieldConstants.STRING_FIELD,
-        Cres.get().getString('nodeFilterExpression')
-      )
+      FieldFormatFactory.createWith(ShowSystemTree.CF_NODE_FILTER_EXPRESSION, FieldConstants.STRING_FIELD, Cres.get().getString('nodeFilterExpression'))
         .setNullable(true)
         .setEditor(FieldConstants.EDITOR_EXPRESSION)
     );
 
-    ShowSystemTree.CFT_SHOW_SYSTEM_TREE.addBinding(
-      ShowSystemTree.CF_NODE_CLICK_EXPRESSION + '#' + DataTableBindingProvider.PROPERTY_HIDDEN,
-      true.toString()
-    );
-    ShowSystemTree.CFT_SHOW_SYSTEM_TREE.addBinding(
-      ShowSystemTree.CF_NODE_FILTER_EXPRESSION + '#' + DataTableBindingProvider.PROPERTY_HIDDEN,
-      true.toString()
-    );
+    ShowSystemTree.CFT_SHOW_SYSTEM_TREE.addBinding(ShowSystemTree.CF_NODE_CLICK_EXPRESSION + '#' + DataTableBindingProvider.PROPERTY_HIDDEN, true.toString());
+    ShowSystemTree.CFT_SHOW_SYSTEM_TREE.addBinding(ShowSystemTree.CF_NODE_FILTER_EXPRESSION + '#' + DataTableBindingProvider.PROPERTY_HIDDEN, true.toString());
   }
 
   private root: string | null = null;
   private roots: Array<string> | null = null;
-  private relatedActions: boolean = true;
-  private contextMenu: boolean = true;
-  private showToolbar: boolean = true;
+  private relatedActions = true;
+  private contextMenu = true;
+  private showToolbar = true;
   private location: WindowLocation | null = null;
   private dashboard: DashboardProperties | null = null;
   private key: string | null = null;
@@ -133,11 +101,8 @@ export default class ShowSystemTree extends GenericActionCommand {
     ShowSystemTree._init = true;
   }
 
-  public constructor(
-    titleOrFormat: string | TableFormat = ShowSystemTree.CFT_SHOW_SYSTEM_TREE,
-    roots?: Context<any, any> | Array<string>
-  ) {
-    super(ActionUtils.CMD_SHOW_SYSTEM_TREE, titleOrFormat, null);
+  public constructor(titleOrFormat: string | TableFormat = ShowSystemTree.CFT_SHOW_SYSTEM_TREE, roots?: Context<any, any> | Array<string>) {
+    super(ActionUtilsConstants.CMD_SHOW_SYSTEM_TREE, titleOrFormat, null);
     if (roots) {
       if (Array.isArray(roots)) {
         this.roots = roots;
@@ -159,7 +124,7 @@ export default class ShowSystemTree extends GenericActionCommand {
 
     const t: DataTable = new SimpleDataTable(ShowSystemTree.CFT_SHOW_SYSTEM_TREE_ROOTS);
     if (this.roots != null) {
-      for (let each of this.roots) {
+      for (const each of this.roots) {
         t.addRecordWith(each);
       }
     }

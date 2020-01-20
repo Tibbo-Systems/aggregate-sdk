@@ -7,5 +7,5 @@ import Context from '../context/Context';
 import ServerActionInput from './ServerActionInput';
 import ErrorCollector from '../util/ErrorCollector';
 export default class DefaultActionInitializer implements ActionInitializer {
-    initAction(context: Context<any, any>, actionName: string, initialParametrs: ServerActionInput, inputData: DataTable, environment: Map<string, any>, mode: ActionExecutionMode, callerController: CallerController, collector: ErrorCollector): Promise<ActionIdentifier>;
+    initAction(context: Context<any, any>, actionName: string, initialParametrs: ServerActionInput, inputData: DataTable | null, environment: Map<string, any>, mode: ActionExecutionMode, callerController: CallerController | null, collector: ErrorCollector): Promise<ActionIdentifier>;
 }

@@ -25,8 +25,8 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
 
   private fields: Array<FieldFormat<any>> = new Array<FieldFormat<any>>();
   private id: number | null = null;
-  private immutable: boolean = false;
-  private bindingsEditable: boolean = false;
+  private immutable = false;
+  private bindingsEditable = false;
 
   public static readonly DEFAULT_MIN_RECORDS: number = 0;
   public static readonly DEFAULT_MAX_RECORDS: number = JConstants.INTEGER_MAX_VALUE;
@@ -48,8 +48,8 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
   private static readonly UNRESIZEBLE_FLAG: string = 'U';
   private static readonly BINDINGS_EDITABLE_FLAG: string = 'B';
 
-  private reorderable: boolean = false;
-  private unresizable: boolean = false;
+  private reorderable = false;
+  private unresizable = false;
 
   private minRecords = TableFormat.DEFAULT_MIN_RECORDS;
   private maxRecords = TableFormat.DEFAULT_MAX_RECORDS;
@@ -63,11 +63,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
   // TODO not implemented yet
   // private immutabilizerIdentityHashCode: number; // The identity hash code of the Data Table that made this format immutable
 
-  constructor(
-    minRecords: number = TableFormat.DEFAULT_MIN_RECORDS,
-    maxRecords: number = TableFormat.DEFAULT_MAX_RECORDS,
-    fieldFormat?: string | FieldFormat<any>
-  ) {
+  constructor(minRecords: number = TableFormat.DEFAULT_MIN_RECORDS, maxRecords: number = TableFormat.DEFAULT_MAX_RECORDS, fieldFormat?: string | FieldFormat<any>) {
     super();
     this.setMinRecords(minRecords);
     this.setMaxRecords(maxRecords);
@@ -90,15 +86,11 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
     return tableFormat;
   }
 
-  public static createWithFormatAndSettings(
-    format: string,
-    settings: ClassicEncodingSettings,
-    validate: boolean = true
-  ): TableFormat {
+  public static createWithFormatAndSettings(format: string, settings: ClassicEncodingSettings, validate = true): TableFormat {
     const tableFormat = new TableFormat();
     const els: ElementList = StringUtils.elements(format, settings.isUseVisibleSeparators());
 
-    for (let element of els.getElements()) {
+    for (const element of els.getElements()) {
       const el: Element = element as Element;
 
       if (el.getValue() != null) {
@@ -167,14 +159,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
     }
   }
 
-  public addFieldBy(
-    type: string,
-    name: string,
-    description: string,
-    defaultValue: JObject,
-    nullable: boolean,
-    group: string
-  ): TableFormat {
+  public addFieldBy(type: string, name: string, description: string, defaultValue: JObject, nullable: boolean, group: string): TableFormat {
     this.addField(FieldFormatFactory.createWith(name, type, description, defaultValue, nullable, group));
     return this;
   }
@@ -237,7 +222,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
    * Adds new fields to format.
    */
   public addFields(fieldFormats: Array<FieldFormat<any>>): TableFormat {
-    for (let each of fieldFormats) {
+    for (const each of fieldFormats) {
       this.addField(each);
     }
     return this;
@@ -278,9 +263,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
       throw new Error('Immutable');
     }
 
-    const index: number | null = this.getFieldLookup().get(fieldName)
-      ? (this.getFieldLookup().get(fieldName) as number)
-      : null;
+    const index: number | null = this.getFieldLookup().get(fieldName) ? (this.getFieldLookup().get(fieldName) as number) : null;
 
     this.getFieldLookup().delete(fieldName);
 
@@ -290,10 +273,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
       for (let i = index; i < this.fields.length; i++) {
         const fn: string = this.fields[i].getName();
 
-        this.getFieldLookup().set(
-          fn,
-          this.getFieldLookup().get(fn) ? (this.getFieldLookup().get(fn) as number) - 1 : null
-        );
+        this.getFieldLookup().set(fn, this.getFieldLookup().get(fn) ? (this.getFieldLookup().get(fn) as number) - 1 : null);
       }
     }
 
@@ -316,9 +296,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
 
     ff.setName(newName);
 
-    const index: number | null = this.getFieldLookup().get(oldName)
-      ? (this.getFieldLookup().get(oldName) as number)
-      : null;
+    const index: number | null = this.getFieldLookup().get(oldName) ? (this.getFieldLookup().get(oldName) as number) : null;
     this.getFieldLookup().delete(oldName);
 
     if (index != null) {
@@ -418,11 +396,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
     return this.getEncodedDataFromEncodingSettings(new ClassicEncodingSettings(useVisibleSeparators));
   }
 
-  public getEncodedDataFromEncodingSettings(
-    settings: ClassicEncodingSettings,
-    isTransferEncode: boolean = false,
-    encodeLevel: number = 0
-  ): string {
+  public getEncodedDataFromEncodingSettings(settings: ClassicEncodingSettings, isTransferEncode = false, encodeLevel = 0): string {
     const formatString: StringBuilder = new StringBuilder();
 
     this.encode(formatString, settings, isTransferEncode, encodeLevel);
@@ -438,71 +412,33 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
     return this.encodeToString(new ClassicEncodingSettings(useVisibleSeparators)).toString();
   }
 
-  public encode(
-    sb: StringBuilder,
-    settings: ClassicEncodingSettings,
-    isTransferEncode: boolean,
-    encodeLevel: number
-  ): StringBuilder {
+  public encode(sb: StringBuilder, settings: ClassicEncodingSettings, isTransferEncode: boolean, encodeLevel: number): StringBuilder {
     for (let i = 0; i < this.fields.length; i++) {
-      new Element(null, (this.getField(i) as FieldFormat<any>).encode(settings)).encode(
-        sb,
-        settings,
-        isTransferEncode,
-        encodeLevel
-      );
+      new Element(null, (this.getField(i) as FieldFormat<any>).encode(settings)).encode(sb, settings, isTransferEncode, encodeLevel);
     }
 
     if (this.minRecords !== TableFormat.DEFAULT_MIN_RECORDS) {
-      new Element(TableFormat.ELEMENT_MIN_RECORDS, this.minRecords.toString()).encode(
-        sb,
-        settings,
-        isTransferEncode,
-        encodeLevel
-      );
+      new Element(TableFormat.ELEMENT_MIN_RECORDS, this.minRecords.toString()).encode(sb, settings, isTransferEncode, encodeLevel);
     }
 
     if (this.maxRecords !== TableFormat.DEFAULT_MAX_RECORDS) {
-      new Element(TableFormat.ELEMENT_MAX_RECORDS, this.maxRecords.toString()).encode(
-        sb,
-        settings,
-        isTransferEncode,
-        encodeLevel
-      );
+      new Element(TableFormat.ELEMENT_MAX_RECORDS, this.maxRecords.toString()).encode(sb, settings, isTransferEncode, encodeLevel);
     }
 
     if (this.tableValidators.length > 0) {
-      new Element(TableFormat.ELEMENT_TABLE_VALIDATORS, this.getEncodedTableValidators(settings)).encode(
-        sb,
-        settings,
-        isTransferEncode,
-        encodeLevel
-      );
+      new Element(TableFormat.ELEMENT_TABLE_VALIDATORS, this.getEncodedTableValidators(settings)).encode(sb, settings, isTransferEncode, encodeLevel);
     }
 
     if (this.recordValidators.length > 0) {
-      new Element(TableFormat.ELEMENT_RECORD_VALIDATORS, this.getEncodedRecordValidators(settings)).encode(
-        sb,
-        settings,
-        isTransferEncode,
-        encodeLevel
-      );
+      new Element(TableFormat.ELEMENT_RECORD_VALIDATORS, this.getEncodedRecordValidators(settings)).encode(sb, settings, isTransferEncode, encodeLevel);
     }
 
     if (this.bindings.length > 0) {
-      new Element(TableFormat.ELEMENT_BINDINGS, this.getEncodedBindings(settings)).encode(
-        sb,
-        settings,
-        isTransferEncode,
-        encodeLevel
-      );
+      new Element(TableFormat.ELEMENT_BINDINGS, this.getEncodedBindings(settings)).encode(sb, settings, isTransferEncode, encodeLevel);
     }
 
     if (this.namingExpression != null) {
-      new Element(
-        TableFormat.ELEMENT_NAMING,
-        this.namingExpression == null ? '' : this.namingExpression.getText()
-      ).encode(sb, settings, isTransferEncode, encodeLevel);
+      new Element(TableFormat.ELEMENT_NAMING, this.namingExpression == null ? '' : this.namingExpression.getText()).encode(sb, settings, isTransferEncode, encodeLevel);
     }
 
     TableFormat.encAppend(sb, TableFormat.ELEMENT_FLAGS, this.getEncodedFlags(), settings);
@@ -525,7 +461,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
   }
 
   public isReplicated(): boolean {
-    for (let ff of this) {
+    for (const ff of this) {
       if (!ff.isNotReplicated()) {
         return true;
       }
@@ -547,7 +483,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
   }
 
   public isGrouped(): boolean {
-    for (let ff of this) {
+    for (const ff of this) {
       if (ff.getGroup() != null) {
         return true;
       }
@@ -560,12 +496,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
     return this.bindingsEditable;
   }
 
-  private static encAppend(
-    buffer: StringBuilder,
-    name: string,
-    value: string,
-    settings: ClassicEncodingSettings
-  ): void {
+  private static encAppend(buffer: StringBuilder, name: string, value: string, settings: ClassicEncodingSettings): void {
     if (value != null && value.length > 0) {
       buffer.append(new Element(name, value).encode(null, settings).toString());
     }
@@ -578,11 +509,8 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
   private getEncodedBindings(settings: ClassicEncodingSettings): string {
     const enc: StringBuilder = new StringBuilder();
 
-    for (let bin of this.bindings) {
-      const encodeElement = new Element(bin.getTarget().getImage(), bin.getExpression().getText()).encode(
-        null,
-        settings
-      );
+    for (const bin of this.bindings) {
+      const encodeElement = new Element(bin.getTarget().getImage(), bin.getExpression().getText()).encode(null, settings);
       enc.append(encodeElement.toString());
     }
 
@@ -592,7 +520,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
   private getEncodedRecordValidators(settings: ClassicEncodingSettings): string {
     const enc: StringBuilder = new StringBuilder();
 
-    for (let rv of this.recordValidators) {
+    for (const rv of this.recordValidators) {
       if (rv.getType() != null) {
         const encodeElement = new Element(rv.getType(), rv.encode()).encode(null, settings);
         enc.append(encodeElement.toString());
@@ -605,12 +533,9 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
   public getEncodedTableValidators(settings: ClassicEncodingSettings): string {
     const enc: StringBuilder = new StringBuilder();
 
-    for (let tv of this.tableValidators) {
+    for (const tv of this.tableValidators) {
       if ((tv as TableValidator).getType() != null) {
-        const encodeElement = new Element((tv as TableValidator).getType(), (tv as TableValidator).encode()).encode(
-          null,
-          settings
-        );
+        const encodeElement = new Element((tv as TableValidator).getType(), (tv as TableValidator).encode()).encode(null, settings);
         enc.append(encodeElement.toString());
       }
     }
@@ -663,7 +588,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
    * Returns true if table format contains fields of the specified type.
    */
   public hasFields(type: string): boolean {
-    for (let ff of this) {
+    for (const ff of this) {
       if (ff.getType() == type) {
         return true;
       }
@@ -759,9 +684,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
     }
 
     if (!Util.equals(this.getNamingExpression(), other.getNamingExpression())) {
-      return (
-        'Different naming expressions: need ' + this.getNamingExpression() + ', found ' + other.getNamingExpression()
-      );
+      return 'Different naming expressions: need ' + this.getNamingExpression() + ', found ' + other.getNamingExpression();
     }
 
     let otherBinding: any;
@@ -862,12 +785,12 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
   /**
    * Set the bindings.
    */
-  public setBindings(in_bindings: Array<Binding>): void {
+  public setBindings(bindings: Array<Binding>): void {
     if (this.immutable) {
       throw new Error('Immutable');
     }
 
-    this.bindings = in_bindings;
+    this.bindings = bindings;
   }
 
   public createTableValidators(source: string | null, settings: ClassicEncodingSettings) {
@@ -981,7 +904,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
     } else if (this.fields.length !== other.fields.length) {
       return false;
     } else {
-      for (let field of this.fields) {
+      for (const field of this.fields) {
         if (!other.fields.find(otherField => Util.equals(field, otherField))) {
           return false;
         }
@@ -1001,7 +924,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
         return false;
       }
     } else {
-      for (let validator of this.recordValidators) {
+      for (const validator of this.recordValidators) {
         if (!other.recordValidators.find(otherValidator => Util.equals(validator, otherValidator))) {
           return false;
         }
@@ -1013,7 +936,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
         return false;
       }
     } else {
-      for (let validator of this.tableValidators) {
+      for (const validator of this.tableValidators) {
         if (!other.tableValidators.find(otherValidator => Util.equals(validator, otherValidator))) {
           return false;
         }
@@ -1035,7 +958,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
         return false;
       }
     } else {
-      for (let binding of this.bindings) {
+      for (const binding of this.bindings) {
         if (!other.bindings.find(otherBinding => Util.equals(binding, otherBinding))) {
           return false;
         }
@@ -1046,7 +969,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
   }
 
   public isAdvanced(): boolean {
-    for (let ff of this) {
+    for (const ff of this) {
       if (ff.isAdvanced()) {
         return true;
       }
@@ -1060,7 +983,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
   }
 
   hasReadOnlyFields(): boolean {
-    for (let ff of this) {
+    for (const ff of this) {
       if (ff.isReadonly()) {
         return true;
       }

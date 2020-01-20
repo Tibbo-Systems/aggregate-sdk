@@ -19,7 +19,7 @@ import AbstractContext from '../../src/context/AbstractContext';
 
 describe('TestEncoding', () => {
   it('testUtfEncoding', () => {
-    const s: string = '\uFFFF\u0000\u0123';
+    const s = '\uFFFF\u0000\u0123';
 
     const st: DataTable = DataTableFactory.createWithFirstRecord(
       new TableFormat(1, 1, FieldFormatFactory.createType('f', FieldConstants.STRING_FIELD)),
@@ -60,7 +60,7 @@ describe('TestEncoding', () => {
   });
 
   it('testNestedTableEncoding', () => {
-    const strData: string = 'test % %% %%% test';
+    const strData = 'test % %% %%% test';
 
     const tf: TableFormat = new TableFormat();
 
@@ -133,7 +133,7 @@ describe('TestEncoding', () => {
     const table: DataTable = new DataRecord(tf).wrap();
 
     const encode: string = table.encodeDataTable(true) as string;
-    expect('<F=<<int><I><A=0>><<string><S><A=>>><R=<0><>>' === encode);
+    expect(encode).toBe('<F=<<int><I><A=0>><<string><S><A=>>><R=<0><>>');
   });
 
   it('testInnerTable', () => {
@@ -207,7 +207,7 @@ describe('TestEncoding', () => {
 
     table.encodeDataTable(ces.isUseVisibleSeparators(), ces);
     const encodedTable: string = table.encodeDataTable(ces.isUseVisibleSeparators(), ces) as string;
-    const expected: string = '<D=0><R=<test><<D=1><R=<12345.67><123>>><<NULL>>>';
+    const expected = '<D=0><R=<test><<D=1><R=<12345.67><123>>><<NULL>>>';
     expect(encodedTable === expected).toBeTruthy();
   });
 
@@ -225,7 +225,7 @@ describe('TestEncoding', () => {
 
     nested.encodeDataTable(ces.isUseVisibleSeparators(), ces);
     const encodedTable: string = nested.encodeDataTable(ces.isUseVisibleSeparators(), ces) as string;
-    const expected: string = '<R=<12345.67>><Q=198><T=2000-01-31 21:00:00.000>';
+    const expected = '<R=<12345.67>><Q=198><T=2000-01-31 21:00:00.000>';
     expect(expected === encodedTable).toBeTruthy();
   });
 });

@@ -12,7 +12,7 @@ import FieldFormat from '../datatable/FieldFormat';
 export default class Event extends JObject {
   public static readonly DEFAULT_EVENT_EXPIRATION_PERIOD = 100 * TimeHelper.DAY_IN_MS; // Milliseconds
 
-  private id: number = 0;
+  private id = 0;
   private readonly instantiationtime: Date = new Date();
   private creationtime: Date | null = null;
   private expirationtime: Date | null = null;
@@ -21,9 +21,9 @@ export default class Event extends JObject {
   private acknowledgements = new Array<Acknowledgement>();
   private data: DataTable | null = null;
   private listener: number | null = null;
-  private level: number = 0;
+  private level = 0;
   private permissions: Permissions | null = null;
-  private count: number = 1;
+  private count = 1;
   private enrichments = new Array<Enrichment>();
 
   private originator: any;
@@ -35,15 +35,7 @@ export default class Event extends JObject {
     this.setCreationtime(new Date(Date.now()));
   }
 
-  public static createEventWithPermission(
-    context: string,
-    def: EventDefinition,
-    level: number,
-    data: DataTable,
-    id: number,
-    creationtime: Date | null,
-    permissions: Permissions | null
-  ): Event {
+  public static createEventWithPermission(context: string, def: EventDefinition, level: number, data: DataTable, id: number, creationtime: Date | null, permissions: Permissions | null): Event {
     const event = new Event();
     event.init(context, def.getName(), level, data, id);
     event.name = def.getName();
@@ -135,7 +127,7 @@ export default class Event extends JObject {
     this.id = id;
   }
 
-  public setCreationtime(creationtime: Date) {
+  public setCreationtime(creationtime: Date | null) {
     this.creationtime = creationtime;
   }
 
@@ -167,8 +159,8 @@ export default class Event extends JObject {
     this.originator = originator;
   }
 
-  public getData(): DataTable | null {
-    return this.data;
+  public getData(): DataTable {
+    return this.data as DataTable;
   }
 
   public getListener(): number | null {
@@ -216,7 +208,7 @@ export default class Event extends JObject {
   }
 
   clone(): JObject {
-    let clone = super.clone() as Event;
+    const clone = super.clone() as Event;
     clone.acknowledgements = CloneUtils.deepClone<Acknowledgement[]>(this.acknowledgements) as Acknowledgement[];
     clone.enrichments = CloneUtils.deepClone<Enrichment[]>(this.enrichments) as Enrichment[];
     return clone;
@@ -226,7 +218,7 @@ export default class Event extends JObject {
     if (this === obj) return true;
     if (!obj) return false;
     if (!(obj instanceof Event)) return false;
-    let other = obj as Event;
+    const other = obj as Event;
     if (this.id == null || other.id == null) {
       return false;
     } else if (this.id !== other.id) return false;
@@ -234,18 +226,7 @@ export default class Event extends JObject {
   }
 
   toString(): string {
-    let dataSting =
-      this.data != null ? (!this.data.isSimple() ? this.data.dataAsString() : this.data.toString()) : 'no data';
-    return (
-      "Event '" +
-      name +
-      "' in context '" +
-      this.context +
-      "' with ID " +
-      this.id +
-      ': ' +
-      dataSting +
-      (this.listener != null ? ", for listener '" + this.listener + "'" : '')
-    );
+    const dataSting = this.data != null ? (!this.data.isSimple() ? this.data.dataAsString() : this.data.toString()) : 'no data';
+    return "Event '" + name + "' in context '" + this.context + "' with ID " + this.id + ': ' + dataSting + (this.listener != null ? ", for listener '" + this.listener + "'" : '');
   }
 }

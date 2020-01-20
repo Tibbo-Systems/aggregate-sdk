@@ -21,7 +21,7 @@ export default class Log4jLevelHelper {
   }
 
   public static getLog4jLevelByAggreGateLevel(aggreGateLevel: number): number {
-    for (let entry of Log4jLevelHelper.LEVEL_TABLE) {
+    for (const entry of Log4jLevelHelper.LEVEL_TABLE) {
       if (entry[1] == aggreGateLevel) {
         return entry[0];
       }

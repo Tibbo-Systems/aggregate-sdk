@@ -603,13 +603,11 @@ export default class Icons {
 
   public static readonly GB_COMPONENT_CHART_AREA: string = 'gb_component_chart_area';
 
-  public static readonly GB_COMPONENT_CHART_COMBINED_RANGE_CATEGORY: string =
-    'gb_component_chart_combined_range_category';
+  public static readonly GB_COMPONENT_CHART_COMBINED_RANGE_CATEGORY: string = 'gb_component_chart_combined_range_category';
 
   public static readonly GB_COMPONENT_CHART_LINE: string = 'gb_component_chart_line';
 
-  public static readonly GB_COMPONENT_CHART_COMBINED_DOMAIN_CATEGORY: string =
-    'gb_component_chart_combined_domain_category';
+  public static readonly GB_COMPONENT_CHART_COMBINED_DOMAIN_CATEGORY: string = 'gb_component_chart_combined_domain_category';
 
   public static readonly GB_COMPONENT_CHART_POLAR: string = 'gb_component_chart_polar';
 

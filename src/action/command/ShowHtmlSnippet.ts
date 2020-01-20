@@ -8,10 +8,9 @@ import WindowLocation from '../../util/WindowLocation';
 import DashboardProperties from '../../util/DashboardProperties';
 import DataTableBindingProvider from '../../datatable/DataTableBindingProvider';
 import DashboardsHierarchyInfo from '../../util/DashboardsHierarchyInfo';
-import ActionUtils from '../ActionUtils';
 import DataTable from '../../datatable/DataTable';
 import DataRecord from '../../datatable/DataRecord';
-import SimpleDataTable from '../../datatable/SimpleDataTable';
+import ActionUtilsConstants from '../ActionUtilsConstants';
 
 export default class ShowHtmlSnippet extends GenericActionCommand {
   public static readonly EXPRESSION_PATTERN: RegExp = new RegExp('<e>(.|\\n)*?</e>');
@@ -34,19 +33,11 @@ export default class ShowHtmlSnippet extends GenericActionCommand {
   public static readonly CFT_SHOW_HTML_SNIPPET: TableFormat = new TableFormat(1, 1);
 
   static __static_initializer_0() {
-    let ff: FieldFormat<any> = FieldFormatFactory.createWith(
-      ShowHtmlSnippet.CF_TYPE,
-      FieldConstants.INTEGER_FIELD,
-      Cres.get().getString('wHtmlSnippetType')
-    );
+    let ff: FieldFormat<any> = FieldFormatFactory.createWith(ShowHtmlSnippet.CF_TYPE, FieldConstants.INTEGER_FIELD, Cres.get().getString('wHtmlSnippetType'));
     ShowHtmlSnippet.CFT_SHOW_HTML_SNIPPET.addField(ff);
     ff.setSelectionValues(this.snippetTypes());
 
-    ff = FieldFormatFactory.createWith(
-      ShowHtmlSnippet.CF_URL,
-      FieldConstants.STRING_FIELD,
-      Cres.get().getString('wURL')
-    );
+    ff = FieldFormatFactory.createWith(ShowHtmlSnippet.CF_URL, FieldConstants.STRING_FIELD, Cres.get().getString('wURL'));
     ff.setNullable(true);
     ShowHtmlSnippet.CFT_SHOW_HTML_SNIPPET.addField(ff);
 
@@ -58,28 +49,18 @@ export default class ShowHtmlSnippet extends GenericActionCommand {
     ff.setDefault(new DashboardProperties().toDataTable());
     ShowHtmlSnippet.CFT_SHOW_HTML_SNIPPET.addField(ff);
 
-    ShowHtmlSnippet.CFT_SHOW_HTML_SNIPPET.addField(
-      '<' + ShowHtmlSnippet.CF_KEY + '><S><F=NH><D=' + Cres.get().getString('key') + '>'
-    );
+    ShowHtmlSnippet.CFT_SHOW_HTML_SNIPPET.addField('<' + ShowHtmlSnippet.CF_KEY + '><S><F=NH><D=' + Cres.get().getString('key') + '>');
 
     ff = FieldFormatFactory.create('<' + ShowHtmlSnippet.CF_DASHBOARDS_HIERARCHY_INFO + '><T><F=N>');
     ff.setDefault(new DashboardsHierarchyInfo().toDataTable());
     ShowHtmlSnippet.CFT_SHOW_HTML_SNIPPET.addField(ff);
 
-    ff = FieldFormatFactory.createWith(
-      ShowHtmlSnippet.CF_EXPRESSION,
-      FieldConstants.STRING_FIELD,
-      Cres.get().getString('wHtmlSnippetExpression')
-    );
+    ff = FieldFormatFactory.createWith(ShowHtmlSnippet.CF_EXPRESSION, FieldConstants.STRING_FIELD, Cres.get().getString('wHtmlSnippetExpression'));
     ff.setNullable(true);
     ff.setEditor(FieldConstants.EDITOR_EXPRESSION);
     ShowHtmlSnippet.CFT_SHOW_HTML_SNIPPET.addField(ff);
 
-    ff = FieldFormatFactory.createWith(
-      ShowHtmlSnippet.CF_HTML,
-      FieldConstants.STRING_FIELD,
-      Cres.get().getString('wHtmlSnippetHtml')
-    );
+    ff = FieldFormatFactory.createWith(ShowHtmlSnippet.CF_HTML, FieldConstants.STRING_FIELD, Cres.get().getString('wHtmlSnippetHtml'));
     ff.setNullable(true);
     ff.setEditor(FieldConstants.EDITOR_TEXT);
     ff.setEditorOptions(FieldConstants.TEXT_EDITOR_MODE_HTML);
@@ -88,30 +69,13 @@ export default class ShowHtmlSnippet extends GenericActionCommand {
     ff = FieldFormatFactory.create('<' + ShowHtmlSnippet.CF_RESOURCE_BUNDLE + '><S><F=NRH>');
     ShowHtmlSnippet.CFT_SHOW_HTML_SNIPPET.addField(ff);
 
-    ff = FieldFormatFactory.createWith(
-      ShowHtmlSnippet.CF_CHECK_HTML_VALIDITY,
-      FieldConstants.BOOLEAN_FIELD,
-      Cres.get().getString('wHtmlSnippetCheckHtmlValidity'),
-      true
-    );
+    ff = FieldFormatFactory.createWith(ShowHtmlSnippet.CF_CHECK_HTML_VALIDITY, FieldConstants.BOOLEAN_FIELD, Cres.get().getString('wHtmlSnippetCheckHtmlValidity'), true);
     ShowHtmlSnippet.CFT_SHOW_HTML_SNIPPET.addField(ff);
 
-    ShowHtmlSnippet.CFT_SHOW_HTML_SNIPPET.addBinding(
-      ShowHtmlSnippet.CF_URL + '#' + DataTableBindingProvider.PROPERTY_HIDDEN,
-      '{' + ShowHtmlSnippet.CF_TYPE + '} != ' + ShowHtmlSnippet.TYPE_FRAME
-    );
-    ShowHtmlSnippet.CFT_SHOW_HTML_SNIPPET.addBinding(
-      ShowHtmlSnippet.CF_EXPRESSION + '#' + DataTableBindingProvider.PROPERTY_HIDDEN,
-      '{' + ShowHtmlSnippet.CF_TYPE + '} != ' + ShowHtmlSnippet.TYPE_EXPRESSION
-    );
-    ShowHtmlSnippet.CFT_SHOW_HTML_SNIPPET.addBinding(
-      ShowHtmlSnippet.CF_HTML + '#' + DataTableBindingProvider.PROPERTY_HIDDEN,
-      '{' + ShowHtmlSnippet.CF_TYPE + '} != ' + ShowHtmlSnippet.TYPE_HTML
-    );
-    ShowHtmlSnippet.CFT_SHOW_HTML_SNIPPET.addBinding(
-      ShowHtmlSnippet.CF_CHECK_HTML_VALIDITY + '#' + DataTableBindingProvider.PROPERTY_HIDDEN,
-      '{' + ShowHtmlSnippet.CF_TYPE + '} != ' + ShowHtmlSnippet.TYPE_HTML
-    );
+    ShowHtmlSnippet.CFT_SHOW_HTML_SNIPPET.addBinding(ShowHtmlSnippet.CF_URL + '#' + DataTableBindingProvider.PROPERTY_HIDDEN, '{' + ShowHtmlSnippet.CF_TYPE + '} != ' + ShowHtmlSnippet.TYPE_FRAME);
+    ShowHtmlSnippet.CFT_SHOW_HTML_SNIPPET.addBinding(ShowHtmlSnippet.CF_EXPRESSION + '#' + DataTableBindingProvider.PROPERTY_HIDDEN, '{' + ShowHtmlSnippet.CF_TYPE + '} != ' + ShowHtmlSnippet.TYPE_EXPRESSION);
+    ShowHtmlSnippet.CFT_SHOW_HTML_SNIPPET.addBinding(ShowHtmlSnippet.CF_HTML + '#' + DataTableBindingProvider.PROPERTY_HIDDEN, '{' + ShowHtmlSnippet.CF_TYPE + '} != ' + ShowHtmlSnippet.TYPE_HTML);
+    ShowHtmlSnippet.CFT_SHOW_HTML_SNIPPET.addBinding(ShowHtmlSnippet.CF_CHECK_HTML_VALIDITY + '#' + DataTableBindingProvider.PROPERTY_HIDDEN, '{' + ShowHtmlSnippet.CF_TYPE + '} != ' + ShowHtmlSnippet.TYPE_HTML);
   }
 
   private static snippetTypes(): Map<number, string> {
@@ -128,7 +92,7 @@ export default class ShowHtmlSnippet extends GenericActionCommand {
   private url: string | null = null;
   private snippetType: number | null = null;
   private html: string | null = null;
-  private checkHtmlValidity: boolean = false;
+  private checkHtmlValidity = false;
   private expression: string | null = null;
   private dhInfo: DashboardsHierarchyInfo | null = null;
   private resourceBundle: string | null = null;
@@ -150,7 +114,7 @@ export default class ShowHtmlSnippet extends GenericActionCommand {
   }
 
   public constructor() {
-    super(ActionUtils.CMD_SHOW_HTML_SNIPPET, ShowHtmlSnippet.CFT_SHOW_HTML_SNIPPET, null);
+    super(ActionUtilsConstants.CMD_SHOW_HTML_SNIPPET, ShowHtmlSnippet.CFT_SHOW_HTML_SNIPPET, null);
   }
 
   public static createShowHtmlSnippetWithDataTable(title: string, parameters: DataTable) {
@@ -170,10 +134,7 @@ export default class ShowHtmlSnippet extends GenericActionCommand {
     rec.setValue(ShowHtmlSnippet.CF_LOCATION, this.getLocation() != null ? loc && loc.toDataTable() : null);
     rec.setValue(ShowHtmlSnippet.CF_DASHBOARD, this.getDashboard() != null ? dash && dash.toDataTable() : null);
     rec.setValue(ShowHtmlSnippet.CF_KEY, this.getKey());
-    rec.setValue(
-      ShowHtmlSnippet.CF_DASHBOARDS_HIERARCHY_INFO,
-      this.getDashboardsHierarchyInfo() != null ? dashHier && dashHier.toDataTable() : null
-    );
+    rec.setValue(ShowHtmlSnippet.CF_DASHBOARDS_HIERARCHY_INFO, this.getDashboardsHierarchyInfo() != null ? dashHier && dashHier.toDataTable() : null);
     rec.setValue(ShowHtmlSnippet.CF_HTML, this.getHtml());
     rec.setValue(ShowHtmlSnippet.CF_CHECK_HTML_VALIDITY, this.getCheckHtmlValidity());
     rec.setValue(ShowHtmlSnippet.CF_EXPRESSION, this.getExpression());

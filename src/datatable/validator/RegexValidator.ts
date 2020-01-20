@@ -41,19 +41,10 @@ export default class RegexValidator extends AbstractFieldValidator<any> {
     return FieldConstants.VALIDATOR_REGEX;
   }
 
-  public validate(
-    context?: Context<any, any> | null,
-    contextManager?: ContextManager<Context<any, any>> | null,
-    caller?: CallerController | null,
-    value?: any
-  ): any {
+  public validate(context?: Context<any, any> | null, contextManager?: ContextManager<Context<any, any>> | null, caller?: CallerController | null, value?: any): any {
     try {
       if (value != null && !value.toString().match(this.regex)) {
-        throw new Error(
-          this.message != null
-            ? this.message
-            : MessageFormat.format(Cres.get().getString('dtValueDoesNotMatchPattern'), value, this.regex)
-        );
+        throw new Error(this.message != null ? this.message : MessageFormat.format(Cres.get().getString('dtValueDoesNotMatchPattern'), value, this.regex));
       }
     } catch (ex) {
       throw new Error(ex.message);

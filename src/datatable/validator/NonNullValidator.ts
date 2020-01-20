@@ -19,12 +19,7 @@ export default class NonNullValidator extends AbstractFieldValidator<any> {
     return FieldConstants.VALIDATOR_NON_NULL;
   }
 
-  public validate(
-    context: Context<any, any>,
-    contextManager: ContextManager<Context<any, any>>,
-    caller: CallerController,
-    value: any
-  ): any {
+  public validate(context: Context<any, any>, contextManager: ContextManager<Context<any, any>>, caller: CallerController, value: any): any {
     if (value == null) {
       throw new Error(this.message != null ? this.message : Cres.get().getString('dtValueIsRequired'));
     }

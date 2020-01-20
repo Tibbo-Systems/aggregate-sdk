@@ -9,7 +9,7 @@ export default abstract class Command extends JObject {
 
   protected data: ByteBuffer;
 
-  protected completed: boolean = false;
+  protected completed = false;
 
   constructor(data: ByteBuffer = new ByteBuffer(32)) {
     super();
@@ -56,18 +56,18 @@ export default abstract class Command extends JObject {
     return this.data.offset;
   }
 
-  send(byteChannel: BlockingChannel, encapsulate: boolean = true): void {
+  send(byteChannel: BlockingChannel, encapsulate = true): void {
     if (byteChannel == null || !byteChannel.isOpen()) {
       throw new Error(Cres.get().getString('disconnected'));
     }
 
     try {
-      let header: string | null = encapsulate ? this.header() : null;
-      let footer: string | null = encapsulate ? this.footer() : null;
+      const header: string | null = encapsulate ? this.header() : null;
+      const footer: string | null = encapsulate ? this.footer() : null;
 
-      let size: number = (header != null ? header.length : 0) + this.size() + (footer != null ? footer.length : 0);
+      const size: number = (header != null ? header.length : 0) + this.size() + (footer != null ? footer.length : 0);
 
-      let buff: ByteBuffer = ByteBuffer.allocate(size);
+      const buff: ByteBuffer = ByteBuffer.allocate(size);
 
       if (header != null) {
         buff.append(header, 'utf8');
@@ -79,7 +79,7 @@ export default abstract class Command extends JObject {
       }
       buff.flip();
 
-      let sent: number = 0;
+      let sent = 0;
 
       do {
         sent += byteChannel.write(buff);

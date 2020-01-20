@@ -1,7 +1,7 @@
 export default class EventSortDirective {
   private field: string | null = null;
-  private tablefield: boolean = false;
-  private ascending: boolean = false;
+  private tablefield = false;
+  private ascending = false;
 
   public EventSortDirective(column: string, tablefield: boolean, ascending: boolean) {
     this.field = column;

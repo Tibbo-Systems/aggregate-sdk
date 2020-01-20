@@ -5,7 +5,7 @@ export default class ElementList extends JObject {
   private readonly elements: Array<Element> = [];
 
   public getElement(name: string): Element | null {
-    for (let el of this.elements) {
+    for (const el of this.elements) {
       if (el.getName() != null && el.getName() === name) {
         return el;
       }
@@ -19,8 +19,7 @@ export default class ElementList extends JObject {
   }
 
   public get(index: number): Element {
-    if (this.elements.length <= index || index < 0)
-      throw new Error('Index: ' + index + ', Size: ' + this.elements.length);
+    if (this.elements.length <= index || index < 0) throw new Error('Index: ' + index + ', Size: ' + this.elements.length);
 
     return this.elements[index];
   }

@@ -20,33 +20,22 @@ import QueuedEvent from './QueuedEvent';
 import Log from '../Log';
 
 export default class DefaultContextManager<T extends Context<any, any>> extends JObject implements ContextManager<T> {
-  private async: boolean = false;
+  private async = false;
 
   private rootContext: T | null = null;
 
   private readonly callerController: CallerController = new UncheckedCallerController();
 
   private eventDispatcher: EventDispatcher | null = null;
-  private eventDispatcherOwner: boolean = true;
+  private eventDispatcherOwner = true;
 
-  private readonly eventListeners: Map<string, Map<string, ContextEventListenerSet>> = new Map<
-    string,
-    Map<string, ContextEventListenerSet>
-  >();
+  private readonly eventListeners: Map<string, Map<string, ContextEventListenerSet>> = new Map<string, Map<string, ContextEventListenerSet>>();
 
-  private readonly maskListeners: Map<string, Map<string, ContextEventListenerSet>> = new Map<
-    string,
-    Map<string, ContextEventListenerSet>
-  >();
+  private readonly maskListeners: Map<string, Map<string, ContextEventListenerSet>> = new Map<string, Map<string, ContextEventListenerSet>>();
 
-  private started: boolean = false;
+  private started = false;
 
-  constructor(
-    async: boolean,
-    eventQueueLength: number = JConstants.INTEGER_MAX_VALUE,
-    concurrentDispatcherCount: number | null = null,
-    eventDispatcher: EventDispatcher | null = null
-  ) {
+  constructor(async: boolean, eventQueueLength: number = JConstants.INTEGER_MAX_VALUE, concurrentDispatcherCount: number | null = null, eventDispatcher: EventDispatcher | null = null) {
     super();
     this.async = async;
     if (eventDispatcher != null) {
@@ -101,29 +90,23 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
   }
 
   get(contextName: string, caller: CallerController | null = null): T | null {
-    let root: T | null = this.getRoot();
+    const root: T | null = this.getRoot();
     return root != null ? (root.get(contextName, caller) as T) : null;
   }
 
-  private addEventListener(
-    context: string,
-    event: string,
-    listener: DefaultContextEventListener,
-    mask: boolean,
-    weak: boolean
-  ): void {
+  private addEventListener(context: string, event: string, listener: DefaultContextEventListener, mask: boolean, weak: boolean): void {
     // Distributed: ok, because remote events will be redirected to this server
-    let con = this.get(context, listener.getCallerController());
+    const con = this.get(context, listener.getCallerController());
 
     if (con != null) {
-      let events: Array<EventDefinition> = EventUtils.getEvents(con, event, listener.getCallerController());
+      const events: Array<EventDefinition> = EventUtils.getEvents(con, event, listener.getCallerController());
 
-      for (let ed of events) {
+      for (const ed of events) {
         this.addListenerToContext(con, ed.getName(), listener, mask, weak);
       }
     } else {
       if (!mask) {
-        let eel: ContextEventListenerSet = this.getListeners(context, event);
+        const eel: ContextEventListenerSet = this.getListeners(context, event);
 
         if (!eel.contains(listener)) {
           eel.addListener(listener, weak);
@@ -132,26 +115,15 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
     }
   }
 
-  protected addListenerToContext(
-    con: T,
-    event: string,
-    listener: DefaultContextEventListener,
-    mask: boolean,
-    weak: boolean
-  ): void {
-    let ed: EventDefinition | null = con.getEventDefinition(event, listener.getCallerController());
+  protected addListenerToContext(con: T, event: string, listener: DefaultContextEventListener, mask: boolean, weak: boolean): void {
+    const ed: EventDefinition | null = con.getEventDefinition(event, listener.getCallerController());
     if (ed != null) {
       con.addEventListener(event, listener, weak);
     }
   }
 
-  private removeEventListener(
-    context: string,
-    event: string,
-    listener: DefaultContextEventListener,
-    mask: boolean
-  ): void {
-    let con: T | null = this.get(context, listener.getCallerController());
+  private removeEventListener(context: string, event: string, listener: DefaultContextEventListener, mask: boolean): void {
+    const con: T | null = this.get(context, listener.getCallerController());
 
     if (con != null) {
       if (con.getEventDefinition(event, null) != null) {
@@ -159,7 +131,7 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
       }
     } else {
       if (!mask) {
-        let eel: ContextEventListenerSet = this.getListeners(context, event);
+        const eel: ContextEventListenerSet = this.getListeners(context, event);
 
         if (eel != null) {
           eel.removeListener(listener);
@@ -168,67 +140,51 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
     }
   }
 
-  protected removeListenerFromContext(
-    con: T,
-    event: string,
-    listener: DefaultContextEventListener,
-    mask: boolean
-  ): void {
+  protected removeListenerFromContext(con: T, event: string, listener: DefaultContextEventListener, mask: boolean): void {
     con.removeEventListener(event, listener);
   }
 
-  addMaskEventListener(
-    mask: string,
-    event: string,
-    listener: DefaultContextEventListener,
-    weak: boolean = false
-  ): void {
-    let contexts: Array<string> = ContextUtils.expandMaskToPaths(mask, this, listener.getCallerController(), false);
+  addMaskEventListener(mask: string, event: string, listener: DefaultContextEventListener, weak = false): void {
+    const contexts: Array<string> = ContextUtils.expandMaskToPaths(mask, this, listener.getCallerController(), false);
 
-    for (let con of contexts) {
+    for (const con of contexts) {
       this.addEventListener(con, event, listener, true, weak);
     }
 
-    let listeners: ContextEventListenerSet = this.getMaskListeners(mask, event);
+    const listeners: ContextEventListenerSet = this.getMaskListeners(mask, event);
 
     listeners.addListener(listener, weak);
   }
 
   removeMaskEventListener(mask: string, event: string, listener: DefaultContextEventListener): void {
-    let contexts: Array<Context<any, any>> = ContextUtils.expandMaskToContexts(
-      mask,
-      this,
-      listener.getCallerController()
-    );
+    const contexts: Array<Context<any, any>> = ContextUtils.expandMaskToContexts(mask, this, listener.getCallerController());
 
-    for (let con of contexts) {
+    for (const con of contexts) {
       if (!con.isInitializedEvents()) {
         continue;
       }
 
-      let events: Array<EventDefinition> = EventUtils.getEvents(con, event, listener.getCallerController());
+      const events: Array<EventDefinition> = EventUtils.getEvents(con, event, listener.getCallerController());
 
-      for (let ed of events) {
+      for (const ed of events) {
         this.removeEventListener(con.getPath(), ed.getName(), listener, true);
       }
     }
 
-    let listeners: ContextEventListenerSet = this.getMaskListeners(mask, event);
+    const listeners: ContextEventListenerSet = this.getMaskListeners(mask, event);
 
     listeners.removeListener(listener);
   }
 
   protected getListeners(context: string, event: string): ContextEventListenerSet {
-    let cel: Map<String, ContextEventListenerSet> = this.getContextListeners(context);
+    const cel: Map<string, ContextEventListenerSet> = this.getContextListeners(context);
 
     let cels = cel.get(event);
 
     if (!cels) {
-      cels = new ContextEventListenerSet(this);
-      //@ts-ignore
+      cels = ContextEventListenerSet.fromContextManager(this);
       cel.set(event, cels);
     }
-    //@ts-ignore
     return cels;
   }
 
@@ -244,16 +200,14 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
   }
 
   private getMaskListeners(mask: string, event: string): ContextEventListenerSet {
-    let cel: Map<string, ContextEventListenerSet> = this.getContextMaskListeners(mask);
+    const cel: Map<string, ContextEventListenerSet> = this.getContextMaskListeners(mask);
 
     let eel = cel.get(event);
 
     if (!eel) {
-      eel = new ContextEventListenerSet(this);
-      //@ts-ignore
+      eel = ContextEventListenerSet.fromContextManager(this);
       cel.set(event, eel);
     }
-    //@ts-ignore
     return eel;
   }
 
@@ -267,19 +221,19 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
   }
 
   contextAdded(con: T): void {
-    let cel = this.eventListeners.get(con.getPath());
+    const cel = this.eventListeners.get(con.getPath());
 
     if (cel) {
-      for (let event of cel.keys()) {
-        let cels: ContextEventListenerSet = cel.get(event) as ContextEventListenerSet;
-        for (let celi of cels.getListenersInfo()) {
+      for (const event of cel.keys()) {
+        const cels: ContextEventListenerSet = cel.get(event) as ContextEventListenerSet;
+        for (const celi of cels.getListenersInfo()) {
           if (con.getEventData(event) != null) {
             con.addEventListener(event, celi.getListener(), celi.isWeak());
           }
         }
       }
     }
-    for (let mask of this.maskListeners.keys()) {
+    for (const mask of this.maskListeners.keys()) {
       if (ContextUtils.matchesToMask(mask, con.getPath())) {
         this.addMaskListenerToContext(mask, con);
       }
@@ -291,16 +245,16 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
   }
 
   public addMaskListenerToContext(mask: string, con: T): void {
-    let mcel: Map<string, ContextEventListenerSet> = this.getContextMaskListeners(mask);
+    const mcel: Map<string, ContextEventListenerSet> = this.getContextMaskListeners(mask);
 
     if (ContextUtils.matchesToMask(mask, con.getPath())) {
-      for (let event of mcel.keys()) {
-        let listeners: ContextEventListenerSet = mcel.get(event) as ContextEventListenerSet;
+      for (const event of mcel.keys()) {
+        const listeners: ContextEventListenerSet = mcel.get(event) as ContextEventListenerSet;
 
-        for (let li of listeners.getListenersInfo()) {
-          let events: Array<EventDefinition> = EventUtils.getEvents(con, event, li.getListener().getCallerController());
+        for (const li of listeners.getListenersInfo()) {
+          const events: Array<EventDefinition> = EventUtils.getEvents(con, event, li.getListener().getCallerController());
 
-          for (let ed of events) {
+          for (const ed of events) {
             this.addListenerToContext(con, ed.getName(), li.getListener(), true, li.isWeak());
           }
         }
@@ -309,28 +263,22 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
   }
 
   contextRemoved(con: T): void {
-    let _this = this;
+    const _this = this;
     con.accept(
       new (class Visitor extends DefaultContextVisitor {
         visit(vc: Context<any, any>): void {
-          for (let mask of _this.maskListeners.keys()) {
+          for (const mask of _this.maskListeners.keys()) {
             if (ContextUtils.matchesToMask(mask, vc.getPath())) {
-              let contextMaskListeners = _this.getContextMaskListeners(mask);
+              const contextMaskListeners = _this.getContextMaskListeners(mask);
 
-              let contextMaskListenersCopy: Map<string, ContextEventListenerSet>;
+              const contextMaskListenersCopy = new Map<string, ContextEventListenerSet>(contextMaskListeners);
 
-              contextMaskListenersCopy = new Map<string, ContextEventListenerSet>(contextMaskListeners);
+              for (const event of contextMaskListenersCopy.keys()) {
+                const cels: ContextEventListenerSet = _this.getMaskListeners(mask, event);
+                for (const li of cels.getListenersInfo()) {
+                  const events: Array<EventDefinition> = EventUtils.getEvents(vc, event, li.getListener().getCallerController());
 
-              for (let event of contextMaskListenersCopy.keys()) {
-                let cels: ContextEventListenerSet = _this.getMaskListeners(mask, event);
-                for (let li of cels.getListenersInfo()) {
-                  let events: Array<EventDefinition> = EventUtils.getEvents(
-                    vc,
-                    event,
-                    li.getListener().getCallerController()
-                  );
-
-                  for (let ed of events) {
+                  for (const ed of events) {
                     vc.removeEventListener(ed.getName(), li.getListener());
                   }
                 }
@@ -344,13 +292,13 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
     con.accept(
       new (class Visitor extends DefaultContextVisitor {
         visit(vc: Context<any, any>): void {
-          let cel: Map<string, ContextEventListenerSet> = _this.getContextListeners(vc.getPath());
+          const cel: Map<string, ContextEventListenerSet> = _this.getContextListeners(vc.getPath());
           const eventDefinitions: Array<EventDefinition> = vc.getEventDefinitions(_this.callerController, false);
-          for (let ed of eventDefinitions) {
-            let edata: EventData = vc.getEventData(ed.getName());
-            let listeners = cel.get(ed.getName());
+          for (const ed of eventDefinitions) {
+            const edata: EventData = vc.getEventData(ed.getName());
+            const listeners = cel.get(ed.getName());
             if (listeners) {
-              for (let celi of edata.getListenersInfo()) {
+              for (const celi of edata.getListenersInfo()) {
                 listeners.addListener(celi.getListener(), celi.isWeak());
               }
             }
@@ -363,15 +311,15 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
   contextInfoChanged(con: T): void {}
 
   eventAdded(con: T, ed: EventDefinition): void {
-    for (let mask of this.maskListeners.keys()) {
+    for (const mask of this.maskListeners.keys()) {
       if (ContextUtils.matchesToMask(mask, con.getPath())) {
-        let cel: Map<string, ContextEventListenerSet> = this.getContextMaskListeners(mask);
+        const cel: Map<string, ContextEventListenerSet> = this.getContextMaskListeners(mask);
 
-        for (let event of cel.keys()) {
+        for (const event of cel.keys()) {
           if (EventUtils.matchesToMask(event, ed)) {
-            let listeners = cel.get(event) as ContextEventListenerSet;
+            const listeners = cel.get(event) as ContextEventListenerSet;
 
-            for (let li of listeners.getListenersInfo()) {
+            for (const li of listeners.getListenersInfo()) {
               this.addListenerToContext(con, ed.getName(), li.getListener(), true, li.isWeak());
             }
           }
@@ -395,8 +343,7 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
   }
 
   getEventQueueStatistics(): Map<string, number> {
-    //@ts-ignore
-    return this.eventDispatcher.getEventQueueStatistics();
+    return this.eventDispatcher?.getEventQueueStatistics() ?? new Map<string, number>();
   }
 
   getEventsProcessed(): number {
@@ -408,7 +355,7 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
   }
 
   queue(ed: EventData, ev: Event, request: FireEventRequestController | null): void {
-    let dispatcher: EventDispatcher | null = this.eventDispatcher;
+    const dispatcher: EventDispatcher | null = this.eventDispatcher;
 
     if (dispatcher != null) {
       dispatcher.registerIncomingEvent();
@@ -420,11 +367,10 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
         dispatcher.registerProcessedEvent();
       }
     } else {
-      let qe = new QueuedEvent(ed, ev);
+      const qe = new QueuedEvent(ed, ev);
 
       try {
-        //@ts-ignore
-        dispatcher.queue(qe, request);
+        dispatcher?.queue(qe, request);
       } catch (ex1) {
         Log.CONTEXT_EVENTS.debug('Interrupted while queueing event: ' + ev);
       }

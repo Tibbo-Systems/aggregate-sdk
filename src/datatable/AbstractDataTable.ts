@@ -8,11 +8,28 @@ import Log from '../Log';
 import FormatCache from './encoding/FormatCache';
 import FieldFormat from './FieldFormat';
 import DataTableQuery from './DataTableQuery';
-import RecordValidator from './validator/RecordValidator';
 import JObject from '../util/java/JObject';
 import TableFormat from './TableFormat';
+import DateFieldFormat from './field/DateFieldFormat';
+import QueryCondition from './QueryCondition';
+import DataTableSorter from './DataTableSorter';
+import SortOrder from './SortOrder';
+import Util from '../util/Util';
+import CallerController from '../context/CallerController';
+import ContextManager from '../context/ContextManager';
+import Context from '../context/Context';
+import FieldValidator from './validator/FieldValidator';
+import Expression from '../expression/Expression';
+import Evaluator from '../expression/Evaluator';
+import DefaultReferenceResolver from '../expression/DefaultReferenceResolver';
+import Reference from '../expression/Reference';
+import AbstractReferenceResolver from '../expression/AbstractReferenceResolver';
+import EvaluationEnvironment from '../expression/EvaluationEnvironment';
+import DataTableUtils from './DataTableUtils';
+import ElementList from '../util/ElementList';
+import FieldConstants from './field/FieldConstants';
 
-export default abstract class AbstractDataTable extends JObject implements DataTable {
+export default abstract class AbstractDataTable extends DataTable {
   private static readonly ELEMENT_FORMAT: string = 'F';
   private static readonly ELEMENT_FORMAT_ID: string = 'D';
   private static readonly ELEMENT_QUALITY: string = 'Q';
@@ -29,13 +46,13 @@ export default abstract class AbstractDataTable extends JObject implements DataT
   private quality: number | null = null;
   private timestamp: Date | null = null;
   private invalidationMessage: string | null = null;
-  protected immutable: boolean = false;
+  protected immutable = false;
   protected id: number | null = null;
   protected namingEvaluator: Evaluator | null = null;
 
   public static DEFAULT_FORMAT: TableFormat = new TableFormat();
 
-  public format: TableFormat = AbstractDataTable.DEFAULT_FORMAT;
+  protected format: TableFormat = AbstractDataTable.DEFAULT_FORMAT;
 
   public isImmutable(): boolean {
     return this.immutable;
@@ -63,7 +80,7 @@ export default abstract class AbstractDataTable extends JObject implements DataT
       return null;
     }
 
-    for (let rec of this) {
+    for (const rec of this) {
       if (rec != null) {
         if (rec.getId() != null && rec.getId() === id) {
           return rec;
@@ -84,12 +101,7 @@ export default abstract class AbstractDataTable extends JObject implements DataT
 
   public abstract reorderRecord(record: DataRecord, index: number): void;
 
-  abstract getEncodedRecordsOrTableID(
-    finalSB: StringBuilder,
-    settings: ClassicEncodingSettings,
-    isTransferEncode: boolean,
-    encodeLevel: number
-  ): void;
+  abstract getEncodedRecordsOrTableID(finalSB: StringBuilder, settings: ClassicEncodingSettings, isTransferEncode: boolean, encodeLevel: number): void;
 
   /**
    * Returns number of fields in the table.
@@ -136,26 +148,22 @@ export default abstract class AbstractDataTable extends JObject implements DataT
     return this.getEncodedDataFromEncodingSettings(new ClassicEncodingSettings(false));
   }
 
-  validate(
-    context: Context<any, any>,
-    contextManager: ContextManager<any> | null,
-    caller: CallerController | null
-  ): void {
+  validate(context: Context<any, any>, contextManager: ContextManager<any> | null, caller: CallerController | null): void {
     if (this.isInvalid()) {
       throw new Error(this.invalidationMessage || '');
     }
 
-    for (let tv of this.getFormat().getTableValidators()) {
+    for (const tv of this.getFormat().getTableValidators()) {
       tv.validate(this);
     }
-    for (let rec of this) {
-      for (let rv of this.getFormat().getRecordValidators()) {
+    for (const rec of this) {
+      for (const rv of this.getFormat().getRecordValidators()) {
         if (rec != null) rv.validate(this, rec);
       }
-      for (let ff of this.getFormat()) {
+      for (const ff of this.getFormat()) {
         const fvs: Array<FieldValidator<any>> | null = ff.getValidators();
         if (fvs != null) {
-          for (let fv of fvs) {
+          for (const fv of fvs) {
             try {
               if (rec != null) fv.validate(context, contextManager, caller, rec.getValue(ff.getName()));
             } catch (e) {
@@ -165,9 +173,9 @@ export default abstract class AbstractDataTable extends JObject implements DataT
         }
       }
     }
-    for (let ff of this.getFormat()) {
+    for (const ff of this.getFormat()) {
       if (ff.getType() === FieldConstants.DATATABLE_FIELD) {
-        for (let r of this) {
+        for (const r of this) {
           if (r != null) {
             const rec: DataRecord = r as DataRecord;
             const nested: DataTable | null = rec.getDataTable(ff.getName());
@@ -206,19 +214,14 @@ export default abstract class AbstractDataTable extends JObject implements DataT
     return this.invalidationMessage || '';
   }
 
-  encode(
-    finalSB: StringBuilder = new StringBuilder(),
-    settings: ClassicEncodingSettings,
-    isTransferEncode: boolean = false,
-    encodeLevel: number
-  ): StringBuilder | null {
+  encode(finalSB: StringBuilder = new StringBuilder(), settings: ClassicEncodingSettings, isTransferEncode = false, encodeLevel: number): StringBuilder {
     if (!settings) {
       settings = new ClassicEncodingSettings(isTransferEncode);
     }
 
     let formatId: number | null = null,
-      isKnown: boolean = false,
-      formatWasInserted: boolean = false,
+      isKnown = false,
+      formatWasInserted = false,
       needToInsertFormat: boolean = settings != null && settings.isEncodeFormat();
 
     const collector: KnownFormatCollector | null = settings != null ? settings.getKnownFormatCollector() : null;
@@ -232,12 +235,7 @@ export default abstract class AbstractDataTable extends JObject implements DataT
 
           if (formatId != null && collector.isKnown(formatId) && collector.isMarked(formatId)) {
             // Format is known - inserting ID only
-            new Element(AbstractDataTable.ELEMENT_FORMAT_ID, formatId.toString()).encode(
-              finalSB,
-              settings,
-              isTransferEncode,
-              encodeLevel
-            );
+            new Element(AbstractDataTable.ELEMENT_FORMAT_ID, formatId.toString()).encode(finalSB, settings, isTransferEncode, encodeLevel);
 
             isKnown = true;
           } else {
@@ -246,18 +244,8 @@ export default abstract class AbstractDataTable extends JObject implements DataT
               settings.setEncodeFormat(true);
 
               // Format is not known - inserting both format and ID
-              Element.createFromStringEncodable(AbstractDataTable.ELEMENT_FORMAT, this.getFormat()).encode(
-                finalSB,
-                settings,
-                isTransferEncode,
-                encodeLevel
-              );
-              new Element(AbstractDataTable.ELEMENT_FORMAT_ID, formatId != null ? formatId.toString() : null).encode(
-                finalSB,
-                settings,
-                isTransferEncode,
-                encodeLevel
-              );
+              Element.createFromStringEncodable(AbstractDataTable.ELEMENT_FORMAT, this.getFormat()).encode(finalSB, settings, isTransferEncode, encodeLevel);
+              new Element(AbstractDataTable.ELEMENT_FORMAT_ID, formatId != null ? formatId.toString() : null).encode(finalSB, settings, isTransferEncode, encodeLevel);
 
               formatWasInserted = true;
             } finally {
@@ -272,12 +260,7 @@ export default abstract class AbstractDataTable extends JObject implements DataT
         try {
           settings.setEncodeFormat(true);
 
-          Element.createFromStringEncodable(AbstractDataTable.ELEMENT_FORMAT, this.getFormat()).encode(
-            finalSB,
-            settings,
-            isTransferEncode,
-            encodeLevel
-          );
+          Element.createFromStringEncodable(AbstractDataTable.ELEMENT_FORMAT, this.getFormat()).encode(finalSB, settings, isTransferEncode, encodeLevel);
 
           formatWasInserted = true;
         } finally {
@@ -300,12 +283,7 @@ export default abstract class AbstractDataTable extends JObject implements DataT
     }
 
     if (this.isInvalid()) {
-      new Element(AbstractDataTable.ELEMENT_FORMAT, this.invalidationMessage).encode(
-        finalSB,
-        settings,
-        isTransferEncode,
-        encodeLevel
-      );
+      new Element(AbstractDataTable.ELEMENT_FORMAT, this.invalidationMessage).encode(finalSB, settings, isTransferEncode, encodeLevel);
     }
 
     if (!isKnown && formatId != null && collector != null) {
@@ -326,44 +304,24 @@ export default abstract class AbstractDataTable extends JObject implements DataT
     else return null;
   }
 
-  public getEncodedData(
-    finalSB: StringBuilder,
-    settings: ClassicEncodingSettings,
-    isTransferEncode: boolean,
-    encodeLevel: number
-  ): StringBuilder {
+  public getEncodedData(finalSB: StringBuilder, settings: ClassicEncodingSettings, isTransferEncode: boolean, encodeLevel: number): StringBuilder {
     const encodeFieldNames: boolean = settings == null || settings.isEncodeFieldNames();
 
     if (encodeFieldNames) {
       for (let i = 0; i < this.format.getFieldCount(); i++) {
         const field: FieldFormat<any> | null = this.format.getField(i);
-        new Element(AbstractDataTable.ELEMENT_FIELD_NAME, field === null ? null : field.getName()).encode(
-          finalSB,
-          settings,
-          isTransferEncode,
-          encodeLevel
-        );
+        new Element(AbstractDataTable.ELEMENT_FIELD_NAME, field === null ? null : field.getName()).encode(finalSB, settings, isTransferEncode, encodeLevel);
       }
     }
 
     this.getEncodedRecordsOrTableID(finalSB, settings, isTransferEncode, encodeLevel);
 
     if (this.quality != null) {
-      new Element(AbstractDataTable.ELEMENT_QUALITY, this.quality.toString()).encode(
-        finalSB,
-        settings,
-        isTransferEncode,
-        encodeLevel
-      );
+      new Element(AbstractDataTable.ELEMENT_QUALITY, this.quality.toString()).encode(finalSB, settings, isTransferEncode, encodeLevel);
     }
 
     if (this.timestamp != null) {
-      new Element(AbstractDataTable.ELEMENT_TIMESTAMP, DateFieldFormat.dateToString(this.timestamp)).encode(
-        finalSB,
-        settings,
-        isTransferEncode,
-        encodeLevel
-      );
+      new Element(AbstractDataTable.ELEMENT_TIMESTAMP, DateFieldFormat.dateToString(this.timestamp)).encode(finalSB, settings, isTransferEncode, encodeLevel);
     }
 
     return finalSB;
@@ -433,19 +391,11 @@ export default abstract class AbstractDataTable extends JObject implements DataT
     return this.namingEvaluator as Evaluator;
   }
 
-  public dataAsString(
-    showFieldNames: boolean = true,
-    showHiddenFields: boolean = false,
-    showPasswords: boolean = true
-  ): string {
+  public dataAsString(showFieldNames = true, showHiddenFields = false, showPasswords = true): string {
     return this.dataAsStringWithParams(showFieldNames, showHiddenFields, showPasswords);
   }
 
-  protected abstract dataAsStringWithParams(
-    showFieldNames: boolean,
-    showHiddenFields: boolean,
-    showPasswords: boolean
-  ): string;
+  protected abstract dataAsStringWithParams(showFieldNames: boolean, showHiddenFields: boolean, showPasswords: boolean): string;
 
   public abstract toDefaultString(): string;
 
@@ -474,10 +424,10 @@ export default abstract class AbstractDataTable extends JObject implements DataT
   public selectAll(query: DataTableQuery): Array<DataRecord> {
     const r: Array<DataRecord> = new Array<DataRecord>();
 
-    for (let rec of this) {
-      let meet: boolean = true;
+    for (const rec of this) {
+      let meet = true;
 
-      for (let cond of query.getConditions()) {
+      for (const cond of query.getConditions()) {
         if (rec != null) {
           if (!rec.meetToCondition(cond)) {
             meet = false;
@@ -500,8 +450,8 @@ export default abstract class AbstractDataTable extends JObject implements DataT
   }
 
   public findIndexUsingRecord(record: DataRecord): number | null {
-    let index: number = 0;
-    for (let currentRecord of this) {
+    let index = 0;
+    for (const currentRecord of this) {
       if (currentRecord != null) {
         if (currentRecord.equals(record)) {
           return index;
@@ -520,10 +470,10 @@ export default abstract class AbstractDataTable extends JObject implements DataT
   }
 
   public selectByQuery(query: DataTableQuery): DataRecord | null {
-    for (let rec of this) {
+    for (const rec of this) {
       let meet = true;
 
-      for (let cond of query.getConditions()) {
+      for (const cond of query.getConditions()) {
         if (!(rec as DataRecord).meetToCondition(cond as QueryCondition)) {
           meet = false;
         }
@@ -541,7 +491,7 @@ export default abstract class AbstractDataTable extends JObject implements DataT
     return this.selectByQuery(new DataTableQuery(new QueryCondition(field, value)));
   }
 
-  getTimestamp(): Date|null {
+  getTimestamp(): Date | null {
     return this.timestamp;
   }
 
@@ -557,12 +507,12 @@ export default abstract class AbstractDataTable extends JObject implements DataT
     this.quality = quality;
   }
 
-  public getQuality(): number|null {
+  public getQuality(): number | null {
     return this.quality;
   }
 
   public splitFormat(): void {
-    for (let rec of this) {
+    for (const rec of this) {
       if (rec != null) {
         rec.cloneFormatFromTable();
       }
@@ -570,7 +520,7 @@ export default abstract class AbstractDataTable extends JObject implements DataT
   }
 
   public joinFormats(): void {
-    for (let rec of this) {
+    for (const rec of this) {
       if (rec != null) rec.setFormat(this.getFormat());
     }
   }
@@ -581,7 +531,7 @@ export default abstract class AbstractDataTable extends JObject implements DataT
   }
 
   public append(src: DataTable): void {
-    for (let rec of src) {
+    for (const rec of src) {
       if (rec != null) {
         this.addRecordFromRecord(rec);
       }
@@ -608,14 +558,6 @@ export default abstract class AbstractDataTable extends JObject implements DataT
     });
   }
 
-  public clone(): DataTable {
-    try {
-      return super.clone() as DataTable;
-    } catch (ex) {
-      throw new Error(ex.message);
-    }
-  }
-
   abstract equals(obj: JObject | null): boolean;
 
   cloneIfImmutable(): DataTable {
@@ -633,20 +575,18 @@ export default abstract class AbstractDataTable extends JObject implements DataT
   public accomplishConstruction(elements: ElementList, settings: ClassicEncodingSettings, validate: boolean): void {
     if (elements == null) return;
 
-    let found: boolean = false;
+    let found = false;
     let encodedFormat: string | null = null;
     let fieldNames: Array<string> | null = null;
 
-    for (let el of elements) {
+    for (const el of elements) {
       const elementName = el.getName();
-      let value = el.getValue();
+      const value = el.getValue();
       if (elementName !== null) {
         if (Util.equals(elementName, AbstractDataTable.ELEMENT_FORMAT_ID)) {
-          const formatId: number = Number(value);
+          const formatId = Number(value);
           if (formatId % 1 !== 0) {
-            throw new Error(
-              'Error in AbstractDataTable, accomplishConstruction function. `formatId` should be an integer number(not floating)'
-            );
+            throw new Error('Error in AbstractDataTable, accomplishConstruction function. `formatId` should be an integer number(not floating)');
           }
 
           const formatCache = settings.getFormatCache();
@@ -661,7 +601,7 @@ export default abstract class AbstractDataTable extends JObject implements DataT
             continue;
           }
 
-          let format = formatCache.getSync(formatId);
+          const format = formatCache.getSync(formatId);
 
           if (format == null) {
             throw new Error('Format with specified ID not found in the cache: ' + formatId);
@@ -737,7 +677,7 @@ export default abstract class AbstractDataTable extends JObject implements DataT
 
   [Symbol.iterator]() {
     let pointer = 0;
-    let records = this.getRecords();
+    const records = this.getRecords();
 
     return {
       next(): IteratorResult<DataRecord | null> {
@@ -756,22 +696,3 @@ export default abstract class AbstractDataTable extends JObject implements DataT
     };
   }
 }
-
-import DateFieldFormat from './field/DateFieldFormat';
-import QueryCondition from './QueryCondition';
-import DataTableSorter from './DataTableSorter';
-import SortOrder from './SortOrder';
-import Util from '../util/Util';
-import CallerController from '../context/CallerController';
-import ContextManager from '../context/ContextManager';
-import Context from '../context/Context';
-import FieldValidator from './validator/FieldValidator';
-import Expression from '../expression/Expression';
-import Evaluator from '../expression/Evaluator';
-import DefaultReferenceResolver from '../expression/DefaultReferenceResolver';
-import Reference from '../expression/Reference';
-import AbstractReferenceResolver from '../expression/AbstractReferenceResolver';
-import EvaluationEnvironment from '../expression/EvaluationEnvironment';
-import DataTableUtils from './DataTableUtils';
-import ElementList from '../util/ElementList';
-import FieldConstants from './field/FieldConstants';

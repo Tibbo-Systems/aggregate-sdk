@@ -13,10 +13,8 @@ export default class DefaultCommandWriter<C extends Command> extends JObject imp
     this.log(command, ProtocolVersion.V2);
   }
 
-  //@ts-ignore
   public setVersion(version: ProtocolVersion): void {}
 
-  //@ts-ignore
   public setVersionAfterNextWrite(version: ProtocolVersion): void {}
 
   public log(command: C, protocolVersion: ProtocolVersion): void {

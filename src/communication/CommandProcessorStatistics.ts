@@ -25,20 +25,8 @@ export default class CommandProcessorStatistics extends JObject {
         LongFieldFormat.encodePeriodEditorOptions(TimeHelper.SECOND, TimeHelper.DAY) +
         '>'
     );
-    CommandProcessorStatistics.FORMAT.addField(
-      '<commandCount><L><D=' +
-        Cres.get().getString('commCommandCount') +
-        '><H=' +
-        Cres.get().getString('statisticsServerConnectionHelpCommands') +
-        '>'
-    );
-    CommandProcessorStatistics.FORMAT.addField(
-      '<eventCount><L><D=' +
-        Cres.get().getString('commEventCount') +
-        '><H=' +
-        Cres.get().getString('statisticsServerConnectionHelpEvents') +
-        '>'
-    );
+    CommandProcessorStatistics.FORMAT.addField('<commandCount><L><D=' + Cres.get().getString('commCommandCount') + '><H=' + Cres.get().getString('statisticsServerConnectionHelpCommands') + '>');
+    CommandProcessorStatistics.FORMAT.addField('<eventCount><L><D=' + Cres.get().getString('commEventCount') + '><H=' + Cres.get().getString('statisticsServerConnectionHelpEvents') + '>');
     CommandProcessorStatistics.FORMAT.addField(
       '<averageResponseTime><L><D=' +
         Cres.get().getString('commAvgResponseTime') +
@@ -50,40 +38,18 @@ export default class CommandProcessorStatistics extends JObject {
         LongFieldFormat.encodePeriodEditorOptions(TimeHelper.MILLISECOND, TimeHelper.MILLISECOND) +
         '>'
     );
-    CommandProcessorStatistics.FORMAT.addField(
-      '<incomingTraffic><L><D=' +
-        Cres.get().getString('commIncomingTraffic') +
-        '><H=' +
-        Cres.get().getString('statisticsServerConnectionHelpIncoming') +
-        '><E=' +
-        LongFieldFormat.EDITOR_BYTES +
-        '>'
-    );
-    CommandProcessorStatistics.FORMAT.addField(
-      '<outgoingTraffic><L><D=' +
-        Cres.get().getString('commOutgoingTraffic') +
-        '><H=' +
-        Cres.get().getString('statisticsServerConnectionHelpOutgoing') +
-        '><E=' +
-        LongFieldFormat.EDITOR_BYTES +
-        '>'
-    );
-    CommandProcessorStatistics.FORMAT.addField(
-      '<unrepliedCommandCount><L><D=' +
-        Cres.get().getString('commUnrepliedCommandCount') +
-        '><H=' +
-        Cres.get().getString('statisticsServerConnectionHelpUnreplied') +
-        '>'
-    );
+    CommandProcessorStatistics.FORMAT.addField('<incomingTraffic><L><D=' + Cres.get().getString('commIncomingTraffic') + '><H=' + Cres.get().getString('statisticsServerConnectionHelpIncoming') + '><E=' + LongFieldFormat.EDITOR_BYTES + '>');
+    CommandProcessorStatistics.FORMAT.addField('<outgoingTraffic><L><D=' + Cres.get().getString('commOutgoingTraffic') + '><H=' + Cres.get().getString('statisticsServerConnectionHelpOutgoing') + '><E=' + LongFieldFormat.EDITOR_BYTES + '>');
+    CommandProcessorStatistics.FORMAT.addField('<unrepliedCommandCount><L><D=' + Cres.get().getString('commUnrepliedCommandCount') + '><H=' + Cres.get().getString('statisticsServerConnectionHelpUnreplied') + '>');
   }
 
   private startTime: number | null = null;
-  private commandCount: number = 0;
-  private eventCount: number = 0;
-  private averageResponseTime: number = 0;
-  private outgoingTraffic: number = 0;
-  private incomingTraffic: number = 0;
-  private unrepliedCommandCount: number = 0;
+  private commandCount = 0;
+  private eventCount = 0;
+  private averageResponseTime = 0;
+  private outgoingTraffic = 0;
+  private incomingTraffic = 0;
+  private unrepliedCommandCount = 0;
 
   public static initializeCommandProcessorStatistics() {
     if (CommandProcessorStatistics.initCommandProcessorStatistics) {
@@ -106,8 +72,7 @@ export default class CommandProcessorStatistics extends JObject {
 
     this.commandCount++;
 
-    this.averageResponseTime =
-      (this.averageResponseTime * (this.commandCount - 1) + Date.now() - monitor.getStartTime()) / this.commandCount;
+    this.averageResponseTime = (this.averageResponseTime * (this.commandCount - 1) + Date.now() - monitor.getStartTime()) / this.commandCount;
 
     this.outgoingTraffic += monitor.getCommand().size();
 

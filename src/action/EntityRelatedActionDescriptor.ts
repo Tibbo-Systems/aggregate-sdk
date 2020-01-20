@@ -3,7 +3,7 @@ import TableFormat from '../datatable/TableFormat';
 import DataRecord from '../datatable/DataRecord';
 
 export default class EntityRelatedActionDescriptor extends AggreGateBean {
-  public static initEntityRelatedActionDescriptor: boolean = false;
+  public static initEntityRelatedActionDescriptor = false;
 
   public static readonly FIELD_MASK: string = 'mask';
   public static readonly FIELD_ENTITY: string = 'entity';
@@ -60,15 +60,7 @@ export default class EntityRelatedActionDescriptor extends AggreGateBean {
    */
   private icon: string | null = null;
 
-  constructor(
-    mask: string | null = null,
-    entity: string | null = null,
-    target: string | null = null,
-    action: string | null = null,
-    description: string | null = null,
-    iconId: string | null = null,
-    data?: DataRecord
-  ) {
+  constructor(mask: string | null = null, entity: string | null = null, target: string | null = null, action: string | null = null, description: string | null = null, iconId: string | null = null, data?: DataRecord) {
     super(EntityRelatedActionDescriptor.FORMAT, data);
     this.mask = mask;
     this.entity = entity;

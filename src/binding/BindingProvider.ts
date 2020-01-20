@@ -2,9 +2,9 @@
 export default interface BindingProvider<T> {
   //    createBindings():  Map<Binding, EvaluationOptions>;
   //
-  //     start(): void;
+  start(): void;
   //
-  //     stop(): void;
+  stop(): void;
   //
   //     writeReference(method: number, binding: Binding, cause: Reference, value: Object, cache: ChangeCache): void;
   //

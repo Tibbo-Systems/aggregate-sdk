@@ -12,7 +12,7 @@ import DataTableBindingProvider from '../datatable/DataTableBindingProvider';
 import EventEnrichmentRule from './EventEnrichmentRule';
 import Contexts from '../context/Contexts';
 import UtilitiesContextConstants from '../server/UtilitiesContextConstants';
-import Functions from '../expression/Functions';
+import Functions from '../expression/functions/Functions';
 import DefaultFormatConverter from '../datatable/converter/DefaultFormatConverter';
 import JObject from '../util/java/JObject';
 import Binding from '../binding/Binding';
@@ -21,23 +21,23 @@ import FieldFormatFactory from '../datatable/FieldFormatFactory';
 import ContextUtilsConstants from '../context/ContextUtilsConstants';
 
 export default class EventProcessingRule extends JObject {
-  static __static_initialized: boolean = false;
+  static __static_initialized = false;
 
-  static FIELD_MASK: string = 'mask';
+  static FIELD_MASK = 'mask';
 
-  static FIELD_EVENT: string = 'event';
+  static FIELD_EVENT = 'event';
 
-  static FIELD_PREFILTER: string = 'prefilter';
+  static FIELD_PREFILTER = 'prefilter';
 
-  static FIELD_DEDUPLICATOR: string = 'deduplicator';
+  static FIELD_DEDUPLICATOR = 'deduplicator';
 
-  static FIELD_QUEUE: string = 'queue';
+  static FIELD_QUEUE = 'queue';
 
-  static FIELD_DUPLICATE_DISPATCHING: string = 'duplicateDispatching';
+  static FIELD_DUPLICATE_DISPATCHING = 'duplicateDispatching';
 
-  static FIELD_PERIOD: string = 'period';
+  static FIELD_PERIOD = 'period';
 
-  static FIELD_ENRICHMENTS: string = 'enrichments';
+  static FIELD_ENRICHMENTS = 'enrichments';
 
   public static FORMAT: TableFormat = new TableFormat();
 
@@ -45,76 +45,22 @@ export default class EventProcessingRule extends JObject {
     if (EventProcessingRule.__static_initialized) return;
     EventProcessingRule.FORMAT.addTableValidator(new TableKeyFieldsValidator());
     EventProcessingRule.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' +
-          EventProcessingRule.FIELD_MASK +
-          '><S><F=NK><D=' +
-          Cres.get().getString('conContextMask') +
-          '><H=' +
-          Cres.get().getString('eventProcessingRulesContextMask') +
-          '><E=contextmask>'
-      )
+      FieldFormatFactory.create('<' + EventProcessingRule.FIELD_MASK + '><S><F=NK><D=' + Cres.get().getString('conContextMask') + '><H=' + Cres.get().getString('eventProcessingRulesContextMask') + '><E=contextmask>')
+    );
+    EventProcessingRule.FORMAT.addField(
+      FieldFormatFactory.create('<' + EventProcessingRule.FIELD_EVENT + '><S><F=EK><V=<L=1 ' + 2147483647 + '>><D=' + Cres.get().getString('efEventName') + '><H=' + Cres.get().getString('eventProcessingRulesEventName') + '>')
+    );
+    EventProcessingRule.FORMAT.addField(
+      FieldFormatFactory.create('<' + EventProcessingRule.FIELD_PREFILTER + '><S><D=' + Cres.get().getString('efPrefilter') + '><H=' + Cres.get().getString('efPrefilterHelp') + '><E=' + FieldConstants.EDITOR_EXPRESSION + '>')
     );
     EventProcessingRule.FORMAT.addField(
       FieldFormatFactory.create(
-        '<' +
-          EventProcessingRule.FIELD_EVENT +
-          '><S><F=EK><V=<L=1 ' +
-          2147483647 +
-          '>><D=' +
-          Cres.get().getString('efEventName') +
-          '><H=' +
-          Cres.get().getString('eventProcessingRulesEventName') +
-          '>'
+        '<' + EventProcessingRule.FIELD_DEDUPLICATOR + '><S><D=' + Cres.get().getString('efDeduplicator') + '><H=' + Cres.get().getString('eventProcessingRulesDeduplicator') + '><E=' + FieldConstants.EDITOR_EXPRESSION + '>'
       )
     );
+    EventProcessingRule.FORMAT.addField(FieldFormatFactory.create('<' + EventProcessingRule.FIELD_QUEUE + '><I><A=100><D=' + Cres.get().getString('efMemoryQueue') + '><H=' + Cres.get().getString('eventProcessingRulesRam') + '>'));
     EventProcessingRule.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' +
-          EventProcessingRule.FIELD_PREFILTER +
-          '><S><D=' +
-          Cres.get().getString('efPrefilter') +
-          '><H=' +
-          Cres.get().getString('efPrefilterHelp') +
-          '><E=' +
-          FieldConstants.EDITOR_EXPRESSION +
-          '>'
-      )
-    );
-    EventProcessingRule.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' +
-          EventProcessingRule.FIELD_DEDUPLICATOR +
-          '><S><D=' +
-          Cres.get().getString('efDeduplicator') +
-          '><H=' +
-          Cres.get().getString('eventProcessingRulesDeduplicator') +
-          '><E=' +
-          FieldConstants.EDITOR_EXPRESSION +
-          '>'
-      )
-    );
-    EventProcessingRule.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' +
-          EventProcessingRule.FIELD_QUEUE +
-          '><I><A=100><D=' +
-          Cres.get().getString('efMemoryQueue') +
-          '><H=' +
-          Cres.get().getString('eventProcessingRulesRam') +
-          '>'
-      )
-    );
-    EventProcessingRule.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' +
-          EventProcessingRule.FIELD_DUPLICATE_DISPATCHING +
-          '><B><D=' +
-          Cres.get().getString('efDuplicateDispatching') +
-          '><H=' +
-          Cres.get().getString('eventProcessingRulesDeduplicationDispatching') +
-          '>'
-      )
+      FieldFormatFactory.create('<' + EventProcessingRule.FIELD_DUPLICATE_DISPATCHING + '><B><D=' + Cres.get().getString('efDuplicateDispatching') + '><H=' + Cres.get().getString('eventProcessingRulesDeduplicationDispatching') + '>')
     );
     EventProcessingRule.FORMAT.addField(
       FieldFormatFactory.create(
@@ -133,56 +79,23 @@ export default class EventProcessingRule extends JObject {
           '>'
       )
     );
-    let ff: FieldFormat<any> = FieldFormatFactory.create(
-      '<' +
-        EventProcessingRule.FIELD_ENRICHMENTS +
-        '><T><D=' +
-        Cres.get().getString('enrichments') +
-        '><H=' +
-        Cres.get().getString('eventProcessingRulesEnrichments') +
-        '>'
-    );
+    const ff: FieldFormat<any> = FieldFormatFactory.create('<' + EventProcessingRule.FIELD_ENRICHMENTS + '><T><D=' + Cres.get().getString('enrichments') + '><H=' + Cres.get().getString('eventProcessingRulesEnrichments') + '>');
     ff.setDefault(new SimpleDataTable(EventEnrichmentRule.FORMAT));
     EventProcessingRule.FORMAT.addField(ff);
     let ref: string = EventProcessingRule.FIELD_EVENT + '#' + DataTableBindingProvider.PROPERTY_CHOICES;
-    let exp: string =
-      '{' +
-      Contexts.CTX_UTILITIES +
-      ':' +
-      UtilitiesContextConstants.F_EVENTS_BY_MASK +
-      "('{" +
-      EventProcessingRule.FIELD_MASK +
-      "}')}";
+    let exp: string = '{' + Contexts.CTX_UTILITIES + ':' + UtilitiesContextConstants.F_EVENTS_BY_MASK + "('{" + EventProcessingRule.FIELD_MASK + "}')}";
     EventProcessingRule.FORMAT.addBinding(new Binding(ref, exp));
     ref = EventProcessingRule.FIELD_PREFILTER + '#' + DataTableBindingProvider.PROPERTY_OPTIONS;
-    exp =
-      Functions.EXPRESSION_EDITOR_OPTIONS +
-      '({' +
-      EventProcessingRule.FIELD_MASK +
-      '}, {' +
-      EventProcessingRule.FIELD_EVENT +
-      '}, ' +
-      ContextUtilsConstants.ENTITY_EVENT +
-      ')';
+    exp = Functions.EXPRESSION_EDITOR_OPTIONS + '({' + EventProcessingRule.FIELD_MASK + '}, {' + EventProcessingRule.FIELD_EVENT + '}, ' + ContextUtilsConstants.ENTITY_EVENT + ')';
     EventProcessingRule.FORMAT.addBinding(new Binding(ref, exp));
     ref = EventProcessingRule.FIELD_DEDUPLICATOR + '#' + DataTableBindingProvider.PROPERTY_OPTIONS;
-    exp =
-      Functions.EXPRESSION_EDITOR_OPTIONS +
-      '({' +
-      EventProcessingRule.FIELD_MASK +
-      '}, {' +
-      EventProcessingRule.FIELD_EVENT +
-      '}, ' +
-      ContextUtilsConstants.ENTITY_EVENT +
-      ')';
+    exp = Functions.EXPRESSION_EDITOR_OPTIONS + '({' + EventProcessingRule.FIELD_MASK + '}, {' + EventProcessingRule.FIELD_EVENT + '}, ' + ContextUtilsConstants.ENTITY_EVENT + ')';
     EventProcessingRule.FORMAT.addBinding(new Binding(ref, exp));
     ref = EventProcessingRule.FIELD_QUEUE + '#' + DataTableBindingProvider.PROPERTY_ENABLED;
     exp = 'length({' + EventProcessingRule.FIELD_DEDUPLICATOR + '}) > 0';
     EventProcessingRule.FORMAT.addBinding(new Binding(ref, exp));
     EventProcessingRule.FORMAT.setReorderable(true);
-    DataTableConversion.registerFormatConverter(
-      new DefaultFormatConverter(EventProcessingRule, EventProcessingRule.FORMAT)
-    );
+    DataTableConversion.registerFormatConverter(new DefaultFormatConverter(EventProcessingRule, EventProcessingRule.FORMAT));
     EventProcessingRule.__static_initialized = true;
   }
 
@@ -190,15 +103,15 @@ export default class EventProcessingRule extends JObject {
 
   private event: string;
 
-  private prefilter: string = '';
+  private prefilter = '';
 
-  private deduplicator: string = '';
+  private deduplicator = '';
 
-  private queue: number = 0;
+  private queue = 0;
 
-  private duplicateDispatching: boolean = false;
+  private duplicateDispatching = false;
 
-  private period: number = 0;
+  private period = 0;
 
   private enrichments: Array<EventEnrichmentRule> = new Array<EventEnrichmentRule>();
 
@@ -206,11 +119,11 @@ export default class EventProcessingRule extends JObject {
 
   private deduplicatorExpression: Expression | null = null;
 
-  private filtered: number = 0;
+  private filtered = 0;
 
-  private saved: number = 0;
+  private saved = 0;
 
-  private duplicates: number = 0;
+  private duplicates = 0;
 
   constructor(mask: string, event: string) {
     super();
@@ -253,8 +166,7 @@ export default class EventProcessingRule extends JObject {
 
   public getPrefilterExpression(): Expression | null {
     if (this.prefilterExpression == null) {
-      this.prefilterExpression =
-        this.prefilter != null && this.prefilter.length > 0 ? new Expression(this.prefilter) : null;
+      this.prefilterExpression = this.prefilter != null && this.prefilter.length > 0 ? new Expression(this.prefilter) : null;
     }
     return this.prefilterExpression;
   }
@@ -270,8 +182,7 @@ export default class EventProcessingRule extends JObject {
 
   public getDeduplicatorExpression(): Expression | null {
     if (this.deduplicatorExpression == null) {
-      this.deduplicatorExpression =
-        this.deduplicator != null && this.deduplicator.length > 0 ? new Expression(this.deduplicator) : null;
+      this.deduplicatorExpression = this.deduplicator != null && this.deduplicator.length > 0 ? new Expression(this.deduplicator) : null;
     }
     return this.deduplicatorExpression;
   }
@@ -332,7 +243,7 @@ export default class EventProcessingRule extends JObject {
     if (this == obj) return true;
     if (obj == null) return false;
     if (!(obj instanceof EventProcessingRule)) return false;
-    let other: EventProcessingRule = obj as EventProcessingRule;
+    const other: EventProcessingRule = obj as EventProcessingRule;
     if (this.event == null) {
       if (other.event != null) return false;
     } else if (this.event !== other.event) return false;

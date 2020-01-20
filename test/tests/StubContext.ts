@@ -23,13 +23,13 @@ export default class StubContext extends AbstractContext<Context<any, any>, Cont
 
   private static _initStubContext = false;
 
-  static init_0() {
+  static _static_init_0() {
     StubContext.VFT_TEST.addField('<' + StubContext.VF_TEST_INT + '><I>');
   }
 
   public static readonly EFT_TEST: TableFormat = new TableFormat(1, 1);
 
-  static init_1() {
+  static _static_init_1() {
     StubContext.EFT_TEST.addField('<' + StubContext.EF_TEST_STR + '><S>');
     StubContext.EFT_TEST.addField('<' + StubContext.EF_TEST_INT + '><I>');
     StubContext.EFT_TEST.addField('<' + StubContext.EF_TEST_FLOAT + '><F>');
@@ -38,8 +38,8 @@ export default class StubContext extends AbstractContext<Context<any, any>, Cont
   static initStubContext() {
     if (StubContext._initStubContext) return;
 
-    StubContext.init_0();
-    StubContext.init_1();
+    StubContext._static_init_0();
+    StubContext._static_init_1();
     StubContext._initStubContext = true;
   }
 
@@ -58,7 +58,7 @@ export default class StubContext extends AbstractContext<Context<any, any>, Cont
   setupMyself(): void {
     super.setupMyself();
 
-    let vd = new VariableDefinition(
+    const vd = new VariableDefinition(
       StubContext.V_TEST,
       StubContext.VFT_TEST,
       true,
@@ -66,7 +66,7 @@ export default class StubContext extends AbstractContext<Context<any, any>, Cont
       'Test',
       ContextUtilsConstants.GROUP_DEFAULT
     );
-    let _this = this;
+    const _this = this;
 
     vd.setSetter((con, def, caller, request, value) => {
       _this.count = value.rec().getInt(0);
@@ -74,7 +74,7 @@ export default class StubContext extends AbstractContext<Context<any, any>, Cont
     });
 
     vd.setGetter((con, def, caller, request) => {
-      let dt = DataTableFactory.of(StubContext.VFT_TEST, true);
+      const dt = DataTableFactory.of(StubContext.VFT_TEST, true);
       dt.rec().setValue(StubContext.VF_TEST_INT, _this.count);
       return dt;
     });
@@ -85,7 +85,7 @@ export default class StubContext extends AbstractContext<Context<any, any>, Cont
       new EventDefinition(StubContext.E_TEST, StubContext.EFT_TEST, 'Test Event', ContextUtilsConstants.GROUP_DEFAULT)
     );
 
-    let fd = new FunctionDefinition(StubContext.F_FUNCTION, StubContext.FIFT_FUNCTION, StubContext.FOFT_FUNCTION);
+    const fd = new FunctionDefinition(StubContext.F_FUNCTION, StubContext.FIFT_FUNCTION, StubContext.FOFT_FUNCTION);
     fd.setImplementation((con, def, caller, request, parameters) => {
       _this.count = parameters.rec().getInt(0);
       return DataTableFactory.createWithFirstRecord(
@@ -95,7 +95,7 @@ export default class StubContext extends AbstractContext<Context<any, any>, Cont
     });
     this.addFunctionDefinition(fd);
 
-    let emptyFd = new FunctionDefinition(
+    const emptyFd = new FunctionDefinition(
       StubContext.F_TEST,
       TableFormat.EMPTY_FORMAT,
       TableFormat.EMPTY_FORMAT,

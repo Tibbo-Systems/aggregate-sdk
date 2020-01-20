@@ -41,12 +41,7 @@ export default class FloatFieldFormat extends FieldFormat<number> {
   }
 
   public getSuitableEditors(): Array<string> {
-    return new Array<string>(
-      FieldConstants.EDITOR_LIST,
-      FieldConstants.EDITOR_BAR,
-      FieldConstants.EDITOR_BYTES,
-      FieldConstants.EDITOR_INSTANCE
-    );
+    return new Array<string>(FieldConstants.EDITOR_LIST, FieldConstants.EDITOR_BAR, FieldConstants.EDITOR_BYTES, FieldConstants.EDITOR_INSTANCE);
   }
 
   public isAssignableFrom(value: any): boolean {

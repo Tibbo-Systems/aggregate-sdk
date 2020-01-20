@@ -30,37 +30,22 @@ export default class DataFieldFormat extends FieldFormat<Data> {
   public static DATA_EDITOR_OPTIONS_FORMAT: TableFormat = new TableFormat(1, 1);
 
   static staticDataFormatInitializer0() {
-    const modeF: FieldFormat<any> = FieldFormatFactory.createType(
-      DataFieldFormat.MODE_FIELD,
-      FieldConstants.STRING_FIELD
-    );
+    const modeF: FieldFormat<any> = FieldFormatFactory.createType(DataFieldFormat.MODE_FIELD, FieldConstants.STRING_FIELD);
     modeF.setNullable(true);
 
-    const edF: FieldFormat<any> = FieldFormatFactory.createType(
-      DataFieldFormat.EXTENSIONS_DESCR_FIELD,
-      FieldConstants.STRING_FIELD
-    );
+    const edF: FieldFormat<any> = FieldFormatFactory.createType(DataFieldFormat.EXTENSIONS_DESCR_FIELD, FieldConstants.STRING_FIELD);
     edF.setNullable(true);
 
     // Default value for 'extensions' field
-    const extF: FieldFormat<any> = FieldFormatFactory.createType(
-      DataFieldFormat.EXTENSION_FIELD,
-      FieldConstants.STRING_FIELD
-    );
+    const extF: FieldFormat<any> = FieldFormatFactory.createType(DataFieldFormat.EXTENSION_FIELD, FieldConstants.STRING_FIELD);
     DataFieldFormat.EXTENSIONS_FORMAT.addField(extF);
     const dt: DataTable = DataTableFactory.of(DataFieldFormat.EXTENSIONS_FORMAT);
 
-    const extsF: FieldFormat<DataTable> = FieldFormatFactory.createType(
-      DataFieldFormat.EXTENSIONS_FIELD,
-      FieldConstants.DATATABLE_FIELD
-    );
+    const extsF: FieldFormat<DataTable> = FieldFormatFactory.createType(DataFieldFormat.EXTENSIONS_FIELD, FieldConstants.DATATABLE_FIELD);
     extsF.setDefault(dt);
     extsF.setNullable(true);
 
-    const folderF: FieldFormat<any> = FieldFormatFactory.createType(
-      DataFieldFormat.FOLDER_FIELD,
-      FieldConstants.STRING_FIELD
-    );
+    const folderF: FieldFormat<any> = FieldFormatFactory.createType(DataFieldFormat.FOLDER_FIELD, FieldConstants.STRING_FIELD);
     folderF.setNullable(true);
 
     DataFieldFormat.DATA_EDITOR_OPTIONS_FORMAT.addField(modeF);
@@ -108,26 +93,14 @@ export default class DataFieldFormat extends FieldFormat<Data> {
   }
 
   public getSuitableEditors(): Array<string> {
-    return [
-      FieldConstants.EDITOR_LIST,
-      FieldConstants.D_EDITOR_TEXT,
-      FieldConstants.EDITOR_IMAGE,
-      FieldConstants.EDITOR_SOUND,
-      FieldConstants.EDITOR_HEX,
-      DataFieldFormat.EDITOR_REPORT,
-    ];
+    return [FieldConstants.EDITOR_LIST, FieldConstants.D_EDITOR_TEXT, FieldConstants.EDITOR_IMAGE, FieldConstants.EDITOR_SOUND, FieldConstants.EDITOR_HEX, DataFieldFormat.EDITOR_REPORT];
   }
 
-  public static encodeTextEditorOptions(
-    mode: string,
-    extensionsDescription: string,
-    folder: string,
-    extensions: Array<string>
-  ): string {
+  public static encodeTextEditorOptions(mode: string, extensionsDescription: string, folder: string, extensions: Array<string>): string {
     let esdt: DataTable | null = null;
     if (extensions != null) {
       esdt = DataTableFactory.of(DataFieldFormat.EXTENSIONS_FORMAT);
-      for (let ext of extensions) {
+      for (const ext of extensions) {
         const dr: DataRecord = esdt.addRecord();
         dr.setValue(DataFieldFormat.EXTENSION_FIELD, ext);
       }
@@ -142,12 +115,7 @@ export default class DataFieldFormat extends FieldFormat<Data> {
     return eodt.encodeToString();
   }
 
-  public valueToEncodedString(
-    value: Data,
-    settings: ClassicEncodingSettings,
-    sb: StringBuilder = new StringBuilder(),
-    encodeLevel: number = 1
-  ): StringBuilder | null {
+  public valueToEncodedString(value: Data, settings: ClassicEncodingSettings, sb: StringBuilder = new StringBuilder(), encodeLevel = 1): StringBuilder | null {
     if (value != null) {
       value.encode(sb, settings, this.isTransferEncode(), encodeLevel);
 

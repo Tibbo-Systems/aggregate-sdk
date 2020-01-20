@@ -17,7 +17,7 @@ export default class EntityList extends JObject implements Iterable<EntityRefere
     EntityList.FORMAT.addField('<' + EntityList.FIELD_ENTITY + '><S>');
   }
 
-  private entities: Array<EntityReference> = new Array();
+  private entities: Array<EntityReference> = [];
 
   private static _init = false;
 
@@ -30,10 +30,8 @@ export default class EntityList extends JObject implements Iterable<EntityRefere
   public constructor(data?: DataTable) {
     super();
     if (data) {
-      for (let rec of data) {
-        this.entities.push(
-          new EntityReference(rec.getString(EntityList.FIELD_CONTEXT), rec.getString(EntityList.FIELD_ENTITY))
-        );
+      for (const rec of data) {
+        this.entities.push(new EntityReference(rec.getString(EntityList.FIELD_CONTEXT), rec.getString(EntityList.FIELD_ENTITY)));
       }
     }
   }
@@ -47,7 +45,7 @@ export default class EntityList extends JObject implements Iterable<EntityRefere
   }
 
   public includes(context: string | null, entity: string | null): boolean {
-    for (let ref of this.entities) {
+    for (const ref of this.entities) {
       if (Util.equals(ref.getContext(), context) && Util.equals(ref.getEntity(), entity)) {
         return true;
       }
@@ -59,7 +57,7 @@ export default class EntityList extends JObject implements Iterable<EntityRefere
   public toDataTable(): DataTable {
     const tab: DataTable = new SimpleDataTable(EntityList.FORMAT);
 
-    for (let ref of this.entities) {
+    for (const ref of this.entities) {
       tab
         .addRecord()
         .addString(ref.getContext())
@@ -96,8 +94,8 @@ export default class EntityList extends JObject implements Iterable<EntityRefere
   public clone(): EntityList {
     try {
       const clone: EntityList = super.clone() as EntityList;
-      clone.entities = new Array();
-      for (let er of this.entities) {
+      clone.entities = [];
+      for (const er of this.entities) {
         clone.entities.push(er.clone());
       }
       return clone;

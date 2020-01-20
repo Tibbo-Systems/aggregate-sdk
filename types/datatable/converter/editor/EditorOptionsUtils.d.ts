@@ -5,7 +5,6 @@ export default class EditorOptionsUtils {
     static __static_initializer_0(): void;
     private static _init;
     static initialize(): void;
-    constructor();
     private static getConverter;
     static convertToString(fdata: DataRecord): string | null;
     static createEditorOptionsTable(type: string, editor: string | null, editorOptions?: string | null): DataTable;

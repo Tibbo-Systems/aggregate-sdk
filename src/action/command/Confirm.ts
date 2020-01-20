@@ -1,10 +1,11 @@
 import GenericActionCommand from '../GenericActionCommand';
 import TableFormat from '../../datatable/TableFormat';
 import GenericActionResponse from '../GenericActionResponse';
-import ActionUtils from '../ActionUtils';
 import Cres from '../../Cres';
 import SimpleDataTable from '../../datatable/SimpleDataTable';
 import DataTable from '../../datatable/DataTable';
+import DataRecord from '../../datatable/DataRecord';
+import ActionUtilsConstants from '../ActionUtilsConstants';
 
 export default class Confirm extends GenericActionCommand {
   public static readonly CF_MESSAGE: string = 'message';
@@ -29,18 +30,22 @@ export default class Confirm extends GenericActionCommand {
     Confirm._init = true;
   }
 
-  public static readonly RFT_CONFIRM: TableFormat = new TableFormat(
-    1,
-    1,
-    '<' + Confirm.RF_OPTION + '><I><D=' + Cres.get().getString('option') + '>'
-  );
+  public static readonly RFT_CONFIRM: TableFormat = new TableFormat(1, 1, '<' + Confirm.RF_OPTION + '><I><D=' + Cres.get().getString('option') + '>');
 
   private message: string | null = null;
-  private optionType: number | null = null;
-  private messageType: number | null = null;
+  private optionType = 0;
+  private messageType = 0;
 
   public constructor() {
-    super(ActionUtils.CMD_CONFIRM);
+    super(ActionUtilsConstants.CMD_CONFIRM);
+  }
+
+  protected constructParameters(): DataTable {
+    return new DataRecord(Confirm.CFT_CONFIRM)
+      .addString(this.message)
+      .addInt(this.optionType)
+      .addInt(this.messageType)
+      .wrap();
   }
 
   public static createDefault() {
@@ -72,20 +77,20 @@ export default class Confirm extends GenericActionCommand {
     const parameters = this.getParameters();
     const optionType: number | null = parameters ? parameters.rec().getInt(Confirm.CF_OPTION_TYPE) : null;
 
-    if (ActionUtils.YES_NO_OPTION == optionType) {
-      selectionValues.set(ActionUtils.YES_OPTION, Cres.get().getString('yes'));
-      selectionValues.set(ActionUtils.NO_OPTION, Cres.get().getString('no'));
-    } else if (ActionUtils.OK_CANCEL_OPTION == optionType) {
-      selectionValues.set(ActionUtils.OK_OPTION, Cres.get().getString('ok'));
-      selectionValues.set(ActionUtils.CANCEL_OPTION, Cres.get().getString('cancel'));
-    } else if (ActionUtils.YES_NO_CANCEL_OPTION == optionType) {
-      selectionValues.set(ActionUtils.YES_OPTION, Cres.get().getString('yes'));
-      selectionValues.set(ActionUtils.NO_OPTION, Cres.get().getString('no'));
-      selectionValues.set(ActionUtils.CANCEL_OPTION, Cres.get().getString('cancel'));
+    if (ActionUtilsConstants.YES_NO_OPTION == optionType) {
+      selectionValues.set(ActionUtilsConstants.YES_OPTION, Cres.get().getString('yes'));
+      selectionValues.set(ActionUtilsConstants.NO_OPTION, Cres.get().getString('no'));
+    } else if (ActionUtilsConstants.OK_CANCEL_OPTION == optionType) {
+      selectionValues.set(ActionUtilsConstants.OK_OPTION, Cres.get().getString('ok'));
+      selectionValues.set(ActionUtilsConstants.CANCEL_OPTION, Cres.get().getString('cancel'));
+    } else if (ActionUtilsConstants.YES_NO_CANCEL_OPTION == optionType) {
+      selectionValues.set(ActionUtilsConstants.YES_OPTION, Cres.get().getString('yes'));
+      selectionValues.set(ActionUtilsConstants.NO_OPTION, Cres.get().getString('no'));
+      selectionValues.set(ActionUtilsConstants.CANCEL_OPTION, Cres.get().getString('cancel'));
     } else {
       throw new Error('Unsupported option type: ' + optionType);
     }
-    selectionValues.set(ActionUtils.CLOSED_OPTION, Cres.get().getString('close'));
+    selectionValues.set(ActionUtilsConstants.CLOSED_OPTION, Cres.get().getString('close'));
 
     return new GenericActionResponse(new SimpleDataTable(responseFormat, true));
   }
@@ -94,11 +99,11 @@ export default class Confirm extends GenericActionCommand {
     return this.message;
   }
 
-  public getOptionType(): number | null {
+  public getOptionType(): number {
     return this.optionType;
   }
 
-  public getMessageType(): number | null {
+  public getMessageType(): number {
     return this.messageType;
   }
 

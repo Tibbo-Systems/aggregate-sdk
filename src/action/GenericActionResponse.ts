@@ -4,14 +4,10 @@ import RequestIdentifier from './RequestIdentifier';
 
 export default class GenericActionResponse implements ActionResponse {
   private parameters: DataTable | null = null;
-  private remember: boolean = false;
+  private remember = false;
   private requestId: RequestIdentifier | null = null;
 
-  public constructor(
-    parameters: DataTable | null = null,
-    remember: boolean = false,
-    requestId: RequestIdentifier | null = null
-  ) {
+  public constructor(parameters: DataTable | null = null, remember = false, requestId: RequestIdentifier | null = null) {
     this.parameters = parameters;
     this.remember = remember;
     this.requestId = requestId;
@@ -37,7 +33,7 @@ export default class GenericActionResponse implements ActionResponse {
     this.remember = remember;
   }
 
-  public setRequestId(requestId: RequestIdentifier): void {
+  public setRequestId(requestId: RequestIdentifier | null): void {
     this.requestId = requestId;
   }
 }

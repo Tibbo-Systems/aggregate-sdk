@@ -4,13 +4,13 @@ import Evaluator from '../expression/Evaluator';
 export default class DefaultRequestController implements RequestController {
   private originator: any;
 
-  private lockTimeout: number = 0;
+  private lockTimeout = 0;
 
   private evaluator: Evaluator | null;
 
   private queue: string | null = null;
 
-  private replyRequired: boolean = true;
+  private replyRequired = true;
 
   constructor(evaluator: Evaluator | null = null) {
     this.evaluator = evaluator;

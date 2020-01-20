@@ -1,19 +1,10 @@
 import InitialRequest from './InitialRequest';
-import ActionResult from './ActionResult';
-import ActionIdentifier from './ActionIdentifier';
-import ActionExecutionMode from './ActionExecutionMode';
-import ActionContext from './ActionContext';
 import ActionResponse from './ActionResponse';
 import ActionCommand from './ActionCommand';
-import Cres from '../Cres';
-import ActionDefinition from './ActionDefinition';
+
 import SequentialAction from './SequentialAction';
 
-export default abstract class SingleThreadAction<
-  I extends InitialRequest,
-  C extends ActionCommand,
-  R extends ActionResponse
-> extends SequentialAction<I, C, R> {
+export default abstract class SingleThreadAction<I extends InitialRequest, C extends ActionCommand, R extends ActionResponse> extends SequentialAction<I, C, R> {
   /*private static readonly BINARY_SEMAPHOR_CAPACITY: number = 1;
 
     private actionContext: ActionContext;

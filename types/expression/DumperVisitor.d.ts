@@ -1,10 +1,10 @@
-import { ParserRuleContext } from "antlr4";
+import { ParserRuleContext } from 'antlr4';
 declare const AggregateExpressionVisitor: any;
 export default class DumperVisitor extends AggregateExpressionVisitor {
     private indent;
     private result;
     private indentString;
-    getResult(): String;
+    getResult(): string;
     private dumpNode;
     visitCompilationUnit(ctx: ParserRuleContext): void;
     visitLogicalAndNode(ctx: ParserRuleContext): void;

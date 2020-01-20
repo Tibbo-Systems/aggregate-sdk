@@ -8,7 +8,7 @@ export default class ContextSortingHelper {
   // Step between context index values
   private static readonly MULTIPLICATOR = 100;
 
-  private static CONTEXTS_ORDER: Array<string> = new Array();
+  private static CONTEXTS_ORDER: Array<string> = [];
 
   public static _initiliaze() {
     ContextSortingHelper.CONTEXTS_ORDER.push(Contexts.CTX_DEVICES);
@@ -67,9 +67,6 @@ export default class ContextSortingHelper {
       return null;
     }
 
-    return (
-      ContextSortingHelper.MAX_INDEX -
-      ContextSortingHelper.CONTEXTS_ORDER.indexOf(context) * ContextSortingHelper.MULTIPLICATOR
-    );
+    return ContextSortingHelper.MAX_INDEX - ContextSortingHelper.CONTEXTS_ORDER.indexOf(context) * ContextSortingHelper.MULTIPLICATOR;
   }
 }

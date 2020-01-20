@@ -1,11 +1,23 @@
-export default interface AttributedObject {
-  getValue(): any;
+import JObject from '../util/java/JObject';
 
-  getQuality(): number|null;
+export default class AttributedObject extends JObject {
+  getValue(): any {
+    throw new Error();
+  }
 
-  setQuality(quality: number): void;
+  getQuality(): number | null {
+    throw new Error();
+  }
 
-  getTimestamp(): Date|null;
+  setQuality(quality: number): void {
+    throw new Error();
+  }
 
-  setTimestamp(timestamp: Date): void;
+  getTimestamp(): Date | null {
+    throw new Error();
+  }
+
+  setTimestamp(timestamp: Date): void {
+    throw new Error();
+  }
 }

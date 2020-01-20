@@ -29,7 +29,7 @@ export default class StaticTestUtils {
   public static readonly TEST_TABLE_FORMAT: TableFormat = new TableFormat(1, 100);
 
   private static initializeStaticTestUtils0() {
-    let strFF: FieldFormat<any> = FieldFormatFactory.create(
+    const strFF: FieldFormat<any> = FieldFormatFactory.create(
       '<' + StaticTestUtils.STRING_FIELD + '><' + FieldConstants.STRING_FIELD + '><F=N>'
     );
     strFF.setDefault('zzz');

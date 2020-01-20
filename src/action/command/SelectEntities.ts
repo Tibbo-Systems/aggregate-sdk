@@ -4,7 +4,8 @@ import TableFormat from '../../datatable/TableFormat';
 import FieldFormat from '../../datatable/FieldFormat';
 import SimpleDataTable from '../../datatable/SimpleDataTable';
 import DataTable from '../../datatable/DataTable';
-import ActionUtils from '../ActionUtils';
+import JObject from '../../util/java/JObject';
+import ActionUtilsConstants from '../ActionUtilsConstants';
 
 export default class SelectEntities extends GenericActionCommand {
   public static readonly CF_TYPES: string = 'types';
@@ -23,14 +24,12 @@ export default class SelectEntities extends GenericActionCommand {
 
   public static readonly RF_REFERENCE: string = 'reference';
 
-  private static readonly CFT_SELECT_ENTITIES_TYPES: TableFormat = FieldFormatFactory.create(
-    '<' + SelectEntities.CF_TYPES_TYPE + '><S>'
-  ).wrap();
+  private static readonly CFT_SELECT_ENTITIES_TYPES: TableFormat = FieldFormatFactory.create('<' + SelectEntities.CF_TYPES_TYPE + '><S>').wrap();
 
   public static readonly CFT_SELECT_ENTITIES: TableFormat = new TableFormat(1, 1);
 
   static __static_initializer_0() {
-    const ff: FieldFormat<Object> = FieldFormatFactory.create('<' + SelectEntities.CF_TYPES + '><T><F=N>');
+    const ff: FieldFormat<JObject> = FieldFormatFactory.create('<' + SelectEntities.CF_TYPES + '><T><F=N>');
     ff.setDefault(new SimpleDataTable(SelectEntities.CFT_SELECT_ENTITIES_TYPES)).setDefaultOverride(true);
     SelectEntities.CFT_SELECT_ENTITIES.addField(ff);
     SelectEntities.CFT_SELECT_ENTITIES.addField('<' + SelectEntities.CF_ROOT + '><S>');
@@ -45,21 +44,19 @@ export default class SelectEntities extends GenericActionCommand {
     SelectEntities.CFT_SELECT_ENTITIES.addField('<' + SelectEntities.CF_SINGLE_SELECTION + '><B>');
   }
 
-  public static readonly RFT_SELECT_ENTITIES: TableFormat = FieldFormatFactory.create(
-    '<' + SelectEntities.RF_REFERENCE + '><S>'
-  ).wrap();
+  public static readonly RFT_SELECT_ENTITIES: TableFormat = FieldFormatFactory.create('<' + SelectEntities.RF_REFERENCE + '><S>').wrap();
 
   private contextTypes: Array<string> | null = null;
   private rootContext: string | null = null;
   private defaultContext: string | null = null;
   private expandedContext: string | null = null;
-  private showChildren: boolean = false;
-  private allowMasks: boolean = false;
-  private showVars: boolean = false;
-  private showFuncs: boolean = false;
-  private showEvents: boolean = false;
-  private showFields: boolean = false;
-  private singleSelection: boolean = false;
+  private showChildren = false;
+  private allowMasks = false;
+  private showVars = false;
+  private showFuncs = false;
+  private showEvents = false;
+  private showFields = false;
+  private singleSelection = false;
 
   private static _init = false;
 
@@ -69,11 +66,7 @@ export default class SelectEntities extends GenericActionCommand {
     SelectEntities._init = true;
   }
 
-  public constructor(
-    type: string = ActionUtils.CMD_SELECT_ENTITIES,
-    titleOrFormat: string | TableFormat = SelectEntities.CFT_SELECT_ENTITIES,
-    responseFormat: TableFormat | null = SelectEntities.RFT_SELECT_ENTITIES
-  ) {
+  public constructor(type: string = ActionUtilsConstants.CMD_SELECT_ENTITIES, titleOrFormat: string | TableFormat = SelectEntities.CFT_SELECT_ENTITIES, responseFormat: TableFormat | null = SelectEntities.RFT_SELECT_ENTITIES) {
     super(type, titleOrFormat, responseFormat);
   }
 
@@ -97,7 +90,7 @@ export default class SelectEntities extends GenericActionCommand {
     showFields: boolean,
     singleSelection: boolean
   ) {
-    const selectEntities = new SelectEntities(ActionUtils.CMD_SELECT_ENTITIES, title, null);
+    const selectEntities = new SelectEntities(ActionUtilsConstants.CMD_SELECT_ENTITIES, title, null);
     selectEntities.setContextTypes(contextTypes);
     selectEntities.setRootContext(rootContext);
     selectEntities.setDefaultContext(defaultContext);
@@ -118,7 +111,7 @@ export default class SelectEntities extends GenericActionCommand {
     if (this.contextTypes != null) {
       types = new SimpleDataTable(SelectEntities.CFT_SELECT_ENTITIES_TYPES);
 
-      for (let type of this.contextTypes) {
+      for (const type of this.contextTypes) {
         types.addRecord().addString(type);
       }
     }

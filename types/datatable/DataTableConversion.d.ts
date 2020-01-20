@@ -3,6 +3,7 @@ import TableFormat from './TableFormat';
 import DataRecord from './DataRecord';
 import FieldFormat from './FieldFormat';
 import FormatConverter from './converter/FormatConverter';
+import JObject from '../util/java/JObject';
 export default class DataTableConversion {
     private static initDataTableConversion;
     static readonly FORMAT_CONVERTERS: Array<FormatConverter<any>>;
@@ -14,7 +15,7 @@ export default class DataTableConversion {
     static fillFromTable(table: DataTable, valueClass: any, format: TableFormat, setReadOnlyFields?: boolean): Array<any>;
     static fillFromRecord(rec: DataRecord, beanClass: any, format: TableFormat, setReadOnlyFields: boolean): any;
     static beanFromRecord(rec: DataRecord, beanClass: any, format: TableFormat, setReadOnlyFields: boolean): any;
-    static getFormatConverter(valueClass: any, fieldType?: string | null): FormatConverter<Object> | null;
+    static getFormatConverter(valueClass: any, fieldType?: string | null): FormatConverter<JObject> | null;
     static populateBeanFromRecord(bean: any, rec: DataRecord, format: TableFormat, setReadOnlyFields: boolean, fieldsToSkip?: Array<string>): void;
     private static createList;
     static beanToTable(bean: any, format: TableFormat, setReadOnlyFields?: boolean, ignoreErrors?: boolean): DataTable;

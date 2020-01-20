@@ -10,8 +10,7 @@ import ColorFieldFormat from './field/ColorFieldFormat';
 
 export default class FieldFormatFactory {
   public static createType(name: string | null, type: string | null): FieldFormat<any> {
-    if (name === null || type === null)
-      throw new Error("Error in createType function of FieldFormat class. Type or name can't be null");
+    if (name === null || type === null) throw new Error("Error in createType function of FieldFormat class. Type or name can't be null");
 
     const IntFieldFormat = require('./field/IntFieldFormat').default;
     const StringFieldFormat = require('./field/StringFieldFormat').default;
@@ -58,14 +57,7 @@ export default class FieldFormatFactory {
     }
   }
 
-  public static createWith<S extends any>(
-    name: string,
-    type: string,
-    description: string | null,
-    defaultValue: any | null = null,
-    nullable: boolean = false,
-    group: string | null = null
-  ): FieldFormat<S> {
+  public static createWith<S extends any>(name: string, type: string, description: string | null, defaultValue: any | null = null, nullable = false, group: string | null = null): FieldFormat<S> {
     const ff = FieldFormatFactory.createType(name, type);
     ff.setDescription(description);
     ff.setNullable(nullable);
@@ -74,11 +66,7 @@ export default class FieldFormatFactory {
     return ff;
   }
 
-  public static create<S extends JObject>(
-    format: string,
-    settings: ClassicEncodingSettings = new ClassicEncodingSettings(true),
-    validate: boolean = true
-  ): FieldFormat<S> {
+  public static create<S extends JObject>(format: string, settings: ClassicEncodingSettings = new ClassicEncodingSettings(true), validate = true): FieldFormat<S> {
     const els: ElementList = StringUtils.elements(format, settings.isUseVisibleSeparators());
 
     let name: string | null = null;

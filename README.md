@@ -20,4 +20,4 @@ To see [docs](http://aggregate.tibbo.com/docs/en/int_sdk.htm).
 
 ## Examples
 
-To see [example](https://github.com/Tibbo-Systems/aggregate-react-app) - React + AggreGate SDK. Also you can see [examples](https://github.com/Tibbo-Systems/aggregate-javascript-sdk/tree/master/examples) and [tests](https://github.com/Tibbo-Systems/aggregate-javascript-sdk/tree/master/testAcceptance/examples) in AggreGate SDK.
+To see [example](https://github.com/AndreyPlis/aggregate-react-app) - React + AggreGate SDK. Also you can see [tests](https://github.com/Tibbo-Systems/aggregate-sdk/tree/master/test/integration) in AggreGate SDK.

@@ -73,6 +73,6 @@ export default class EditProperties extends GenericActionCommand {
     setKey(key: string): void;
     getDashboardsHierarchyInfo(): DashboardsHierarchyInfo | null;
     setDashboardsHierarchyInfo(dhInfo: DashboardsHierarchyInfo): void;
-    protected constructParameters(): DataTable | null;
+    protected constructParameters(): DataTable;
     private createSlavesTable;
 }

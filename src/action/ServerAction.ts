@@ -9,20 +9,13 @@ import ServerActionContext from './ServerActionContext';
 import CallerController from '../context/CallerController';
 import ServerActionCommandProcessor from './ServerActionCommandProcessor';
 import Context from '../context/Context';
-import ActionHolder from './ActionHolder';
 import ActionResult from './ActionResult';
-import ServerActionHelper from './ServerActionHelper';
-import ActionIdentifier from './ActionIdentifier';
 import EventLevel from '../event/EventLevel';
 import Cres from '../Cres';
 import Util from '../util/Util';
 import Log from '../Log';
 
-export default abstract class ServerAction extends SingleThreadAction<
-  ServerActionInput,
-  GenericActionCommand,
-  GenericActionResponse
-> {
+export default abstract class ServerAction extends SingleThreadAction<ServerActionInput, GenericActionCommand, GenericActionResponse> {
   private readonly processor: ServerActionCommandProcessor = new ServerActionCommandProcessor(this);
 
   public send(actionCommand: GenericActionCommand): GenericActionResponse {
@@ -51,30 +44,16 @@ export default abstract class ServerAction extends SingleThreadAction<
     return this.getActionContext().getCallerController();
   }
 
-  public redirect(
-    ctx: ServerContext,
-    defOrAction: ActionDefinition | string,
-    input: ServerActionInput
-  ): ActionResult | null {
+  public redirect(ctx: ServerContext, defOrAction: ActionDefinition | string, input: ServerActionInput): ActionResult | null {
     // TODO SingleThreadAction.redirect
     throw new Error();
   }
 
-  public call(
-    devicesContext: ServerContext,
-    def: ActionDefinition,
-    serverActionInput: ServerActionInput
-  ): ActionResult | null {
+  public call(devicesContext: ServerContext, def: ActionDefinition, serverActionInput: ServerActionInput): ActionResult | null {
     return null;
   }
 
-  public redirectToGroupedAction(
-    ctx: ServerContext,
-    contexts: Array<Context<any, any>>,
-    action: string,
-    caller: CallerController,
-    executionParameters: DataTable
-  ): void {
+  public redirectToGroupedAction(ctx: ServerContext, contexts: Array<Context<any, any>>, action: string, caller: CallerController, executionParameters: DataTable): void {
     //TODO redirectToGroupedAction
     throw new Error();
   }

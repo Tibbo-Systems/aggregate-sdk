@@ -7,6 +7,7 @@ import Cres from '../Cres';
 import FieldConstants from './field/FieldConstants';
 import Evaluator from '../expression/Evaluator';
 import ErrorCollector from '../util/ErrorCollector';
+//import DataTableFactory from "./DataTableFactory";
 
 export enum FilterMode {
   TEXT,
@@ -38,36 +39,18 @@ export default class DataTableUtils extends JObject {
     DataTableUtils.EDITOR_SELECTION_VALUES.set(FieldConstants.EDITOR_TIME, Cres.get().getString('time'));
     DataTableUtils.EDITOR_SELECTION_VALUES.set(FieldConstants.EDITOR_BAR, Cres.get().getString('dtEditorBar'));
     DataTableUtils.EDITOR_SELECTION_VALUES.set(FieldConstants.EDITOR_BYTES, Cres.get().getString('dtEditorBytes'));
-    DataTableUtils.EDITOR_SELECTION_VALUES.set(
-      FieldConstants.EDITOR_INSTANCE,
-      Cres.get().getString('dtEditorInstance')
-    );
+    DataTableUtils.EDITOR_SELECTION_VALUES.set(FieldConstants.EDITOR_INSTANCE, Cres.get().getString('dtEditorInstance'));
     DataTableUtils.EDITOR_SELECTION_VALUES.set(FieldConstants.EDITOR_PERIOD, Cres.get().getString('dtEditorPeriod'));
-    DataTableUtils.EDITOR_SELECTION_VALUES.set(
-      FieldConstants.EDITOR_FOREIGN_INSTANCE,
-      Cres.get().getString('dtEditorForeignInstance')
-    );
+    DataTableUtils.EDITOR_SELECTION_VALUES.set(FieldConstants.EDITOR_FOREIGN_INSTANCE, Cres.get().getString('dtEditorForeignInstance'));
     DataTableUtils.EDITOR_SELECTION_VALUES.set(FieldConstants.EDITOR_EXPRESSION, Cres.get().getString('expression'));
-    DataTableUtils.EDITOR_SELECTION_VALUES.set(
-      FieldConstants.EDITOR_FUNCTION_SELECTOR,
-      Cres.get().getString('functionSelector')
-    );
+    DataTableUtils.EDITOR_SELECTION_VALUES.set(FieldConstants.EDITOR_FUNCTION_SELECTOR, Cres.get().getString('functionSelector'));
     DataTableUtils.EDITOR_SELECTION_VALUES.set(FieldConstants.EDITOR_PASSWORD, Cres.get().getString('password'));
     DataTableUtils.EDITOR_SELECTION_VALUES.set(FieldConstants.EDITOR_TEXT, Cres.get().getString('dtEditorTextEditor'));
     DataTableUtils.EDITOR_SELECTION_VALUES.set(FieldConstants.EDITOR_HTML, Cres.get().getString('dtEditorHtml'));
-    DataTableUtils.EDITOR_SELECTION_VALUES.set(
-      FieldConstants.EDITOR_TEXT_AREA,
-      Cres.get().getString('dtEditorTextArea')
-    );
-    DataTableUtils.EDITOR_SELECTION_VALUES.set(
-      FieldConstants.EDITOR_EMBEDDED_TEXT_AREA,
-      Cres.get().getString('dtEditorEmbeddedTextArea')
-    );
+    DataTableUtils.EDITOR_SELECTION_VALUES.set(FieldConstants.EDITOR_TEXT_AREA, Cres.get().getString('dtEditorTextArea'));
+    DataTableUtils.EDITOR_SELECTION_VALUES.set(FieldConstants.EDITOR_EMBEDDED_TEXT_AREA, Cres.get().getString('dtEditorEmbeddedTextArea'));
     DataTableUtils.EDITOR_SELECTION_VALUES.set(FieldConstants.EDITOR_CONTEXT, Cres.get().getString('context'));
-    DataTableUtils.EDITOR_SELECTION_VALUES.set(
-      FieldConstants.EDITOR_CONTEXT_MASK,
-      Cres.get().getString('conContextMask')
-    );
+    DataTableUtils.EDITOR_SELECTION_VALUES.set(FieldConstants.EDITOR_CONTEXT_MASK, Cres.get().getString('conContextMask'));
     DataTableUtils.EDITOR_SELECTION_VALUES.set(FieldConstants.EDITOR_FONT, Cres.get().getString('font'));
     DataTableUtils.EDITOR_SELECTION_VALUES.set(FieldConstants.EDITOR_IP, Cres.get().getString('dtEditorIp'));
     // TODO Color not implemented yet
@@ -75,10 +58,7 @@ export default class DataTableUtils extends JObject {
     DataTableUtils.EDITOR_SELECTION_VALUES.set(FieldConstants.EDITOR_IMAGE, Cres.get().getString('image'));
     DataTableUtils.EDITOR_SELECTION_VALUES.set(FieldConstants.EDITOR_SOUND, Cres.get().getString('sound'));
     DataTableUtils.EDITOR_SELECTION_VALUES.set(FieldConstants.EDITOR_HEX, Cres.get().getString('dtEditorHex'));
-    DataTableUtils.EDITOR_SELECTION_VALUES.set(
-      FieldConstants.EDITOR_REFERENCE,
-      Cres.get().getString('dtEditorReference')
-    );
+    DataTableUtils.EDITOR_SELECTION_VALUES.set(FieldConstants.EDITOR_REFERENCE, Cres.get().getString('dtEditorReference'));
     DataTableUtils.EDITOR_SELECTION_VALUES.set(FieldConstants.EDITOR_ACTIVATOR, Cres.get().getString('activator'));
     DataTableUtils.EDITOR_SELECTION_VALUES.set(FieldConstants.EDITOR_CODE, Cres.get().getString('dtEditorCodeEditor'));
     DataTableUtils.EDITOR_SELECTION_VALUES.set(FieldConstants.EDITOR_SPINNER, Cres.get().getString('wSpinner'));
@@ -90,22 +70,10 @@ export default class DataTableUtils extends JObject {
   static __static_initializer_1() {
     DataTableUtils.VALIDATOR_SELECTION_VALUES.set(null, Cres.get().getString('default'));
     DataTableUtils.VALIDATOR_SELECTION_VALUES.set(FieldConstants.VALIDATOR_ID, Cres.get().getString('dtIdValidator'));
-    DataTableUtils.VALIDATOR_SELECTION_VALUES.set(
-      FieldConstants.VALIDATOR_LIMITS,
-      Cres.get().getString('dtLimitsValidator')
-    );
-    DataTableUtils.VALIDATOR_SELECTION_VALUES.set(
-      FieldConstants.VALIDATOR_NON_NULL,
-      Cres.get().getString('dtNonNullValidator')
-    );
-    DataTableUtils.VALIDATOR_SELECTION_VALUES.set(
-      FieldConstants.VALIDATOR_REGEX,
-      Cres.get().getString('dtRegexValidator')
-    );
-    DataTableUtils.VALIDATOR_SELECTION_VALUES.set(
-      FieldConstants.VALIDATOR_EXPRESSION,
-      Cres.get().getString('dtExpressionValidator')
-    );
+    DataTableUtils.VALIDATOR_SELECTION_VALUES.set(FieldConstants.VALIDATOR_LIMITS, Cres.get().getString('dtLimitsValidator'));
+    DataTableUtils.VALIDATOR_SELECTION_VALUES.set(FieldConstants.VALIDATOR_NON_NULL, Cres.get().getString('dtNonNullValidator'));
+    DataTableUtils.VALIDATOR_SELECTION_VALUES.set(FieldConstants.VALIDATOR_REGEX, Cres.get().getString('dtRegexValidator'));
+    DataTableUtils.VALIDATOR_SELECTION_VALUES.set(FieldConstants.VALIDATOR_EXPRESSION, Cres.get().getString('dtExpressionValidator'));
   }
 
   private static _init = false;
@@ -145,18 +113,43 @@ export default class DataTableUtils extends JObject {
     return DataTableUtils.EDITOR_SELECTION_VALUES;
   }
 
+  /* public static wrapToTable(values: Array<any>): DataTable {
+    const tableSource = new Map<string, object>();
+    for (let i = 0; i < values.length; i++) {
+      tableSource.set(i.toString(), values[i]);
+    }
+    return this.wrapMapToTable(tableSource);
+  }
+
+  //TODO fix this
+  public static wrapMapToTable(values: Map<string, any>): DataTable {
+   // if (values.size == 0) {
+      return DataTableFactory.of();
+   // }
+*/
+  /* const rf = new TableFormat();
+
+    for (let field of values.keys()) {
+      let value = values.get(field);
+  //    rf.addField(DataTableConversion.createFieldFormat(field, value));
+    }
+
+    const result = new DataRecord(rf);
+
+    for (let field of values.keys()) {
+      result.addValue(values.get(field));
+    }*/
+
+  //  return result.wrap();
+  //}
+
   static inlineData(tgtVal: DataTable, contextManager: ContextManager<any> | null, caller: CallerController) {}
 
   public static isEncodedTable(str: string): boolean {
     return str != null && str.length > 0 && str.charAt(0) == DataTableUtils.ELEMENT_START;
   }
 
-  public static processBindings(
-    table: DataTable,
-    evaluator: Evaluator,
-    errorCollector: ErrorCollector | null = null,
-    split: boolean = false
-  ): DataTable {
+  public static processBindings(table: DataTable, evaluator: Evaluator, errorCollector: ErrorCollector | null = null, split = false): DataTable {
     if (table == null) {
       return table;
     }

@@ -111,7 +111,7 @@ const getFormatAsDataTable = () => {
 
 describe('TestDataTableBuilding', () => {
   it('testCreateTableFormat', () => {
-    expect(getTableFormat().equals(DataTableBuilding.createTableFormat(getFormatAsDataTable())));
+    expect(getTableFormat().equals(DataTableBuilding.createTableFormat(getFormatAsDataTable()))).toBeTruthy();
   });
 
   it('testCreateDataTableFromTableFormat', () => {

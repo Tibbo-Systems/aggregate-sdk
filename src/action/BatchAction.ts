@@ -48,7 +48,7 @@ export default class BatchAction implements Action<InitialRequest, ActionCommand
         entryContext.clearRequestedIds();
 
         this.currentActionId = this.actionManager && this.actionManager.initAction(entryContext, batchEntry.getInitialRequest(), new ActionExecutionMode(ActionExecutionMode.BATCH));
-        actionCommand = this.currentActionId && this.actionManager?.service(this.currentActionId, null) || null;
+        actionCommand = (this.currentActionId && this.actionManager?.service(this.currentActionId, null)) || null;
       } else {
         actionCommand = this.actionManager?.service(this.currentActionId, actionRequest) || null;
       }
@@ -69,7 +69,7 @@ export default class BatchAction implements Action<InitialRequest, ActionCommand
     const batch = batchContext.getEntries();
     if (!batch) return null;
 
-    for (let batchEntry of batch) {
+    for (const batchEntry of batch) {
       if (!batchEntry.isFulfilled()) {
         batchContext.setCurrentEntry(batchEntry);
         return batchEntry;

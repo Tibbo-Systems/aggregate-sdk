@@ -18,7 +18,7 @@ export default abstract class AbstractCallerController extends JObject implement
 
   private readonly callerData: CallerData | null;
 
-  private loggedIn: boolean = false;
+  private loggedIn = false;
 
   private type: string | null = null;
 
@@ -41,12 +41,7 @@ export default abstract class AbstractCallerController extends JObject implement
   }
 
   toString(): string {
-    return (
-      (this.type != null ? this.type : 'CallerController') +
-      ' (' +
-      (this.loggedIn ? 'logged in' : 'not logged in') +
-      ')'
-    );
+    return (this.type != null ? this.type : 'CallerController') + ' (' + (this.loggedIn ? 'logged in' : 'not logged in') + ')';
   }
 
   getPermissions(): Permissions | null {
@@ -77,6 +72,7 @@ export default abstract class AbstractCallerController extends JObject implement
     this.loggedIn = loggedIn;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   sendFeedback(level: number, message: string): void {}
 
   getUsername(): string | null {
@@ -92,7 +88,7 @@ export default abstract class AbstractCallerController extends JObject implement
   }
 
   getEffectiveUsername(): string | null {
-    let inheritedUsername = this.getInheritedUsername();
+    const inheritedUsername = this.getInheritedUsername();
     return inheritedUsername != null ? inheritedUsername : this.getUsername();
   }
 
@@ -142,7 +138,7 @@ export default abstract class AbstractCallerController extends JObject implement
       return null;
     }
 
-    let currentTime = Date.now();
+    const currentTime = Date.now();
 
     if (this.resetCacheBy(currentTime)) {
       return null;
@@ -152,7 +148,7 @@ export default abstract class AbstractCallerController extends JObject implement
       this.lastCacheOperationTime = currentTime;
     }
 
-    let ref = this._cache.get(path);
+    const ref = this._cache.get(path);
 
     if (!ref) {
       return null;
@@ -176,7 +172,7 @@ export default abstract class AbstractCallerController extends JObject implement
             return;
         }*/
 
-    let currentTime = Date.now();
+    const currentTime = Date.now();
 
     this.resetCacheBy(currentTime);
 
@@ -188,10 +184,7 @@ export default abstract class AbstractCallerController extends JObject implement
   }
 
   private resetCacheBy(currentTime: number): boolean {
-    if (
-      this.lastCacheOperationTime != null &&
-      currentTime - this.lastCacheOperationTime > AbstractCallerController.CACHE_EXPIRATION_PERIOD
-    ) {
+    if (this.lastCacheOperationTime != null && currentTime - this.lastCacheOperationTime > AbstractCallerController.CACHE_EXPIRATION_PERIOD) {
       this.resetCache();
       return true;
     }

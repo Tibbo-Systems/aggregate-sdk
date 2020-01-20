@@ -8,9 +8,9 @@ export default class OutgoingAggreGateCommand extends AggreGateCommand {
 
   protected id: string | null = null;
 
-  protected async: boolean = false;
+  protected async = false;
 
-  protected paramCount: number = 0;
+  protected paramCount = 0;
 
   header(): string | null {
     return String.fromCharCode(AggreGateCommand.START_CHAR);
@@ -44,7 +44,7 @@ export default class OutgoingAggreGateCommand extends AggreGateCommand {
         //TODO not implemented yet
         throw new Error('TODO not implemented yet');
       } else {
-        let paramBytes = ByteBuffer.fromUTF8(param);
+        const paramBytes = ByteBuffer.fromUTF8(param);
         this.data.append(paramBytes);
       }
     } catch (e) {
@@ -68,15 +68,7 @@ export default class OutgoingAggreGateCommand extends AggreGateCommand {
     if (details) this.addParam(TransferEncodingHelper.encodeFromString(details) as string);
   }
 
-  public constructEvent(
-    context: string,
-    name: string,
-    level: number,
-    encodedDataTable: string,
-    eventId: number,
-    creationtime: Date,
-    listener: number
-  ): void {
+  public constructEvent(context: string, name: string, level: number, encodedDataTable: string, eventId: number, creationtime: Date, listener: number): void {
     this.id = '';
 
     this.setAsync(true);

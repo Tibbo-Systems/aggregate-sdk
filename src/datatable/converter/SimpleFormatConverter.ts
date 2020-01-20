@@ -7,8 +7,7 @@ export default abstract class SimpleFormatConverter<T> extends AbstractFormatCon
   }
 
   convertToBean(value: any, originalValue: T | null): T {
-    const AbstractDataTable = require('../AbstractDataTable').default;
-    if (value instanceof AbstractDataTable) {
+    if (value instanceof DataTable) {
       value = value.get() as DataTable;
     }
 

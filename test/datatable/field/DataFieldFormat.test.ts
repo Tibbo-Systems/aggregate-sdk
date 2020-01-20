@@ -16,12 +16,12 @@ describe('TestDataFieldFormat', () => {
     expect(nd.getId()).toBeNull();
     expect(nd.getName()).toBeNull();
     expect(nd.getPreview()).toBeNull();
-    expect(nd.getData());
+    expect(nd.getData()).toBeNull();
 
     data = new Data();
 
-    let preview: string = '/preview//';
-    let originalData: string = '/data';
+    const preview = '/preview//';
+    let originalData = '/data';
 
     for (let i = 0; i < 250; i++) {
       originalData += i + '';

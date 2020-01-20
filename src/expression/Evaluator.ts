@@ -11,25 +11,33 @@ import Reference from './Reference';
 import Util from '../util/Util';
 import EvaluationEnvironment from './EvaluationEnvironment';
 import ExpressionUtils from './ExpressionUtils';
+import Cres from '../Cres';
+import MessageFormat from '../util/java/MessageFormat';
+import AttributedObject from './AttributedObject';
+import DefaultEvaluatingVisitor from './DefaultEvaluatingVisitor';
+
+import Function from './functions/Function';
+import AbstractEvaluatingVisitor from './AbstractEvaluatingVisitor';
+import Tracer from './util/Tracer';
 
 export default class Evaluator extends JObject {
   private static readonly ENVIRONMENT_PREVIOUS: string = 'previous';
   private static readonly ENVIRONMENT_COUNT: string = 'count';
 
-  private readonly resolvers: Map<string | null, ReferenceResolver | null> = new Map<
-    string | null,
-    ReferenceResolver | null
-  >();
-  private keepPreviousResult: boolean = false;
+  private readonly resolvers: Map<string | null, ReferenceResolver | null> = new Map<string | null, ReferenceResolver | null>();
+  private keepPreviousResult = false;
+
+  private readonly customFunctions = new Map<string, Function>();
+
+  private tracer: Tracer | null = null;
 
   private previousResult: any;
-  private count: number = 0;
+  private count = 0;
 
   private setKeepPreviousResult(keepPreviousResult: boolean): void {
     this.keepPreviousResult = keepPreviousResult;
   }
 
-  // private readonly environmentResolver: EnvironmentReferenceResolver = new LocalEnvironmentResolver();
   private getKeepPreviousResult(): boolean {
     return this.keepPreviousResult;
   }
@@ -38,54 +46,41 @@ export default class Evaluator extends JObject {
     return this.count;
   }
 
-  private getPreviousResult(): any {
+  public getPreviousResult(): any {
     return this.previousResult;
   }
 
-  // TODO check this logic
-  private readonly environmentResolver: EnvironmentReferenceResolver = new (class LocalEnvironmentResolver extends EnvironmentReferenceResolver {
-    private setKeepPreviousResult: Function;
-    private getKeepPreviousResult: Function;
-    private getCount: Function;
-    private getPreviousResult: Function;
+  public restorePreviousResult(previousResult: any): void {
+    this.previousResult = previousResult;
+  }
 
-    constructor(
-      keepPreviousResult: Function,
-      setKeepPreviousResult: Function,
-      getCount: Function,
-      getPreviousResult: Function
-    ) {
+  private readonly environmentResolver: EnvironmentReferenceResolver = new (class LocalEnvironmentResolver extends EnvironmentReferenceResolver {
+    private parentClass: Evaluator;
+
+    constructor(evaluator: Evaluator) {
       super();
-      this.getKeepPreviousResult = keepPreviousResult;
-      this.setKeepPreviousResult = setKeepPreviousResult;
-      this.getCount = getCount;
-      this.getPreviousResult = getPreviousResult;
+      this.parentClass = evaluator;
     }
 
     public resolveReference(ref: Reference, environment: EvaluationEnvironment): any {
       if (Util.equals(Evaluator.ENVIRONMENT_PREVIOUS, ref.getField())) {
-        if (this.getKeepPreviousResult()) {
-          return this.getPreviousResult();
+        if (this.parentClass.getKeepPreviousResult()) {
+          return this.parentClass.getPreviousResult();
         } else {
           throw new Error("Previous result was not keep because the were no references to 'count'");
         }
       }
 
       if (Util.equals(Evaluator.ENVIRONMENT_COUNT, ref.getField())) {
-        this.setKeepPreviousResult(true);
-        return this.getCount();
+        this.parentClass.setKeepPreviousResult(true);
+        return this.parentClass.getCount();
       }
 
       return super.resolveReference(ref, environment);
     }
-  })(this.getKeepPreviousResult, this.setKeepPreviousResult, this.getCount, this.getPreviousResult);
+  })(this);
 
-  constructor(
-    cm: ContextManager<any> | null = null,
-    defaultContext: Context<any, any> | null = null,
-    defaultTable: DataTable | null = null,
-    caller: CallerController | null = null
-  ) {
+  constructor(cm: ContextManager<any> | null = null, defaultContext: Context<any, any> | null = null, defaultTable: DataTable | null = null, caller: CallerController | null = null) {
     super();
 
     const resolver: DefaultReferenceResolver = new DefaultReferenceResolver();
@@ -119,46 +114,37 @@ export default class Evaluator extends JObject {
     return new Evaluator();
   }
 
-  public evaluate(
-    expression: Expression | null,
-    environment: EvaluationEnvironment = new EvaluationEnvironment(),
-    attributed: boolean = false
-  ): any {
-    return null;
-    // try {
-    //     if ((expression == null) || (expression.getText().length == 0)) {
-    //         return null;
-    //     }
-    //
-    //     let root: ASTStart;
-    //
-    //
-    //     root = expression.getRootNode();
-    //
-    //     if (root == null) {
-    //         root = ExpressionUtils.parse(expression, true);
-    //         expression.setRootNode(root);
-    //     }
-    //
-    //     const visitor: DefaultEvaluatingVisitor = new DefaultEvaluatingVisitor(this);
-    //
-    //     root.jjtAccept(visitor, environment);
-    //     const result: any = visitor.getResult();
-    //
-    //     if (!attributed && result instanceof AttributedObject) {
-    //         result = (result as AttributedObject).getValue();
-    //     }
-    //
-    //     if (keepPreviousResult) {
-    //         previousResult = result;
-    //     }
-    //
-    //     return result;
-    // } catch (ex) {
-    //     throw new Error(MessageFormat.format(Cres.get().getString("exprErrEvaluatingExpr"), expression) + ex.message);
-    // } finally {
-    //     count++;
-    // }
+  public evaluate(expression: Expression | null, environment: EvaluationEnvironment = new EvaluationEnvironment(), attributed = false): any {
+    try {
+      if (expression == null || expression.getText().length == 0) {
+        return null;
+      }
+
+      let root = expression.getRootNode();
+
+      if (root == null) {
+        root = ExpressionUtils.parse(expression, true);
+        expression.setRootNode(root);
+      }
+
+      const visitor: DefaultEvaluatingVisitor = new DefaultEvaluatingVisitor(this, environment);
+
+      visitor.visitCompilationUnit(root);
+      let result: any = visitor.getResult();
+      if (!attributed && result instanceof AttributedObject) {
+        result = (result as AttributedObject).getValue();
+      }
+
+      if (this.keepPreviousResult) {
+        this.previousResult = result;
+      }
+
+      return result;
+    } catch (ex) {
+      throw new Error(MessageFormat.format(Cres.get().getString('exprErrEvaluatingExpr'), expression) + ex.message);
+    } finally {
+      this.count++;
+    }
   }
 
   evaluateToBoolean(prefilter: Expression): boolean {
@@ -180,8 +166,28 @@ export default class Evaluator extends JObject {
     return new DefaultReferenceResolver();
   }
 
+  getResolvers(): Map<string | null, ReferenceResolver | null> {
+    return this.resolvers;
+  }
+
   public evaluateToBooleanOrNull(expression: Expression): boolean | null {
     const result: any = this.evaluate(expression);
     return Util.convertToBoolean(result, true, true);
+  }
+
+  getCustomFunction(functionName: string): Function | undefined {
+    return this.customFunctions.get(functionName);
+  }
+
+  getTracer(): Tracer | null {
+    return this.tracer;
+  }
+
+  registerCustomFunction(name: string, impl: Function) {
+    if (AbstractEvaluatingVisitor.DEFAULT_FUNCTIONS.has(name) || this.customFunctions.has(name)) {
+      throw new Error('Function already registered:' + name);
+    }
+
+    this.customFunctions.set(name, impl);
   }
 }

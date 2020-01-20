@@ -7,30 +7,27 @@ import Comparable from './java/Comparable';
 import DataTable from '../datatable/DataTable';
 import ContextUtils from '../context/ContextUtils';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const isEqual = require('lodash.isequal');
 
 export default class Util {
   private static readonly NULL: string = 'NULL';
   private static readonly DATE_FORMAT_REGEXPS: Map<string, string> = new Map<string, string>();
 
-  public static compareTo(
-    o1: number | string | boolean | Comparable<JObject>,
-    o2: number | string | boolean | Comparable<JObject>
-  ): number {
+  public static compareTo(o1: any, o2: any): number {
+    if (o1 == null && o2 == null) {
+      return 0;
+    } else if (o1 == null || o2 == null) {
+      return -1;
+    }
     if (Util.isNumber(o1) && Util.isNumber(o2)) {
-      if (o1 > o2) {
-        return 1;
-      } else if (o1 === o2) {
-        return 0;
-      } else if (o1 < o2) {
-        return -1;
-      }
+      return Util.compare(o1, o2);
     } else if (Util.isString(o1) && Util.isString(o2)) {
       return (o1 as string).localeCompare(o2 as string);
     } else if (Util.isBoolean(o1) && Util.isBoolean(o2)) {
       return o1 === o2 ? 0 : -1;
     } else if (Util.isComparable(o1) && Util.isComparable(o2)) {
-      return ((o1 as Comparable<any>).compareTo(o2) === 0) === Util.equals(o1, o2) ? 0 : -1;
+      return o1.compareTo(o2);
     }
 
     throw new Error('Uncomparable value error');
@@ -69,19 +66,20 @@ export default class Util {
     return res;
   }
 
-  public static isComparable(value: any): boolean {
-    return value.hasOwnProperty('comapreTo');
+  public static isComparable(value: any): value is Comparable<any> {
+    // eslint-disable-next-line no-prototype-builtins
+    return value.hasOwnProperty('compareTo');
   }
 
-  public static isNumber(value: any): boolean {
+  public static isNumber(value: any): value is number {
     return value instanceof Number || typeof value === 'number';
   }
 
-  public static isString(value: any): boolean {
+  public static isString(value: any): value is string {
     return value instanceof String || typeof value === 'string';
   }
 
-  public static isBoolean(value: any): boolean {
+  public static isBoolean(value: any): value is boolean {
     return value instanceof Boolean || typeof value === 'boolean';
   }
 
@@ -96,8 +94,7 @@ export default class Util {
       return 0;
     }
 
-    const AbstractDataTable = require('../datatable/AbstractDataTable').default;
-    if (value instanceof AbstractDataTable) {
+    if (value instanceof DataTable) {
       const table: DataTable = value;
 
       if (table.getRecordCount() == 0 || table.getFieldCount() == 0) {
@@ -120,7 +117,7 @@ export default class Util {
          */
 
     if (this.isNumber(value)) {
-      return Number(value);
+      return value;
     }
 
     if (value instanceof Date) {
@@ -181,8 +178,7 @@ export default class Util {
       return false;
     }
 
-    const AbstractDataTable = require('../datatable/AbstractDataTable').default;
-    if (value instanceof AbstractDataTable) {
+    if (value instanceof DataTable) {
       const table: DataTable = value;
 
       if (table.getRecordCount() == 0 || table.getFieldCount() == 0) {
@@ -225,7 +221,7 @@ export default class Util {
       return 'null';
     }
 
-    return o.toString() + ' (' + o.getClass().getName() + ')';
+    return o.toString();
   }
 
   public static parse(dateString: moment.MomentInput, dateFormat: moment.MomentFormatSpecification) {
@@ -259,7 +255,6 @@ export default class Util {
   }
 
   public static convertToDate(value: any, validate: boolean, allowNull: boolean): Date | null {
-    const AbstractDataTable = require('../datatable/AbstractDataTable').default;
     if (value == null) {
       if (allowNull) {
         return null;
@@ -270,7 +265,7 @@ export default class Util {
       return new Date();
     }
 
-    if (value instanceof AbstractDataTable) {
+    if (value instanceof DataTable) {
       const table: DataTable = value;
 
       if (table.getRecordCount() == 0 || table.getFieldCount() == 0) {
@@ -316,8 +311,8 @@ export default class Util {
   public static nameToDescription(name: string): string {
     const sb: StringBuilder = new StringBuilder();
 
-    let prevWasUpper: boolean = false,
-      nextToUpper: boolean = false;
+    let prevWasUpper = false,
+      nextToUpper = false;
 
     for (let i = 0; i < name.length; i++) {
       let c: string = name.charAt(i);

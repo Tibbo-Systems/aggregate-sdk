@@ -30,12 +30,7 @@ export default class ActionHistoryItem extends AggreGateBean {
     super(ActionHistoryItem.FORMAT);
   }
 
-  public static create(
-    time: Date,
-    mask: string | null,
-    action: string | null,
-    input: DataTable | null
-  ): ActionHistoryItem {
+  public static create(time: Date, mask: string | null, action: string | null, input: DataTable | null): ActionHistoryItem {
     const actionHistItem = new ActionHistoryItem();
     actionHistItem.setTime(time);
     actionHistItem.setMask(mask);

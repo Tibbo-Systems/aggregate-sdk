@@ -31,8 +31,8 @@ export default class GenericActionCommand extends JObject implements ActionComma
     isResponseValid(actionRequest: ActionResponse): boolean;
     setBatchEntry(batchEntry: boolean): void;
     setParameters(parameters: DataTable | null): void;
-    getParameters(): DataTable | null;
-    protected constructParameters(): DataTable | null;
+    getParameters(): DataTable;
+    protected constructParameters(): DataTable;
     setRequestId(requestId: RequestIdentifier | null): void;
     setInteractive(interactive: boolean): void;
     toString(): string;

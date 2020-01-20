@@ -5,9 +5,7 @@ import DataTable from '../../datatable/DataTable';
 
 export default class GridDashboardActionCommand extends GenericActionCommand {
   public static readonly CF_ELEMENTS: string = 'elements';
-  public static readonly CFT_GRID_DASHBOARD: TableFormat = TableFormat.createWithFormat(
-    FieldFormatFactory.create('<' + GridDashboardActionCommand.CF_ELEMENTS + '><T>')
-  );
+  public static readonly CFT_GRID_DASHBOARD: TableFormat = TableFormat.createWithFormat(FieldFormatFactory.create('<' + GridDashboardActionCommand.CF_ELEMENTS + '><T>'));
 
   readonly parameters: DataTable;
 

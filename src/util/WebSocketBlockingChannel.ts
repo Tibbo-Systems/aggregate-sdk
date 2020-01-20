@@ -4,7 +4,7 @@ import JObject from './java/JObject';
 
 export default class WebSocketBlockingChannel extends JObject implements BlockingChannel {
   private webSocket: WebSocket;
-  private usesCompression: boolean = false;
+  private usesCompression = false;
 
   private inputBuffer: ByteBuffer = new ByteBuffer(32);
 
@@ -14,10 +14,10 @@ export default class WebSocketBlockingChannel extends JObject implements Blockin
   }
 
   public setListener(listener: () => void) {
-    const self = this;
+    const _this = this;
     this.webSocket.onmessage = function(this: WebSocket, event: MessageEvent) {
       const message: ArrayBuffer = event.data;
-      self.inputBuffer.append(message);
+      _this.inputBuffer.append(message);
       listener();
     };
   }

@@ -16,23 +16,23 @@ export default class EventDefinition extends AbstractEntityDefinition implements
 
   private format: TableFormat | null = null;
 
-  private hidden: boolean = false;
+  private hidden = false;
 
-  private expirationPeriod: number = 0;
+  private expirationPeriod = 0;
 
-  private level: number = 0;
+  private level = 0;
 
   private firePermissions: Permissions | null = null;
 
-  private queueLength: number = 0;
+  private queueLength = 0;
 
-  private concurrency: number = 0;
+  private concurrency = 0;
 
   private persistenceOptions: PersistenceOptions = new PersistenceOptions();
 
-  private memoryStorageSize: number = 0;
+  private memoryStorageSize = 0;
 
-  private sessionBound: boolean = false;
+  private sessionBound = false;
 
   private fingerprintExpression: string | null = null;
 
@@ -131,8 +131,8 @@ export default class EventDefinition extends AbstractEntityDefinition implements
 
   compareTo(d: EventDefinition): number {
     if (this.getIndex() != null || d.getIndex() != null) {
-      let my = this.getIndex() != null ? this.getIndex() : 0;
-      let other = d.getIndex() != null ? d.getIndex() : 0;
+      const my = this.getIndex() != null ? this.getIndex() : 0;
+      const other = d.getIndex() != null ? d.getIndex() : 0;
       return Util.compare(other as number, my as number);
     }
 
@@ -140,7 +140,7 @@ export default class EventDefinition extends AbstractEntityDefinition implements
   }
 
   clone(): EventDefinition {
-    let clone = super.clone() as EventDefinition;
+    const clone = super.clone() as EventDefinition;
     clone.persistenceOptions = this.persistenceOptions.clone();
     return clone;
   }
@@ -169,7 +169,7 @@ export default class EventDefinition extends AbstractEntityDefinition implements
     if (this == obj) return true;
     if (obj == null) return false;
     if (!(obj instanceof EventDefinition)) return false;
-    let other = obj as EventDefinition;
+    const other = obj as EventDefinition;
     if (this.getDescription() == null) {
       if (other.getDescription() != null) return false;
     } else if (this.getDescription() !== other.getDescription()) return false;

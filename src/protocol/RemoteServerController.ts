@@ -18,20 +18,10 @@ import AggreGateCommandParser from './AggreGateCommandParser';
 import Context from '../context/Context';
 import LoggerAdapter from '../util/logger/LoggerAdapter';
 
-export default class RemoteServerController extends AbstractAggreGateDeviceController<
-  RemoteServer,
-  RemoteContextManager
-> {
+export default class RemoteServerController extends AbstractAggreGateDeviceController<RemoteServer, RemoteContextManager> {
   private dataChannel: BlockingChannel | null = null;
 
-  constructor(
-    device: RemoteServer,
-    async: boolean,
-    useContextManager: boolean = true,
-    logger: LoggerAdapter = Log.COMMANDS_CLIENT,
-    maxEventQueueLength: number = JConstants.INTEGER_MAX_VALUE,
-    json: boolean = false
-  ) {
+  constructor(device: RemoteServer, async: boolean, useContextManager = true, logger: LoggerAdapter = Log.COMMANDS_CLIENT, maxEventQueueLength: number = JConstants.INTEGER_MAX_VALUE, json = false) {
     super(device, logger, maxEventQueueLength, json);
     if (useContextManager) {
       this.setContextManager(new RemoteContextManager(this, async, maxEventQueueLength));
@@ -42,9 +32,8 @@ export default class RemoteServerController extends AbstractAggreGateDeviceContr
     await this.connect();
     await this.login();
 
-    let cm = this.getContextManager();
-    //@ts-ignore
-    let rootContext = cm.getRoot() as Context<any, any>;
+    const cm = this.getContextManager();
+    const rootContext = cm.getRoot() as Context<any, any>;
 
     await rootContext.loadContext();
 
@@ -55,7 +44,7 @@ export default class RemoteServerController extends AbstractAggreGateDeviceContr
     await this.prepareDataChannel();
     await super.connectImpl();
 
-    let cm = this.getContextManager() as DefaultContextManager<any>;
+    const cm = this.getContextManager() as DefaultContextManager<any>;
     if (cm != null) {
       cm.setRoot(new ProxyContext(Contexts.CTX_ROOT, this));
       cm.restart();
@@ -85,30 +74,22 @@ export default class RemoteServerController extends AbstractAggreGateDeviceContr
         Log.PROTOCOL.debug('Connection with remote server established');
       } catch (e) {
         reject();
-        throw new Error(
-          MessageFormat.format(
-            Cres.get().getString('devErrConnecting'),
-              device.getDescription() + ' (' + device.getInfo() + ')'
-          ) + e.message
-        );
+        throw new Error(MessageFormat.format(Cres.get().getString('devErrConnecting'), device.getDescription() + ' (' + device.getInfo() + ')') + e.message);
       }
     });
   }
 
   protected async loginImpl(): Promise<boolean> {
-    if (this.getContextManager() != null) {
-      //@ts-ignore
-      this.getContextManager().restart();
+    const cm = this.getContextManager();
+    if (cm != null) {
+      cm.restart();
     }
-
-    //@ts-ignore
-    let loginInput = DataTableFactory.createWithFirstRecord(CommonServerFormats.FIFT_LOGIN, this.getDevice().getUsername(), this.getDevice().getPassword());
+    const loginInput = DataTableFactory.createWithFirstRecord(CommonServerFormats.FIFT_LOGIN, this.getDevice()?.getUsername(), this.getDevice()?.getPassword());
 
     await this.callRemoteFunction(Contexts.CTX_ROOT, RootContextConstants.F_LOGIN, null, loginInput, null);
 
-    if (this.getContextManager() != null) {
-      //@ts-ignore
-      this.getContextManager().getRoot().reinitialize(); // Resets local cache, because root context was already initialized, but its visible entities changed after login
+    if (cm != null) {
+      (cm.getRoot() as ProxyContext<any, any>).reinitialize(); // Resets local cache, because root context was already initialized, but its visible entities changed after login
     }
 
     return true;

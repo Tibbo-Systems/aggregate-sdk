@@ -1,17 +1,16 @@
-import JObject from './java/JObject';
 import ByteBuffer from 'bytebuffer';
 import moment from 'moment';
 import Comparable from './java/Comparable';
 export default class Util {
     private static readonly NULL;
     private static readonly DATE_FORMAT_REGEXPS;
-    static compareTo(o1: number | string | boolean | Comparable<JObject>, o2: number | string | boolean | Comparable<JObject>): number;
+    static compareTo(o1: any, o2: any): number;
     static equals(o1: any, o2: any): boolean;
     static byteBufferEquals(o1: ByteBuffer | null, o2: ByteBuffer | null): boolean;
-    static isComparable(value: any): boolean;
-    static isNumber(value: any): boolean;
-    static isString(value: any): boolean;
-    static isBoolean(value: any): boolean;
+    static isComparable(value: any): value is Comparable<any>;
+    static isNumber(value: any): value is number;
+    static isString(value: any): value is string;
+    static isBoolean(value: any): value is boolean;
     static convertToNumber(value: any, validate: boolean, allowNull: boolean): number | null;
     static descriptionToName(value: string): string;
     static convertToBoolean(value: any, validate: boolean, allowNull: boolean): boolean | null;

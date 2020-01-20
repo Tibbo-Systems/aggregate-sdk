@@ -5,14 +5,14 @@ import ContextUtils from '../context/ContextUtils';
 import JObject from '../util/java/JObject';
 
 export default class Enrichment extends JObject {
-  private static __static_initialized: boolean = false;
-  static FIELD_NAME: string = 'name';
+  private static __static_initialized = false;
+  static FIELD_NAME = 'name';
 
-  static FIELD_VALUE: string = 'value';
+  static FIELD_VALUE = 'value';
 
-  static FIELD_DATE: string = 'date';
+  static FIELD_DATE = 'date';
 
-  static FIELD_AUTHOR: string = 'author';
+  static FIELD_AUTHOR = 'author';
 
   public static FORMAT: TableFormat = new TableFormat();
 
@@ -22,17 +22,7 @@ export default class Enrichment extends JObject {
     Enrichment.FORMAT.addField('<' + Enrichment.FIELD_VALUE + '><S><D=' + Cres.get().getString('value') + '>');
     Enrichment.FORMAT.addField('<' + Enrichment.FIELD_DATE + '><D><D=' + Cres.get().getString('date') + '>');
     Enrichment.FORMAT.addField('<' + Enrichment.FIELD_AUTHOR + '><S><F=N><D=' + Cres.get().getString('author') + '>');
-    Enrichment.FORMAT.setNamingExpression(
-      'print({}, "{' +
-        Enrichment.FIELD_NAME +
-        "} + '=' + {" +
-        Enrichment.FIELD_VALUE +
-        "} + ' (' + {" +
-        Enrichment.FIELD_DATE +
-        "} + ', ' + {" +
-        Enrichment.FIELD_AUTHOR +
-        '} + \')\'", "; ")'
-    );
+    Enrichment.FORMAT.setNamingExpression('print({}, "{' + Enrichment.FIELD_NAME + "} + '=' + {" + Enrichment.FIELD_VALUE + "} + ' (' + {" + Enrichment.FIELD_DATE + "} + ', ' + {" + Enrichment.FIELD_AUTHOR + '} + \')\'", "; ")');
     const DefaultFormatConverter = require('../datatable/converter/DefaultFormatConverter').default;
 
     DataTableConversion.registerFormatConverter(new DefaultFormatConverter(null, Enrichment.FORMAT));
@@ -47,14 +37,13 @@ export default class Enrichment extends JObject {
 
   private author: string | null;
 
-  constructor(name: string | null, value: string, date: Date, author: string | null) {
+  constructor(name: string, value: string, date: Date, author: string | null) {
     super();
 
     if (!ContextUtils.isValidContextName(name)) {
       throw new Error('Illegal enrichment name: ' + name);
     }
 
-    //@ts-ignore
     this.name = name;
     this.value = value;
     this.date = date;

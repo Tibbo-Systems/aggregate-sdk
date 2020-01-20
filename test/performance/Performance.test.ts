@@ -8,7 +8,7 @@ import TestServer from '../tests/TestServer';
 import VirtualDeviceConstants from "../../src/server/VirtualDeviceConstants";
 
 describe('Performance', () => {
-  let server = new TestServer();
+  const server = new TestServer();
 
   beforeEach(async done => {
     await server.beforeEach();
@@ -24,9 +24,9 @@ describe('Performance', () => {
     let count = 0;
     let iteration = 0;
 
-    let interval = 10000;
-    let msInSeconds = interval / 1000;
-    let countIteration = 2;
+    const interval = 10000;
+    const msInSeconds = interval / 1000;
+    const countIteration = 2;
 
     setInterval(() => {
       console.log(count / msInSeconds);
@@ -35,10 +35,10 @@ describe('Performance', () => {
       iteration++;
     }, interval);
 
-    let virtualDevicesContext = server.getVirtualDevice();
+    const virtualDevicesContext = server.getVirtualDevice();
 
     while (true) {
-      let strValue = await virtualDevicesContext.getVariable(VirtualDeviceConstants.V_NORMAL, null, null);
+      const strValue = await virtualDevicesContext.getVariable(VirtualDeviceConstants.V_NORMAL, null, null);
       expect(strValue.rec().getValue(VirtualDeviceConstants.V_STRING)).toBe('test');
       count++;
       if (iteration == countIteration) break;
@@ -47,11 +47,11 @@ describe('Performance', () => {
   }, 21000);
 
   it('addEventListener', async done => {
-    let virtualDevicesContext = server.getVirtualDevice();
+    const virtualDevicesContext = server.getVirtualDevice();
 
     let count = 0;
 
-    let listener = new (class extends DefaultContextEventListener {
+    const listener = new (class extends DefaultContextEventListener {
       handle(event: Event): void {
         count++;
       }

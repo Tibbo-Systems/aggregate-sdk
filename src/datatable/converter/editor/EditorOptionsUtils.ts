@@ -28,18 +28,12 @@ export default class EditorOptionsUtils {
 
   public static initialize() {
     if (EditorOptionsUtils._init) return;
-
-    EditorOptionsUtils.__static_initializer_0();
-
     EditorOptionsUtils._init = true;
-  }
-
-  constructor() {
-    EditorOptionsUtils.initialize();
+    EditorOptionsUtils.__static_initializer_0();
   }
 
   private static getConverter(type: string, editor: string | null): EditorOptionsConverter | null {
-    for (let converter of this.CONVERTERS) {
+    for (const converter of this.CONVERTERS) {
       if (converter.isSupportingEditor(editor) && converter.isSupportingType(type)) return converter;
     }
 
@@ -48,6 +42,7 @@ export default class EditorOptionsUtils {
   }
 
   public static convertToString(fdata: DataRecord): string | null {
+    EditorOptionsUtils.initialize();
     Log.CONVERTER.debug('Starting convertToString, fdata: ' + fdata);
 
     const type: string = fdata.getString(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_TYPE);
@@ -69,11 +64,8 @@ export default class EditorOptionsUtils {
     return null;
   }
 
-  public static createEditorOptionsTable(
-    type: string,
-    editor: string | null,
-    editorOptions: string | null = null
-  ): DataTable {
+  public static createEditorOptionsTable(type: string, editor: string | null, editorOptions: string | null = null): DataTable {
+    EditorOptionsUtils.initialize();
     Log.CONVERTER.debug('Starting convertToDataTable, type: ' + type + ', editor: ' + editor);
 
     const converter: EditorOptionsConverter | null = this.getConverter(type, editor);
@@ -94,13 +86,11 @@ export default class EditorOptionsUtils {
     }
 
     const DataTableBuilding = require('../../DataTableBuilding').default;
-    return DataTableFactory.createWithFirstRecord(
-      DataTableBuilding.EDITOR_OPTIONS_SIMPLE_FORMAT,
-      editorOptions != null ? editorOptions : new String()
-    );
+    return DataTableFactory.createWithFirstRecord(DataTableBuilding.EDITOR_OPTIONS_SIMPLE_FORMAT, editorOptions != null ? editorOptions : new String());
   }
 
   public static hasConverter(type: string, editor: string): boolean {
+    EditorOptionsUtils.initialize();
     return this.getConverter(type, editor) != null ? true : false;
   }
 }

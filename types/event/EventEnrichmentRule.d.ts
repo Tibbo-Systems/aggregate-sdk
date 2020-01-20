@@ -10,7 +10,7 @@ export default class EventEnrichmentRule extends AggreGateBean {
     private name;
     private expression;
     private enrichmentExpression;
-    getName(): string | null;
+    getName(): string;
     setName(name: string): void;
     getExpression(): string | null;
     setExpression(expression: string): void;

@@ -3,7 +3,7 @@ import JObject from './JObject';
 export default class StringBuilder extends JObject {
   private value: string;
 
-  constructor(str: string = '') {
+  constructor(str = '') {
     super();
     this.value = str;
   }

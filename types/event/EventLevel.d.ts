@@ -9,7 +9,7 @@ export default class EventLevel {
     static readonly ERROR: number;
     static readonly FATAL: number;
     private static _init;
-    static _init_static(): void;
+    static _static_init(): void;
     static isValid(level: number): boolean;
     static getName(level: number): string;
     static getSelectionValues(): Map<number, string>;

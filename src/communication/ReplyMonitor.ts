@@ -9,8 +9,8 @@ export default class ReplyMonitor<C extends Command, R extends Command> extends 
 
   private readonly startTime: number;
 
-  private timeoutReset: boolean = false;
-  private terminated: boolean = false;
+  private timeoutReset = false;
+  private terminated = false;
 
   private signalAll: any;
 
@@ -23,16 +23,7 @@ export default class ReplyMonitor<C extends Command, R extends Command> extends 
   public setReply(reply: R | null): void {
     this.reply = reply;
     this.signalAll();
-    if (Log.COMMANDS.isDebugEnabled())
-      Log.COMMANDS.debug(
-        'Command replied in ' +
-          (Date.now() - this.startTime) +
-          " ms: command '" +
-          this.command +
-          "', reply '" +
-          reply +
-          "'"
-      );
+    if (Log.COMMANDS.isDebugEnabled()) Log.COMMANDS.debug('Command replied in ' + (Date.now() - this.startTime) + " ms: command '" + this.command + "', reply '" + reply + "'");
   }
 
   public terminate(): void {

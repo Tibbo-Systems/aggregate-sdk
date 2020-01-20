@@ -10,7 +10,7 @@ import FieldConstants from '../../datatable/field/FieldConstants';
 import FieldFormatFactory from '../../datatable/FieldFormatFactory';
 import SimpleDataTable from '../../datatable/SimpleDataTable';
 import StorageHelper from '../../view/StorageHelper';
-import Functions from '../../expression/Functions';
+import Functions from '../../expression/functions/Functions';
 import Contexts from '../../context/Contexts';
 import UtilitiesContextConstants from '../../server/UtilitiesContextConstants';
 import StringFieldFormat from '../../datatable/field/StringFieldFormat';
@@ -19,8 +19,9 @@ import DashboardProperties from '../../util/DashboardProperties';
 import DataRecord from '../../datatable/DataRecord';
 import EditDataMerger from '../EditDataMerger';
 import GenericActionResponse from '../GenericActionResponse';
-import ActionUtils from '../ActionUtils';
 import ViewFilterElement from '../../view/ViewFilterElement';
+import JObject from '../../util/java/JObject';
+import ActionUtilsConstants from '../ActionUtilsConstants';
 
 export default class EditData extends GenericActionCommand {
   public static readonly CF_DATA: string = 'data';
@@ -36,10 +37,7 @@ export default class EditData extends GenericActionCommand {
   public static readonly CF_KEY: string = 'key';
   public static readonly CF_EXPRESSION: string = 'expression';
   public static readonly CF_PERIOD: string = 'period';
-  public static readonly CF_STORAGE_CONTEXT: string = 'storageContext';
-  public static readonly CF_RECORD_INDEX: string = 'recordIndex';
-  public static readonly CF_RECORD_DESCRIPTION: string = 'recordDescription';
-  public static readonly CF_INLUDE_RECORD: string = 'includeRecord';
+
   public static readonly CF_STORAGE_VIEW: string = 'storageView';
   public static readonly CF_STORAGE_QUERY: string = 'storageQuery';
   public static readonly CF_STORAGE_TABLE: string = 'storageTable';
@@ -50,7 +48,7 @@ export default class EditData extends GenericActionCommand {
   public static readonly CF_STORAGE_INSTANCE: string = 'storageInstance';
   public static readonly CF_STORAGE_INSTANCE_ID: string = 'storageInstanceId';
   public static readonly CF_STORAGE_BINDINGS: string = 'storageBindings';
-  public static readonly CF_RELATION_FIELD: string = 'relationField';
+
   public static readonly CF_SHOW_TOOLBAR: string = 'showToolbar';
   public static readonly CF_SHOW_HEADER: string = 'showHeader';
   public static readonly CF_SHOW_LINE_NUMBERS: string = 'showLineNumbers';
@@ -71,119 +69,31 @@ export default class EditData extends GenericActionCommand {
 
   static __static_initializer_0() {
     EditData.CFT_EDIT_DATA.addField('<' + EditData.CF_DATA + '><T>');
-    EditData.CFT_EDIT_DATA.addField(
-      '<' +
-        EditData.CF_EXPRESSION +
-        '><S><F=N><D=' +
-        Cres.get().getString('acDataExpression') +
-        '><E=' +
-        FieldConstants.EDITOR_EXPRESSION +
-        '>'
-    );
-    EditData.CFT_EDIT_DATA.addField(
-      '<' +
-        EditData.CF_PERIOD +
-        '><L><F=N><D=' +
-        Cres.get().getString('acRefreshPeriod') +
-        '><E=' +
-        FieldConstants.EDITOR_PERIOD +
-        '>'
-    );
+    EditData.CFT_EDIT_DATA.addField('<' + EditData.CF_EXPRESSION + '><S><F=N><D=' + Cres.get().getString('acDataExpression') + '><E=' + FieldConstants.EDITOR_EXPRESSION + '>');
+    EditData.CFT_EDIT_DATA.addField('<' + EditData.CF_PERIOD + '><L><F=N><D=' + Cres.get().getString('acRefreshPeriod') + '><E=' + FieldConstants.EDITOR_PERIOD + '>');
     EditData.CFT_EDIT_DATA.addField('<' + EditData.CF_USE_DOCKABLE_FRAME + '><B><A=0>');
+    EditData.CFT_EDIT_DATA.addField('<' + EditData.CF_READ_ONLY + '><B><A=1><D=' + Cres.get().getString('readOnly') + '>');
     EditData.CFT_EDIT_DATA.addField(
-      '<' + EditData.CF_READ_ONLY + '><B><A=1><D=' + Cres.get().getString('readOnly') + '>'
-    );
-    EditData.CFT_EDIT_DATA.addField(
-      FieldFormatFactory.create(
-        '<' + EditData.CF_ENABLE_POPUP_MENU + '><B><A=1><D=' + Cres.get().getString('wEnablePopupMenu') + '>'
-      )
+      FieldFormatFactory.create('<' + EditData.CF_ENABLE_POPUP_MENU + '><B><A=1><D=' + Cres.get().getString('wEnablePopupMenu') + '>')
         .setNullable(true)
         .setAdvanced(true)
     );
-    EditData.CFT_EDIT_DATA.addField(
-      '<' + EditData.CF_DEFAULT_CONTEXT + '><S><F=N><D=' + Cres.get().getString('conDefaultContext') + '>'
-    );
+    EditData.CFT_EDIT_DATA.addField('<' + EditData.CF_DEFAULT_CONTEXT + '><S><F=N><D=' + Cres.get().getString('conDefaultContext') + '>');
     EditData.CFT_EDIT_DATA.addField('<' + EditData.CF_LOCATION + '><T><F=N>');
     EditData.CFT_EDIT_DATA.addField('<' + EditData.CF_DASHBOARD + '><T><F=N>');
-    let ff: FieldFormat<any> = FieldFormatFactory.create(
-      '<' +
-        EditData.CF_STORAGE_BINDINGS +
-        '><T><D=' +
-        Cres.get().getString('bindings') +
-        '><G=' +
-        Cres.get().getString('view') +
-        '>'
-    );
+    let ff: FieldFormat<any> = FieldFormatFactory.create('<' + EditData.CF_STORAGE_BINDINGS + '><T><D=' + Cres.get().getString('bindings') + '><G=' + Cres.get().getString('view') + '>');
     ff.setDefault(new SimpleDataTable(DataTableBuilding.BINDINGS_FORMAT));
     EditData.CFT_EDIT_DATA.addField(ff);
     EditData.CFT_EDIT_DATA.addField('<' + EditData.CF_KEY + '><S><F=NH><D=' + Cres.get().getString('key') + '>');
-    EditData.CFT_EDIT_DATA.addField(
-      '<' +
-        EditData.CF_STORAGE_CONTEXT +
-        '><S><F=N><D=' +
-        Cres.get().getString('storageContext') +
-        '><G=' +
-        Cres.get().getString('view') +
-        '><E=' +
-        FieldConstants.EDITOR_CONTEXT +
-        '>'
-    );
-    EditData.CFT_EDIT_DATA.addField(
-      '<' +
-        EditData.CF_STORAGE_VIEW +
-        '><S><F=N><D=' +
-        Cres.get().getString('view') +
-        '><G=' +
-        Cres.get().getString('view') +
-        '>'
-    );
-    EditData.CFT_EDIT_DATA.addField(
-      '<' +
-        EditData.CF_STORAGE_QUERY +
-        '><S><F=N><D=' +
-        Cres.get().getString('viewQuery') +
-        '><G=' +
-        Cres.get().getString('view') +
-        '>'
-    );
-    EditData.CFT_EDIT_DATA.addField(
-      '<' +
-        EditData.CF_STORAGE_TABLE +
-        '><S><F=N><D=' +
-        Cres.get().getString('acClassTable') +
-        '><G=' +
-        Cres.get().getString('view') +
-        '>'
-    );
-    ff = FieldFormatFactory.create(
-      '<' +
-        EditData.CF_STORAGE_COLUMNS +
-        '><T><D=' +
-        Cres.get().getString('columns') +
-        '><G=' +
-        Cres.get().getString('view') +
-        '>'
-    );
+    EditData.CFT_EDIT_DATA.addField('<' + StorageHelper.CF_STORAGE_CONTEXT + '><S><F=N><D=' + Cres.get().getString('storageContext') + '><G=' + Cres.get().getString('view') + '><E=' + FieldConstants.EDITOR_CONTEXT + '>');
+    EditData.CFT_EDIT_DATA.addField('<' + EditData.CF_STORAGE_VIEW + '><S><F=N><D=' + Cres.get().getString('view') + '><G=' + Cres.get().getString('view') + '>');
+    EditData.CFT_EDIT_DATA.addField('<' + EditData.CF_STORAGE_QUERY + '><S><F=N><D=' + Cres.get().getString('viewQuery') + '><G=' + Cres.get().getString('view') + '>');
+    EditData.CFT_EDIT_DATA.addField('<' + EditData.CF_STORAGE_TABLE + '><S><F=N><D=' + Cres.get().getString('acClassTable') + '><G=' + Cres.get().getString('view') + '>');
+    ff = FieldFormatFactory.create('<' + EditData.CF_STORAGE_COLUMNS + '><T><D=' + Cres.get().getString('columns') + '><G=' + Cres.get().getString('view') + '>');
     EditData.CFT_EDIT_DATA.addField(ff);
-    ff = FieldFormatFactory.create(
-      '<' +
-        EditData.CF_STORAGE_FILTER +
-        '><T><D=' +
-        Cres.get().getString('filter') +
-        '><G=' +
-        Cres.get().getString('view') +
-        '>'
-    );
+    ff = FieldFormatFactory.create('<' + EditData.CF_STORAGE_FILTER + '><T><D=' + Cres.get().getString('filter') + '><G=' + Cres.get().getString('view') + '>');
     EditData.CFT_EDIT_DATA.addField(ff);
-    ff = FieldFormatFactory.create(
-      '<' +
-        EditData.CF_STORAGE_SORTING +
-        '><T><D=' +
-        Cres.get().getString('sorting') +
-        '><G=' +
-        Cres.get().getString('view') +
-        '>'
-    );
+    ff = FieldFormatFactory.create('<' + EditData.CF_STORAGE_SORTING + '><T><D=' + Cres.get().getString('sorting') + '><G=' + Cres.get().getString('view') + '>');
     EditData.CFT_EDIT_DATA.addField(ff);
     ff = FieldFormatFactory.create('<' + EditData.CF_STORAGE_SESSION_ID + '><L><F=N>');
     ff.setHidden(true);
@@ -194,165 +104,85 @@ export default class EditData extends GenericActionCommand {
     ff = FieldFormatFactory.create('<' + EditData.CF_STORAGE_INSTANCE + '><T><F=N>');
     ff.setHidden(true);
     EditData.CFT_EDIT_DATA.addField(ff);
-    ff = FieldFormatFactory.create(
-      '<' + EditData.CF_RELATION_FIELD + '><S><F=N><D=' + Cres.get().getString('relation') + '>'
-    );
+    ff = FieldFormatFactory.create('<' + ActionUtilsConstants.CF_RELATION_FIELD + '><S><F=N><D=' + Cres.get().getString('relation') + '>');
     ff.setHidden(true);
     EditData.CFT_EDIT_DATA.addField(ff);
-    EditData.CFT_EDIT_DATA.addField(
-      '<' + EditData.CF_ICON_ID + '><S><F=AN><D=' + Cres.get().getString('conIconId') + '>'
-    );
-    EditData.CFT_EDIT_DATA.addField(
-      '<' + EditData.CF_HELP_ID + '><S><F=AN><D=' + Cres.get().getString('conHelpId') + '>'
-    );
+    EditData.CFT_EDIT_DATA.addField('<' + EditData.CF_ICON_ID + '><S><F=AN><D=' + Cres.get().getString('conIconId') + '>');
+    EditData.CFT_EDIT_DATA.addField('<' + EditData.CF_HELP_ID + '><S><F=AN><D=' + Cres.get().getString('conHelpId') + '>');
     EditData.CFT_EDIT_DATA.addField('<' + EditData.CF_HELP + '><S><F=AN><D=' + Cres.get().getString('help') + '>');
     EditData.CFT_EDIT_DATA.addField(
-      FieldFormatFactory.createWith(
-        EditData.CF_SHOW_TOOLBAR,
-        FieldConstants.BOOLEAN_FIELD,
-        Cres.get().getString('showToolbar')
-      )
+      FieldFormatFactory.createWith(EditData.CF_SHOW_TOOLBAR, FieldConstants.BOOLEAN_FIELD, Cres.get().getString('showToolbar'))
         .setDefault(true)
         .setAdvanced(true)
     );
     EditData.CFT_EDIT_DATA.addField(
-      FieldFormatFactory.createWith(
-        EditData.CF_SHOW_HEADER,
-        FieldConstants.BOOLEAN_FIELD,
-        Cres.get().getString('showHeader')
-      )
+      FieldFormatFactory.createWith(EditData.CF_SHOW_HEADER, FieldConstants.BOOLEAN_FIELD, Cres.get().getString('showHeader'))
         .setNullable(true)
         .setAdvanced(true)
     );
     EditData.CFT_EDIT_DATA.addField(
-      FieldFormatFactory.createWith(
-        EditData.CF_SHOW_LINE_NUMBERS,
-        FieldConstants.BOOLEAN_FIELD,
-        Cres.get().getString('showLineNumbers')
-      )
+      FieldFormatFactory.createWith(EditData.CF_SHOW_LINE_NUMBERS, FieldConstants.BOOLEAN_FIELD, Cres.get().getString('showLineNumbers'))
         .setNullable(true)
         .setAdvanced(true)
     );
     EditData.CFT_EDIT_DATA.addField(
-      FieldFormatFactory.createWith(
-        EditData.CF_HORIZONTAL_SCROLLING,
-        FieldConstants.BOOLEAN_FIELD,
-        Cres.get().getString('horizontalScrolling')
-      )
+      FieldFormatFactory.createWith(EditData.CF_HORIZONTAL_SCROLLING, FieldConstants.BOOLEAN_FIELD, Cres.get().getString('horizontalScrolling'))
         .setNullable(true)
         .setAdvanced(true)
     );
     EditData.CFT_EDIT_DATA.addField('<' + EditData.CF_DASHBOARDS_HIERARCHY_INFO + '><T><F=N>');
-    ff = FieldFormatFactory.create(
-      '<' + EditData.CF_ADD_ROW_TABLE_ACTION + '><S><F=N><D=' + Cres.get().getString('dtEditorAddRowTableAction') + '>'
-    )
+    ff = FieldFormatFactory.create('<' + EditData.CF_ADD_ROW_TABLE_ACTION + '><S><F=N><D=' + Cres.get().getString('dtEditorAddRowTableAction') + '>')
       .setGroup(Cres.get().getString('actions'))
       .setDefault(null)
       .setAdvanced(true)
       .setEditor(FieldConstants.EDITOR_TARGET)
       .setEditorOptions(FieldConstants.EDITOR_TARGET_MODE_ACTIONS_ONLY);
     EditData.CFT_EDIT_DATA.addField(ff);
-    ff = FieldFormatFactory.create(
-      '<' +
-        EditData.CF_ADD_ROW_TABLE_ACTION_INPUT +
-        '><S><F=N><D=' +
-        Cres.get().getString('dtEditorAddRowTableActionInput') +
-        '>'
-    )
+    ff = FieldFormatFactory.create('<' + EditData.CF_ADD_ROW_TABLE_ACTION_INPUT + '><S><F=N><D=' + Cres.get().getString('dtEditorAddRowTableActionInput') + '>')
       .setGroup(Cres.get().getString('actions'))
       .setDefault(null)
       .setAdvanced(true)
       .setEditor(FieldConstants.EDITOR_EXPRESSION);
     EditData.CFT_EDIT_DATA.addField(ff);
-    ff = FieldFormatFactory.create(
-      '<' +
-        EditData.CF_ADD_ROW_TABLE_SHOW_RESULT +
-        '><B><A=1><D=' +
-        Cres.get().getString('dtEditorAddRowTableShowResult') +
-        '>'
-    )
+    ff = FieldFormatFactory.create('<' + EditData.CF_ADD_ROW_TABLE_SHOW_RESULT + '><B><A=1><D=' + Cres.get().getString('dtEditorAddRowTableShowResult') + '>')
       .setGroup(Cres.get().getString('actions'))
       .setAdvanced(true);
     EditData.CFT_EDIT_DATA.addField(ff);
-    ff = FieldFormatFactory.create(
-      '<' +
-        EditData.CF_REMOVE_ROW_TABLE_ACTION +
-        '><S><F=N><D=' +
-        Cres.get().getString('dtEditorRemoveRowTableAction') +
-        '>'
-    )
+    ff = FieldFormatFactory.create('<' + EditData.CF_REMOVE_ROW_TABLE_ACTION + '><S><F=N><D=' + Cres.get().getString('dtEditorRemoveRowTableAction') + '>')
       .setGroup(Cres.get().getString('actions'))
       .setDefault(null)
       .setAdvanced(true)
       .setEditor(FieldConstants.EDITOR_TARGET)
       .setEditorOptions(FieldConstants.EDITOR_TARGET_MODE_ACTIONS_ONLY);
     EditData.CFT_EDIT_DATA.addField(ff);
-    ff = FieldFormatFactory.create(
-      '<' +
-        EditData.CF_REMOVE_ROW_TABLE_ACTION_INPUT +
-        '><S><F=N><D=' +
-        Cres.get().getString('dtEditorRemoveRowTableActionInput') +
-        '>'
-    )
+    ff = FieldFormatFactory.create('<' + EditData.CF_REMOVE_ROW_TABLE_ACTION_INPUT + '><S><F=N><D=' + Cres.get().getString('dtEditorRemoveRowTableActionInput') + '>')
       .setGroup(Cres.get().getString('actions'))
       .setDefault(null)
       .setAdvanced(true)
       .setEditor(FieldConstants.EDITOR_EXPRESSION);
     EditData.CFT_EDIT_DATA.addField(ff);
-    ff = FieldFormatFactory.create(
-      '<' +
-        EditData.CF_REMOVE_ROW_TABLE_SHOW_RESULT +
-        '><B><A=1><D=' +
-        Cres.get().getString('dtEditorRemoveTableShowResult') +
-        '>'
-    )
+    ff = FieldFormatFactory.create('<' + EditData.CF_REMOVE_ROW_TABLE_SHOW_RESULT + '><B><A=1><D=' + Cres.get().getString('dtEditorRemoveTableShowResult') + '>')
       .setGroup(Cres.get().getString('actions'))
       .setAdvanced(true);
     EditData.CFT_EDIT_DATA.addField(ff);
-    ff = FieldFormatFactory.create(
-      '<' +
-        EditData.CF_EDITING_IN_NEW_WINDOW +
-        '><B><A=' +
-        false +
-        '><D=' +
-        Cres.get().getString('dteEditingInNewWindow') +
-        '>'
-    );
+    ff = FieldFormatFactory.create('<' + EditData.CF_EDITING_IN_NEW_WINDOW + '><B><A=' + false + '><D=' + Cres.get().getString('dteEditingInNewWindow') + '>');
     ff.setGroup(Cres.get().getString('actions'));
     ff.setAdvanced(true);
     EditData.CFT_EDIT_DATA.addField(ff);
-    ff = FieldFormatFactory.create(
-      '<' +
-        EditData.CF_UPDATE_ROW_TABLE_ACTION +
-        '><S><F=N><D=' +
-        Cres.get().getString('dtEditorUpdateRowTableAction') +
-        '>'
-    )
+    ff = FieldFormatFactory.create('<' + EditData.CF_UPDATE_ROW_TABLE_ACTION + '><S><F=N><D=' + Cres.get().getString('dtEditorUpdateRowTableAction') + '>')
       .setGroup(Cres.get().getString('actions'))
       .setDefault(null)
       .setAdvanced(true)
       .setEditor(FieldConstants.EDITOR_TARGET)
       .setEditorOptions(FieldConstants.EDITOR_TARGET_MODE_ACTIONS_ONLY);
     EditData.CFT_EDIT_DATA.addField(ff);
-    ff = FieldFormatFactory.create(
-      '<' +
-        EditData.CF_UPDATE_ROW_TABLE_ACTION_INPUT +
-        '><S><F=N><D=' +
-        Cres.get().getString('dtEditorUpdateRowTableActionInput') +
-        '>'
-    )
+    ff = FieldFormatFactory.create('<' + EditData.CF_UPDATE_ROW_TABLE_ACTION_INPUT + '><S><F=N><D=' + Cres.get().getString('dtEditorUpdateRowTableActionInput') + '>')
       .setGroup(Cres.get().getString('actions'))
       .setDefault(null)
       .setAdvanced(true)
       .setEditor(FieldConstants.EDITOR_EXPRESSION);
     EditData.CFT_EDIT_DATA.addField(ff);
-    ff = FieldFormatFactory.create(
-      '<' +
-        EditData.CF_UPDATE_ROW_TABLE_SHOW_RESULT +
-        '><B><A=1><D=' +
-        Cres.get().getString('dtEditorUpdateRowTableShowResult') +
-        '>'
-    )
+    ff = FieldFormatFactory.create('<' + EditData.CF_UPDATE_ROW_TABLE_SHOW_RESULT + '><B><A=1><D=' + Cres.get().getString('dtEditorUpdateRowTableShowResult') + '>')
       .setGroup(Cres.get().getString('actions'))
       .setAdvanced(true);
     EditData.CFT_EDIT_DATA.addField(ff);
@@ -362,22 +192,11 @@ export default class EditData extends GenericActionCommand {
     ref = EditData.CF_ENABLE_POPUP_MENU + '#' + DataTableBindingProvider.PROPERTY_ENABLED;
     exp = '{' + EditData.CF_EXPRESSION + '} != null';
     EditData.CFT_EDIT_DATA.addBinding(ref, exp);
-    ref = EditData.CF_STORAGE_CONTEXT + '#' + DataTableBindingProvider.PROPERTY_ENABLED;
+    ref = StorageHelper.CF_STORAGE_CONTEXT + '#' + DataTableBindingProvider.PROPERTY_ENABLED;
     exp = '{' + EditData.CF_EXPRESSION + '} == null';
     EditData.CFT_EDIT_DATA.addBinding(ref, exp);
     ref = EditData.CF_STORAGE_QUERY + '#' + DataTableBindingProvider.PROPERTY_ENABLED;
-    exp =
-      '{' +
-      EditData.CF_EXPRESSION +
-      '} == null && {' +
-      EditData.CF_STORAGE_CONTEXT +
-      '} != null && ({' +
-      EditData.CF_STORAGE_VIEW +
-      '} == null || ' +
-      Functions.LENGTH +
-      '({' +
-      EditData.CF_STORAGE_VIEW +
-      '}) == 0)';
+    exp = '{' + EditData.CF_EXPRESSION + '} == null && {' + StorageHelper.CF_STORAGE_CONTEXT + '} != null && ({' + EditData.CF_STORAGE_VIEW + '} == null || ' + Functions.LENGTH + '({' + EditData.CF_STORAGE_VIEW + '}) == 0)';
     EditData.CFT_EDIT_DATA.addBinding(ref, exp);
     ref = EditData.CF_STORAGE_TABLE + '#' + DataTableBindingProvider.PROPERTY_ENABLED;
     exp =
@@ -386,9 +205,9 @@ export default class EditData extends GenericActionCommand {
       '} == null && {' +
       EditData.CF_STORAGE_QUERY +
       '} == null && {' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       '} != null && length({' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       '}) > 0 && ({' +
       EditData.CF_STORAGE_VIEW +
       '} == null || ' +
@@ -398,26 +217,20 @@ export default class EditData extends GenericActionCommand {
       '}) == 0) && ' +
       Functions.FUNCTION_AVAILABLE +
       '({' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       "}, '" +
       StorageHelper.F_STORAGE_TABLES +
       "')";
     EditData.CFT_EDIT_DATA.addBinding(ref, exp);
     ref = EditData.CF_STORAGE_VIEW + '#' + DataTableBindingProvider.PROPERTY_CHOICES;
-    let tableExp: string =
-      Functions.CALL_FUNCTION +
-      '(\'" + {' +
-      EditData.CF_STORAGE_CONTEXT +
-      "} + \"', '" +
-      StorageHelper.F_STORAGE_VIEWS +
-      "')";
+    let tableExp: string = Functions.CALL_FUNCTION + '(\'" + {' + StorageHelper.CF_STORAGE_CONTEXT + "} + \"', '" + StorageHelper.F_STORAGE_VIEWS + "')";
     let valueExp: string = '{' + DataTableBuilding.FIELD_SELECTION_VALUES_VALUE + '}';
     let descriptionExp: string = '{' + DataTableBuilding.FIELD_SELECTION_VALUES_DESCRIPTION + '}';
     exp =
       '({' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       '} != null && length({' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       '}) > 0) ? ' +
       Functions.CALL_FUNCTION +
       '("' +
@@ -433,20 +246,14 @@ export default class EditData extends GenericActionCommand {
       '") : null';
     EditData.CFT_EDIT_DATA.addBinding(ref, exp);
     ref = EditData.CF_STORAGE_TABLE + '#' + DataTableBindingProvider.PROPERTY_CHOICES;
-    tableExp =
-      Functions.CALL_FUNCTION +
-      '(\'" + {' +
-      EditData.CF_STORAGE_CONTEXT +
-      "} + \"', '" +
-      StorageHelper.F_STORAGE_TABLES +
-      "')";
+    tableExp = Functions.CALL_FUNCTION + '(\'" + {' + StorageHelper.CF_STORAGE_CONTEXT + "} + \"', '" + StorageHelper.F_STORAGE_TABLES + "')";
     valueExp = '{' + DataTableBuilding.FIELD_SELECTION_VALUES_VALUE + '}';
     descriptionExp = '{' + DataTableBuilding.FIELD_SELECTION_VALUES_DESCRIPTION + '}';
     exp =
       '({' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       '} != null && length({' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       '}) > 0) ? ' +
       Functions.CALL_FUNCTION +
       '("' +
@@ -468,9 +275,9 @@ export default class EditData extends GenericActionCommand {
       '} == null && {' +
       EditData.CF_STORAGE_QUERY +
       '} == null && {' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       '} != null && length({' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       '}) > 0 && ({' +
       EditData.CF_STORAGE_VIEW +
       '} == null || ' +
@@ -480,7 +287,7 @@ export default class EditData extends GenericActionCommand {
       '}) == 0) && ' +
       Functions.FUNCTION_AVAILABLE +
       '({' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       "}, '" +
       StorageHelper.F_STORAGE_COLUMNS +
       "')";
@@ -488,15 +295,15 @@ export default class EditData extends GenericActionCommand {
     ref = EditData.CF_STORAGE_COLUMNS;
     exp =
       '({' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       '} != null && length({' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       '}) > 0 && {' +
       EditData.CF_STORAGE_TABLE +
       '} != null) ? ' +
       Functions.CALL_FUNCTION +
       '({' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       "}, '" +
       StorageHelper.F_STORAGE_COLUMNS +
       "', {" +
@@ -512,9 +319,9 @@ export default class EditData extends GenericActionCommand {
       '} == null && {' +
       EditData.CF_STORAGE_QUERY +
       '} == null && {' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       '} != null && length({' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       '}) > 0 && ({' +
       EditData.CF_STORAGE_VIEW +
       '} == null || ' +
@@ -524,7 +331,7 @@ export default class EditData extends GenericActionCommand {
       '}) == 0) && ' +
       Functions.FUNCTION_AVAILABLE +
       '({' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       "}, '" +
       StorageHelper.F_STORAGE_FILTER +
       "')";
@@ -532,15 +339,15 @@ export default class EditData extends GenericActionCommand {
     ref = EditData.CF_STORAGE_FILTER;
     exp =
       '({' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       '} != null && length({' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       '}) > 0 && {' +
       EditData.CF_STORAGE_TABLE +
       '} != null) ? ' +
       Functions.CALL_FUNCTION +
       '({' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       "}, '" +
       StorageHelper.F_STORAGE_FILTER +
       "', {" +
@@ -556,9 +363,9 @@ export default class EditData extends GenericActionCommand {
       '} == null && {' +
       EditData.CF_STORAGE_QUERY +
       '} == null && {' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       '} != null && length({' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       '}) > 0 && ({' +
       EditData.CF_STORAGE_VIEW +
       '} == null || ' +
@@ -568,7 +375,7 @@ export default class EditData extends GenericActionCommand {
       '}) == 0) && ' +
       Functions.FUNCTION_AVAILABLE +
       '({' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       "}, '" +
       StorageHelper.F_STORAGE_COLUMNS +
       "')";
@@ -576,15 +383,15 @@ export default class EditData extends GenericActionCommand {
     ref = EditData.CF_STORAGE_SORTING;
     exp =
       '({' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       '} != null && length({' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       '}) > 0 && {' +
       EditData.CF_STORAGE_TABLE +
       '} != null) ? ' +
       Functions.CALL_FUNCTION +
       '({' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       "}, '" +
       StorageHelper.F_STORAGE_SORTING +
       "', {" +
@@ -593,81 +400,30 @@ export default class EditData extends GenericActionCommand {
       EditData.CF_STORAGE_SORTING +
       '}) : table()';
     EditData.CFT_EDIT_DATA.addBinding(ref, exp);
-    EditData.CFT_EDIT_DATA.addBinding(
-      EditData.CF_ADD_ROW_TABLE_ACTION + '#' + DataTableBindingProvider.PROPERTY_HIDDEN,
-      true.toString()
-    );
-    EditData.CFT_EDIT_DATA.addBinding(
-      EditData.CF_ADD_ROW_TABLE_ACTION_INPUT + '#' + DataTableBindingProvider.PROPERTY_HIDDEN,
-      true.toString()
-    );
-    EditData.CFT_EDIT_DATA.addBinding(
-      EditData.CF_ADD_ROW_TABLE_SHOW_RESULT + '#' + DataTableBindingProvider.PROPERTY_HIDDEN,
-      true.toString()
-    );
-    EditData.CFT_EDIT_DATA.addBinding(
-      EditData.CF_REMOVE_ROW_TABLE_ACTION + '#' + DataTableBindingProvider.PROPERTY_HIDDEN,
-      true.toString()
-    );
-    EditData.CFT_EDIT_DATA.addBinding(
-      EditData.CF_REMOVE_ROW_TABLE_ACTION_INPUT + '#' + DataTableBindingProvider.PROPERTY_HIDDEN,
-      true.toString()
-    );
-    EditData.CFT_EDIT_DATA.addBinding(
-      EditData.CF_REMOVE_ROW_TABLE_SHOW_RESULT + '#' + DataTableBindingProvider.PROPERTY_HIDDEN,
-      true.toString()
-    );
-    EditData.CFT_EDIT_DATA.addBinding(
-      EditData.CF_UPDATE_ROW_TABLE_ACTION + '#' + DataTableBindingProvider.PROPERTY_HIDDEN,
-      true.toString()
-    );
-    EditData.CFT_EDIT_DATA.addBinding(
-      EditData.CF_UPDATE_ROW_TABLE_ACTION_INPUT + '#' + DataTableBindingProvider.PROPERTY_HIDDEN,
-      true.toString()
-    );
-    EditData.CFT_EDIT_DATA.addBinding(
-      EditData.CF_UPDATE_ROW_TABLE_SHOW_RESULT + '#' + DataTableBindingProvider.PROPERTY_HIDDEN,
-      true.toString()
-    );
-    EditData.CFT_EDIT_DATA.addBinding(
-      EditData.CF_EDITING_IN_NEW_WINDOW + '#' + DataTableBindingProvider.PROPERTY_HIDDEN,
-      true.toString()
-    );
-    EditData.CFT_EDIT_DATA.addBinding(
-      EditData.CF_UPDATE_ROW_TABLE_ACTION + '#' + DataTableBindingProvider.PROPERTY_ENABLED,
-      '{' + EditData.CF_EDITING_IN_NEW_WINDOW + '}'
-    );
-    EditData.CFT_EDIT_DATA.addBinding(
-      EditData.CF_UPDATE_ROW_TABLE_ACTION_INPUT + '#' + DataTableBindingProvider.PROPERTY_ENABLED,
-      '{' + EditData.CF_EDITING_IN_NEW_WINDOW + '}'
-    );
-    EditData.CFT_EDIT_DATA.addBinding(
-      EditData.CF_ADD_ROW_TABLE_ACTION_INPUT + '#' + DataTableBindingProvider.PROPERTY_ENABLED,
-      '{' + EditData.CF_ADD_ROW_TABLE_ACTION + '} != null ? true : false'
-    );
-    EditData.CFT_EDIT_DATA.addBinding(
-      EditData.CF_REMOVE_ROW_TABLE_ACTION_INPUT + '#' + DataTableBindingProvider.PROPERTY_ENABLED,
-      '{' + EditData.CF_REMOVE_ROW_TABLE_ACTION + '} != null ? true : false'
-    );
-    EditData.CFT_EDIT_DATA.addBinding(
-      EditData.CF_ADD_ROW_TABLE_SHOW_RESULT + '#' + DataTableBindingProvider.PROPERTY_ENABLED,
-      '{' + EditData.CF_ADD_ROW_TABLE_ACTION + '} != null ? true : false'
-    );
-    EditData.CFT_EDIT_DATA.addBinding(
-      EditData.CF_REMOVE_ROW_TABLE_SHOW_RESULT + '#' + DataTableBindingProvider.PROPERTY_ENABLED,
-      '{' + EditData.CF_REMOVE_ROW_TABLE_ACTION + '} != null ? true : false'
-    );
-    EditData.CFT_EDIT_DATA.addBinding(
-      EditData.CF_UPDATE_ROW_TABLE_SHOW_RESULT + '#' + DataTableBindingProvider.PROPERTY_ENABLED,
-      '{' + EditData.CF_UPDATE_ROW_TABLE_ACTION + '} != null ? true : false'
-    );
+    EditData.CFT_EDIT_DATA.addBinding(EditData.CF_ADD_ROW_TABLE_ACTION + '#' + DataTableBindingProvider.PROPERTY_HIDDEN, true.toString());
+    EditData.CFT_EDIT_DATA.addBinding(EditData.CF_ADD_ROW_TABLE_ACTION_INPUT + '#' + DataTableBindingProvider.PROPERTY_HIDDEN, true.toString());
+    EditData.CFT_EDIT_DATA.addBinding(EditData.CF_ADD_ROW_TABLE_SHOW_RESULT + '#' + DataTableBindingProvider.PROPERTY_HIDDEN, true.toString());
+    EditData.CFT_EDIT_DATA.addBinding(EditData.CF_REMOVE_ROW_TABLE_ACTION + '#' + DataTableBindingProvider.PROPERTY_HIDDEN, true.toString());
+    EditData.CFT_EDIT_DATA.addBinding(EditData.CF_REMOVE_ROW_TABLE_ACTION_INPUT + '#' + DataTableBindingProvider.PROPERTY_HIDDEN, true.toString());
+    EditData.CFT_EDIT_DATA.addBinding(EditData.CF_REMOVE_ROW_TABLE_SHOW_RESULT + '#' + DataTableBindingProvider.PROPERTY_HIDDEN, true.toString());
+    EditData.CFT_EDIT_DATA.addBinding(EditData.CF_UPDATE_ROW_TABLE_ACTION + '#' + DataTableBindingProvider.PROPERTY_HIDDEN, true.toString());
+    EditData.CFT_EDIT_DATA.addBinding(EditData.CF_UPDATE_ROW_TABLE_ACTION_INPUT + '#' + DataTableBindingProvider.PROPERTY_HIDDEN, true.toString());
+    EditData.CFT_EDIT_DATA.addBinding(EditData.CF_UPDATE_ROW_TABLE_SHOW_RESULT + '#' + DataTableBindingProvider.PROPERTY_HIDDEN, true.toString());
+    EditData.CFT_EDIT_DATA.addBinding(EditData.CF_EDITING_IN_NEW_WINDOW + '#' + DataTableBindingProvider.PROPERTY_HIDDEN, true.toString());
+    EditData.CFT_EDIT_DATA.addBinding(EditData.CF_UPDATE_ROW_TABLE_ACTION + '#' + DataTableBindingProvider.PROPERTY_ENABLED, '{' + EditData.CF_EDITING_IN_NEW_WINDOW + '}');
+    EditData.CFT_EDIT_DATA.addBinding(EditData.CF_UPDATE_ROW_TABLE_ACTION_INPUT + '#' + DataTableBindingProvider.PROPERTY_ENABLED, '{' + EditData.CF_EDITING_IN_NEW_WINDOW + '}');
+    EditData.CFT_EDIT_DATA.addBinding(EditData.CF_ADD_ROW_TABLE_ACTION_INPUT + '#' + DataTableBindingProvider.PROPERTY_ENABLED, '{' + EditData.CF_ADD_ROW_TABLE_ACTION + '} != null ? true : false');
+    EditData.CFT_EDIT_DATA.addBinding(EditData.CF_REMOVE_ROW_TABLE_ACTION_INPUT + '#' + DataTableBindingProvider.PROPERTY_ENABLED, '{' + EditData.CF_REMOVE_ROW_TABLE_ACTION + '} != null ? true : false');
+    EditData.CFT_EDIT_DATA.addBinding(EditData.CF_ADD_ROW_TABLE_SHOW_RESULT + '#' + DataTableBindingProvider.PROPERTY_ENABLED, '{' + EditData.CF_ADD_ROW_TABLE_ACTION + '} != null ? true : false');
+    EditData.CFT_EDIT_DATA.addBinding(EditData.CF_REMOVE_ROW_TABLE_SHOW_RESULT + '#' + DataTableBindingProvider.PROPERTY_ENABLED, '{' + EditData.CF_REMOVE_ROW_TABLE_ACTION + '} != null ? true : false');
+    EditData.CFT_EDIT_DATA.addBinding(EditData.CF_UPDATE_ROW_TABLE_SHOW_RESULT + '#' + DataTableBindingProvider.PROPERTY_ENABLED, '{' + EditData.CF_UPDATE_ROW_TABLE_ACTION + '} != null ? true : false');
     ref = EditData.CF_ADD_ROW_TABLE_ACTION_INPUT + '#' + DataTableBindingProvider.PROPERTY_OPTIONS;
     exp =
       Functions.TABLE +
       '("' +
       StringFieldFormat.EXPRESSION_BUILDER_OPTIONS_FORMAT.encodeUseSeparator(true) +
       '", {' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       '}, ' +
       Functions.TABLE +
       '("' +
@@ -680,7 +436,7 @@ export default class EditData extends GenericActionCommand {
       '("' +
       StringFieldFormat.EXPRESSION_BUILDER_OPTIONS_FORMAT.encodeUseSeparator(true) +
       '", {' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       '}, ' +
       Functions.TABLE +
       '("' +
@@ -693,7 +449,7 @@ export default class EditData extends GenericActionCommand {
       '("' +
       StringFieldFormat.EXPRESSION_BUILDER_OPTIONS_FORMAT.encodeUseSeparator(true) +
       '", {' +
-      EditData.CF_STORAGE_CONTEXT +
+      StorageHelper.CF_STORAGE_CONTEXT +
       '}, ' +
       Functions.TABLE +
       '("' +
@@ -704,9 +460,9 @@ export default class EditData extends GenericActionCommand {
 
   private merger: EditDataMerger | null = null;
   private data: DataTable | null = null;
-  private useDockableFrame: boolean = false;
-  private readOnly: boolean = false;
-  private enablePopupMenu: boolean = false;
+  private useDockableFrame = false;
+  private readOnly = false;
+  private enablePopupMenu = false;
   private iconId: string | null = null;
   private helpId: string | null = null;
   private help: string | null = null;
@@ -726,24 +482,24 @@ export default class EditData extends GenericActionCommand {
   private storageFilter: DataTable | null = null;
   private storageSorting: DataTable | null = null;
   private storageSessionId: number | null = null;
-  private storageInstanceId: Object | null = null;
+  private storageInstanceId: JObject | null = null;
   private storageInstance: DataTable | null = null;
   private relationField: string | null = null;
-  private showToolbar: boolean = false;
+  private showToolbar = false;
   private showHeader: boolean | null = false;
   private showLineNumbers: boolean | null = false;
   private horizontalScrolling: boolean | null = false;
   private dhInfo: DashboardsHierarchyInfo | null = null;
   private addRowTableAction: string | null = null;
   private addRowTableActionInput: string | null = null;
-  private addRowTableActionShowResult: boolean = false;
+  private addRowTableActionShowResult = false;
   private removeRowTableAction: string | null = null;
   private removeRowTableActionInput: string | null = null;
-  private removeRowTableActionShowResult: boolean = false;
+  private removeRowTableActionShowResult = false;
   private updateRowTableAction: string | null = null;
   private updateRowTableActionInput: string | null = null;
-  private updateRowTableActionShowResult: boolean = false;
-  private editingInNewWindow: boolean = false;
+  private updateRowTableActionShowResult = false;
+  private editingInNewWindow = false;
 
   private static _init = false;
 
@@ -754,12 +510,8 @@ export default class EditData extends GenericActionCommand {
     EditData._init = true;
   }
 
-  public constructor(
-    titleOrFormat: string | TableFormat = EditData.CFT_EDIT_DATA,
-    data?: DataTable,
-    readonly?: boolean
-  ) {
-    super(ActionUtils.CMD_EDIT_DATA, titleOrFormat, null);
+  public constructor(titleOrFormat: string | TableFormat = EditData.CFT_EDIT_DATA, data?: DataTable, readonly?: boolean) {
+    super(ActionUtilsConstants.CMD_EDIT_DATA, titleOrFormat, null);
     if (data && readonly) {
       this.data = data;
       this.readOnly = readonly;
@@ -783,21 +535,15 @@ export default class EditData extends GenericActionCommand {
     rec.addString(this.defaultContext);
     rec.addDataTable(this.location != null ? this.location.toDataTable() : null);
     rec.addDataTable(this.dashboard != null ? this.dashboard.toDataTable() : null);
-    rec.addDataTable(
-      this.storageBindings != null ? this.storageBindings : new SimpleDataTable(DataTableBuilding.BINDINGS_FORMAT)
-    );
+    rec.addDataTable(this.storageBindings != null ? this.storageBindings : new SimpleDataTable(DataTableBuilding.BINDINGS_FORMAT));
     rec.addString(this.key);
     rec.addString(this.storageContext);
     rec.addString(this.storageView);
     rec.addString(this.storageQuery);
     rec.addString(this.storageTable);
-    rec.addDataTable(
-      this.storageColumns != null ? this.storageColumns : new SimpleDataTable(StorageHelper.FORMAT_COLUMNS)
-    );
+    rec.addDataTable(this.storageColumns != null ? this.storageColumns : new SimpleDataTable(StorageHelper.FORMAT_COLUMNS));
     rec.addDataTable(this.storageFilter != null ? this.storageFilter : new SimpleDataTable(ViewFilterElement.FORMAT));
-    rec.addDataTable(
-      this.storageSorting != null ? this.storageSorting : new SimpleDataTable(StorageHelper.FORMAT_SORTING)
-    );
+    rec.addDataTable(this.storageSorting != null ? this.storageSorting : new SimpleDataTable(StorageHelper.FORMAT_SORTING));
     rec.addLong(this.storageSessionId);
     rec.addValue(this.storageInstanceId);
     rec.addDataTable(this.storageInstance);

@@ -25,63 +25,60 @@ import EditGridDashboard from './command/EditGridDashboard';
 import ShowHtmlSnippet from './command/ShowHtmlSnippet';
 import ShowDiff from './command/ShowDiff';
 import ActionUtils from './ActionUtils';
+import ActionUtilsConstants from './ActionUtilsConstants';
 
 export default class ActionCommandFactory {
   public static createActionCommand(type: string, title: string, parameters: DataTable): GenericActionCommand {
     switch (type) {
-      case ActionUtils.CMD_SHOW_MESSAGE:
+      case ActionUtilsConstants.CMD_SHOW_MESSAGE:
         return ShowMessage.createShowMessageWithDataTable(title, parameters);
-      case ActionUtils.CMD_CONFIRM:
+      case ActionUtilsConstants.CMD_CONFIRM:
         return Confirm.createConfirmWithDataTable(title, parameters);
-      case ActionUtils.CMD_EDIT_DATA:
+      case ActionUtilsConstants.CMD_EDIT_DATA:
         return EditData.createEditDataWithDataTable(title, parameters);
-      case ActionUtils.CMD_EDIT_PROPERTIES:
+      case ActionUtilsConstants.CMD_EDIT_PROPERTIES:
         return EditProperties.createEditPropertiesWithDataTable(title, parameters);
-      case ActionUtils.CMD_EDIT_WIDGET:
-        return EditTemplate.createEditTemplateWithDataTable(ActionUtils.CMD_EDIT_WIDGET, title, parameters);
-      case ActionUtils.CMD_EDIT_PROCESS_CONTROL_PROGRAM:
-        return EditTemplate.createEditTemplateWithDataTable(
-          ActionUtils.CMD_EDIT_PROCESS_CONTROL_PROGRAM,
-          title,
-          parameters
-        );
-      case ActionUtils.CMD_EDIT_WORKFLOW:
-        return EditTemplate.createEditTemplateWithDataTable(ActionUtils.CMD_EDIT_WORKFLOW, title, parameters);
-      case ActionUtils.CMD_LAUNCH_WIDGET:
+      case ActionUtilsConstants.CMD_EDIT_WIDGET:
+        return EditTemplate.createEditTemplateWithDataTable(ActionUtilsConstants.CMD_EDIT_WIDGET, title, parameters);
+      case ActionUtilsConstants.CMD_EDIT_PROCESS_CONTROL_PROGRAM:
+        return EditTemplate.createEditTemplateWithDataTable(ActionUtilsConstants.CMD_EDIT_PROCESS_CONTROL_PROGRAM, title, parameters);
+      case ActionUtilsConstants.CMD_EDIT_WORKFLOW:
+        return EditTemplate.createEditTemplateWithDataTable(ActionUtilsConstants.CMD_EDIT_WORKFLOW, title, parameters);
+      case ActionUtilsConstants.CMD_LAUNCH_WIDGET:
         return LaunchWidget.createLaunchWidgetWithDataTable(title, parameters);
-      case ActionUtils.CMD_LAUNCH_PROCESS_CONTROL_PROGRAM:
+      case ActionUtilsConstants.CMD_LAUNCH_PROCESS_CONTROL_PROGRAM:
         return LaunchProcessControlProgram.createLaunchProcessControlProgramWithDataTable(title, parameters);
-      case ActionUtils.CMD_BROWSE:
+      case ActionUtilsConstants.CMD_BROWSE:
         return Browse.createBrowseWithDataTable(title, parameters);
-      case ActionUtils.CMD_SHOW_EVENT_LOG:
+      case ActionUtilsConstants.CMD_SHOW_EVENT_LOG:
         return ShowEventLog.createShowEventLogWithDataTable(title, parameters);
-      case ActionUtils.CMD_SHOW_ERROR:
+      case ActionUtilsConstants.CMD_SHOW_ERROR:
         return ShowError.createShowErrorWithDataTable(title, parameters);
-      case ActionUtils.CMD_EDIT_REPORT:
+      case ActionUtilsConstants.CMD_EDIT_REPORT:
         return EditReport.createEditReportWithDataTable(title, parameters);
-      case ActionUtils.CMD_SHOW_REPORT:
+      case ActionUtilsConstants.CMD_SHOW_REPORT:
         return ShowReport.createShowReportWithDataTable(title, parameters);
-      case ActionUtils.CMD_SHOW_GUIDE:
+      case ActionUtilsConstants.CMD_SHOW_GUIDE:
         return ShowGuide.createShowGuideWithDataTable(title, parameters);
-      case ActionUtils.CMD_SELECT_ENTITIES:
-        return SelectEntities.createSelectEntitiesWithDataTable(ActionUtils.CMD_SELECT_ENTITIES, title, parameters);
-      case ActionUtils.CMD_EDIT_TEXT:
+      case ActionUtilsConstants.CMD_SELECT_ENTITIES:
+        return SelectEntities.createSelectEntitiesWithDataTable(ActionUtilsConstants.CMD_SELECT_ENTITIES, title, parameters);
+      case ActionUtilsConstants.CMD_EDIT_TEXT:
         return EditText.createEditTextWithDataTable(title, parameters);
-      case ActionUtils.CMD_EDIT_CODE:
+      case ActionUtilsConstants.CMD_EDIT_CODE:
         return EditCode.createEditCodeWithDataTable(title, parameters);
-      case ActionUtils.CMD_SHOW_SYSTEM_TREE:
+      case ActionUtilsConstants.CMD_SHOW_SYSTEM_TREE:
         return ShowSystemTree.createShowSystemTreeWithDataTable(title, parameters);
-      case ActionUtils.CMD_ACTIVATE_DASHBOARD:
+      case ActionUtilsConstants.CMD_ACTIVATE_DASHBOARD:
         return ActivateDashboard.createActivateDashboardWithDataTable(title, parameters);
-      case ActionUtils.CMD_CLOSE_DASHBOARD:
+      case ActionUtilsConstants.CMD_CLOSE_DASHBOARD:
         return CloseDashboard.createCloseDashboardWithDataTable(title, parameters);
-      case ActionUtils.CMD_OPEN_GRID_DASHBOARD:
+      case ActionUtilsConstants.CMD_OPEN_GRID_DASHBOARD:
         return new OpenGridDashboard(new DataRecord(null).wrap());
-      case ActionUtils.CMD_EDIT_GRID_DASHBOARD:
+      case ActionUtilsConstants.CMD_EDIT_GRID_DASHBOARD:
         return new EditGridDashboard(new DataRecord(null).wrap());
-      case ActionUtils.CMD_SHOW_HTML_SNIPPET:
+      case ActionUtilsConstants.CMD_SHOW_HTML_SNIPPET:
         return ShowHtmlSnippet.createShowHtmlSnippetWithDataTable(title, parameters);
-      case ActionUtils.CMD_SHOW_DIFF:
+      case ActionUtilsConstants.CMD_SHOW_DIFF:
         return ShowDiff.createShowDiffWithDataTable(title, parameters);
       default:
         throw new Error("Error creating action command of type '" + type);

@@ -37,12 +37,7 @@ export default class DataTableFactory {
     return simpleTable;
   }
 
-  public static createAndDecode(
-    data: string | ElementList,
-    settings?: ClassicEncodingSettings,
-    validate: boolean = true
-  ): DataTable {
-    const SimpleDataTable = require('./SimpleDataTable').default;
+  public static createAndDecode(data: string | ElementList, settings?: ClassicEncodingSettings, validate = true): DataTable {
     let elements: ElementList;
     if (Util.isString(data)) {
       elements = StringUtils.elements(data as string, settings != null && settings.isUseVisibleSeparators());
@@ -50,16 +45,14 @@ export default class DataTableFactory {
       try {
         elements = data as ElementList;
       } catch (err) {
-        throw new Error(
-          'Error in SimpleDataTable, createAndDecode function. Parameter `data` is not correct ElementList.'
-        );
+        throw new Error('Error in SimpleDataTable, createAndDecode function. Parameter `data` is not correct ElementList.');
       }
     }
 
     if (!settings) {
       settings = new ClassicEncodingSettings(false);
     }
-
+    const SimpleDataTable = require('./SimpleDataTable').default;
     const simpleTable = new SimpleDataTable();
     simpleTable.accomplishConstruction(elements, settings, validate);
 

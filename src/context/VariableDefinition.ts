@@ -24,11 +24,11 @@ export default class VariableDefinition extends AbstractEntityDefinition impleme
 
   private format: TableFormat | null = null;
 
-  private readable: boolean = false;
+  private readable = false;
 
-  private writable: boolean = false;
+  private writable = false;
 
-  private hidden: boolean = false;
+  private hidden = false;
 
   private readPermissions: Permissions | null = null;
 
@@ -36,51 +36,29 @@ export default class VariableDefinition extends AbstractEntityDefinition impleme
 
   private helpId: string | null = null;
 
-  private getter:
-    | ((
-        con: Context<any, any>,
-        def: VariableDefinition,
-        caller: CallerController | null,
-        request: RequestController | null
-      ) => DataTable)
-    | null = null;
+  private getter: ((con: Context<any, any>, def: VariableDefinition, caller: CallerController | null, request: RequestController | null) => DataTable) | null = null;
 
-  private setter:
-    | ((
-        con: Context<any, any>,
-        def: VariableDefinition,
-        caller: CallerController | null,
-        request: RequestController | null,
-        value: DataTable
-      ) => boolean)
-    | null = null;
+  private setter: ((con: Context<any, any>, def: VariableDefinition, caller: CallerController | null, request: RequestController | null, value: DataTable) => boolean) | null = null;
 
-  private allowUpdateEvents: boolean = false;
+  private allowUpdateEvents = false;
 
-  private changeEventsExpirationPeriod: number = 0;
+  private changeEventsExpirationPeriod = 0;
 
   private localCachingMode: number = VariableDefinition.CACHING_HARD;
 
-  private remoteCacheTime: number = 0;
+  private remoteCacheTime = 0;
 
   private valueClass: any;
 
   private compatibilityConverters: Array<CompatibilityConverter> = new Array<CompatibilityConverter>();
 
-  private persistent: boolean = true;
+  private persistent = true;
 
   private defaultValue: DataTable | null = null;
 
   private historyRate: number = VariableDefinition.HISTORY_RATE_ALL;
 
-  constructor(
-    name: string,
-    format: TableFormat | null,
-    readable: boolean,
-    writable: boolean,
-    description?: string,
-    group?: string
-  ) {
+  constructor(name: string, format: TableFormat | null, readable: boolean, writable: boolean, description?: string, group?: string) {
     super();
     this.setFormat(format);
     this.init(name, readable, writable, description);
@@ -130,26 +108,11 @@ export default class VariableDefinition extends AbstractEntityDefinition impleme
     this.writePermissions = writePermissions;
   }
 
-  public setSetter(
-    setter: (
-      con: Context<any, any>,
-      def: VariableDefinition,
-      caller: CallerController | null,
-      request: RequestController | null,
-      value: DataTable
-    ) => boolean
-  ) {
+  public setSetter(setter: (con: Context<any, any>, def: VariableDefinition, caller: CallerController | null, request: RequestController | null, value: DataTable) => boolean) {
     this.setter = setter;
   }
 
-  public setGetter(
-    getter: (
-      con: Context<any, any>,
-      def: VariableDefinition,
-      caller: CallerController | null,
-      request: RequestController | null
-    ) => DataTable
-  ): void {
+  public setGetter(getter: (con: Context<any, any>, def: VariableDefinition, caller: CallerController | null, request: RequestController | null) => DataTable): void {
     this.getter = getter;
   }
 
@@ -177,26 +140,11 @@ export default class VariableDefinition extends AbstractEntityDefinition impleme
     return this.writePermissions;
   }
 
-  public getSetter():
-    | ((
-        con: Context<any, any>,
-        def: VariableDefinition,
-        caller: CallerController | null,
-        request: RequestController | null,
-        value: DataTable
-      ) => boolean)
-    | null {
+  public getSetter(): ((con: Context<any, any>, def: VariableDefinition, caller: CallerController | null, request: RequestController | null, value: DataTable) => boolean) | null {
     return this.setter;
   }
 
-  public getGetter():
-    | ((
-        con: Context<any, any>,
-        def: VariableDefinition,
-        caller: CallerController | null,
-        request: RequestController | null
-      ) => DataTable)
-    | null {
+  public getGetter(): ((con: Context<any, any>, def: VariableDefinition, caller: CallerController | null, request: RequestController | null) => DataTable) | null {
     return this.getter;
   }
 

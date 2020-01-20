@@ -5,12 +5,17 @@ module.exports = {
         "tsx",
         "js"
     ],
+
+    "testPathIgnorePatterns": [
+        "./performance/",
+        "./integration/"
+    ],
     "transform": {
         "^.+\\.(ts|tsx)$": "ts-jest"
     },
     "reporters": [
         "default",
-        [ "jest-junit", {
+        ["jest-junit", {
             "suiteName": "TS API test suite",
             "outputDirectory": "../../../build/test/test-jest",
             "outputName": "./TEST-JEST.xml"

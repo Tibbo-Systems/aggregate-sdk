@@ -30,9 +30,15 @@ import ActionExecutionMode from './ActionExecutionMode';
 import MessageFormat from '../util/java/MessageFormat';
 import ActionUtils from './ActionUtils';
 import Log from '../Log';
-import GenericActionCommand from './GenericActionCommand';
 import ShowError from './command/ShowError';
 import Util from '../util/Util';
+import ActionUtilsConstants from './ActionUtilsConstants';
+
+class StubActionDefinition extends ServerActionDefinition {
+  getExecutionGroup(): GroupIdentifier | null {
+    return null;
+  }
+}
 
 export default class ServerActionHelper {
   public static readonly ENV_VARIABLE_PARAMETERS: string = 'parameters';
@@ -45,22 +51,11 @@ export default class ServerActionHelper {
   static __static_initializer_0() {
     ServerActionHelper.CONTEXTS_FORMAT.setUnresizable(true);
     ServerActionHelper.CONTEXTS_FORMAT.addField(
-      FieldFormatFactory.createWith(
-        ServerActionHelper.FIELD_CONTEXT,
-        FieldConstants.STRING_FIELD,
-        Cres.get().getString('context')
-      )
+      FieldFormatFactory.createWith(ServerActionHelper.FIELD_CONTEXT, FieldConstants.STRING_FIELD, Cres.get().getString('context'))
         .setEditor(FieldConstants.EDITOR_CONTEXT)
         .setReadonly(true)
     );
-    ServerActionHelper.CONTEXTS_FORMAT.addField(
-      FieldFormatFactory.createWith(
-        ServerActionHelper.FIELD_SELECT,
-        FieldConstants.BOOLEAN_FIELD,
-        Cres.get().getString('select'),
-        true
-      )
-    );
+    ServerActionHelper.CONTEXTS_FORMAT.addField(FieldFormatFactory.createWith(ServerActionHelper.FIELD_SELECT, FieldConstants.BOOLEAN_FIELD, Cres.get().getString('select'), true));
   }
 
   private static _init = false;
@@ -96,19 +91,10 @@ export default class ServerActionHelper {
     if (inputData.getRecordCount() > 0) {
       const rec: DataRecord = inputData.rec();
 
-      for (let ff of rec.getFormat()) {
+      for (const ff of rec.getFormat()) {
         const requestId: string = ff.getName();
 
-        const req: GenericActionResponse = ServerActionHelper.buildResponse(
-          requestId,
-          initialParameters,
-          rec.getDataTable(requestId),
-          environment,
-          caller,
-          cm,
-          con,
-          collector
-        );
+        const req: GenericActionResponse = ServerActionHelper.buildResponse(requestId, initialParameters, rec.getDataTable(requestId), environment, caller, cm, con, collector);
 
         requestCache.getRequests().set(new RequestIdentifier(requestId), req);
       }
@@ -128,11 +114,7 @@ export default class ServerActionHelper {
 
     const def: ActionDefinition | null = context.getActionDefinition(action, caller);
     if (def == null) {
-      const message: string = MessageFormat.format(
-        Cres.get().getString('conActNotAvailExt'),
-        action,
-        context.toString()
-      );
+      const message: string = MessageFormat.format(Cres.get().getString('conActNotAvailExt'), action, context.toString());
       messages.set(message, null);
       return messages;
     }
@@ -141,18 +123,9 @@ export default class ServerActionHelper {
 
     const collector: ErrorCollector = new ErrorCollector();
 
-    const actionId = ActionUtils.initAction(
-      context,
-      action,
-      new ServerActionInput(initialParameters),
-      inputData,
-      environment,
-      mode,
-      caller,
-      collector
-    );
+    const actionId = await ActionUtils.initAction(context, action, new ServerActionInput(initialParameters), inputData, environment, mode, caller, collector);
 
-    for (let error of collector.getErrors()) {
+    for (const error of collector.getErrors()) {
       messages.set(error.message, error.toString());
     }
 
@@ -167,10 +140,8 @@ export default class ServerActionHelper {
         break;
       }
 
-      Log.CONTEXT_ACTIONS.debug(
-        'Action returned command: actionId=' + actionId + ', type=' + cmd.getType() + ', title=' + cmd.getTitle()
-      );
-      if (Util.equals(ActionUtils.CMD_SHOW_ERROR, cmd.getType())) {
+      Log.CONTEXT_ACTIONS.debug('Action returned command: actionId=' + actionId + ', type=' + cmd.getType() + ', title=' + cmd.getTitle());
+      if (Util.equals(ActionUtilsConstants.CMD_SHOW_ERROR, cmd.getType())) {
         const rec: DataRecord | null = cmd?.getParameters()?.rec() || null;
         const message: string = rec?.getString(ShowError.CF_MESSAGE) as string;
         const exception: string | null = rec?.getString(ShowError.CF_EXCEPTION) || null;
@@ -198,7 +169,7 @@ export default class ServerActionHelper {
       const evaluator: Evaluator = new Evaluator(cm, con, responseData, caller);
 
       if (environment != null) {
-        for (let [key, value] of environment.entries()) {
+        for (const [key, value] of environment.entries()) {
           evaluator.getEnvironmentResolver().set(key, value);
         }
       }
@@ -210,16 +181,12 @@ export default class ServerActionHelper {
 
     return req;
   }
-  public static initActions(
-    caller: CallerController,
-    actions: Array<ActionHolder>,
-    con: ServerContext
-  ): ActionIdentifier | null {
+  public static initActions(caller: CallerController, actions: Array<ActionHolder>, con: ServerContext): ActionIdentifier | null {
     const actionManager: ActionManager | null = caller?.getCallerData()?.getActionManager() || null;
 
-    const entries: Array<BatchEntry> = new Array();
+    const entries: Array<BatchEntry> = [];
 
-    for (let holder of actions) {
+    for (const holder of actions) {
       const context: ServerContext | null = holder.getContext();
 
       const actionName: string | null = holder.getActionName();
@@ -234,34 +201,13 @@ export default class ServerActionHelper {
         throw new Error("Unsupported action '" + actionName + "' for context '" + context.getPath() + "'");
       }
 
-      const actionContext: ServerActionContext | null =
-        (context && new ServerActionContext(actionDef, context, caller)) || null;
+      const actionContext: ServerActionContext | null = (context && new ServerActionContext(actionDef, context, caller)) || null;
       const hld = holder.getInitialParameters();
       const initialParameters: ServerActionInput | null = hld && new ServerActionInput(hld);
 
-      if (actionContext)
-        ServerActionHelper.fillRequestCache(
-          actionContext,
-          holder.getInitialParameters(),
-          holder.getInputData(),
-          null,
-          caller,
-          con.getContextManager(),
-          con,
-          null
-        );
+      if (actionContext) ServerActionHelper.fillRequestCache(actionContext, holder.getInitialParameters(), holder.getInputData(), null, caller, con.getContextManager(), con, null);
 
-      if (caller.getCallerData())
-        caller
-          ?.getCallerData()
-          ?.addToActionHistory(
-            ActionHistoryItem.create(
-              new Date(),
-              context && context.getPath(),
-              actionName,
-              holder.getInitialParameters()
-            )
-          );
+      if (caller.getCallerData()) caller?.getCallerData()?.addToActionHistory(ActionHistoryItem.create(new Date(), context && context.getPath(), actionName, holder.getInitialParameters()));
 
       entries.push(new BatchEntry(actionContext, initialParameters));
     }
@@ -271,12 +217,6 @@ export default class ServerActionHelper {
     if (!actionManager) return null;
 
     return actionManager.initActions(entries, new ServerActionContext(stub, con, caller));
-  }
-}
-
-class StubActionDefinition extends ServerActionDefinition {
-  getExecutionGroup(): GroupIdentifier | null {
-    return null;
   }
 }
 

@@ -7,8 +7,8 @@ import DashboardsHierarchyInfo from '../../util/DashboardsHierarchyInfo';
 import DataTable from '../../datatable/DataTable';
 import DashboardProperties from '../../util/DashboardProperties';
 import WindowLocation from '../../util/WindowLocation';
-import ActionUtils from '../ActionUtils';
 import SimpleDataTable from '../../datatable/SimpleDataTable';
+import ActionUtilsConstants from '../ActionUtilsConstants';
 
 export default class LaunchWidget extends GenericActionCommand {
   public static readonly CF_DEFAULT_CONTEXT: string = 'defaultContext';
@@ -24,33 +24,15 @@ export default class LaunchWidget extends GenericActionCommand {
   public static readonly CFT_LAUNCH_WIDGET: TableFormat = new TableFormat(1, 1);
 
   public __static_initializer0() {
-    LaunchWidget.CFT_LAUNCH_WIDGET.addField(
-      '<' +
-        LaunchWidget.CF_WIDGET_CONTEXT +
-        '><S><F=N><D=' +
-        Cres.get().getString('widget') +
-        '><E=' +
-        FieldConstants.EDITOR_CONTEXT +
-        '>'
-    );
-    LaunchWidget.CFT_LAUNCH_WIDGET.addField(
-      '<' +
-        LaunchWidget.CF_DEFAULT_CONTEXT +
-        '><S><F=N><D=' +
-        Cres.get().getString('conDefaultContext') +
-        '><E=' +
-        FieldConstants.EDITOR_CONTEXT +
-        '>'
-    );
+    LaunchWidget.CFT_LAUNCH_WIDGET.addField('<' + LaunchWidget.CF_WIDGET_CONTEXT + '><S><F=N><D=' + Cres.get().getString('widget') + '><E=' + FieldConstants.EDITOR_CONTEXT + '>');
+    LaunchWidget.CFT_LAUNCH_WIDGET.addField('<' + LaunchWidget.CF_DEFAULT_CONTEXT + '><S><F=N><D=' + Cres.get().getString('conDefaultContext') + '><E=' + FieldConstants.EDITOR_CONTEXT + '>');
     LaunchWidget.CFT_LAUNCH_WIDGET.addField('<' + LaunchWidget.CF_TEMPLATE + '><S><F=N>');
     LaunchWidget.CFT_LAUNCH_WIDGET.addField('<' + LaunchWidget.CF_LOCATION + '><T><F=N>');
     LaunchWidget.CFT_LAUNCH_WIDGET.addField('<' + LaunchWidget.CF_DASHBOARD + '><T><F=N>');
     LaunchWidget.CFT_LAUNCH_WIDGET.addField('<' + LaunchWidget.CF_KEY + '><S><F=NH>');
     LaunchWidget.CFT_LAUNCH_WIDGET.addField('<' + LaunchWidget.CF_INPUT + '><T><F=N>');
     LaunchWidget.CFT_LAUNCH_WIDGET.addField('<' + LaunchWidget.CF_DASHBOARDS_HIERARCHY_INFO + '><T><F=N>');
-    LaunchWidget.CFT_LAUNCH_WIDGET.addField(
-      FieldFormatFactory.create('<' + LaunchWidget.CF_WIDGET_SETTING + '><T><F=N>').setDefault(null)
-    );
+    LaunchWidget.CFT_LAUNCH_WIDGET.addField(FieldFormatFactory.create('<' + LaunchWidget.CF_WIDGET_SETTING + '><T><F=N>').setDefault(null));
   }
 
   private widgetContext: string | null = null;
@@ -63,13 +45,8 @@ export default class LaunchWidget extends GenericActionCommand {
   private dhInfo: DashboardsHierarchyInfo | null = null;
   private widgetSetting: DataTable | null = null;
 
-  public constructor(
-    titleOrFormat: string | TableFormat = LaunchWidget.CFT_LAUNCH_WIDGET,
-    widgetContext?: string,
-    defaultContext?: string,
-    template?: string | null
-  ) {
-    super(ActionUtils.CMD_LAUNCH_WIDGET, titleOrFormat, null);
+  public constructor(titleOrFormat: string | TableFormat = LaunchWidget.CFT_LAUNCH_WIDGET, widgetContext?: string, defaultContext?: string, template?: string | null) {
+    super(ActionUtilsConstants.CMD_LAUNCH_WIDGET, titleOrFormat, null);
     if (widgetContext && defaultContext) {
       this.widgetContext = widgetContext;
       this.defaultContext = defaultContext;

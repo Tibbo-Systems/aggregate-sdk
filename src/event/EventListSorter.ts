@@ -11,7 +11,7 @@ export class DataTableComparator {
   }
 
   public compareObjects(o1: any, o2: any, ascending: boolean): number {
-    let comparison: number = 0;
+    let comparison = 0;
 
     if (o1 == null) {
       comparison = -1;

@@ -1,7 +1,6 @@
 import FieldFormat from '../FieldFormat';
 import ClassicEncodingSettings from '../encoding/ClassicEncodingSettings';
 export default class BooleanFieldFormat extends FieldFormat<boolean> {
-    private readonly type;
     constructor(name: string);
     valueToString(value: boolean): string | null;
     getType(): string;

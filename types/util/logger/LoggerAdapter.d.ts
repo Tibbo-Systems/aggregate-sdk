@@ -6,11 +6,11 @@ export default class LoggerAdapter {
     isDebugEnabled(): boolean;
     isTraceEnabled(): boolean;
     isInfoEnabled(): boolean;
-    info(message: any, error?: Error): void;
-    debug(message: any, error?: Error): void;
-    error(message: any, error?: Error): void;
-    warn(message: any, error?: Error): void;
-    trace(message: any, error?: Error): void;
-    fatal(message: any, error?: Error): void;
-    log(level: LevelAdapter, message: any, error?: Error): void;
+    info(message: string, error?: Error): void;
+    debug(message: string, error?: Error): void;
+    error(message: string, error?: Error): void;
+    warn(message: string, error?: Error): void;
+    trace(message: string, error?: Error): void;
+    fatal(message: string, error?: Error): void;
+    log(level: LevelAdapter, message: string, error?: Error): void;
 }

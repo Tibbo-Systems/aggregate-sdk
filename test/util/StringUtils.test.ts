@@ -4,7 +4,7 @@ import Element from '../../src/util/Element';
 
 describe('TestStringUtils', () => {
   it('testSplit', () => {
-    let str: string = 'this+is++a+test+';
+    let str = 'this+is++a+test+';
     let ch = '+';
     let res: Array<string> = StringUtils.split(str, ch);
     expect(res.length).toBe(6);
@@ -33,7 +33,7 @@ describe('TestStringUtils', () => {
   });
 
   it('testElements', () => {
-    let s: string = '<x=2><z=3><x><k=sss><n=<x=3>><r=<aa=<xx><bb>>>';
+    let s = '<x=2><z=3><x><k=sss><n=<x=3>><r=<aa=<xx><bb>>>';
     let el: Element | null = null;
 
     let res: ElementList = StringUtils.elements(s, true);

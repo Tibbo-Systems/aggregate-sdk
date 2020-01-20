@@ -7,9 +7,9 @@ import TableFormat from '../TableFormat';
 export default class ClassicEncodingSettings extends EncodingSettings {
   private useVisibleSeparators: boolean;
   private formatCache: FormatCache | null = null;
-  private encodeDefaultValues: boolean = true;
+  private encodeDefaultValues = true;
   private knownFormatCollector: KnownFormatCollector | null = null;
-  private encodeFieldNames: boolean = false;
+  private encodeFieldNames = false;
 
   private protocolVersion: ProtocolVersion | null = null;
 

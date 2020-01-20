@@ -1,10 +1,10 @@
 // Generated from src/expression/grammar/AggregateExpression.g4 by ANTLR 4.7.2
 // jshint ignore: start
-var antlr4 = require('antlr4/index');
+const antlr4 = require('antlr4/index');
 
 
 
-var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
+const serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u00023\u01a8\b\u0001\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004",
     "\u0004\t\u0004\u0004\u0005\t\u0005\u0004\u0006\t\u0006\u0004\u0007\t",
     "\u0007\u0004\b\t\b\u0004\t\t\t\u0004\n\t\n\u0004\u000b\t\u000b\u0004",
@@ -287,9 +287,9 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0002"].join("");
 
 
-var atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
+const atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
 
-var decisionsToDFA = atn.decisionToState.map( function(ds, index) { return new antlr4.dfa.DFA(ds, index); });
+const decisionsToDFA = atn.decisionToState.map( function(ds, index) { return new antlr4.dfa.DFA(ds, index); });
 
 function AggregateExpressionLexer(input) {
 	antlr4.Lexer.call(this, input);
@@ -311,8 +311,8 @@ AggregateExpressionLexer.INTEGER_LITERAL = 1;
 AggregateExpressionLexer.FLOATING_POINT_LITERAL = 2;
 AggregateExpressionLexer.STRING_LITERAL = 3;
 AggregateExpressionLexer.UNCLOSED_STRING_LITERAL = 4;
-AggregateExpressionLexer.LBRAKET = 5;
-AggregateExpressionLexer.RBRAKET = 6;
+AggregateExpressionLexer.LPAREN = 5;
+AggregateExpressionLexer.RPAREN = 6;
 AggregateExpressionLexer.LBRACE = 7;
 AggregateExpressionLexer.RBRACE = 8;
 AggregateExpressionLexer.LBRACKET = 9;
@@ -380,7 +380,7 @@ AggregateExpressionLexer.prototype.literalNames = [ null, null, null, null,
 AggregateExpressionLexer.prototype.symbolicNames = [ null, "INTEGER_LITERAL", 
                                                      "FLOATING_POINT_LITERAL", 
                                                      "STRING_LITERAL", "UNCLOSED_STRING_LITERAL", 
-                                                     "LBRAKET", "RBRAKET", 
+                                                     "LPAREN", "RPAREN", 
                                                      "LBRACE", "RBRACE", 
                                                      "LBRACKET", "RBRACKET", 
                                                      "COMMA", "DOT", "AT", 
@@ -402,7 +402,7 @@ AggregateExpressionLexer.prototype.symbolicNames = [ null, "INTEGER_LITERAL",
 
 AggregateExpressionLexer.prototype.ruleNames = [ "INTEGER_LITERAL", "FLOATING_POINT_LITERAL", 
                                                  "STRING_LITERAL", "UNCLOSED_STRING_LITERAL", 
-                                                 "LBRAKET", "RBRAKET", "LBRACE", 
+                                                 "LPAREN", "RPAREN", "LBRACE", 
                                                  "RBRACE", "LBRACKET", "RBRACKET", 
                                                  "COMMA", "DOT", "AT", "HASH", 
                                                  "DOLLAR", "PLUS", "MINUS", 
@@ -417,11 +417,11 @@ AggregateExpressionLexer.prototype.ruleNames = [ "INTEGER_LITERAL", "FLOATING_PO
                                                  "MLC_START", "MLC_END", 
                                                  "WHITESPACE", "COMMENT_MULTILINE", 
                                                  "COMMENT_LINE", "IDENTIFIER", 
-                                                 "UNMATCHED", "Digit", "HexDigit", 
-                                                 "Letter", "LetterOrDigit", 
-                                                 "EscapeSequence", "DECIMAL_LITERAL", 
+                                                 "UNMATCHED", "DIGIT", "HEX_DIGIT", 
+                                                 "LETTER", "LETTER_OR_DIGIT", 
+                                                 "ESCAPE_SEQUENCE", "DECIMAL_LITERAL", 
                                                  "HEX_LITERAL", "OCTAL_LITERAL", 
-                                                 "BINARY_LITERAL", "Exponent" ];
+                                                 "BINARY_LITERAL", "EXPONENT" ];
 
 AggregateExpressionLexer.prototype.grammarFileName = "AggregateExpression.g4";
 

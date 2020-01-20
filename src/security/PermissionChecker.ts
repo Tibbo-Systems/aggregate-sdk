@@ -21,24 +21,12 @@ export default interface PermissionChecker {
   /**
    * Returns true if {@code caller} is allowed to access an entity those permissions are {@code requiredPermissions}.
    */
-  has(
-    caller: CallerController | null,
-    requiredPermissions: Permissions | null,
-    accessedContext: Context<any, any>,
-    accessedEntityDefinition: EntityDefinition | null
-  ): boolean;
+  has(caller: CallerController | null, requiredPermissions: Permissions | null, accessedContext: Context<any, any>, accessedEntityDefinition: EntityDefinition | null): boolean;
 
   /**
    * Returns the effective permission level of the calling party (those permissions are identified by {@code permissions}) for the entity.
    */
-  getLevel(
-    permissions: Permissions,
-    accessedContext: string,
-    accessedEntityType: number,
-    accessedEntity: string,
-    accessedEntityGroup: string,
-    cm: ContextManager<any>
-  ): string;
+  getLevel(permissions: Permissions, accessedContext: string, accessedEntityType: number, accessedEntity: string, accessedEntityGroup: string, cm: ContextManager<any>): string;
 
   /**
    * Returns true if the calling party (those permissions are identified by {@code perms}) can see {@code context} among children of its parent context because it has non-null permissions for one or

@@ -25,12 +25,7 @@ export default class DataTableFieldFormat extends FieldFormat<DataTable> {
 
     const getDefaultValue: Function = this.getDefaultValue.bind(this);
     const validator = new (class DataTableFieldValidator extends AbstractFieldValidator<any> {
-      validate(
-        context: Context<any, any> | null,
-        contextManager: ContextManager<Context<any, any>> | null,
-        caller: CallerController | null,
-        value: DataTable
-      ): DataTable | null {
+      validate(context: Context<any, any> | null, contextManager: ContextManager<Context<any, any>> | null, caller: CallerController | null, value: DataTable): DataTable | null {
         const def: DataTable = getDefaultValue();
 
         if (def == null || def.getFieldCount() == 0) {
@@ -63,12 +58,7 @@ export default class DataTableFieldFormat extends FieldFormat<DataTable> {
     const oldEncodeFormat: boolean | null = settings != null ? settings.isEncodeFormat() : null;
 
     try {
-      if (
-        settings != null &&
-        (this.getDefaultValue() == null ||
-          (this.getDefaultValue() as DataTable).getFieldCount() == 0 ||
-          !Util.equals((this.getDefaultValue() as DataTable).getFormat(), value.getFormat()))
-      ) {
+      if (settings != null && (this.getDefaultValue() == null || (this.getDefaultValue() as DataTable).getFieldCount() == 0 || !Util.equals((this.getDefaultValue() as DataTable).getFormat(), value.getFormat()))) {
         settings.setEncodeFormat(true);
       }
 
@@ -99,26 +89,13 @@ export default class DataTableFieldFormat extends FieldFormat<DataTable> {
     }
   }
 
-  public valueFromEncodedString(
-    source: string,
-    settings: ClassicEncodingSettings,
-    validate: boolean
-  ): DataTable | null {
+  public valueFromEncodedString(source: string, settings: ClassicEncodingSettings, validate: boolean): DataTable | null {
     // Copied from the FieldFormat and enhanced to support compatibility with version 5.41 (because a nicer idea of substituting transferEncoding on the fly is not thread safe)
 
-    const nullElement: string = settings.isUseVisibleSeparators()
-      ? DataTableUtils.DATA_TABLE_VISIBLE_NULL
-      : DataTableUtils.DATA_TABLE_NULL;
+    const nullElement: string = settings.isUseVisibleSeparators() ? DataTableUtils.DATA_TABLE_VISIBLE_NULL : DataTableUtils.DATA_TABLE_NULL;
     const sourceIsNull: boolean = source === nullElement;
-    const compatibilityTransferEncode: boolean =
-      ProtocolVersion.V3 === settings.getProtocolVersion() || ProtocolVersion.V2 === settings.getProtocolVersion();
-    return sourceIsNull
-      ? null
-      : this.valueFromString(
-          compatibilityTransferEncode ? DataTableUtils.transferDecode(source) : source,
-          settings,
-          validate
-        );
+    const compatibilityTransferEncode: boolean = ProtocolVersion.V3 === settings.getProtocolVersion() || ProtocolVersion.V2 === settings.getProtocolVersion();
+    return sourceIsNull ? null : this.valueFromString(compatibilityTransferEncode ? DataTableUtils.transferDecode(source) : source, settings, validate);
   }
 
   valueFromString(value: string | null, settings: ClassicEncodingSettings | null, validate: boolean): DataTable | null {
@@ -146,11 +123,7 @@ export default class DataTableFieldFormat extends FieldFormat<DataTable> {
         res = DataTableFactory.createAndDecode(elements, settings, validate);
       }
 
-      if (
-        defaultValue != null &&
-        defaultValue.getFieldCount() > 0 &&
-        !(res !== null && res.getFormat().extend(defaultValue.getFormat()))
-      ) {
+      if (defaultValue != null && defaultValue.getFieldCount() > 0 && !(res !== null && res.getFormat().extend(defaultValue.getFormat()))) {
         const newRes: DataTable = (this.getDefaultValue() as DataTable).clone();
 
         if (res != null) DataTableReplication.copy(res, newRes, true, true, true);
@@ -171,20 +144,11 @@ export default class DataTableFieldFormat extends FieldFormat<DataTable> {
     }
   }
 
-  public valueToEncodedString(
-    value: DataTable,
-    settings: ClassicEncodingSettings,
-    sb: StringBuilder = new StringBuilder(),
-    encodeLevel: number = 1
-  ): StringBuilder | null {
+  public valueToEncodedString(value: DataTable, settings: ClassicEncodingSettings, sb: StringBuilder = new StringBuilder(), encodeLevel = 1): StringBuilder | null {
     const strVal: string | null = this.valueToString(value, settings);
 
     if (strVal == null) {
-      return sb.append(
-        settings == null || !settings.isUseVisibleSeparators()
-          ? DataTableUtils.DATA_TABLE_NULL
-          : DataTableUtils.DATA_TABLE_VISIBLE_NULL
-      );
+      return sb.append(settings == null || !settings.isUseVisibleSeparators() ? DataTableUtils.DATA_TABLE_NULL : DataTableUtils.DATA_TABLE_VISIBLE_NULL);
     }
 
     if (settings != null) {

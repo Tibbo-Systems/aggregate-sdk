@@ -6,12 +6,7 @@ import Util from '../../util/Util';
 import FieldConstants from '../field/FieldConstants';
 
 export default class IdValidator extends AbstractFieldValidator<any> {
-  public validate(
-    context: Context<any, any>,
-    contextManager: ContextManager<Context<any, any>>,
-    caller: CallerController,
-    value: any
-  ): any {
+  public validate(context: Context<any, any>, contextManager: ContextManager<Context<any, any>>, caller: CallerController, value: any): any {
     if (value != null && Util.isString(value)) {
       return Util.descriptionToName(value.toString());
     }

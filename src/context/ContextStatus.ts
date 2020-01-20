@@ -2,7 +2,7 @@ export default class ContextStatus {
   private status: number;
   private comment: string | null;
 
-  constructor(status: number = 0, comment: string | null = null) {
+  constructor(status = 0, comment: string | null = null) {
     this.status = status;
     this.comment = comment;
   }

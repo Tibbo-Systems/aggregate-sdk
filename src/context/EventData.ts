@@ -2,7 +2,6 @@ import Comparable from '../util/java/Comparable';
 import ContextEventListenerSet from '../event/ContextEventListenerSet';
 import EventDefinition from './EventDefinition';
 import ContextManager from './ContextManager';
-import AbstractContext from './AbstractContext';
 import ContextEventListener from '../event/ContextEventListener';
 import Event from '../data/Event';
 import QueuedEvent from './QueuedEvent';
@@ -12,11 +11,12 @@ import Log from '../Log';
 import JObject from '../util/java/JObject';
 import EventDispatcher from './EventDispatcher';
 import DefaultContextEventListener from './DefaultContextEventListener';
+import Context from './Context';
 
 export default class EventData extends JObject implements Comparable<EventData> {
   public static readonly UNDISPATCHED_EVENTS_QUEUE_LENGTH = 10000;
 
-  private readonly listeners: ContextEventListenerSet;
+  private listeners: ContextEventListenerSet;
 
   private definition: EventDefinition;
 
@@ -30,10 +30,10 @@ export default class EventData extends JObject implements Comparable<EventData> 
   private handleOffers = 0;
   private handleExecutions = 0;
 
-  constructor(definition: EventDefinition, source: ContextManager<any> | AbstractContext<any, any>) {
+  constructor(definition: EventDefinition, source: Context<any, any>) {
     super();
     this.definition = definition;
-    this.listeners = new ContextEventListenerSet(source);
+    this.listeners = ContextEventListenerSet.fromContext(source);
   }
 
   public registerFiredEvent() {
@@ -85,47 +85,37 @@ export default class EventData extends JObject implements Comparable<EventData> 
   }
 
   public store(event: Event, customMemoryStorageSize: number | null): Event | null {
-    let memoryStorateSize: number =
-      customMemoryStorageSize != null ? customMemoryStorageSize : this.definition.getMemoryStorageSize();
+    const memoryStorateSize: number = customMemoryStorageSize != null ? customMemoryStorageSize : this.definition.getMemoryStorageSize();
 
     if (memoryStorateSize == null) {
       return null;
     }
-    let duplicate: Event | null = null;
-
     this.history = this.history.filter(cur => {
       // Removing if expired
-      //@ts-ignore
-      if (cur.getExpirationtime() != null && cur.getExpirationtime().getTime() < Date.now()) {
-        return true;
+      const exprTime = cur.getExpirationtime();
+      if (exprTime != null && exprTime.getTime() < Date.now()) {
+        return false;
       }
       // Adding for persistent storage if in-memory history size exceeded
-      if (this.history.length > memoryStorateSize) {
-        return true;
-      }
+      return this.history.length <= memoryStorateSize;
+    });
+    let duplicate = null;
+    for (const cur of this.history) {
       if (event.getDeduplicationId() != null && Util.equals(event.getDeduplicationId(), cur.getDeduplicationId())) {
         if (duplicate != null) {
-          Log.CONTEXT_EVENTS.warn(
-            'Event history of event ' +
-              event +
-              ' contains more than one duplicate with ID: ' +
-              event.getDeduplicationId()
-          );
+          Log.CONTEXT_EVENTS.warn('Event history of event ' + event + ' contains more than one duplicate with ID: ' + event.getDeduplicationId());
         }
         duplicate = cur;
       }
-      return false;
-    });
+    }
+
     if (duplicate == null) {
       this.history.push(event);
       return null;
     } else {
-      Log.CONTEXT_EVENTS.debug(
-        'Found duplicate of event ' + event + ' (duplicate ID: ' + event.getDeduplicationId() + '): ' + duplicate
-      );
-      //@ts-ignore
+      Log.CONTEXT_EVENTS.debug('Found duplicate of event ' + event + ' (duplicate ID: ' + event.getDeduplicationId() + '): ' + duplicate);
+
       duplicate.setCreationtime(event.getCreationtime());
-      //@ts-ignore
       duplicate.setCount(duplicate.getCount() + 1);
       return duplicate;
     }
@@ -156,13 +146,11 @@ export default class EventData extends JObject implements Comparable<EventData> 
       // Prevent multiple dispatch processing, syncing on EventData can cause a deadlock, so using undispatchedEvents here
 
       do {
-        //@ts-ignore
-        if (this.undispatchedEvents.length <= 1) {
+        if (this.undispatchedEvents != null && this.undispatchedEvents.length <= 1) {
           this.dispatching = false;
         }
 
-        //@ts-ignore
-        let ev = this.undispatchedEvents.pop();
+        const ev = this.undispatchedEvents?.pop();
 
         if (!ev) {
           return;

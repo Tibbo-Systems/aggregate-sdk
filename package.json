@@ -1,15 +1,17 @@
 {
   "name": "aggregate-sdk",
   "homepage": "https://aggregate.tibbo.com/",
-  "version": "5.70.15",
+  "version": "5.70.16-dev.20200120-2",
   "description": "AggreGate SDK (TypeScript, open-source) - Official Release",
   "scripts": {
-    "lint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
+    "lint": "tsc --noEmit && eslint '*/**/*.{js,ts}' --quiet --fix",
     "build": "webpack --config webpack.dev.js --progress --noEmit && webpack --config webpack.prod.js --progress --noEmit",
-    "test": "jest --runInBand ",
+    "test": "jest --runInBand",
+    "test:coverage": "jest --coverage",
     "test:jenkins": "PORT=7080 npm run test",
-    "publish:next": "npm publish --tag next",
+    "publish:next": "npm version 5.70.16-dev.20200120-2 && npm publish --tag next",
     "publish:last": "npm publish",
+    "prettier": "prettier --write \"src/**/*.ts\" ",
     "antrl4-js": "java -Xmx500M -cp '/usr/local/lib/antlr-4.7.2-complete.jar:$CLASSPATH' org.antlr.v4.Tool  -Dlanguage=JavaScript -lib src/expression/grammar -o src/expression/parser -visitor -no-listener -Xexact-output-dir src/expression/grammar/AggregateExpression.g4"
   },
   "type": "module",
@@ -19,6 +21,14 @@
     "sdk",
     "api"
   ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run prettier"
+    }
+  },
+  "lint-staged": {
+    "*.(js|ts)": "eslint"
+  },
   "bugs": {
     "url": "https://github.com/Tibbo-Systems/aggregate-sdk/issues"
   },
@@ -51,29 +61,33 @@
     "@babel/preset-typescript": "7.6.0",
     "@types/antlr4": "^4.7.0",
     "@types/bytebuffer": "^5.0.40",
-    "@types/jest": "^24.0.18",
-    "@types/lodash": "^4.14.138",
+    "@types/jest": "^24.0.25",
+    "@types/lodash": "^4.14.149",
     "@types/pino": "^5.20.0",
     "@types/uuid": "^3.4.6",
-    "@typescript-eslint/eslint-plugin": "^2.6.0",
-    "@typescript-eslint/parser": "^2.6.0",
+    "@typescript-eslint/eslint-plugin": "^2.15.0",
+    "@typescript-eslint/parser": "^2.15.0",
     "babel-loader": "8.0.6",
+    "circular-dependency-plugin": "^5.2.0",
     "clean-webpack-plugin": "^3.0.0",
-    "eslint": "^6.6.0",
-    "eslint-config-prettier": "^6.5.0",
-    "eslint-plugin-prettier": "^3.1.1",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-jest": "^23.6.0",
+    "eslint-plugin-prettier": "^3.1.2",
     "fork-ts-checker-webpack-plugin": "3.0.1",
     "html-webpack-plugin": "3.2.0",
+    "husky": "^4.0.7",
     "jest": "^24.9.0",
-    "jest-html-reporter": "^2.6.0",
+    "jest-html-reporter": "^2.8.0",
     "jest-junit": "^9.0.0",
-    "moment-locales-webpack-plugin": "^1.1.0",
+    "lint-staged": "^9.5.0",
+    "moment-locales-webpack-plugin": "^1.1.2",
     "prettier": "1.19.1",
-    "ts-jest": "^24.1.0",
-    "ts-loader": "^6.1.2",
-    "typescript": "^3.7.2",
+    "ts-jest": "^24.3.0",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.4",
     "webpack": "4.41.2",
-    "webpack-bundle-analyzer": "^3.5.1",
+    "webpack-bundle-analyzer": "^3.6.0",
     "webpack-cli": "3.3.10",
     "webpack-dev-server": "3.9.0",
     "webpack-merge": "^4.2.2"
@@ -81,11 +95,12 @@
   "dependencies": {
     "antlr4": "^4.7.2",
     "bytebuffer": "^5.0.1",
-    "i18next": "^19.0.0",
+    "i18next": "^19.0.3",
     "lodash.clonedeep": "^4.5.0",
     "lodash.isequal": "^4.5.0",
     "moment": "^2.24.0",
-    "pino": "^5.13.5",
+    "pino": "^5.16.0",
+    "pino-pretty": "^3.5.0",
     "uuid": "^3.3.3"
   }
 }

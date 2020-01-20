@@ -1,12 +1,9 @@
 import FieldFormat from '../FieldFormat';
 import ClassicEncodingSettings from '../encoding/ClassicEncodingSettings';
 import Util from '../../util/Util';
-import Class from '../../util/java/Class';
 import FieldConstants from './FieldConstants';
 
 export default class BooleanFieldFormat extends FieldFormat<boolean> {
-  private readonly type: Class = new Class('boolean');
-
   constructor(name: string) {
     super(name);
   }
@@ -31,11 +28,7 @@ export default class BooleanFieldFormat extends FieldFormat<boolean> {
     return value;
   }
 
-  public valueFromString(
-    value: string | null,
-    settings: ClassicEncodingSettings | null,
-    validate: boolean
-  ): boolean | null {
+  public valueFromString(value: string | null, settings: ClassicEncodingSettings | null, validate: boolean): boolean | null {
     return !!(value !== null && (value === '1' || value.toLowerCase() === 'true'));
   }
 

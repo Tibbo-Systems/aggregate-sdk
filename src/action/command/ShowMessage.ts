@@ -1,8 +1,8 @@
 import GenericActionCommand from '../GenericActionCommand';
 import TableFormat from '../../datatable/TableFormat';
-import ActionUtils from '../ActionUtils';
 import SimpleDataTable from '../../datatable/SimpleDataTable';
 import DataTable from '../../datatable/DataTable';
+import ActionUtilsConstants from '../ActionUtilsConstants';
 
 export default class ShowMessage extends GenericActionCommand {
   public static readonly CF_MESSAGE: string = 'message';
@@ -26,12 +26,8 @@ export default class ShowMessage extends GenericActionCommand {
     ShowMessage._init = true;
   }
 
-  public constructor(
-    titleOrFormat: string | TableFormat = ShowMessage.CFT_SHOW_MESSAGE,
-    message?: string,
-    level?: number
-  ) {
-    super(ActionUtils.CMD_SHOW_MESSAGE, titleOrFormat, null);
+  public constructor(titleOrFormat: string | TableFormat = ShowMessage.CFT_SHOW_MESSAGE, message?: string, level?: number) {
+    super(ActionUtilsConstants.CMD_SHOW_MESSAGE, titleOrFormat, null);
     if (message && level) {
       this.message = message;
       this.level = level;

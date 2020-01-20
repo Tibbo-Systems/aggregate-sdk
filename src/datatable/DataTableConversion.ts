@@ -10,9 +10,10 @@ import FieldFormatFactory from './FieldFormatFactory';
 import SimpleDataTable from './SimpleDataTable';
 import FieldConstants from './field/FieldConstants';
 import FormatConverter from './converter/FormatConverter';
+import JObject from '../util/java/JObject';
 
 export default class DataTableConversion {
-  private static initDataTableConversion: boolean = false;
+  private static initDataTableConversion = false;
 
   static readonly FORMAT_CONVERTERS: Array<FormatConverter<any>> = new Array<FormatConverter<any>>();
 
@@ -52,12 +53,7 @@ export default class DataTableConversion {
     return list[0];
   }
 
-  public static beansFromTable(
-    table: DataTable,
-    valueClass: any,
-    format: TableFormat,
-    setReadOnlyFields: boolean = true
-  ): Array<any> {
+  public static beansFromTable(table: DataTable, valueClass: any, format: TableFormat, setReadOnlyFields = true): Array<any> {
     try {
       const res: Array<any> = new Array<any>();
 
@@ -65,7 +61,7 @@ export default class DataTableConversion {
         return res;
       }
 
-      for (let rec of table) {
+      for (const rec of table) {
         if (Util.isString(valueClass) && FieldFormat.isFieldClass(valueClass)) {
           res.push(rec.getValue(0));
           continue;
@@ -82,12 +78,7 @@ export default class DataTableConversion {
     }
   }
 
-  public static fillFromTable(
-    table: DataTable,
-    valueClass: any,
-    format: TableFormat,
-    setReadOnlyFields: boolean = true
-  ): Array<any> {
+  public static fillFromTable(table: DataTable, valueClass: any, format: TableFormat, setReadOnlyFields = true): Array<any> {
     try {
       const res: Array<any> = new Array<any>();
 
@@ -95,7 +86,7 @@ export default class DataTableConversion {
         return res;
       }
 
-      for (let rec of table) {
+      for (const rec of table) {
         if (Util.isString(valueClass) && FieldFormat.isFieldClass(valueClass)) {
           res.push(rec.getValue(0));
           continue;
@@ -141,7 +132,7 @@ export default class DataTableConversion {
     }
   }
 
-  public static getFormatConverter(valueClass: any, fieldType: string | null = null): FormatConverter<Object> | null {
+  public static getFormatConverter(valueClass: any, fieldType: string | null = null): FormatConverter<JObject> | null {
     if (valueClass == null) {
       return null;
     }
@@ -154,7 +145,7 @@ export default class DataTableConversion {
       return null;
     }
 
-    for (let fc of DataTableConversion.FORMAT_CONVERTERS) {
+    for (const fc of DataTableConversion.FORMAT_CONVERTERS) {
       if (fieldType == null) {
         return null;
       }
@@ -167,16 +158,9 @@ export default class DataTableConversion {
   }
 
   // TODO Class implementation
-  public static populateBeanFromRecord(
-    bean: any,
-    rec: DataRecord,
-    format: TableFormat,
-    setReadOnlyFields: boolean,
-    fieldsToSkip: Array<string> = new Array<string>()
-  ): void {
-    const AbstractDataTable = require('./AbstractDataTable').default;
+  public static populateBeanFromRecord(bean: any, rec: DataRecord, format: TableFormat, setReadOnlyFields: boolean, fieldsToSkip: Array<string> = new Array<string>()): void {
     try {
-      for (let ff of format) {
+      for (const ff of format) {
         if (fieldsToSkip.filter(el => el === ff.getName()).length > 1) {
           continue;
         }
@@ -217,16 +201,7 @@ export default class DataTableConversion {
 
           DataTableConversion.setValue(bean, value, ff.getName());
         } catch (ex1) {
-          throw new Error(
-            "Error setting property '" +
-              ff.getName() +
-              "' to '" +
-              value +
-              "' (" +
-              (value != null ? value : 'null') +
-              '): ' +
-              ex1.message
-          );
+          throw new Error("Error setting property '" + ff.getName() + "' to '" + value + "' (" + (value != null ? value : 'null') + '): ' + ex1.message);
         }
       }
     } catch (ex) {
@@ -234,12 +209,7 @@ export default class DataTableConversion {
     }
   }
 
-  private static createList(
-    bean: any,
-    rec: DataRecord,
-    setReadOnlyFields: boolean,
-    ff: FieldFormat<any>
-  ): Array<any> | null {
+  private static createList(bean: any, rec: DataRecord, setReadOnlyFields: boolean, ff: FieldFormat<any>): Array<any> | null {
     if (!ff.getType()) {
       Log.DATATABLE.error('Cannot determine list element class for ' + ff.getName());
       return null;
@@ -257,23 +227,12 @@ export default class DataTableConversion {
   }
 
   // TODO Class implementation
-  public static beanToTable(
-    bean: any,
-    format: TableFormat,
-    setReadOnlyFields: boolean = true,
-    ignoreErrors: boolean = false
-  ): DataTable {
+  public static beanToTable(bean: any, format: TableFormat, setReadOnlyFields = true, ignoreErrors = false): DataTable {
     return DataTableConversion.beanToRecord(bean, format, setReadOnlyFields, ignoreErrors).wrap();
   }
 
   // TODO Class implementation
-  public static beanToRecord(
-    bean: any,
-    format: TableFormat,
-    setReadOnlyFields: boolean,
-    ignoreErrors: boolean,
-    fieldsToSkip: Array<string> = Array<string>()
-  ): DataRecord {
+  public static beanToRecord(bean: any, format: TableFormat, setReadOnlyFields: boolean, ignoreErrors: boolean, fieldsToSkip: Array<string> = Array<string>()): DataRecord {
     try {
       if (format == null) {
         throw new Error('No format found for ' + bean);
@@ -288,7 +247,7 @@ export default class DataTableConversion {
       //     return rec;
       // }
 
-      for (let ff of format) {
+      for (const ff of format) {
         if (fieldsToSkip.filter(el => el === ff.getName()).length > 1 || (!setReadOnlyFields && ff.isReadonly())) {
           continue;
         }
@@ -303,8 +262,7 @@ export default class DataTableConversion {
           continue;
         }
 
-        const fc: FormatConverter<any> | null =
-          bean == null ? null : DataTableConversion.getFormatConverter(bean, ff.getType());
+        const fc: FormatConverter<any> | null = bean == null ? null : DataTableConversion.getFormatConverter(bean, ff.getType());
 
         if (fc != null) {
           value = fc.convertToTable(value, DataTableConversion.getFormatFromDefaultValue(ff));
@@ -333,13 +291,11 @@ export default class DataTableConversion {
       }
       return rec;
     } catch (e) {
-      throw new Error(
-        "Error converting bean of type '" + bean == null ? 'null' : bean + "' to data record: " + e.message
-      );
+      throw new Error("Error converting bean of type '" + bean == null ? 'null' : bean + "' to data record: " + e.message);
     }
   }
 
-  static beansToTable(beans: Array<any>, format: TableFormat, setReadOnlyFields: boolean = true): DataTable {
+  static beansToTable(beans: Array<any>, format: TableFormat, setReadOnlyFields = true): DataTable {
     const table: DataTable = DataTableFactory.of(format);
 
     beans.forEach(bean => {
@@ -355,10 +311,41 @@ export default class DataTableConversion {
     return ff;
   }
 
+  /*  public static createFieldFormat(name: string, value: object): FieldFormat<any> {
+    let ff: FieldFormat<any> = FieldFormatFactory.createType(name, FieldConstants.STRING_FIELD);
+    if (value == null) {
+      ff.setNullable(true);
+    } else {
+      try {
+        ff = this.createFieldFormatOfClass(name, Reflection.getClass(value));
+      } catch (ex) {
+        Log.DATATABLE.debug('Error constructing field format for value', ex);
+      }
+    }
+    return ff;
+  }
+
+  public static createFieldFormatOfClass(name: string, valueClass: Class): FieldFormat<any> {
+    // TODO need make
+    //FORMAT_CONVERTERS_LOCK.readLock().lock();
+
+    try {
+      for (let converter of this.FORMAT_CONVERTERS) {
+        if (valueClass.getName() === converter.getValueClass()) {
+          return converter.createFieldFormat(name);
+        }
+      }
+    } finally {
+      // TODO need make
+      //FORMAT_CONVERTERS_LOCK.readLock().unlock();
+    }
+
+    return FieldFormat.create(name, valueClass);
+  }*/
+
   private static getFormatFromDefaultValue(ff: FieldFormat<any>): TableFormat | null {
-    const AbstractDataTable = require('../datatable/AbstractDataTable').default;
     let frmt = null;
-    if (ff.getDefaultValue() instanceof AbstractDataTable) {
+    if (ff.getDefaultValue() instanceof DataTable) {
       frmt = (ff.getDefaultValue() as DataTable).getFormat();
     }
     return frmt;
@@ -370,12 +357,7 @@ export default class DataTableConversion {
     return table;
   }
 
-  private static convertList(
-    bean: any,
-    value: any,
-    setReadOnlyFields: boolean,
-    ff: FieldFormat<any>
-  ): DataTable | null {
+  private static convertList(bean: any, value: any, setReadOnlyFields: boolean, ff: FieldFormat<any>): DataTable | null {
     throw new Error('Not implemented');
   }
 

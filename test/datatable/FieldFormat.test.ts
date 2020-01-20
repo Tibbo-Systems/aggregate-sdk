@@ -8,20 +8,20 @@ import FieldFormatFactory from '../../src/datatable/FieldFormatFactory';
 
 describe('TestFieldFormat', () => {
   it('testFieldFormat', () => {
-    let ff1 = FieldFormatFactory.create('<s1><S><F=N><D=Test>');
-    let ff2 = FieldFormatFactory.create('<s1><S><D=Test>');
+    const ff1 = FieldFormatFactory.create('<s1><S><F=N><D=Test>');
+    const ff2 = FieldFormatFactory.create('<s1><S><D=Test>');
 
     expect(ff1.extend(ff2)).toBeTruthy();
   });
 
   it('testDefaultValue', () => {
-    let ff1 = FieldFormatFactory.create('<s1><F><A=123.456>');
+    const ff1 = FieldFormatFactory.create('<s1><F><A=123.456>');
     expect(Math.abs(123.456 - Number(ff1.getDefaultValue())) < 0.0000000000001).toBeTruthy();
   });
 
   // TODO TransferEncodingHelper.DIRECT doesn't work as it have to
   it('testClone', () => {
-    const format: string = '<s1><S><F=N><A=default><D=Test><S=<desc=default><desc2=val2>><V=<L=1 10>>';
+    const format = '<s1><S><F=N><A=default><D=Test><S=<desc=default><desc2=val2>><V=<L=1 10>>';
     const ff: FieldFormat<any> = FieldFormatFactory.create(format);
     const cl: FieldFormat<any> = ff.clone();
 
@@ -36,14 +36,14 @@ describe('TestFieldFormat', () => {
 
   it('testFloatStorage', () => {
     const ff: FieldFormat<any> = FieldFormatFactory.create('<s1><F>');
-    const float: number = 12345678901234567890.1234567890123456789;
+    const float = 12345678901234567890.1234567890123456789;
 
     expect(float).toBe(ff.valueFromString(ff.valueToString(float), null, false));
   });
 
   it('testDoubleStorage', () => {
     const ff: FieldFormat<any> = FieldFormatFactory.create('<s1><E>');
-    const double: number = 12345678901234567890.1234567890123456789;
+    const double = 12345678901234567890.1234567890123456789;
 
     expect(double).toBe(ff.valueFromString(ff.valueToString(double), null, false));
   });

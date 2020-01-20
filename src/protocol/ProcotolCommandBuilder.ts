@@ -47,12 +47,7 @@ export default class ProtocolCommandBuilder extends JObject {
     return cmd;
   }
 
-  public setVariableOperation(
-    context: string,
-    name: string,
-    encodedValue: string,
-    queueName: string | null
-  ): OutgoingAggreGateCommand {
+  public setVariableOperation(context: string, name: string, encodedValue: string, queueName: string | null): OutgoingAggreGateCommand {
     const cmd = this.operationMessage();
     cmd.addParam(AggreGateCommand.COMMAND_OPERATION_SET_VAR);
     cmd.addParam(context);
@@ -64,13 +59,7 @@ export default class ProtocolCommandBuilder extends JObject {
     return cmd;
   }
 
-  public callFunctionOperation(
-    context: string,
-    name: string,
-    encodedInput: string,
-    queueName: string | null,
-    flags: string | null
-  ): OutgoingAggreGateCommand {
+  public callFunctionOperation(context: string, name: string, encodedInput: string, queueName: string | null, flags: string | null): OutgoingAggreGateCommand {
     const cmd = this.operationMessage();
     cmd.addParam(AggreGateCommand.COMMAND_OPERATION_CALL_FUNCTION);
     cmd.addParam(context);
@@ -89,48 +78,15 @@ export default class ProtocolCommandBuilder extends JObject {
     return cmd;
   }
 
-  public addEventListenerOperation(
-    context: string,
-    name: string,
-    listenerHashCode: number | null,
-    filter: string | null,
-    fingerprint: string | null
-  ): OutgoingAggreGateCommand {
-    return this.eventListenerOperation(
-      AggreGateCommand.COMMAND_OPERATION_ADD_EVENT_LISTENER,
-      context,
-      name,
-      listenerHashCode,
-      filter,
-      fingerprint
-    );
+  public addEventListenerOperation(context: string, name: string, listenerHashCode: number | null, filter: string | null, fingerprint: string | null): OutgoingAggreGateCommand {
+    return this.eventListenerOperation(AggreGateCommand.COMMAND_OPERATION_ADD_EVENT_LISTENER, context, name, listenerHashCode, filter, fingerprint);
   }
 
-  public removeEventListenerOperation(
-    context: string,
-    name: string,
-    listenerHashCode: number | null,
-    filter: string | null,
-    fingerprint: string | null
-  ): OutgoingAggreGateCommand {
-    return this.eventListenerOperation(
-      AggreGateCommand.COMMAND_OPERATION_REMOVE_EVENT_LISTENER,
-      context,
-      name,
-      listenerHashCode,
-      filter,
-      fingerprint
-    );
+  public removeEventListenerOperation(context: string, name: string, listenerHashCode: number | null, filter: string | null, fingerprint: string | null): OutgoingAggreGateCommand {
+    return this.eventListenerOperation(AggreGateCommand.COMMAND_OPERATION_REMOVE_EVENT_LISTENER, context, name, listenerHashCode, filter, fingerprint);
   }
 
-  private eventListenerOperation(
-    commandName: string,
-    context: string,
-    name: string,
-    listenerHashCode: number | null,
-    filter: string | null,
-    fingerprint: string | null
-  ): OutgoingAggreGateCommand {
+  private eventListenerOperation(commandName: string, context: string, name: string, listenerHashCode: number | null, filter: string | null, fingerprint: string | null): OutgoingAggreGateCommand {
     const cmd = this.operationMessage();
 
     cmd.addParam(commandName);

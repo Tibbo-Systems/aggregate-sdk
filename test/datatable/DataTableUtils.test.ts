@@ -59,10 +59,10 @@ describe('TestDataTableUtils', () => {
     expect(4 === master.getRecordCount()).toBeTruthy();
     expect(4 === slave.getRecordCount()).toBeTruthy();
 
-    expect('line4' === slave.getRecord(0).getString('st'));
-    expect('line3' === slave.getRecord(1).getString('st'));
-    expect('line2' === slave.getRecord(2).getString('st'));
-    expect('line1' === slave.getRecord(3).getString('st'));
+    expect( slave.getRecord(0).getString('st')).toBe('line4');
+    expect( slave.getRecord(1).getString('st')).toBe('line3');
+    expect(slave.getRecord(2).getString('st')).toBe('line2');
+    expect( slave.getRecord(3).getString('st')).toBe('line1');
   });
 
   it('testCopyWithoutKeysFields', () => {
@@ -71,22 +71,10 @@ describe('TestDataTableUtils', () => {
     rf.addField('<val><I>');
     const master: DataTable = DataTableFactory.of(rf);
 
-    master
-      .addRecord()
-      .addString('line1')
-      .addInt(11);
-    master
-      .addRecord()
-      .addString('line2')
-      .addInt(22);
-    master
-      .addRecord()
-      .addString('line3')
-      .addInt(33);
-    master
-      .addRecord()
-      .addString('line4')
-      .addInt(44);
+    master.addRecord().addString('line1').addInt(11);
+    master.addRecord().addString('line2').addInt(22);
+    master.addRecord().addString('line3').addInt(33);
+    master.addRecord().addString('line4').addInt(44);
 
     const rf2: TableFormat = new TableFormat(0, 10);
     rf2.addField('<st><S>');
@@ -115,9 +103,9 @@ describe('TestDataTableUtils', () => {
     expect(4 === master.getRecordCount()).toBeTruthy();
     expect(4 === slave.getRecordCount()).toBeTruthy();
 
-    expect('line4' === slave.getRecord(0).getString('st'));
-    expect(555 === slave.getRecord(3).getInt('test'));
+    expect( slave.getRecord(0).getString('st')).toBe("line1");
+    expect( slave.getRecord(3).getInt('test')).toBe(555);
 
-    expect('line2' === master.getRecord(1).getString('st'));
+    expect( master.getRecord(1).getString('st')).toBe("line2");
   });
 });

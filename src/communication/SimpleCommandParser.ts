@@ -6,7 +6,7 @@ export default abstract class SimpleCommandParser<C extends Command> extends Buf
   private startChar: number;
   private endChar: number;
   private endChar2: number | null = null;
-  private needBoth: boolean = false;
+  private needBoth = false;
 
   private started: boolean;
   private waitingEndChar2: boolean;

@@ -13,11 +13,11 @@ export default class GenericActionCommand extends JObject implements ActionComma
   protected parameters: DataTable | null = null;
   private requestId: RequestIdentifier | null = null;
   private responseFormat: TableFormat | null = null;
-  private interactive: boolean = true;
+  private interactive = true;
   private type: string;
   private title: string | null = null;
-  private batchEntry: boolean = false;
-  private last: boolean = false;
+  private batchEntry = false;
+  private last = false;
 
   public constructor(type: string, titleOrFormat?: string | TableFormat | null, responseFormat?: TableFormat | null) {
     super();
@@ -110,12 +110,12 @@ export default class GenericActionCommand extends JObject implements ActionComma
     this.parameters = parameters;
   }
 
-  getParameters(): DataTable | null {
+  getParameters(): DataTable {
     return this.parameters != null ? this.parameters : this.constructParameters();
   }
 
-  protected constructParameters(): DataTable | null {
-    return null;
+  protected constructParameters(): DataTable {
+    return new SimpleDataTable();
   }
 
   public setRequestId(requestId: RequestIdentifier | null): void {

@@ -7,28 +7,28 @@ import Context from '../context/Context';
 import ContextUtilsConstants from '../context/ContextUtilsConstants';
 
 export default class EventUtils {
-  public static FIELD_SEVERITY_STATS_COLOR: string = 'color';
+  public static FIELD_SEVERITY_STATS_COLOR = 'color';
 
-  public static FIELD_SEVERITY_STATS_NUMBER: string = 'number';
+  public static FIELD_SEVERITY_STATS_NUMBER = 'number';
 
-  public static FIELD_SEVERITY_STATS_LEVEL: string = 'level';
+  public static FIELD_SEVERITY_STATS_LEVEL = 'level';
 
   static SEVERITY_STATS_FORMAT: TableFormat;
-  public static ENVIRONMENT_ID: string = 'id';
+  public static ENVIRONMENT_ID = 'id';
 
-  public static ENVIRONMENT_CONTEXT: string = 'context';
+  public static ENVIRONMENT_CONTEXT = 'context';
 
-  public static ENVIRONMENT_EVENT: string = 'event';
+  public static ENVIRONMENT_EVENT = 'event';
 
-  public static ENVIRONMENT_LEVEL: string = 'level';
+  public static ENVIRONMENT_LEVEL = 'level';
 
-  public static ENVIRONMENT_TIME: string = 'time';
+  public static ENVIRONMENT_TIME = 'time';
 
-  public static ENVIRONMENT_ACKNOWLEDGEMENTS: string = 'acknowledgements';
+  public static ENVIRONMENT_ACKNOWLEDGEMENTS = 'acknowledgements';
 
-  public static ENVIRONMENT_ENRICHMENTS: string = 'enrichments';
+  public static ENVIRONMENT_ENRICHMENTS = 'enrichments';
 
-  public static ENVIRONMENT_VALUE: string = 'value';
+  public static ENVIRONMENT_VALUE = 'value';
 
   static generateEventId() {
     return EventUtils.getRandomInt(0, JConstants.INTEGER_MAX_VALUE);
@@ -40,21 +40,17 @@ export default class EventUtils {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  static getEvents(
-    context: Context<any, any>,
-    eventsMask: string,
-    callerController: CallerController | null
-  ): Array<EventDefinition> {
-    let events: Array<EventDefinition> = new Array<EventDefinition>();
+  static getEvents(context: Context<any, any>, eventsMask: string, callerController: CallerController | null): Array<EventDefinition> {
+    const events: Array<EventDefinition> = new Array<EventDefinition>();
 
     if (eventsMask === ContextUtilsConstants.ENTITY_GROUP_MASK) {
-      for (let ed of context.getEventDefinitions(callerController, false)) {
+      for (const ed of context.getEventDefinitions(callerController, false)) {
         if (ed.getGroup() != null && ContextUtilsConstants.GROUP_SYSTEM !== ed.getGroup()) {
           events.push(ed);
         }
       }
     } else {
-      let ed = context.getEventDefinition(eventsMask, null);
+      const ed = context.getEventDefinition(eventsMask, null);
       if (ed != null) {
         events.push(ed);
       }

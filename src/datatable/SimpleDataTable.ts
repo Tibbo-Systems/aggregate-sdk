@@ -123,19 +123,9 @@ export default class SimpleDataTable extends AbstractDataTable implements Compar
     this.id = id;
   }
 
-  public getEncodedRecordsOrTableID(
-    finalSB: StringBuilder,
-    settings: ClassicEncodingSettings,
-    isTransferEncode: boolean,
-    encodeLevel: number
-  ): void {
+  public getEncodedRecordsOrTableID(finalSB: StringBuilder, settings: ClassicEncodingSettings, isTransferEncode: boolean, encodeLevel: number): void {
     for (let i = 0; i < this.getRecordCount(); i++) {
-      Element.createFromStringEncodable(SimpleDataTable.ELEMENT_RECORD, this.getRecord(i)).encode(
-        finalSB,
-        settings,
-        isTransferEncode,
-        encodeLevel
-      );
+      Element.createFromStringEncodable(SimpleDataTable.ELEMENT_RECORD, this.getRecord(i)).encode(finalSB, settings, isTransferEncode, encodeLevel);
     }
   }
 
@@ -163,7 +153,7 @@ export default class SimpleDataTable extends AbstractDataTable implements Compar
 
   public addRecordWith(...fieldValues: any[]): DataRecord {
     const rec: DataRecord = this.addRecord();
-    for (let value of fieldValues) {
+    for (const value of fieldValues) {
       rec.addValue(value);
     }
     return rec;
@@ -204,8 +194,8 @@ export default class SimpleDataTable extends AbstractDataTable implements Compar
 
     if (dataTableFields.length === 0) return;
 
-    for (let record of this.records) {
-      for (let index of dataTableFields) {
+    for (const record of this.records) {
+      for (const index of dataTableFields) {
         const dataTable: DataTable = record.getDataTable(index);
         if (dataTable != null) {
           dataTable.makeImmutable();
@@ -268,11 +258,11 @@ export default class SimpleDataTable extends AbstractDataTable implements Compar
 
   findIndexUsingQuery(query: DataTableQuery): number | null {
     for (let i = 0; i < this.getRecordCount(); i++) {
-      let meet: boolean = true;
+      let meet = true;
 
       const rec: DataRecord = this.getRecord(i);
 
-      for (let cond of query.getConditions()) {
+      for (const cond of query.getConditions()) {
         if (rec != null) {
           if (!rec.meetToCondition(cond)) {
             meet = false;
@@ -291,7 +281,7 @@ export default class SimpleDataTable extends AbstractDataTable implements Compar
     this.ensureMutable();
 
     this.records.sort((r1, r2) => {
-      for (let order of sorter) {
+      for (const order of sorter) {
         const v1: any = r1.getValue(order.getField());
         const v2: any = r2.getValue(order.getField());
 
@@ -323,14 +313,7 @@ export default class SimpleDataTable extends AbstractDataTable implements Compar
       if (this.format != record.getFormat()) {
         const message: string | null = record.getFormat().extendMessage(this.format);
         if (message != null) {
-          throw new Error(
-            "Format of new record ('" +
-              record.getFormat() +
-              "') differs from format of data table ('" +
-              this.getFormat() +
-              "'): " +
-              message
-          );
+          throw new Error("Format of new record ('" + record.getFormat() + "') differs from format of data table ('" + this.getFormat() + "'): " + message);
         }
       }
     } else {
@@ -344,11 +327,7 @@ export default class SimpleDataTable extends AbstractDataTable implements Compar
     this.ensureMutable();
 
     if (this.getRecordCount() >= this.format.getMaxRecords()) {
-      throw new Error(
-        Cres.get().getString('dtCannotAddRecord') +
-          'maximum number of records is reached: ' +
-          this.format.getMaxRecords()
-      );
+      throw new Error(Cres.get().getString('dtCannotAddRecord') + 'maximum number of records is reached: ' + this.format.getMaxRecords());
     }
 
     try {
@@ -375,7 +354,7 @@ export default class SimpleDataTable extends AbstractDataTable implements Compar
 
     cl.records = CloneUtils.deepClone(this.records) as Array<DataRecord>;
 
-    for (let rec of cl.records) {
+    for (const rec of cl.records) {
       rec.setTable(cl);
     }
 

@@ -12,7 +12,6 @@ import Contexts from '../context/Contexts';
 import UtilitiesContextConstants from '../server/UtilitiesContextConstants';
 import Util from '../util/Util';
 import TransferEncodingHelper from '../datatable/encoding/TransferEncodingHelper';
-import Class from '../util/java/Class';
 
 //TODO check ASCII_CHARSET
 export default class Data extends JObject implements StringEncodable {
@@ -25,7 +24,7 @@ export default class Data extends JObject implements StringEncodable {
   private name: string | null = null;
   private preview: ByteBuffer | null = null;
   private data: ByteBuffer | null;
-  private shallowCopy: boolean = false;
+  private shallowCopy = false;
 
   private attachments: Map<string, JObject> = new Map();
 
@@ -135,7 +134,7 @@ export default class Data extends JObject implements StringEncodable {
       return null;
     }
 
-    let context = cm.get(Contexts.CTX_UTILITIES, cc);
+    const context = cm.get(Contexts.CTX_UTILITIES, cc);
     if (!context) throw new Error(Contexts.CTX_UTILITIES + ' not found');
     const dt = await context.callFunction(UtilitiesContextConstants.F_GET_DATA, new Array(this.getId()), cc, null);
 
@@ -190,9 +189,7 @@ export default class Data extends JObject implements StringEncodable {
   }
 
   public clone(): Data {
-    let cl: Data;
-
-    cl = super.clone() as Data;
+    const cl = super.clone() as Data;
 
     if (!this.isShallowCopy()) {
       if (this.preview != null) cl.preview = this.preview.copy();
@@ -206,12 +203,7 @@ export default class Data extends JObject implements StringEncodable {
     if (obj instanceof Data) {
       const od = obj as Data;
 
-      return (
-        this.id === od.id &&
-        this.name === od.name &&
-        Util.byteBufferEquals(od.preview, this.preview) &&
-        Util.byteBufferEquals(this.data, od.data)
-      );
+      return this.id === od.id && this.name === od.name && Util.byteBufferEquals(od.preview, this.preview) && Util.byteBufferEquals(this.data, od.data);
     }
     return false;
   }
@@ -224,12 +216,7 @@ export default class Data extends JObject implements StringEncodable {
     return this.encode(new StringBuilder(), null, false, 0).toString();
   }
 
-  public encode(
-    sb: StringBuilder,
-    settings: ClassicEncodingSettings | null,
-    isTransferEncode: boolean,
-    encodeLevel: number
-  ): StringBuilder {
+  public encode(sb: StringBuilder, settings: ClassicEncodingSettings | null, isTransferEncode: boolean, encodeLevel: number): StringBuilder {
     const tempSB = new StringBuilder();
 
     tempSB.append(Data.TRANSCODER_VERSION);
@@ -267,7 +254,7 @@ export default class Data extends JObject implements StringEncodable {
         let end = i + TransferEncodingHelper.LARGE_DATA_SIZE;
         if (end > data.limit) end = data.limit;
 
-        let tempString = data.copy(i, end).toString(StringUtils.UTF8_CHARSET);
+        const tempString = data.copy(i, end).toString(StringUtils.UTF8_CHARSET);
         if (isTransferEncode) TransferEncodingHelper.encode(tempString, sb, encodeLevel);
         else sb.append(tempString);
       }
@@ -277,9 +264,5 @@ export default class Data extends JObject implements StringEncodable {
   public releaseData(): void {
     this.data = null;
     this.preview = null;
-  }
-
-  public static getClass(): Class {
-    return new Class('Data');
   }
 }

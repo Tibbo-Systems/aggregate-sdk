@@ -10,12 +10,7 @@ export default class RemoteServer extends AggreGateNetworkDevice {
   private username: string;
   private password: string;
 
-  constructor(
-    address: string = RemoteServer.DEFAULT_ADDRESS,
-    port: number = RemoteServer.DEFAULT_PORT,
-    username: string = RemoteServer.DEFAULT_USERNAME,
-    password: string = RemoteServer.DEFAULT_PASSWORD
-  ) {
+  constructor(address: string = RemoteServer.DEFAULT_ADDRESS, port: number = RemoteServer.DEFAULT_PORT, username: string = RemoteServer.DEFAULT_USERNAME, password: string = RemoteServer.DEFAULT_PASSWORD) {
     super('server', Cres.get().getString('server'), address, port);
     this.username = username;
     this.password = password;

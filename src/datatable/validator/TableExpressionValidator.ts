@@ -31,10 +31,7 @@ export default class TableExpressionValidator extends AbstractTableValidator {
         throw new Error(result.toString());
       }
     } catch (ex) {
-      Log.DATATABLE.warn(
-        "Error evaluating data table validator's expression '" + this.expression + "': " + ex.message,
-        ex
-      );
+      Log.DATATABLE.warn("Error evaluating data table validator's expression '" + this.expression + "': " + ex.message, ex);
     }
   }
 }

@@ -16,14 +16,7 @@ export default class DefaultPermissionChecker implements PermissionChecker {
     return false;
   }
 
-  getLevel(
-    permissions: Permissions,
-    accessedContext: string,
-    accessedEntityType: number,
-    accessedEntity: string,
-    accessedEntityGroup: string,
-    cm: ContextManager<any>
-  ): string {
+  getLevel(permissions: Permissions, accessedContext: string, accessedEntityType: number, accessedEntity: string, accessedEntityGroup: string, cm: ContextManager<any>): string {
     return '';
   }
 
@@ -31,12 +24,7 @@ export default class DefaultPermissionChecker implements PermissionChecker {
     return new Map();
   }
 
-  has(
-    caller: CallerController | null,
-    requiredPermissions: Permissions,
-    accessedContext: Context<any, any>,
-    accessedEntityDefinition: EntityDefinition
-  ): boolean {
+  has(caller: CallerController | null, requiredPermissions: Permissions, accessedContext: Context<any, any>, accessedEntityDefinition: EntityDefinition): boolean {
     return false;
   }
 

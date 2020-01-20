@@ -7,11 +7,12 @@ import StringFieldFormat from '../../field/StringFieldFormat';
 import Contexts from '../../../context/Contexts';
 import DataTableBindingProvider from '../../DataTableBindingProvider';
 import StorageHelper from '../../../view/StorageHelper';
-import Functions from '../../../expression/Functions';
+import Functions from '../../../expression/functions/Functions';
 import DataTableBuilding from '../../DataTableBuilding';
 import UtilitiesContextConstants from '../../../server/UtilitiesContextConstants';
-import EditData from '../../../action/command/EditData';
+
 import FieldFormatFactory from '../../FieldFormatFactory';
+import ActionUtilsConstants from '../../../action/ActionUtilsConstants';
 
 export default class ForeignInstanceConverter extends AbstractEditorOptionsConverter {
   public static readonly FIELD_DESCRIPTION: string = 'description';
@@ -32,79 +33,29 @@ export default class ForeignInstanceConverter extends AbstractEditorOptionsConve
   public static readonly FORMAT: TableFormat = new TableFormat(1, 1);
 
   private static __static_initializer_0() {
-    let exp: string, ref: string, tableExp: string, valueExp: string, descriptionExp: string;
+    let exp: string, ref: string, tableExp: string;
 
-    ForeignInstanceConverter.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' +
-          ForeignInstanceConverter.FIELD_STORAGE_CONTEXT +
-          '><S><F=N><D=' +
-          Cres.get().getString('storageContext') +
-          '>'
-      ).setEditor(FieldConstants.EDITOR_CONTEXT)
-    );
-    ForeignInstanceConverter.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' + ForeignInstanceConverter.FIELD_STORAGE_VIEW + '><S><D=' + Cres.get().getString('view') + '>'
-      )
-    );
-    ForeignInstanceConverter.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' + ForeignInstanceConverter.FIELD_STORAGE_TABLE + '><S><F=N><D=' + Cres.get().getString('acClassTable') + '>'
-      )
-    );
-    ForeignInstanceConverter.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' +
-          ForeignInstanceConverter.FIELD_REFERENCE_FIELD +
-          '><S><F=AN><D=' +
-          Cres.get().getString('acReferenceField') +
-          '>'
-      )
-    );
+    ForeignInstanceConverter.FORMAT.addField(FieldFormatFactory.create('<' + ForeignInstanceConverter.FIELD_STORAGE_CONTEXT + '><S><F=N><D=' + Cres.get().getString('storageContext') + '>').setEditor(FieldConstants.EDITOR_CONTEXT));
+    ForeignInstanceConverter.FORMAT.addField(FieldFormatFactory.create('<' + ForeignInstanceConverter.FIELD_STORAGE_VIEW + '><S><D=' + Cres.get().getString('view') + '>'));
+    ForeignInstanceConverter.FORMAT.addField(FieldFormatFactory.create('<' + ForeignInstanceConverter.FIELD_STORAGE_TABLE + '><S><F=N><D=' + Cres.get().getString('acClassTable') + '>'));
+    ForeignInstanceConverter.FORMAT.addField(FieldFormatFactory.create('<' + ForeignInstanceConverter.FIELD_REFERENCE_FIELD + '><S><F=AN><D=' + Cres.get().getString('acReferenceField') + '>'));
 
+    ForeignInstanceConverter.FORMAT.addField(FieldFormatFactory.create('<' + ForeignInstanceConverter.FIELD_STORAGE_COLUMNS + '><T><D=' + Cres.get().getString('columns') + '>'));
+    ForeignInstanceConverter.FORMAT.addField(FieldFormatFactory.create('<' + ForeignInstanceConverter.FIELD_STORAGE_FILTER + '><T><D=' + Cres.get().getString('filter') + '>'));
+    ForeignInstanceConverter.FORMAT.addField(FieldFormatFactory.create('<' + ForeignInstanceConverter.FIELD_STORAGE_SORTING + '><T><D=' + Cres.get().getString('sorting') + '>'));
     ForeignInstanceConverter.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' + ForeignInstanceConverter.FIELD_STORAGE_COLUMNS + '><T><D=' + Cres.get().getString('columns') + '>'
-      )
-    );
-    ForeignInstanceConverter.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' + ForeignInstanceConverter.FIELD_STORAGE_FILTER + '><T><D=' + Cres.get().getString('filter') + '>'
-      )
-    );
-    ForeignInstanceConverter.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' + ForeignInstanceConverter.FIELD_STORAGE_SORTING + '><T><D=' + Cres.get().getString('sorting') + '>'
-      )
-    );
-    ForeignInstanceConverter.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' + ForeignInstanceConverter.FIELD_DASHBOARD + '><S><F=N><D=' + Cres.get().getString('dashboard') + '>'
-      )
+      FieldFormatFactory.create('<' + ForeignInstanceConverter.FIELD_DASHBOARD + '><S><F=N><D=' + Cres.get().getString('dashboard') + '>')
         .setEditor(FieldConstants.EDITOR_CONTEXT)
-        .setEditorOptions(
-          StringFieldFormat.encodeMaskEditorOptionsFromStrings(Contexts.TYPE_DASHBOARD, Contexts.CTX_DASHBOARDS)
-        )
+        .setEditorOptions(StringFieldFormat.encodeMaskEditorOptionsFromStrings(Contexts.TYPE_DASHBOARD, Contexts.CTX_DASHBOARDS))
     );
 
-    ForeignInstanceConverter.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' + ForeignInstanceConverter.FIELD_ICON + '><S><F=N><D=' + Cres.get().getString('icon') + '>'
-      )
-    );
+    ForeignInstanceConverter.FORMAT.addField(FieldFormatFactory.create('<' + ForeignInstanceConverter.FIELD_ICON + '><S><F=N><D=' + Cres.get().getString('icon') + '>'));
 
-    valueExp = '{' + DataTableBuilding.FIELD_SELECTION_VALUES_VALUE + '}';
-    descriptionExp = '{' + DataTableBuilding.FIELD_SELECTION_VALUES_DESCRIPTION + '}';
+    const valueExp = '{' + DataTableBuilding.FIELD_SELECTION_VALUES_VALUE + '}';
+    const descriptionExp = '{' + DataTableBuilding.FIELD_SELECTION_VALUES_DESCRIPTION + '}';
 
     ref = ForeignInstanceConverter.FIELD_STORAGE_VIEW + '#' + DataTableBindingProvider.PROPERTY_CHOICES;
-    tableExp =
-      Functions.CALL_FUNCTION +
-      '(\'" + {' +
-      ForeignInstanceConverter.FIELD_STORAGE_CONTEXT +
-      "} + \"', '" +
-      StorageHelper.F_STORAGE_VIEWS +
-      "')";
+    tableExp = Functions.CALL_FUNCTION + '(\'" + {' + ForeignInstanceConverter.FIELD_STORAGE_CONTEXT + "} + \"', '" + StorageHelper.F_STORAGE_VIEWS + "')";
     exp =
       '({' +
       ForeignInstanceConverter.FIELD_STORAGE_CONTEXT +
@@ -126,13 +77,7 @@ export default class ForeignInstanceConverter extends AbstractEditorOptionsConve
     ForeignInstanceConverter.FORMAT.addBinding(ref, exp);
 
     ref = ForeignInstanceConverter.FIELD_STORAGE_TABLE + '#' + DataTableBindingProvider.PROPERTY_CHOICES;
-    tableExp =
-      Functions.CALL_FUNCTION +
-      '(\'" + {' +
-      ForeignInstanceConverter.FIELD_STORAGE_CONTEXT +
-      "} + \"', '" +
-      StorageHelper.F_STORAGE_TABLES +
-      "')";
+    tableExp = Functions.CALL_FUNCTION + '(\'" + {' + ForeignInstanceConverter.FIELD_STORAGE_CONTEXT + "} + \"', '" + StorageHelper.F_STORAGE_TABLES + "')";
     exp =
       '({' +
       ForeignInstanceConverter.FIELD_STORAGE_CONTEXT +
@@ -283,12 +228,8 @@ export default class ForeignInstanceConverter extends AbstractEditorOptionsConve
   public static readonly TF_PARAMETERS: TableFormat = new TableFormat(1, 1);
 
   private static __static_initializer_1() {
-    ForeignInstanceConverter.TF_PARAMETERS.addField(
-      FieldFormatFactory.create('<' + StorageHelper.CLASS_FIELD_INSTANCE_ID + '><S><F=N>')
-    );
-    ForeignInstanceConverter.TF_PARAMETERS.addField(
-      FieldFormatFactory.create('<' + EditData.CF_RELATION_FIELD + '><S><F=N>')
-    );
+    ForeignInstanceConverter.TF_PARAMETERS.addField(FieldFormatFactory.create('<' + StorageHelper.CLASS_FIELD_INSTANCE_ID + '><S><F=N>'));
+    ForeignInstanceConverter.TF_PARAMETERS.addField(FieldFormatFactory.create('<' + ActionUtilsConstants.CF_RELATION_FIELD + '><S><F=N>'));
   }
 
   private static _init = false;

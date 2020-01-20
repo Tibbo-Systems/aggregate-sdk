@@ -1,7 +1,7 @@
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-
+const CircularDependencyPlugin = require('circular-dependency-plugin')
 const path = require('path');
 
 module.exports = {
@@ -40,5 +40,17 @@ module.exports = {
         new MomentLocalesPlugin({
             localesToKeep: ['es-us', 'ru'],
         }),
+       /* new CircularDependencyPlugin({
+            // exclude detection of files based on a RegExp
+            exclude: /a\.js|node_modules/,
+            // include specific files based on a RegExp
+            include: /src/,
+            // add errors to webpack instead of warnings
+            failOnError: true,
+            // allow import cycles that include an asyncronous import,
+            allowAsyncCycles: false,
+            // set the current working directory for displaying module paths
+            cwd: process.cwd(),
+        })*/
     ]
 };

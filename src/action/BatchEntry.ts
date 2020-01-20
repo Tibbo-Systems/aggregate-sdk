@@ -4,7 +4,7 @@ import ActionContext from './ActionContext';
 export default class BatchEntry {
   private actionContext: ActionContext;
   private initialRequest: InitialRequest;
-  private fulfilled: boolean = false;
+  private fulfilled = false;
 
   public constructor(actionContext: ActionContext | null, initialRequest: InitialRequest | null) {
     if (actionContext == null) {

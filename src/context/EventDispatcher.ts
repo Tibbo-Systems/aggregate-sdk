@@ -37,7 +37,7 @@ export default class EventDispatcher {
 
   private run(): void {
     const ev: QueuedEvent = this.undispatchedEvents.pop() as QueuedEvent;
-    let concurrency = ev
+    const concurrency = ev
       .getEventData()
       .getDefinition()
       .getConcurrency();
@@ -66,10 +66,9 @@ export default class EventDispatcher {
   public getEventQueueStatistics(): Map<string, number> {
     const result: Map<string, number> = new Map<string, number>();
 
-    for (let event of this.undispatchedEvents) {
+    for (const event of this.undispatchedEvents) {
       const context: string | null = event.getEvent().getContext();
-      if (context === null)
-        throw new Error("Error in EventDispatcher, getEventQueueStatistics function. `context` shouldn't be null");
+      if (context === null) throw new Error("Error in EventDispatcher, getEventQueueStatistics function. `context` shouldn't be null");
 
       let count = result.get(context);
 

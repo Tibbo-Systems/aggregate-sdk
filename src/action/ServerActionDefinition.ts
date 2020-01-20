@@ -1,29 +1,28 @@
 import ActionUtils from './ActionUtils';
 import BasicActionDefinition from './BasicActionDefinition';
-import Class from '../util/java/Class';
 import Permissions from '../security/Permissions';
-import Util from '../util/Util';
+import ActionUtilsConstants from './ActionUtilsConstants';
 
 export default class ServerActionDefinition extends BasicActionDefinition {
   private permissions: Permissions | null = null;
-  index: number | null = ActionUtils.INDEX_NORMAL;
-  private headless: boolean = false;
+  index: number | null = ActionUtilsConstants.INDEX_NORMAL;
+  private headless = false;
 
-  public constructor(name: string, descriptionOrClass?: string | Class, actionClass?: Class) {
+  public constructor(name: string, descriptionOrClass?: string) {
     super(name);
   }
 
-  public createServerActionDefinition(name: string, descriptionOrClass: string | Class, actionClass?: Class) {
+  public createServerActionDefinition(name: string, descriptionOrClass: string) {
     const serverActionDefinition = new ServerActionDefinition(name);
 
-    if (Util.isString(descriptionOrClass) && !actionClass) {
+    /*   if (Util.isString(descriptionOrClass)  ) {
       serverActionDefinition.setDescription(descriptionOrClass as string);
-    } else if (descriptionOrClass instanceof Class && !actionClass) {
+    } else if (descriptionOrClass instanceof Class ) {
       serverActionDefinition.setActionClass(descriptionOrClass);
-    } else if (Util.isString(descriptionOrClass) && actionClass) {
-      serverActionDefinition.setActionClass(actionClass);
+    } else if (Util.isString(descriptionOrClass)) {
+      serverActionDefinition.setActionClass();
       serverActionDefinition.setDescription(descriptionOrClass as string);
-    }
+    }*/
     return serverActionDefinition;
   }
 

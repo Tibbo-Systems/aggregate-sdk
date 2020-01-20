@@ -20,10 +20,6 @@ export default class EditData extends GenericActionCommand {
     static readonly CF_KEY: string;
     static readonly CF_EXPRESSION: string;
     static readonly CF_PERIOD: string;
-    static readonly CF_STORAGE_CONTEXT: string;
-    static readonly CF_RECORD_INDEX: string;
-    static readonly CF_RECORD_DESCRIPTION: string;
-    static readonly CF_INLUDE_RECORD: string;
     static readonly CF_STORAGE_VIEW: string;
     static readonly CF_STORAGE_QUERY: string;
     static readonly CF_STORAGE_TABLE: string;
@@ -34,7 +30,6 @@ export default class EditData extends GenericActionCommand {
     static readonly CF_STORAGE_INSTANCE: string;
     static readonly CF_STORAGE_INSTANCE_ID: string;
     static readonly CF_STORAGE_BINDINGS: string;
-    static readonly CF_RELATION_FIELD: string;
     static readonly CF_SHOW_TOOLBAR: string;
     static readonly CF_SHOW_HEADER: string;
     static readonly CF_SHOW_LINE_NUMBERS: string;

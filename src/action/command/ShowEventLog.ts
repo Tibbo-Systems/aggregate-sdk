@@ -10,10 +10,10 @@ import DataTable from '../../datatable/DataTable';
 import DashboardsHierarchyInfo from '../../util/DashboardsHierarchyInfo';
 import WindowLocation from '../../util/WindowLocation';
 import DashboardProperties from '../../util/DashboardProperties';
-import ActionUtils from '../ActionUtils';
-import Functions from '../../expression/Functions';
+import Functions from '../../expression/functions/Functions';
 import EventFilterContextConstants from '../../server/EventFilterContextConstants';
 import EntityList from '../../context/EntityList';
+import ActionUtilsConstants from '../ActionUtilsConstants';
 
 export default class ShowEventLog extends GenericActionCommand {
   public static readonly CF_EVENT_FILTER: string = 'eventFilter';
@@ -44,66 +44,28 @@ export default class ShowEventLog extends GenericActionCommand {
   public static readonly CFT_SHOW_EVENT_LOG: TableFormat = new TableFormat(1, 1);
 
   static __static_initializer_0() {
-    ShowEventLog.CFT_SHOW_EVENT_LOG.addField(
-      '<' +
-        ShowEventLog.CF_EVENT_FILTER +
-        '><S><F=N><D=' +
-        Cres.get().getString('efEventFilter') +
-        '><E=' +
-        FieldConstants.EDITOR_CONTEXT +
-        '>'
-    );
+    ShowEventLog.CFT_SHOW_EVENT_LOG.addField('<' + ShowEventLog.CF_EVENT_FILTER + '><S><F=N><D=' + Cres.get().getString('efEventFilter') + '><E=' + FieldConstants.EDITOR_CONTEXT + '>');
 
-    const ff: FieldFormat<any> = FieldFormatFactory.create(
-      '<' + ShowEventLog.CF_EVENT_LIST + '><T><D=' + Cres.get().getString('events') + '>'
-    );
+    const ff: FieldFormat<any> = FieldFormatFactory.create('<' + ShowEventLog.CF_EVENT_LIST + '><T><D=' + Cres.get().getString('events') + '>');
     ff.setDefault(new SimpleDataTable(EntityList.FORMAT, true));
     ShowEventLog.CFT_SHOW_EVENT_LOG.addField(ff);
 
-    ShowEventLog.CFT_SHOW_EVENT_LOG.addField(
-      FieldFormatFactory.createWith(
-        ShowEventLog.CF_DEFAULT_EVENT,
-        FieldConstants.STRING_FIELD,
-        Cres.get().getString('elDefaultEvent')
-      ).setNullable(true)
-    );
-    ShowEventLog.CFT_SHOW_EVENT_LOG.addField(
-      '<' + ShowEventLog.CF_SHOW_REALTIME + '><B><A=1><D=' + Cres.get().getString('wCurrentEvents') + '>'
-    );
-    ShowEventLog.CFT_SHOW_EVENT_LOG.addField(
-      '<' + ShowEventLog.CF_SHOW_HISTORY + '><B><A=1><D=' + Cres.get().getString('wEventHistory') + '>'
-    );
-    ShowEventLog.CFT_SHOW_EVENT_LOG.addField(
-      '<' + ShowEventLog.CF_PRELOAD_HISTORY + '><B><A=1><D=' + Cres.get().getString('wPreloadHistory') + '>'
-    );
-    ShowEventLog.CFT_SHOW_EVENT_LOG.addField(
-      '<' + ShowEventLog.CF_SHOW_CONTEXTS + '><B><D=' + Cres.get().getString('wShowContextNames') + '>'
-    );
-    ShowEventLog.CFT_SHOW_EVENT_LOG.addField(
-      '<' + ShowEventLog.CF_SHOW_NAMES + '><B><D=' + Cres.get().getString('wShowEventNames') + '>'
-    );
-    ShowEventLog.CFT_SHOW_EVENT_LOG.addField(
-      '<' + ShowEventLog.CF_SHOW_LEVELS + '><B><D=' + Cres.get().getString('wShowEventLevels') + '>'
-    );
-    ShowEventLog.CFT_SHOW_EVENT_LOG.addField(
-      '<' + ShowEventLog.CF_SHOW_DATA + '><B><A=1><D=' + Cres.get().getString('wShowEventData') + '>'
-    );
-    ShowEventLog.CFT_SHOW_EVENT_LOG.addField(
-      '<' + ShowEventLog.CF_SHOW_ACKNOWLEDGEMENTS + '><B><D=' + Cres.get().getString('wShowEventAck') + '>'
-    );
-    ShowEventLog.CFT_SHOW_EVENT_LOG.addField(
-      '<' + ShowEventLog.CF_SHOW_ENRICHMENTS + '><B><A=0><D=' + Cres.get().getString('wShowEventEnrichments') + '>'
-    );
-    ShowEventLog.CFT_SHOW_EVENT_LOG.addField(
-      '<' + ShowEventLog.CF_FILTER_PARAMETERS + '><T><F=N><D=' + Cres.get().getString('parameters') + '>'
-    );
+    ShowEventLog.CFT_SHOW_EVENT_LOG.addField(FieldFormatFactory.createWith(ShowEventLog.CF_DEFAULT_EVENT, FieldConstants.STRING_FIELD, Cres.get().getString('elDefaultEvent')).setNullable(true));
+    ShowEventLog.CFT_SHOW_EVENT_LOG.addField('<' + ShowEventLog.CF_SHOW_REALTIME + '><B><A=1><D=' + Cres.get().getString('wCurrentEvents') + '>');
+    ShowEventLog.CFT_SHOW_EVENT_LOG.addField('<' + ShowEventLog.CF_SHOW_HISTORY + '><B><A=1><D=' + Cres.get().getString('wEventHistory') + '>');
+    ShowEventLog.CFT_SHOW_EVENT_LOG.addField('<' + ShowEventLog.CF_PRELOAD_HISTORY + '><B><A=1><D=' + Cres.get().getString('wPreloadHistory') + '>');
+    ShowEventLog.CFT_SHOW_EVENT_LOG.addField('<' + ShowEventLog.CF_SHOW_CONTEXTS + '><B><D=' + Cres.get().getString('wShowContextNames') + '>');
+    ShowEventLog.CFT_SHOW_EVENT_LOG.addField('<' + ShowEventLog.CF_SHOW_NAMES + '><B><D=' + Cres.get().getString('wShowEventNames') + '>');
+    ShowEventLog.CFT_SHOW_EVENT_LOG.addField('<' + ShowEventLog.CF_SHOW_LEVELS + '><B><D=' + Cres.get().getString('wShowEventLevels') + '>');
+    ShowEventLog.CFT_SHOW_EVENT_LOG.addField('<' + ShowEventLog.CF_SHOW_DATA + '><B><A=1><D=' + Cres.get().getString('wShowEventData') + '>');
+    ShowEventLog.CFT_SHOW_EVENT_LOG.addField('<' + ShowEventLog.CF_SHOW_ACKNOWLEDGEMENTS + '><B><D=' + Cres.get().getString('wShowEventAck') + '>');
+    ShowEventLog.CFT_SHOW_EVENT_LOG.addField('<' + ShowEventLog.CF_SHOW_ENRICHMENTS + '><B><A=0><D=' + Cres.get().getString('wShowEventEnrichments') + '>');
+    ShowEventLog.CFT_SHOW_EVENT_LOG.addField('<' + ShowEventLog.CF_FILTER_PARAMETERS + '><T><F=N><D=' + Cres.get().getString('parameters') + '>');
     ShowEventLog.CFT_SHOW_EVENT_LOG.addField('<' + ShowEventLog.CF_CUSTOM_LISTENER_CODE + '><I><F=NH>');
     ShowEventLog.CFT_SHOW_EVENT_LOG.addField('<' + ShowEventLog.CF_LOCATION + '><T><F=N>');
     ShowEventLog.CFT_SHOW_EVENT_LOG.addField('<' + ShowEventLog.CF_DASHBOARD + '><T><F=N>');
 
-    ShowEventLog.CFT_SHOW_EVENT_LOG.addField(
-      '<' + ShowEventLog.CF_KEY + '><S><F=NH><D=' + Cres.get().getString('key') + '>'
-    );
+    ShowEventLog.CFT_SHOW_EVENT_LOG.addField('<' + ShowEventLog.CF_KEY + '><S><F=NH><D=' + Cres.get().getString('key') + '>');
 
     ShowEventLog.CFT_SHOW_EVENT_LOG.addField(
       FieldFormatFactory.createType(ShowEventLog.CF_DEFAULT_CONTEXT, FieldConstants.STRING_FIELD)
@@ -128,36 +90,23 @@ export default class ShowEventLog extends GenericActionCommand {
     ShowEventLog.CFT_SHOW_EVENT_LOG.addBinding(ref, exp);
 
     ref = ShowEventLog.CF_FILTER_PARAMETERS;
-    exp =
-      '{' +
-      ShowEventLog.CF_EVENT_FILTER +
-      '} != null ? ' +
-      Functions.CALL_FUNCTION +
-      '({' +
-      ShowEventLog.CF_EVENT_FILTER +
-      "}, '" +
-      EventFilterContextConstants.F_GET_PARAMETERS +
-      "', true, true) : null";
+    exp = '{' + ShowEventLog.CF_EVENT_FILTER + '} != null ? ' + Functions.CALL_FUNCTION + '({' + ShowEventLog.CF_EVENT_FILTER + "}, '" + EventFilterContextConstants.F_GET_PARAMETERS + "', true, true) : null";
     ShowEventLog.CFT_SHOW_EVENT_LOG.addBinding(ref, exp);
   }
 
-  public static readonly RFT_SHOW_EVENT_LOG: TableFormat = new TableFormat(
-    1,
-    1,
-    '<' + ShowEventLog.RF_LISTENER_CODE + '><I><F=N>'
-  );
+  public static readonly RFT_SHOW_EVENT_LOG: TableFormat = new TableFormat(1, 1, '<' + ShowEventLog.RF_LISTENER_CODE + '><I><F=N>');
 
   private eventFilter: string | null = null;
   private events: EntityList = new EntityList();
-  private showRealtime: boolean = false;
-  private showHistory: boolean = false;
-  private preloadHistory: boolean = false;
-  private showContexts: boolean = false;
-  private showNames: boolean = false;
-  private showLevels: boolean = false;
-  private showData: boolean = false;
-  private showAcknowledgements: boolean = false;
-  private showEnrichments: boolean = false;
+  private showRealtime = false;
+  private showHistory = false;
+  private preloadHistory = false;
+  private showContexts = false;
+  private showNames = false;
+  private showLevels = false;
+  private showData = false;
+  private showAcknowledgements = false;
+  private showEnrichments = false;
   private filterParameters: DataTable | null = null;
   private customListenerCode: number | null = null;
   private location: WindowLocation | null = null;
@@ -179,7 +128,7 @@ export default class ShowEventLog extends GenericActionCommand {
   }
 
   public constructor() {
-    super(ActionUtils.CMD_SHOW_EVENT_LOG);
+    super(ActionUtilsConstants.CMD_SHOW_EVENT_LOG);
   }
 
   public static createShowEventLogWithDataTable(title: string, parameters: DataTable) {

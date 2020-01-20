@@ -22,7 +22,7 @@ export default class TableKeyFieldsValidator extends AbstractTableValidator {
   }
 
   public validate(table: DataTable): void {
-    for (let i: number = 0; i < table.getRecordCount(); i++) {
+    for (let i = 0; i < table.getRecordCount(); i++) {
       const rec: DataRecord = table.getRecord(i);
       this.validateRecord(table, rec);
     }
@@ -47,9 +47,7 @@ export default class TableKeyFieldsValidator extends AbstractTableValidator {
     const rec: DataRecord | null = table.selectByQuery(query);
 
     if (rec != null && rec != record) {
-      throw new Error(
-        MessageFormat.format(Cres.get().getString('dtKeyFieldViolation'), key, StringUtils.print(keyFields))
-      );
+      throw new Error(MessageFormat.format(Cres.get().getString('dtKeyFieldViolation'), key, StringUtils.print(keyFields)));
     }
   }
 }

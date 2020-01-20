@@ -13,13 +13,7 @@ export default class Element extends JObject implements StringEncodable {
   private fieldFormat: FieldFormat<any> | null;
   private fieldValue: object | null = null;
 
-  constructor(
-    name: string | null = null,
-    value: string | null = null,
-    encodable: StringEncodable | null = null,
-    fieldFormat: FieldFormat<any> | null = null,
-    fieldValue: object | null = null
-  ) {
+  constructor(name: string | null = null, value: string | null = null, encodable: StringEncodable | null = null, fieldFormat: FieldFormat<any> | null = null, fieldValue: object | null = null) {
     super();
     this.name = name;
     this.value = value;
@@ -44,25 +38,18 @@ export default class Element extends JObject implements StringEncodable {
     return this.value;
   }
 
-  public encode(
-    sb: StringBuilder | null,
-    settings: ClassicEncodingSettings,
-    isTransferEncode: boolean = false,
-    encodeLevel: number = 0
-  ): StringBuilder {
+  public encode(sb: StringBuilder | null, settings: ClassicEncodingSettings, isTransferEncode = false, encodeLevel = 0): StringBuilder {
     if (sb === null) {
       sb = new StringBuilder();
     }
 
-    let useVisibleSeparators: boolean = false;
+    let useVisibleSeparators = false;
 
     if (settings) useVisibleSeparators = settings.isUseVisibleSeparators();
 
     const elStart: string = useVisibleSeparators ? DataTableUtils.ELEMENT_VISIBLE_START : DataTableUtils.ELEMENT_START;
     const elEnd: string = useVisibleSeparators ? DataTableUtils.ELEMENT_VISIBLE_END : DataTableUtils.ELEMENT_END;
-    const elNameValSep: string = useVisibleSeparators
-      ? DataTableUtils.ELEMENT_VISIBLE_NAME_VALUE_SEPARATOR
-      : DataTableUtils.ELEMENT_NAME_VALUE_SEPARATOR;
+    const elNameValSep: string = useVisibleSeparators ? DataTableUtils.ELEMENT_VISIBLE_NAME_VALUE_SEPARATOR : DataTableUtils.ELEMENT_NAME_VALUE_SEPARATOR;
 
     if (isTransferEncode) {
       TransferEncodingHelper.encodeChar(elStart, sb);

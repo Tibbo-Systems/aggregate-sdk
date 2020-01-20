@@ -1,7 +1,5 @@
 import Comparable from '../util/java/Comparable';
 import EventDefinition from './EventDefinition';
-import ContextManager from './ContextManager';
-import AbstractContext from './AbstractContext';
 import ContextEventListener from '../event/ContextEventListener';
 import Event from '../data/Event';
 import QueuedEvent from './QueuedEvent';
@@ -9,9 +7,10 @@ import ContextEventListenerInfo from '../event/ContextEventListenerInfo';
 import JObject from '../util/java/JObject';
 import EventDispatcher from './EventDispatcher';
 import DefaultContextEventListener from './DefaultContextEventListener';
+import Context from './Context';
 export default class EventData extends JObject implements Comparable<EventData> {
     static readonly UNDISPATCHED_EVENTS_QUEUE_LENGTH = 10000;
-    private readonly listeners;
+    private listeners;
     private definition;
     private history;
     private fireCount;
@@ -19,7 +18,7 @@ export default class EventData extends JObject implements Comparable<EventData> 
     private dispatching;
     private handleOffers;
     private handleExecutions;
-    constructor(definition: EventDefinition, source: ContextManager<any> | AbstractContext<any, any>);
+    constructor(definition: EventDefinition, source: Context<any, any>);
     registerFiredEvent(): void;
     registerHandleOffer(): void;
     registerHandleExecution(): void;

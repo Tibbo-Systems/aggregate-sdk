@@ -8,11 +8,7 @@ import MessageFormat from '../util/java/MessageFormat';
 import TimeHelper from '../util/TimeHelper';
 import LevelAdapter from '../util/logger/LevelAdapter';
 
-export default class AsyncCommandProcessor<
-  I extends Command,
-  O extends Command,
-  C extends AbstractDeviceController<I, O>
-> {
+export default class AsyncCommandProcessor<I extends Command, O extends Command, C extends AbstractDeviceController<I, O>> {
   private static readonly PENDING_COMMAND_TIMEOUT: number = TimeHelper.DAY_IN_MS;
 
   private readonly controller: C;
@@ -28,12 +24,12 @@ export default class AsyncCommandProcessor<
   }
 
   public async sendSyncCommand(cmd: O): Promise<I | null> {
-    let mon: ReplyMonitor<O, I> = this.sendCommand(cmd);
+    const mon: ReplyMonitor<O, I> = this.sendCommand(cmd);
 
     if (cmd.isAsync()) {
       return null;
     }
-    let reply: I | null = await this.waitReplyMonitor(mon);
+    const reply: I | null = await this.waitReplyMonitor(mon);
 
     this.statistics.updateOnSyncCommand(mon);
 
@@ -74,7 +70,7 @@ export default class AsyncCommandProcessor<
 
   private async waitReplyMonitor(mon: ReplyMonitor<O, I>): Promise<I | null> {
     if (mon.getReply() === null) {
-      let time = mon.getCommand().getTimeout();
+      const time = mon.getCommand().getTimeout();
       const timeout: number = time != null ? time : this.controller.getCommandTimeout();
       await mon.waitReply(timeout);
     }
@@ -84,8 +80,7 @@ export default class AsyncCommandProcessor<
     if (mon.getReply() != null) {
       return mon.getReply();
     } else if (this.controller.isConnected()) {
-      if (Log.COMMANDS.isDebugEnabled())
-        throw new Error(MessageFormat.format(Cres.get().getString('cmdTimeout'), mon.getCommand().toString()));
+      if (Log.COMMANDS.isDebugEnabled()) throw new Error(MessageFormat.format(Cres.get().getString('cmdTimeout'), mon.getCommand().toString()));
       else throw new Error(MessageFormat.format(Cres.get().getString('cmdTimeout'), mon.getCommand().getId()));
     } else return null;
   }
@@ -96,7 +91,7 @@ export default class AsyncCommandProcessor<
 
   public run(): void {
     try {
-      let command = this.controller.getCommandParser().readCommand();
+      const command = this.controller.getCommandParser().readCommand();
       if (command != null) {
         const cmd = command as Command;
         if (this.controller.getLogger() != null && this.controller.getLogger().isDebugEnabled()) {
@@ -108,7 +103,7 @@ export default class AsyncCommandProcessor<
           this.statistics.updateOnAsyncCommand(cmd);
         } else {
           let found = false;
-          let thisTime = Date.now();
+          const thisTime = Date.now();
           this.sentCommandsQueue.filter(cur => {
             if (cur.getCommand().getId() === cmd.getId()) {
               cur.setReply(command);
@@ -125,15 +120,7 @@ export default class AsyncCommandProcessor<
           });
           if (!found) {
             if (this.controller.getLogger() != null) {
-              if (this.controller.getLogger().isDebugEnabled())
-                this.controller
-                  .getLogger()
-                  .debug(
-                    'Reply cannot be matched to a sent command: ' +
-                      cmd.getId() +
-                      ', commands in progress: ' +
-                      this.sentCommandsQueue.length
-                  );
+              if (this.controller.getLogger().isDebugEnabled()) this.controller.getLogger().debug('Reply cannot be matched to a sent command: ' + cmd.getId() + ', commands in progress: ' + this.sentCommandsQueue.length);
             }
           }
         }

@@ -5,9 +5,9 @@ import FunctionDefinition from './FunctionDefinition';
 export default class FunctionData extends JObject implements Comparable<FunctionData> {
   private definition: FunctionDefinition;
 
-  private executionCount: number = 0;
+  private executionCount = 0;
 
-  private implementationCached: boolean = false;
+  private implementationCached = false;
 
   private implementationMethod: PropertyDescriptor | null = null;
 

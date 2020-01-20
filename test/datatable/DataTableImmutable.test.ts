@@ -4,37 +4,26 @@ import DataTableFactory from '../../src/datatable/DataTableFactory';
 import DataTable from '../../src/datatable/DataTable';
 
 const createDataTable = () => {
-  const format: TableFormat = TableFormat.createWithFormatAndSettings(
-    '<<type><S>><<devices><T><A=<F=<<devicePath><S><A=><D=Device Path>>><R=<aaa>><R=<bbb>>>>',
-    new ClassicEncodingSettings(true)
-  );
+  const format: TableFormat = TableFormat.createWithFormatAndSettings('<<type><S>><<devices><T><A=<F=<<devicePath><S><A=><D=Device Path>>><R=<aaa>><R=<bbb>>>>', new ClassicEncodingSettings(true));
   return DataTableFactory.createWithFirstRecord(format, 3);
 };
 
 describe('TestDataTableImmutable', () => {
   it('testThrowsExceptionOnScalarField', () => {
-    try {
-      const dataTable: DataTable = createDataTable();
+    const dataTable: DataTable = createDataTable();
 
-      dataTable.makeImmutable();
+    dataTable.makeImmutable();
 
-      dataTable.rec().setValue('type', 'new value');
-    } catch (e) {
-      expect('Immutable' === e.message).toBeTruthy();
-    }
+    expect(() => dataTable.rec().setValue('type', 'new value')).toThrow();
   });
 
   it('testThrowsExceptionOnSubtableField', () => {
-    try {
-      const dataTable = createDataTable();
+    const dataTable = createDataTable();
 
-      dataTable.makeImmutable();
+    dataTable.makeImmutable();
 
-      const deicesTable: DataTable = dataTable.rec().getDataTable('devices');
+    const deicesTable: DataTable = dataTable.rec().getDataTable('devices');
 
-      deicesTable.rec().setValue('devicesPath', 'new device path');
-    } catch (e) {
-      expect('Immutable' === e.message).toBeTruthy();
-    }
+    expect(() => deicesTable.rec().setValue('devicesPath', 'new device path')).toThrow('Immutable');
   });
 });

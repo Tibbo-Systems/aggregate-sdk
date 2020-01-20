@@ -1,6 +1,7 @@
 import GenericActionCommand from '../GenericActionCommand';
 import TableFormat from '../../datatable/TableFormat';
 import DataTable from '../../datatable/DataTable';
+import SimpleDataTable from '../../datatable/SimpleDataTable';
 
 export default class EditTemplate extends GenericActionCommand {
   public static readonly EDIT_WIDGET: number = 0;
@@ -46,11 +47,7 @@ export default class EditTemplate extends GenericActionCommand {
     EditTemplate._init = true;
   }
 
-  public constructor(
-    type: string,
-    titleOrFormat: string | null | TableFormat = EditTemplate.CFT_EDIT_TEMPLATE,
-    responseFormat: TableFormat | null = EditTemplate.RFT_EDIT_WIDGET
-  ) {
+  public constructor(type: string, titleOrFormat: string | null | TableFormat = EditTemplate.CFT_EDIT_TEMPLATE, responseFormat: TableFormat | null = EditTemplate.RFT_EDIT_WIDGET) {
     super(type, titleOrFormat, responseFormat);
   }
 
@@ -61,20 +58,17 @@ export default class EditTemplate extends GenericActionCommand {
     return editTemplate;
   }
 
-  public static createEditTemplate(
-    type: string,
-    title: string | null,
-    defaultContext: string,
-    widgetContext: string,
-    widget: string,
-    editMode: number
-  ) {
+  public static createEditTemplate(type: string, title: string | null, defaultContext: string, widgetContext: string, widget: string, editMode: number) {
     const editTemplate = new EditTemplate(type, title, null);
     editTemplate.setDefaultContext(defaultContext);
     editTemplate.setWidgetContext(widgetContext);
     editTemplate.setWidget(widget);
     editTemplate.setEditMode(editMode);
     return editTemplate;
+  }
+
+  protected constructParameters(): DataTable {
+    return SimpleDataTable.createSimpleDataTable(EditTemplate.CFT_EDIT_TEMPLATE, this.defaultContext, this.widgetContext, this.widget, this.editMode);
   }
 
   public getDefaultContext(): string | null {

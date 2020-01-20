@@ -14,13 +14,11 @@ export default class StringUtils extends JObject {
 
     const elStart: string = useVisibleSeparators ? DataTableUtils.ELEMENT_VISIBLE_START : DataTableUtils.ELEMENT_START;
     const elEnd: string = useVisibleSeparators ? DataTableUtils.ELEMENT_VISIBLE_END : DataTableUtils.ELEMENT_END;
-    const elNameValSep: string = useVisibleSeparators
-      ? DataTableUtils.ELEMENT_VISIBLE_NAME_VALUE_SEPARATOR
-      : DataTableUtils.ELEMENT_NAME_VALUE_SEPARATOR;
+    const elNameValSep: string = useVisibleSeparators ? DataTableUtils.ELEMENT_VISIBLE_NAME_VALUE_SEPARATOR : DataTableUtils.ELEMENT_NAME_VALUE_SEPARATOR;
 
-    let depth: number = 0,
-      startPos: number = -1,
-      nameValSepPos: number = -1;
+    let depth = 0,
+      startPos = -1,
+      nameValSepPos = -1;
 
     for (let i = 0; i < source.length; i++) {
       const c: string = source.charAt(i);
@@ -66,12 +64,7 @@ export default class StringUtils extends JObject {
     }
 
     if (depth >= 1) {
-      throw new Error(
-        'Missing closing element(s): ' +
-          (source.length > 1000
-            ? source.substring(0, 500) + '.....' + source.substring(source.length - 501, source.length - 1)
-            : source)
-      );
+      throw new Error('Missing closing element(s): ' + (source.length > 1000 ? source.substring(0, 500) + '.....' + source.substring(source.length - 501, source.length - 1) : source));
     }
 
     return res;
@@ -87,7 +80,7 @@ export default class StringUtils extends JObject {
     return buf.toString();
   }
 
-  static split(str: string, ch: string, limit: number = -1): Array<string> {
+  static split(str: string, ch: string, limit = -1): Array<string> {
     const res = new Array<string>();
 
     let index = 0;
@@ -124,18 +117,13 @@ export default class StringUtils extends JObject {
     return res;
   }
 
-  public static print(
-    col: Array<any> | null,
-    separator: string = 'null',
-    escaper?: string,
-    skipNullElements?: boolean
-  ): string {
+  public static print(col: Array<any> | null, separator = 'null', escaper?: string, skipNullElements?: boolean): string {
     if (col == null) {
       return 'null';
     }
 
     const res: StringBuilder = new StringBuilder();
-    let i: number = 0;
+    let i = 0;
     let elem: any;
 
     for (elem in col) {

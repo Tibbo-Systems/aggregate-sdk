@@ -2,34 +2,26 @@ import DashboardProperties from '../../util/DashboardProperties';
 import FieldFormatFactory from '../../datatable/FieldFormatFactory';
 import GenericActionCommand from '../GenericActionCommand';
 import TableFormat from '../../datatable/TableFormat';
-import ActionUtils from '../ActionUtils';
 import DataTable from '../../datatable/DataTable';
 import SimpleDataTable from '../../datatable/SimpleDataTable';
+import ActionUtilsConstants from '../ActionUtilsConstants';
 
 export default class CloseDashboard extends GenericActionCommand {
-  public static CF_DASHBOARD: string = 'dashboard';
+  public static CF_DASHBOARD = 'dashboard';
 
-  public static CF_TARGET_ELEMENT: string = 'targetElement';
+  public static CF_TARGET_ELEMENT = 'targetElement';
 
-  public static CF_CLOSE_ALL: string = 'closeAll';
+  public static CF_CLOSE_ALL = 'closeAll';
 
-  public static CF_DEEP_SEARCH: string = 'deepSearch';
+  public static CF_DEEP_SEARCH = 'deepSearch';
 
   public static CFT_CLOSE_DASHBOARD: TableFormat = new TableFormat(1, 1);
 
   static __static_initializer_0() {
-    CloseDashboard.CFT_CLOSE_DASHBOARD.addField(
-      FieldFormatFactory.create('<' + CloseDashboard.CF_DASHBOARD + '><T><F=N>')
-    );
-    CloseDashboard.CFT_CLOSE_DASHBOARD.addField(
-      FieldFormatFactory.create('<' + CloseDashboard.CF_TARGET_ELEMENT + '><S><F=N>')
-    );
-    CloseDashboard.CFT_CLOSE_DASHBOARD.addField(
-      FieldFormatFactory.create('<' + CloseDashboard.CF_CLOSE_ALL + '><B><A=0>')
-    );
-    CloseDashboard.CFT_CLOSE_DASHBOARD.addField(
-      FieldFormatFactory.create('<' + CloseDashboard.CF_DEEP_SEARCH + '><B><A=0>')
-    );
+    CloseDashboard.CFT_CLOSE_DASHBOARD.addField(FieldFormatFactory.create('<' + CloseDashboard.CF_DASHBOARD + '><T><F=N>'));
+    CloseDashboard.CFT_CLOSE_DASHBOARD.addField(FieldFormatFactory.create('<' + CloseDashboard.CF_TARGET_ELEMENT + '><S><F=N>'));
+    CloseDashboard.CFT_CLOSE_DASHBOARD.addField(FieldFormatFactory.create('<' + CloseDashboard.CF_CLOSE_ALL + '><B><A=0>'));
+    CloseDashboard.CFT_CLOSE_DASHBOARD.addField(FieldFormatFactory.create('<' + CloseDashboard.CF_DEEP_SEARCH + '><B><A=0>'));
   }
 
   private static _init = false;
@@ -45,12 +37,12 @@ export default class CloseDashboard extends GenericActionCommand {
 
   private targetElement: string | null = null;
 
-  private closeAll: boolean = false;
+  private closeAll = false;
 
-  private deepSearch: boolean = false;
+  private deepSearch = false;
 
   public constructor() {
-    super(ActionUtils.CMD_CLOSE_DASHBOARD, CloseDashboard.CFT_CLOSE_DASHBOARD, null);
+    super(ActionUtilsConstants.CMD_CLOSE_DASHBOARD, CloseDashboard.CFT_CLOSE_DASHBOARD, null);
   }
 
   public static createCloseDashboardWithDataTable(title: string, parameters: DataTable) {
@@ -92,14 +84,8 @@ export default class CloseDashboard extends GenericActionCommand {
     this.deepSearch = deepSearch;
   }
 
-  protected constructParameters(): DataTable | null {
-    return SimpleDataTable.createSimpleDataTable(
-      CloseDashboard.CFT_CLOSE_DASHBOARD,
-      this.dashboard != null ? this.dashboard.toDataTable() : null,
-      this.targetElement,
-      this.closeAll,
-      this.deepSearch
-    );
+  protected constructParameters(): DataTable {
+    return SimpleDataTable.createSimpleDataTable(CloseDashboard.CFT_CLOSE_DASHBOARD, this.dashboard != null ? this.dashboard.toDataTable() : null, this.targetElement, this.closeAll, this.deepSearch);
   }
 }
 

@@ -25,37 +25,19 @@ export default class TransferEncodingHelper extends JObject {
   private static initialize() {
     if (TransferEncodingHelper.init) return;
     TransferEncodingHelper.DIRECT.set(TransferEncodingHelper.ESCAPE_CHAR, TransferEncodingHelper.ESCAPE_CHAR);
-    TransferEncodingHelper.DIRECT.set(
-      AggreGateCommand.CLIENT_COMMAND_SEPARATOR.charAt(0),
-      TransferEncodingHelper.SEPARATOR_CHAR
-    );
+    TransferEncodingHelper.DIRECT.set(AggreGateCommand.CLIENT_COMMAND_SEPARATOR.charAt(0), TransferEncodingHelper.SEPARATOR_CHAR);
     TransferEncodingHelper.DIRECT.set(DataTableUtils.ELEMENT_START, DataTableUtils.ELEMENT_VISIBLE_START);
     TransferEncodingHelper.DIRECT.set(DataTableUtils.ELEMENT_END, DataTableUtils.ELEMENT_VISIBLE_END);
-    TransferEncodingHelper.DIRECT.set(
-      DataTableUtils.ELEMENT_NAME_VALUE_SEPARATOR,
-      DataTableUtils.ELEMENT_VISIBLE_NAME_VALUE_SEPARATOR
-    );
-    TransferEncodingHelper.DIRECT.set(
-      String.fromCharCode(AggreGateCommand.START_CHAR),
-      TransferEncodingHelper.START_CHAR
-    );
+    TransferEncodingHelper.DIRECT.set(DataTableUtils.ELEMENT_NAME_VALUE_SEPARATOR, DataTableUtils.ELEMENT_VISIBLE_NAME_VALUE_SEPARATOR);
+    TransferEncodingHelper.DIRECT.set(String.fromCharCode(AggreGateCommand.START_CHAR), TransferEncodingHelper.START_CHAR);
     TransferEncodingHelper.DIRECT.set(String.fromCharCode(AggreGateCommand.END_CHAR), TransferEncodingHelper.END_CHAR);
 
     TransferEncodingHelper.REVERSE.set(TransferEncodingHelper.ESCAPE_CHAR, TransferEncodingHelper.ESCAPE_CHAR);
-    TransferEncodingHelper.REVERSE.set(
-      TransferEncodingHelper.SEPARATOR_CHAR,
-      AggreGateCommand.CLIENT_COMMAND_SEPARATOR.charAt(0)
-    );
+    TransferEncodingHelper.REVERSE.set(TransferEncodingHelper.SEPARATOR_CHAR, AggreGateCommand.CLIENT_COMMAND_SEPARATOR.charAt(0));
     TransferEncodingHelper.REVERSE.set(DataTableUtils.ELEMENT_VISIBLE_START, DataTableUtils.ELEMENT_START);
     TransferEncodingHelper.REVERSE.set(DataTableUtils.ELEMENT_VISIBLE_END, DataTableUtils.ELEMENT_END);
-    TransferEncodingHelper.REVERSE.set(
-      DataTableUtils.ELEMENT_VISIBLE_NAME_VALUE_SEPARATOR,
-      DataTableUtils.ELEMENT_NAME_VALUE_SEPARATOR
-    );
-    TransferEncodingHelper.REVERSE.set(
-      TransferEncodingHelper.START_CHAR,
-      String.fromCharCode(AggreGateCommand.START_CHAR)
-    );
+    TransferEncodingHelper.REVERSE.set(DataTableUtils.ELEMENT_VISIBLE_NAME_VALUE_SEPARATOR, DataTableUtils.ELEMENT_NAME_VALUE_SEPARATOR);
+    TransferEncodingHelper.REVERSE.set(TransferEncodingHelper.START_CHAR, String.fromCharCode(AggreGateCommand.START_CHAR));
     TransferEncodingHelper.REVERSE.set(TransferEncodingHelper.END_CHAR, String.fromCharCode(AggreGateCommand.END_CHAR));
     TransferEncodingHelper.init = true;
   }
@@ -70,22 +52,12 @@ export default class TransferEncodingHelper extends JObject {
     return TransferEncodingHelper.REVERSE;
   }
 
-  public static encodeFromString(strVal: string | null, encodeLevel: number = 1): string | null {
-    const encodedBuilder = TransferEncodingHelper.encodeWithMappings(
-      strVal,
-      null,
-      TransferEncodingHelper.DIRECT,
-      encodeLevel
-    );
+  public static encodeFromString(strVal: string | null, encodeLevel = 1): string | null {
+    const encodedBuilder = TransferEncodingHelper.encodeWithMappings(strVal, null, TransferEncodingHelper.DIRECT, encodeLevel);
     return encodedBuilder ? encodedBuilder.toString() : null;
   }
 
-  public static encodeWithMappings(
-    source: string | null,
-    result: StringBuilder | null,
-    mapping: Map<string, string>,
-    encodeLevel: number
-  ): StringBuilder | null {
+  public static encodeWithMappings(source: string | null, result: StringBuilder | null, mapping: Map<string, string>, encodeLevel: number): StringBuilder | null {
     if (source == null) {
       //TODO check this
       return null;
@@ -93,7 +65,7 @@ export default class TransferEncodingHelper extends JObject {
 
     if (result == null) result = new StringBuilder();
 
-    for (let c of source) {
+    for (const c of source) {
       this.encodeCharWithMapping(mapping, c, result, encodeLevel);
     }
 
@@ -104,12 +76,7 @@ export default class TransferEncodingHelper extends JObject {
     this.encodeCharWithMapping(TransferEncodingHelper.getDirect(), c, sb, 0);
   }
 
-  public static encodeCharWithMapping(
-    mapping: Map<string, string>,
-    c: string,
-    sb: StringBuilder,
-    encodeLevel: number
-  ): void {
+  public static encodeCharWithMapping(mapping: Map<string, string>, c: string, sb: StringBuilder, encodeLevel: number): void {
     if (mapping.has(c)) {
       let recalcedEncode = 0;
 
@@ -125,11 +92,7 @@ export default class TransferEncodingHelper extends JObject {
     }
   }
 
-  public static encode(
-    strFrom: string | null,
-    strTo: StringBuilder | null = null,
-    encodeLevel: number = 1
-  ): StringBuilder | null {
+  public static encode(strFrom: string | null, strTo: StringBuilder | null = null, encodeLevel = 1): StringBuilder | null {
     return this.encodeWithMappings(strFrom, strTo, TransferEncodingHelper.getDirect(), encodeLevel);
   }
 

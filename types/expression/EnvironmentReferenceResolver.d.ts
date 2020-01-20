@@ -6,6 +6,6 @@ export default class EnvironmentReferenceResolver extends AbstractReferenceResol
     resolveReference(ref: Reference, resolvingEnvironment: EvaluationEnvironment): any;
     set(variable: string, value: any): void;
     get(variable: string): any;
-    setEnvironment(environment: Map<string, any>): void;
+    setEnvironment(environment: Map<string | null, any>): void;
     getEnvironment(): Map<string | null, any>;
 }

@@ -12,7 +12,6 @@ import ActionDefinition from './ActionDefinition';
 import ActionIdGenerator from './ActionIdGenerator';
 import Action from './Action';
 import BatchAction from './BatchAction';
-import Cres from '../Cres';
 import ActionCommand from './ActionCommand';
 import ActionResponse from './ActionResponse';
 import Log from '../Log';
@@ -48,7 +47,7 @@ export default class ActionManager extends JObject {
   public initActions(entries: Array<BatchEntry>, batchActionContext: ActionContext): ActionIdentifier {
     const requestCache: RequestCache = new RequestCache();
     const batchContext: BatchContext = new BatchContext();
-    for (let entry of entries) {
+    for (const entry of entries) {
       if (entry == null) {
         throw new Error('Entries list contains nulls');
       }
@@ -71,11 +70,7 @@ export default class ActionManager extends JObject {
     return this.registerAction(batchActionContext, batchAction, new ActionExecutionMode(ActionExecutionMode.BATCH));
   }
 
-  public initAction(
-    actionContext: ActionContext,
-    initialParameters: InitialRequest,
-    mode: ActionExecutionMode
-  ): ActionIdentifier {
+  public initAction(actionContext: ActionContext, initialParameters: InitialRequest, mode: ActionExecutionMode): ActionIdentifier {
     const actionDefinition = actionContext.getActionDefinition();
     const action = this.instantiateAction(actionDefinition);
     actionContext.setActionState(ActionState.CREATED);
@@ -85,9 +80,7 @@ export default class ActionManager extends JObject {
     return this.registerAction(actionContext, action, mode);
   }
 
-  protected instantiateAction(
-    actionDefinition: ActionDefinition | null
-  ): Action<InitialRequest, ActionCommand, ActionResponse> {
+  protected instantiateAction(actionDefinition: ActionDefinition | null): Action<InitialRequest, ActionCommand, ActionResponse> {
     if (!actionDefinition) throw new Error();
     return actionDefinition.instantiate();
   }
@@ -164,7 +157,7 @@ export default class ActionManager extends JObject {
   }
 
   public destroyAll(): void {
-    for (let actionId of this.actions.keys()) {
+    for (const actionId of this.actions.keys()) {
       this.destroyAction(actionId);
     }
   }
@@ -190,11 +183,7 @@ export default class ActionManager extends JObject {
     return this.actionDirectory;
   }
 
-  protected registerAction(
-    actionContext: ActionContext,
-    action: Action<InitialRequest, ActionCommand, ActionResponse>,
-    mode: ActionExecutionMode
-  ): ActionIdentifier {
+  protected registerAction(actionContext: ActionContext, action: Action<InitialRequest, ActionCommand, ActionResponse>, mode: ActionExecutionMode): ActionIdentifier {
     const actionId: ActionIdentifier = this.actionIdGenerator.generate(action);
 
     actionContext.setActionExecutionMode(mode);

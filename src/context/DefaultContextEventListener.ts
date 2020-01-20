@@ -14,18 +14,12 @@ export default abstract class DefaultContextEventListener extends JObject implem
 
   private listenerCode: number | null;
   private filter: Expression | null;
-  private acceptEventsWithoutListenerCode: boolean = false;
+  private acceptEventsWithoutListenerCode = false;
 
   private evaluator: Evaluator | null = null;
   private fingerprint: string | null;
 
-  constructor(
-    callerController: CallerController | null = null,
-    contextManager: ContextManager<any> | null = null,
-    listenerCode: number | null = null,
-    filter: Expression | null = null,
-    fingerprint: string | null = null
-  ) {
+  constructor(callerController: CallerController | null = null, contextManager: ContextManager<any> | null = null, listenerCode: number | null = null, filter: Expression | null = null, fingerprint: string | null = null) {
     super();
     this.callerController = callerController;
     this.contextManager = contextManager;
@@ -97,7 +91,7 @@ export default abstract class DefaultContextEventListener extends JObject implem
 
   private prepareEvaluator(ev: Event): void {
     const evaluator = this.evaluator as Evaluator;
-    let resolver: EventEnvironmentResolver = new EventEnvironmentResolver(evaluator.getEnvironmentResolver(), ev);
+    const resolver: EventEnvironmentResolver = new EventEnvironmentResolver(evaluator.getEnvironmentResolver(), ev);
 
     evaluator.setResolver(Reference.SCHEMA_ENVIRONMENT, resolver);
     evaluator.getDefaultResolver().setDefaultTable(ev.getData());

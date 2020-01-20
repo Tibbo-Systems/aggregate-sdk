@@ -24,11 +24,12 @@ import ShowHtmlSnippet from './command/ShowHtmlSnippet';
 import ShowSystemTree from './command/ShowSystemTree';
 import Browse from './command/Browse';
 import EditGridDashboard from './command/EditGridDashboard';
+import ActionUtilsConstants from './ActionUtilsConstants';
 
 export default class ActionCommandRegistry {
   private static COMMANDS: Map<string, GenericActionCommand> = new Map<string, GenericActionCommand>();
 
-  static static_initializer_0() {
+  static _static_initializer_0() {
     ActionCommandRegistry.register(new ActivateDashboard());
     ActionCommandRegistry.register(new Browse());
     ActionCommandRegistry.register(Confirm.createDefault());
@@ -37,11 +38,11 @@ export default class ActionCommandRegistry {
     ActionCommandRegistry.register(EditProperties.createDefault());
     ActionCommandRegistry.register(EditReport.createDefault());
     ActionCommandRegistry.register(EditText.createDefault());
-    ActionCommandRegistry.register(new EditTemplate(ActionUtils.CMD_EDIT_WIDGET));
+    ActionCommandRegistry.register(new EditTemplate(ActionUtilsConstants.CMD_EDIT_WIDGET));
     ActionCommandRegistry.register(new LaunchWidget());
-    ActionCommandRegistry.register(new EditTemplate(ActionUtils.CMD_EDIT_PROCESS_CONTROL_PROGRAM));
+    ActionCommandRegistry.register(new EditTemplate(ActionUtilsConstants.CMD_EDIT_PROCESS_CONTROL_PROGRAM));
     ActionCommandRegistry.register(new LaunchProcessControlProgram());
-    ActionCommandRegistry.register(new EditTemplate(ActionUtils.CMD_EDIT_WORKFLOW));
+    ActionCommandRegistry.register(new EditTemplate(ActionUtilsConstants.CMD_EDIT_WORKFLOW));
     ActionCommandRegistry.register(new SelectEntities());
     ActionCommandRegistry.register(new ShowDiff());
     ActionCommandRegistry.register(new ShowError());
@@ -64,3 +65,4 @@ export default class ActionCommandRegistry {
     ActionCommandRegistry.COMMANDS.set(command?.getType(), command);
   }
 }
+ActionCommandRegistry._static_initializer_0();

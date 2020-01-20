@@ -1,10 +1,8 @@
 import BatchEntry from './BatchEntry';
 
 export default class BatchContext {
-  private entries: Array<BatchEntry> = new Array();
+  private entries: Array<BatchEntry> = [];
   private currentEntry: BatchEntry | null = null;
-
-  public constructor() {}
 
   addBatchEntry(batchEntry: BatchEntry): void {
     this.entries.push(batchEntry);

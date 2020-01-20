@@ -2,11 +2,11 @@ import TableFormat from '../../src/datatable/TableFormat';
 import ClassicEncodingSettings from '../../src/datatable/encoding/ClassicEncodingSettings';
 import FormatCache from '../../src/datatable/encoding/FormatCache';
 
-const format1: string = '<<value><I><F=><A=0>><M=1><X=1>';
-const format2: string = '<<value><I><F=><A=0><D=>><M=1><X=1>';
+const format1 = '<<value><I><F=><A=0>><M=1><X=1>';
+const format2 = '<<value><I><F=><A=0><D=>><M=1><X=1>';
 
 describe('TestFormatCache', () => {
-  it('testServerFormatCache', done => {
+  it('testServerFormatCache', () => {return new Promise(done => {
     const f1: TableFormat = TableFormat.createWithFormatAndSettings(format1, new ClassicEncodingSettings(true));
 
     const f2: TableFormat = TableFormat.createWithFormatAndSettings(format2, new ClassicEncodingSettings(true));
@@ -42,9 +42,9 @@ describe('TestFormatCache', () => {
     res = fc.getCachedVersion(newf2) as TableFormat;
 
     expect(res == f2).toBeTruthy();
-  });
+  })});
 
-  it('testClientFormatCache', done => {
+  it('testClientFormatCache', () => {return new Promise(done => {
     const f1: TableFormat = TableFormat.createWithFormatAndSettings(format1, new ClassicEncodingSettings(true));
 
     const f2: TableFormat = TableFormat.createWithFormatAndSettings(format2, new ClassicEncodingSettings(true));
@@ -66,8 +66,8 @@ describe('TestFormatCache', () => {
     fc.put(456, f2);
 
     fc.get(456).then(result => {
-      expect(f2 == result);
+      expect(f2 .equals(result)).toBeTruthy();
       done();
     });
-  });
+  })});
 });

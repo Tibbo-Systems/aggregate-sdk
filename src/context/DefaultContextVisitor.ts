@@ -1,7 +1,7 @@
 import Context from './Context';
 
 export default abstract class DefaultContextVisitor {
-  private startContext: boolean = true;
+  private startContext = true;
 
   isConcurrent(): boolean {
     return false;

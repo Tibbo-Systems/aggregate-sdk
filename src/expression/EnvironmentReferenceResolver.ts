@@ -7,24 +7,13 @@ export default class EnvironmentReferenceResolver extends AbstractReferenceResol
   private readonly environment: Map<string | null, any> = new Map<string | null, any>();
 
   public resolveReference(ref: Reference, resolvingEnvironment: EvaluationEnvironment): any {
-    if (
-      Reference.SCHEMA_ENVIRONMENT !== ref.getSchema() ||
-      ref.getServer() != null ||
-      ref.getContext() != null ||
-      ref.getEntity() != null ||
-      ref.getProperty() != null ||
-      ref.getRow() != null
-    ) {
+    if (Reference.SCHEMA_ENVIRONMENT !== ref.getSchema() || ref.getServer() != null || ref.getContext() != null || ref.getEntity() != null || ref.getProperty() != null || ref.getRow() != null) {
       throw new Error('Unexpected reference syntax: ' + ref);
     }
 
     const variable: string | null = ref.getField();
 
-    if (
-      resolvingEnvironment != null &&
-      resolvingEnvironment.getEnvironment() != null &&
-      resolvingEnvironment.getEnvironment().has(variable)
-    ) {
+    if (resolvingEnvironment != null && resolvingEnvironment.getEnvironment() != null && resolvingEnvironment.getEnvironment().has(variable)) {
       return resolvingEnvironment.getEnvironment().get(variable);
     }
 
@@ -47,8 +36,8 @@ export default class EnvironmentReferenceResolver extends AbstractReferenceResol
     return this.environment.get(variable);
   }
 
-  public setEnvironment(environment: Map<string, any>): void {
-    for (let el of environment) {
+  public setEnvironment(environment: Map<string | null, any>): void {
+    for (const el of environment) {
       this.environment.set(...el);
     }
   }

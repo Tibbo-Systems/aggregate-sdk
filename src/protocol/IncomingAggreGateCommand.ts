@@ -97,13 +97,7 @@ export default class IncomingAggreGateCommand extends AggreGateCommand {
 
   public getParameter(parameter: number): string {
     if (parameter > this.getNumberOfParameters()) {
-      throw new Error(
-        'Trying to access parameter #' +
-          parameter +
-          ' of command that has only ' +
-          this.getNumberOfParameters() +
-          ' parameters'
-      );
+      throw new Error('Trying to access parameter #' + parameter + ' of command that has only ' + this.getNumberOfParameters() + ' parameters');
     } else {
       if (this.parameters != null) return this.parameters[parameter];
       else throw new Error('Invalid array');
@@ -176,10 +170,7 @@ export default class IncomingAggreGateCommand extends AggreGateCommand {
     }
 
     const opcode: string = this.getParameter(AggreGateCommand.INDEX_OPERATION_CODE).charAt(0);
-    if (
-      opcode != AggreGateCommand.COMMAND_OPERATION_SET_VAR &&
-      opcode != AggreGateCommand.COMMAND_OPERATION_CALL_FUNCTION
-    ) {
+    if (opcode != AggreGateCommand.COMMAND_OPERATION_SET_VAR && opcode != AggreGateCommand.COMMAND_OPERATION_CALL_FUNCTION) {
       return null;
     }
 
@@ -208,9 +199,7 @@ export default class IncomingAggreGateCommand extends AggreGateCommand {
   }
 
   public getId(): string {
-    return this.getNumberOfParameters() > AggreGateCommand.INDEX_ID
-      ? this.getParameter(AggreGateCommand.INDEX_ID)
-      : IncomingAggreGateCommand.EMPTY_ID;
+    return this.getNumberOfParameters() > AggreGateCommand.INDEX_ID ? this.getParameter(AggreGateCommand.INDEX_ID) : IncomingAggreGateCommand.EMPTY_ID;
   }
 
   public isAsync(): boolean {

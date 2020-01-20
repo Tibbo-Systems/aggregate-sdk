@@ -163,7 +163,7 @@ import CachedVariableValue from './protocol/CachedVariableValue';
 import CompressedCommandWriter from './protocol/CompressedCommandWriter';
 import DefaultCommandWriter from './protocol/DefaultCommandWriter';
 import IncomingAggreGateCommand from './protocol/IncomingAggreGateCommand';
-import Functions from './expression/Functions';
+import Functions from './expression/functions/Functions';
 import OutgoingJsonCommand from './protocol/OutgoingJsonCommand';
 import RemoteContextManager from './protocol/RemoteContextManager';
 import ProtocolVersion from './protocol/ProtocolVersion';
@@ -196,7 +196,6 @@ import UserSettings from './util/UserSettings';
 import Util from './util/Util';
 import WebSocketBlockingChannel from './util/WebSocketBlockingChannel';
 import WindowLocation from './util/WindowLocation';
-import Class from './util/java/Class';
 import Comparable from './util/java/Comparable';
 import JConstants from './util/java/JConstants';
 import Runnable from './util/java/Runnable';
@@ -211,7 +210,6 @@ import ProtocolCommandBuilder from './protocol/ProcotolCommandBuilder';
 import OutgoingAggreGateCommand from './protocol/OutgoingAggregateCommand';
 import JObject from './util/java/JObject';
 import MessageFormat from './util/java/MessageFormat';
-import Reflection from './util/java/Reflection';
 import TableFormat from './datatable/TableFormat';
 import ActivateDashboard from './action/command/ActivateDashboard';
 import Browse from './action/command/Browse';
@@ -272,10 +270,29 @@ import SelectEntities from './action/command/SelectEntities';
 import OpenGridDashboard from './action/command/OpenGridDashboard';
 import EditReport from './action/command/EditReport';
 import GridDashboardActionCommand from './action/command/GridDashboardActionCommand';
-import DumperVisitor from "./expression/DumperVisitor";
-import AbstractEvaluatingVisitor from "./expression/AbstractEvaluatingVisitor";
+import DumperVisitor from './expression/DumperVisitor';
+import AbstractEvaluatingVisitor from './expression/AbstractEvaluatingVisitor';
+import AbstractCommandExecutor from './action/client/AbstractCommandExecutor';
+import AbstractOperation from './action/client/AbstractOperation';
+import ActionCommandExecutor from './action/client/ActionCommandExecutor';
+import ActionExecutor from './action/client/ActionExecutor';
+import ActionWorker from './action/client/ActionWorker';
+import ExecutionHelper from './action/client/ExecutionHelper';
+import InvokeActionOperation from './action/client/InvokeActionOperation';
+import Operation from './action/client/Operation';
+import EntityGroupMember from './action/client/EntityGroupMember';
+import ActionUtilsConstants from './action/ActionUtilsConstants';
 
 export {
+  AbstractCommandExecutor,
+  ActionCommandExecutor,
+  AbstractOperation,
+  ActionExecutor,
+  ActionWorker,
+  ExecutionHelper,
+  InvokeActionOperation,
+  Operation,
+  EntityGroupMember,
   ActivateDashboard,
   Browse,
   CloseDashboard,
@@ -541,15 +558,14 @@ export {
   Util,
   WebSocketBlockingChannel,
   WindowLocation,
-  Class,
   Comparable,
   JConstants,
   JObject,
   MessageFormat,
-  Reflection,
   Runnable,
   StringBuilder,
   LevelAdapter,
   LoggerAdapter,
   StorageHelper,
+  ActionUtilsConstants,
 };

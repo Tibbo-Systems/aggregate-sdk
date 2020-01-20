@@ -42,13 +42,7 @@ export default class LongFieldFormat extends FieldFormat<number> {
   }
 
   public getSuitableEditors(): Array<string> {
-    return new Array<string>(
-      FieldConstants.EDITOR_LIST,
-      FieldConstants.EDITOR_PERIOD,
-      FieldConstants.EDITOR_BAR,
-      FieldConstants.EDITOR_BYTES,
-      FieldConstants.EDITOR_FOREIGN_INSTANCE
-    );
+    return new Array<string>(FieldConstants.EDITOR_LIST, FieldConstants.EDITOR_PERIOD, FieldConstants.EDITOR_BAR, FieldConstants.EDITOR_BYTES, FieldConstants.EDITOR_FOREIGN_INSTANCE);
   }
 
   public isAssignableFrom(value: any): boolean {

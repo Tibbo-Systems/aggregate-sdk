@@ -1,6 +1,7 @@
 import Util from './Util';
 import JObject from './java/JObject';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const cloneDeep = require('lodash.clonedeep');
 
 export default class CloneUtils {

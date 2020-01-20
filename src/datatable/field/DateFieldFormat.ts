@@ -7,8 +7,8 @@ import Data from '../../data/Data';
 
 export default class DateFieldFormat extends FieldFormat<Date> {
   private static DEFAULT_DATE: Date = moment('2000-02-01T12:00:00').toDate();
-  private static DATATABLE_DATE_PATTERN: string = 'YYYY-MM-DD HH:mm:ss.SSS'; // "yyyy-MM-dd HH:mm:ss.SSS"; Watch for the difference between ISO and JAVA
-  private static UTC_TIME_ZONE: string = '+00:00';
+  private static DATATABLE_DATE_PATTERN = 'YYYY-MM-DD HH:mm:ss.SSS'; // "yyyy-MM-dd HH:mm:ss.SSS"; Watch for the difference between ISO and JAVA
+  private static UTC_TIME_ZONE = '+00:00';
 
   constructor(name: string) {
     super(name);
@@ -54,10 +54,7 @@ export default class DateFieldFormat extends FieldFormat<Date> {
   }
 
   public static dateFromString(value: string): Date {
-    return moment(
-      value as string,
-      `${DateFieldFormat.DATATABLE_DATE_PATTERN}${DateFieldFormat.UTC_TIME_ZONE}`
-    ).toDate();
+    return moment(value as string, `${DateFieldFormat.DATATABLE_DATE_PATTERN}${DateFieldFormat.UTC_TIME_ZONE}`).toDate();
   }
 
   public getSuitableEditors(): Array<string> {

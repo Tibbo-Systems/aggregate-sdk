@@ -45,25 +45,14 @@ export default class DataRecord extends JObject implements StringEncodable {
     return dataRecord;
   }
 
-  public static createWithData(
-    tableFormat: TableFormat,
-    dataString: string,
-    settings: ClassicEncodingSettings,
-    validate: boolean,
-    fieldNamesInData: Array<string> | null
-  ): DataRecord {
+  public static createWithData(tableFormat: TableFormat, dataString: string, settings: ClassicEncodingSettings, validate: boolean, fieldNamesInData: Array<string> | null): DataRecord {
     const dataRecord = new DataRecord(tableFormat);
     dataRecord.setData(dataString, settings, validate, fieldNamesInData);
 
     return dataRecord;
   }
 
-  private setData(
-    dataString: string,
-    settings: ClassicEncodingSettings,
-    validate: boolean,
-    fieldNamesInData: Array<string> | null
-  ): void {
+  private setData(dataString: string, settings: ClassicEncodingSettings, validate: boolean, fieldNamesInData: Array<string> | null): void {
     let recs: ElementList | null = null;
     try {
       recs = StringUtils.elements(dataString, settings.isUseVisibleSeparators());
@@ -73,8 +62,8 @@ export default class DataRecord extends JObject implements StringEncodable {
 
     if (recs == null) return;
 
-    let i: number = 0;
-    for (let el of recs) {
+    let i = 0;
+    for (const el of recs) {
       const elementName = el.getName();
       if (elementName !== null) {
         if (Util.equals(elementName, DataRecord.ELEMENT_ID)) {
@@ -90,9 +79,7 @@ export default class DataRecord extends JObject implements StringEncodable {
         if (fieldNamesInData != null && fieldNamesInData.length > i) {
           const fieldName: string = fieldNamesInData[i];
           if (this.getFormat().hasField(fieldName)) {
-            const value: JObject = this.format
-              .getField(fieldName)
-              .valueFromEncodedString(el.getValue(), settings, validate);
+            const value: JObject = this.format.getField(fieldName).valueFromEncodedString(el.getValue(), settings, validate);
             this.setValue(fieldName, value, validate);
           }
         } else if (i < this.format.getFieldCount()) {
@@ -226,9 +213,7 @@ export default class DataRecord extends JObject implements StringEncodable {
     }
 
     if (ff == null) {
-      throw new Error(
-        MessageFormat.format(Cres.get().getString('dtFieldNotFound'), name) + ': ' + this.dataAsString(true, true)
-      );
+      throw new Error(MessageFormat.format(Cres.get().getString('dtFieldNotFound'), name) + ': ' + this.dataAsString(true, true));
     }
 
     if (value == null || ff.isAssignableFrom(value)) {
@@ -240,7 +225,7 @@ export default class DataRecord extends JObject implements StringEncodable {
       } catch (ex) {
         const selectionValues = ff.getSelectionValues();
         if (selectionValues !== null) {
-          for (let sv of selectionValues.keys()) {
+          for (const sv of selectionValues.keys()) {
             const selectionVal = selectionValues.get(sv);
             const svdesc: string | null = selectionVal ? selectionVal.toString() : null;
             if (stringValue === svdesc) {
@@ -248,13 +233,7 @@ export default class DataRecord extends JObject implements StringEncodable {
             }
           }
         }
-        throw new Error(
-          MessageFormat.format(
-            Cres.get().getString('dtIllegalFieldValue'),
-            Util.getObjectDescription(value),
-            ff.toDetailedString()
-          ) + ex.message
-        );
+        throw new Error(MessageFormat.format(Cres.get().getString('dtIllegalFieldValue'), Util.getObjectDescription(value), ff.toDetailedString()) + ex.message);
       }
     }
   }
@@ -266,7 +245,7 @@ export default class DataRecord extends JObject implements StringEncodable {
   /**
    * Sets value of field with specified index to <code>value</code>.
    */
-  public setValue(nameOrIndex: number | string, value: any, validate: boolean = true): DataRecord {
+  public setValue(nameOrIndex: number | string, value: any, validate = true): DataRecord {
     this.ensureMutable();
 
     const recordTable: DataTable | null = this.getTable();
@@ -282,9 +261,7 @@ export default class DataRecord extends JObject implements StringEncodable {
     try {
       value = ff.checkAndConvertValue(null, null, null, value, validate);
     } catch (ex) {
-      throw new Error(
-        MessageFormat.format(Cres.get().getString('dtIllegalFieldValue'), value, ff.toDetailedString()) + ex.message
-      );
+      throw new Error(MessageFormat.format(Cres.get().getString('dtIllegalFieldValue'), value, ff.toDetailedString()) + ex.message);
     }
 
     const oldValue: JObject | null = this.data.get(ff.getName()) ? (this.data.get(ff.getName()) as JObject) : null;
@@ -325,12 +302,12 @@ export default class DataRecord extends JObject implements StringEncodable {
     }
   }
 
-  public dataAsString(showFieldNames: boolean, showHiddenFields: boolean, showPasswords: boolean = true): string {
+  public dataAsString(showFieldNames: boolean, showHiddenFields: boolean, showPasswords = true): string {
     const res: StringBuilder = new StringBuilder();
 
-    let needSeparator: boolean = false;
+    let needSeparator = false;
 
-    for (let ff of this.getFormat()) {
+    for (const ff of this.getFormat()) {
       if (ff.isHidden() && !showHiddenFields) {
         continue;
       }
@@ -352,22 +329,12 @@ export default class DataRecord extends JObject implements StringEncodable {
     return res.toString();
   }
 
-  public valueAsString(
-    name: string,
-    showFieldNames: boolean,
-    showHiddenFields: boolean,
-    showPasswords: boolean
-  ): string {
+  public valueAsString(name: string, showFieldNames: boolean, showHiddenFields: boolean, showPasswords: boolean): string {
     const ff: FieldFormat<any> = this.getFieldFormat(name);
 
     const val = this.getValue(name);
 
-    let value =
-      val != null
-        ? FieldConstants.DATATABLE_FIELD == ff.getType() && !(val as DataTable).isSimple()
-          ? (val as DataTable).dataAsString(showFieldNames, showHiddenFields, showPasswords)
-          : val.toString()
-        : 'NULL';
+    let value = val != null ? (FieldConstants.DATATABLE_FIELD == ff.getType() && !(val as DataTable).isSimple() ? (val as DataTable).dataAsString(showFieldNames, showHiddenFields, showPasswords) : val.toString()) : 'NULL';
 
     if (ff.hasSelectionValues()) {
       const selectionValues = ff.getSelectionValues();
@@ -399,9 +366,7 @@ export default class DataRecord extends JObject implements StringEncodable {
 
   private checkNumberOfDataFieldsSet(value: any): boolean {
     if (this.data.size >= this.format.getFieldCount()) {
-      Log.DATATABLE.warn(
-        "Can't add data to data record since all data fields defined by format are already set: " + value
-      );
+      Log.DATATABLE.warn("Can't add data to data record since all data fields defined by format are already set: " + value);
 
       return false;
     }
@@ -554,12 +519,7 @@ export default class DataRecord extends JObject implements StringEncodable {
     return this.encode(new StringBuilder(), settings, false, 0).toString();
   }
 
-  public encode(
-    sb: StringBuilder,
-    settings: ClassicEncodingSettings,
-    isTransferEncode: boolean,
-    encodeLevel: number
-  ): StringBuilder {
+  public encode(sb: StringBuilder, settings: ClassicEncodingSettings, isTransferEncode: boolean, encodeLevel: number): StringBuilder {
     if (this.getId() != null) {
       new Element(DataRecord.ELEMENT_ID, this.getId()).encode(sb, settings, isTransferEncode, encodeLevel);
     }
@@ -731,9 +691,7 @@ export default class DataRecord extends JObject implements StringEncodable {
         fields.push((ff as FieldFormat<JObject>).getName());
       }
 
-      throw new Error(
-        MessageFormat.format(Cres.get().getString('dtFieldNotFound'), name) + ': ' + StringUtils.print(fields)
-      );
+      throw new Error(MessageFormat.format(Cres.get().getString('dtFieldNotFound'), name) + ': ' + StringUtils.print(fields));
     }
 
     return index;

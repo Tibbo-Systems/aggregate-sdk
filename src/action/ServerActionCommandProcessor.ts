@@ -39,6 +39,7 @@ import ContextManager from '../context/ContextManager';
 import ShowSystemTree from './command/ShowSystemTree';
 import ActivateDashboard from './command/ActivateDashboard';
 import EditGridDashboard from './command/EditGridDashboard';
+import ActionUtilsConstants from './ActionUtilsConstants';
 
 export default class ServerActionCommandProcessor {
   private action: ServerAction | null = null;
@@ -51,18 +52,13 @@ export default class ServerActionCommandProcessor {
     if (input != null && input.getRecordCount() >= 1) {
       if (input.rec().hasField(ActionUtils.FIELD_ACTION_EXECUTION_PARAMETERS)) {
         const executionParameters: DataTable = input.rec().getDataTable(ActionUtils.FIELD_ACTION_EXECUTION_PARAMETERS);
-        if (
-          executionParameters != null &&
-          executionParameters.getRecordCount() > 0 &&
-          executionParameters.getFormat().hasField(name)
-        ) {
+        if (executionParameters != null && executionParameters.getRecordCount() > 0 && executionParameters.getFormat().hasField(name)) {
           return executionParameters.rec().getDataTable(name);
         }
       }
 
       if (input.rec().hasField(name)) {
-        if (input.getFieldFormat(name).getType() == FieldConstants.DATATABLE_FIELD)
-          return input.rec().getDataTable(name);
+        if (input.getFieldFormat(name).getType() == FieldConstants.DATATABLE_FIELD) return input.rec().getDataTable(name);
         return null;
       }
     }
@@ -70,13 +66,7 @@ export default class ServerActionCommandProcessor {
     return null;
   }
 
-  public fetchDnDSourceContexts(
-    title: string,
-    actionDefinition: ActionDefinition,
-    actionParams: ServerActionInput,
-    callerController: CallerController,
-    expandedContext: string | null = null
-  ): Array<ServerContext> {
+  public fetchDnDSourceContexts(title: string, actionDefinition: ActionDefinition, actionParams: ServerActionInput, callerController: CallerController, expandedContext: string | null = null): Array<ServerContext> {
     const result: ServerContext | null = this.getDnDSourceContext(actionParams, callerController);
 
     if (result != null) {
@@ -89,32 +79,18 @@ export default class ServerActionCommandProcessor {
 
     const contextTypes: Array<string> | null = null;
     if (dropSources != null) {
-      const contextTypes = new Array();
-      for (let dropSource of dropSources) {
+      const contextTypes = [];
+      for (const dropSource of dropSources) {
         contextTypes.push(dropSource.toString());
       }
     }
 
-    const refs: Array<Reference> = this.selectEntities(
-      id,
-      title,
-      contextTypes,
-      Contexts.CTX_ROOT,
-      null,
-      expandedContext,
-      true,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false
-    );
+    const refs: Array<Reference> = this.selectEntities(id, title, contextTypes, Contexts.CTX_ROOT, null, expandedContext, true, false, false, false, false, false, false);
 
     if (refs.length > 0) {
-      const res: Array<ServerContext> | null = new Array();
-      const paths: Array<string> = new Array();
-      for (let ref of refs) {
+      const res: Array<ServerContext> | null = [];
+      const paths: Array<string> = [];
+      for (const ref of refs) {
         const re = ref.getContext();
         re && paths.push(re);
         const definingContext: ServerContext | null = this.action && this.action.getDefiningContext();
@@ -130,14 +106,11 @@ export default class ServerActionCommandProcessor {
 
       return res;
     } else {
-      return new Array();
+      return [];
     }
   }
 
-  public getDnDSourceContext(
-    actionParams: ServerActionInput,
-    callerController: CallerController
-  ): ServerContext | null {
+  public getDnDSourceContext(actionParams: ServerActionInput, callerController: CallerController): ServerContext | null {
     if (actionParams.getData().getRecordCount() == 1) {
       let path: string | null = null;
 
@@ -170,30 +143,8 @@ export default class ServerActionCommandProcessor {
     }
   }
 
-  public editDataWithTitle(
-    title: string,
-    data: DataTable,
-    iconId: string | null = null,
-    helpId: string | null = null,
-    help: string | null = null
-  ): DataTable | null {
-    return this.editDataWithToolbar(
-      null,
-      null,
-      false,
-      title,
-      data,
-      false,
-      false,
-      iconId,
-      helpId,
-      help,
-      null,
-      null,
-      null,
-      null,
-      null
-    );
+  public editDataWithTitle(title: string, data: DataTable, iconId: string | null = null, helpId: string | null = null, help: string | null = null): DataTable | null {
+    return this.editDataWithToolbar(null, null, false, title, data, false, false, iconId, helpId, help, null, null, null, null, null);
   }
 
   public editDataWithToolbar(
@@ -202,8 +153,8 @@ export default class ServerActionCommandProcessor {
     group: boolean,
     title: string,
     data: DataTable,
-    useDockableFrame: boolean = false,
-    readonly: boolean = false,
+    useDockableFrame = false,
+    readonly = false,
     iconId: string | null = null,
     helpId: string | null = null,
     help: string | null = null,
@@ -213,30 +164,10 @@ export default class ServerActionCommandProcessor {
     expression: string | null = null,
     period: number | null = null
   ): DataTable | null {
-    const showToolbar: boolean = true;
+    const showToolbar = true;
     const showHeader: boolean | null = null;
 
-    return this.editData(
-      id,
-      merger,
-      group,
-      title,
-      data,
-      useDockableFrame,
-      readonly,
-      iconId,
-      helpId,
-      help,
-      defaultContext,
-      location,
-      dashboard,
-      expression,
-      period,
-      showToolbar,
-      showHeader,
-      null,
-      null
-    );
+    return this.editData(id, merger, group, title, data, useDockableFrame, readonly, iconId, helpId, help, defaultContext, location, dashboard, expression, period, showToolbar, showHeader, null, null);
   }
 
   public editData(
@@ -303,22 +234,8 @@ export default class ServerActionCommandProcessor {
     return edited;
   }
 
-  protected editTemplate(
-    type: string,
-    title: string,
-    defaultContext: string,
-    widgetContext: string,
-    widget: string,
-    editMode: number
-  ): string | null {
-    const cmd: GenericActionCommand = EditTemplate.createEditTemplate(
-      type,
-      title,
-      defaultContext,
-      widgetContext,
-      widget,
-      editMode
-    );
+  protected editTemplate(type: string, title: string, defaultContext: string, widgetContext: string, widget: string, editMode: number): string | null {
+    const cmd: GenericActionCommand = EditTemplate.createEditTemplate(type, title, defaultContext, widgetContext, widget, editMode);
     const resp: GenericActionResponse | null = this.send(cmd);
     const response: DataTable | null = resp?.getParameters() || null;
 
@@ -328,7 +245,7 @@ export default class ServerActionCommandProcessor {
 
     const result: string = response.rec().getString(EditTemplate.RF_RESULT);
 
-    if (!result && !Util.equals(result, ActionUtils.RESPONSE_SAVED)) {
+    if (!result && !Util.equals(result, ActionUtilsConstants.RESPONSE_SAVED)) {
       return null;
     }
 
@@ -336,63 +253,23 @@ export default class ServerActionCommandProcessor {
   }
 
   public editWidget(title: string, defaultContext: string, widgetContext: string, widget: string): string | null {
-    return this.editTemplate(
-      ActionUtils.CMD_EDIT_WIDGET,
-      title,
-      defaultContext,
-      widgetContext,
-      widget,
-      EditTemplate.EDIT_WIDGET
-    );
+    return this.editTemplate(ActionUtilsConstants.CMD_EDIT_WIDGET, title, defaultContext, widgetContext, widget, EditTemplate.EDIT_WIDGET);
   }
 
-  public editProcessControlProgram(
-    title: string,
-    defaultContext: string,
-    widgetContext: string,
-    widget: string,
-    editMode: number
-  ): string | null {
-    return this.editTemplate(
-      ActionUtils.CMD_EDIT_PROCESS_CONTROL_PROGRAM,
-      title,
-      defaultContext,
-      widgetContext,
-      widget,
-      editMode
-    );
+  public editProcessControlProgram(title: string, defaultContext: string, widgetContext: string, widget: string, editMode: number): string | null {
+    return this.editTemplate(ActionUtilsConstants.CMD_EDIT_PROCESS_CONTROL_PROGRAM, title, defaultContext, widgetContext, widget, editMode);
   }
 
   public editWorkflow(title: string, defaultContext: string, widgetContext: string, widget: string): string | null {
-    return this.editTemplate(
-      ActionUtils.CMD_EDIT_WORKFLOW,
-      title,
-      defaultContext,
-      widgetContext,
-      widget,
-      EditTemplate.EDIT_WORKFLOW
-    );
+    return this.editTemplate(ActionUtilsConstants.CMD_EDIT_WORKFLOW, title, defaultContext, widgetContext, widget, EditTemplate.EDIT_WORKFLOW);
   }
 
   public browse(url: string): void {
     this.send(new Browse(url));
   }
 
-  public launchProcessControlProgram(
-    title: string,
-    widgetContext: string,
-    defaultContext: string,
-    encodedWidgetTemplate: string,
-    location: WindowLocation,
-    dp: DashboardProperties,
-    input: DataTable
-  ): GenericActionResponse | null {
-    const cmd: LaunchProcessControlProgram = new LaunchProcessControlProgram(
-      title,
-      widgetContext,
-      defaultContext,
-      encodedWidgetTemplate
-    );
+  public launchProcessControlProgram(title: string, widgetContext: string, defaultContext: string, encodedWidgetTemplate: string, location: WindowLocation, dp: DashboardProperties, input: DataTable): GenericActionResponse | null {
+    const cmd: LaunchProcessControlProgram = new LaunchProcessControlProgram(title, widgetContext, defaultContext, encodedWidgetTemplate);
     cmd.setLocation(location);
     cmd.setDashboard(dp);
     cmd.setInput(input);
@@ -405,21 +282,11 @@ export default class ServerActionCommandProcessor {
     this.send(cmd);
   }
 
-  public showMessage(
-    title: string = Cres.get().getString('info'),
-    message: string,
-    level: number = EventLevel.INFO
-  ): void {
+  public showMessage(title: string = Cres.get().getString('info'), message: string, level: number = EventLevel.INFO): void {
     this.send(new ShowMessage(title, message, level));
   }
 
-  public showReport(
-    title: string,
-    reportData: any,
-    location: WindowLocation,
-    dashboard: DashboardProperties,
-    reportFormat: string
-  ): void {
+  public showReport(title: string, reportData: any, location: WindowLocation, dashboard: DashboardProperties, reportFormat: string): void {
     const cmd: GenericActionCommand = new ShowReport(title, reportData, location, dashboard, reportFormat);
     this.send(cmd);
   }
@@ -440,21 +307,7 @@ export default class ServerActionCommandProcessor {
     dashboard: DashboardProperties
   ): number | null {
     const resp: GenericActionResponse | null = this.send(
-      ShowEventLog.createShowEventLog(
-        title,
-        eventList,
-        showRealtime,
-        showHistory,
-        preloadHistory,
-        showContexts,
-        showNames,
-        showLevels,
-        showAcknowledgements,
-        showEnrichments,
-        customListenerCode,
-        location,
-        dashboard
-      )
+      ShowEventLog.createShowEventLog(title, eventList, showRealtime, showHistory, preloadHistory, showContexts, showNames, showLevels, showAcknowledgements, showEnrichments, customListenerCode, location, dashboard)
     );
 
     if (resp == null || resp.getParameters() == null) {
@@ -489,28 +342,15 @@ export default class ServerActionCommandProcessor {
     showFields: boolean,
     singleSelection: boolean
   ): Array<Reference> {
-    const ac: GenericActionCommand = SelectEntities.createSelectEntities(
-      title,
-      contextTypes,
-      rootContext,
-      defaultContext,
-      expandedContext,
-      showChildren,
-      allowMasks,
-      showVars,
-      showFuncs,
-      showEvents,
-      showFields,
-      singleSelection
-    );
+    const ac: GenericActionCommand = SelectEntities.createSelectEntities(title, contextTypes, rootContext, defaultContext, expandedContext, showChildren, allowMasks, showVars, showFuncs, showEvents, showFields, singleSelection);
     ac.setRequestId(id);
     const resp: GenericActionResponse | null = this.send(ac);
 
-    const res: Array<Reference> = new Array();
+    const res: Array<Reference> = [];
     const rp = resp?.getParameters();
 
     if (rp) {
-      for (let rec of rp) {
+      for (const rec of rp) {
         res.push(new Reference(rec.getString(SelectEntities.RF_REFERENCE)));
       }
     }
@@ -529,7 +369,7 @@ export default class ServerActionCommandProcessor {
 
     const result: string = response.rec().getString(EditText.RF_RESULT);
 
-    if (!Util.equals(result, ActionUtils.RESPONSE_SAVED)) {
+    if (!Util.equals(result, ActionUtilsConstants.RESPONSE_SAVED)) {
       return null;
     }
 
@@ -547,7 +387,7 @@ export default class ServerActionCommandProcessor {
 
     const result: string = response.rec().getString(EditCode.RF_RESULT);
 
-    if (!Util.equals(result, ActionUtils.RESPONSE_SAVED)) {
+    if (!Util.equals(result, ActionUtilsConstants.RESPONSE_SAVED)) {
       return null;
     }
 

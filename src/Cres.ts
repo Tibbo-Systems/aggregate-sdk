@@ -1,11 +1,11 @@
 import i18next from 'i18next';
-
+import resources from './res';
 i18next.init({
   lng: 'en',
   resources: {
     en: {
       translation: {
-        key: 'hello world',
+        ...resources,
       },
     },
   },

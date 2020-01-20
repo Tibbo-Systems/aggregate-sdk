@@ -2,7 +2,7 @@ import JObject from '../util/java/JObject';
 
 export default class SortOrder extends JObject {
   private field: string;
-  private ascending: boolean = false;
+  private ascending = false;
 
   constructor(field: string, ascending: boolean) {
     super();

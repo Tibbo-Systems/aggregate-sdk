@@ -16,8 +16,7 @@ export default class DefaultFormatConverter<T> extends AbstractFormatConverter<T
   convertToBean(value: any, originalValue: any | null): any {
     try {
       const rec: DataRecord = (value as DataTable).rec();
-      if (rec.hasField(AbstractFormatConverter.VF_IS_NULL) && rec.getBoolean(AbstractFormatConverter.VF_IS_NULL))
-        return null;
+      if (rec.hasField(AbstractFormatConverter.VF_IS_NULL) && rec.getBoolean(AbstractFormatConverter.VF_IS_NULL)) return null;
 
       if (originalValue != null) {
         let bean = this.clone(originalValue, false);
@@ -25,9 +24,7 @@ export default class DefaultFormatConverter<T> extends AbstractFormatConverter<T
           bean = this.instantiate(rec);
         }
 
-        DataTableConversion.populateBeanFromRecord(bean, rec, this.getFormat() as TableFormat, true, [
-          AbstractFormatConverter.VF_IS_NULL,
-        ]);
+        DataTableConversion.populateBeanFromRecord(bean, rec, this.getFormat() as TableFormat, true, [AbstractFormatConverter.VF_IS_NULL]);
         return bean;
       } else {
         if (this.constructorArguments.length === 0) {
@@ -56,9 +53,7 @@ export default class DefaultFormatConverter<T> extends AbstractFormatConverter<T
         }
       }
 
-      return DataTableConversion.beanToRecord(value, this.getFormat() as TableFormat, true, false, [
-        AbstractFormatConverter.VF_IS_NULL,
-      ]).wrap();
+      return DataTableConversion.beanToRecord(value, this.getFormat() as TableFormat, true, false, [AbstractFormatConverter.VF_IS_NULL]).wrap();
     } catch (ex) {
       throw new Error(ex);
     }

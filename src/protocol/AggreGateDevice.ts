@@ -9,7 +9,7 @@ export default abstract class AggreGateDevice extends JObject {
 
   private name: string;
   private description: string;
-  private disabled: boolean = false;
+  private disabled = false;
 
   private commandTimeout: number = AggreGateDevice.DEFAULT_COMMAND_TIMEOUT;
 
@@ -66,8 +66,7 @@ export default abstract class AggreGateDevice extends JObject {
   }
 
   public toString(): string {
-    const res: string =
-      this.getDescription() != null && this.getDescription().length > 0 ? this.getDescription() : this.getType();
+    const res: string = this.getDescription() != null && this.getDescription().length > 0 ? this.getDescription() : this.getType();
     return res + ' (' + this.getInfo() + ')';
   }
 

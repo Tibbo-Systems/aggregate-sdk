@@ -1,6 +1,12 @@
 import TableFormat from '../../src/datatable/TableFormat';
 import ClassicEncodingSettings from '../../src/datatable/encoding/ClassicEncodingSettings';
 
+class FormatCreator {
+  public static createFormat(format: string) {
+    return TableFormat.createWithFormatAndSettings(format, new ClassicEncodingSettings(true));
+  }
+}
+
 describe('TestTableFormant', () => {
   it('testTableFormat', () => {
     let rf1 = FormatCreator.createFormat('<<s1><S>> <<s2><S><i1><I>> <<i2><I>>');
@@ -38,8 +44,4 @@ describe('TestTableFormant', () => {
   });
 });
 
-class FormatCreator {
-  public static createFormat(format: string) {
-    return TableFormat.createWithFormatAndSettings(format, new ClassicEncodingSettings(true));
-  }
-}
+

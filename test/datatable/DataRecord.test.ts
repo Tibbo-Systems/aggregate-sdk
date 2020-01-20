@@ -26,12 +26,15 @@ describe('TestDataRecord', () => {
       rec.addString('ok');
       rec.addString('failure');
       expect(false).toBeTruthy();
-    } catch (ex) {}
+    } catch (ex) {//ignored
+    }
 
     try {
       rec.getBoolean('int');
       expect(false).toBeTruthy();
-    } catch (ex1) {}
+    } catch (ex1) {
+      //ignored
+    }
 
     rec.setValue('long', 80);
     expect(rec.getInt('long')).toBe(80);
@@ -118,12 +121,16 @@ describe('TestDataRecord', () => {
     try {
       rec.setValue(0, 5);
       expect(false).toBeTruthy();
-    } catch (ex2) {}
+    } catch (ex2) {
+      //ignored
+    }
 
     try {
       rec.setValue(0, 25);
       expect(false).toBeTruthy();
-    } catch (ex2) {}
+    } catch (ex2) {
+      //ignored
+    }
   });
 
   it('testSelect', () => {

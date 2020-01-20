@@ -6,7 +6,7 @@ export default class ServerActionInput implements InitialRequest {
     private data;
     private remember;
     private requestId;
-    constructor(dataTable: DataTable);
+    constructor(dataTable?: DataTable);
     createWithRequest(request: GenericActionResponse): void;
     getData(): DataTable;
     shouldRemember(): boolean;

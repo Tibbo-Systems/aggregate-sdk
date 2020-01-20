@@ -29,66 +29,36 @@ export default class DashboardProperties extends AggreGateBean {
   public static readonly LAYOUT_SCROLLABLE: number = 1;
   public static readonly LAYOUT_GRID: number = 2;
 
+  private static init = false;
+
   public static FORMAT: TableFormat = new TableFormat(1, 1);
-  static static_initializer_0() {
-    let ff: FieldFormat<any> = FieldFormatFactory.create(
-      '<' + DashboardProperties.FIELD_NAME + '><S><F=N><D=' + Cres.get().getString('name') + '>'
-    );
+  static _static_initializer_0() {
+    if (DashboardProperties.init) return;
+    DashboardProperties.init = true;
+    let ff: FieldFormat<any> = FieldFormatFactory.create('<' + DashboardProperties.FIELD_NAME + '><S><F=N><D=' + Cres.get().getString('name') + '>');
     DashboardProperties.FORMAT.addField(ff);
 
-    ff = FieldFormatFactory.create(
-      '<' + DashboardProperties.FIELD_DESCRIPTION + '><S><F=N><D=' + Cres.get().getString('description') + '>'
-    );
+    ff = FieldFormatFactory.create('<' + DashboardProperties.FIELD_DESCRIPTION + '><S><F=N><D=' + Cres.get().getString('description') + '>');
     ff.addValidator(ValidatorHelper.DESCRIPTION_LENGTH_VALIDATOR);
     ff.addValidator(ValidatorHelper.DESCRIPTION_SYNTAX_VALIDATOR);
     DashboardProperties.FORMAT.addField(ff);
 
-    ff = FieldFormatFactory.create(
-      '<' +
-        DashboardProperties.FIELD_LAYOUT +
-        '><I><A=' +
-        DashboardProperties.LAYOUT_DOCKABLE +
-        '><D=' +
-        Cres.get().getString('layout') +
-        '>'
-    );
+    ff = FieldFormatFactory.create('<' + DashboardProperties.FIELD_LAYOUT + '><I><A=' + DashboardProperties.LAYOUT_DOCKABLE + '><D=' + Cres.get().getString('layout') + '>');
     ff.addSelectionValue(DashboardProperties.LAYOUT_DOCKABLE, Cres.get().getString('dbLayoutDockable'));
     ff.addSelectionValue(DashboardProperties.LAYOUT_SCROLLABLE, Cres.get().getString('dbLayoutScrollable'));
     ff.addSelectionValue(DashboardProperties.LAYOUT_GRID, Cres.get().getString('dbLayoutGrid'));
     DashboardProperties.FORMAT.addField(ff);
 
-    ff = FieldFormatFactory.create(
-      '<' + DashboardProperties.FIELD_COLUMNS + '><I><A=3><D=' + Cres.get().getString('columns') + '>'
-    );
+    ff = FieldFormatFactory.create('<' + DashboardProperties.FIELD_COLUMNS + '><I><A=3><D=' + Cres.get().getString('columns') + '>');
     DashboardProperties.FORMAT.addField(ff);
 
-    DashboardProperties.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' + DashboardProperties.FIELD_CLOSABLE + '><B><A=1><D=' + Cres.get().getString('clDashboardClosable') + '>'
-      )
-    );
+    DashboardProperties.FORMAT.addField(FieldFormatFactory.create('<' + DashboardProperties.FIELD_CLOSABLE + '><B><A=1><D=' + Cres.get().getString('clDashboardClosable') + '>'));
 
-    DashboardProperties.FORMAT.addField(
-      FieldFormatFactory.create(
-        '<' +
-          DashboardProperties.FIELD_CLOSE_DASHBOARD_ON_REOPEN +
-          '><B><A=0><D=' +
-          Cres.get().getString('clCloseDashboardOnReopen') +
-          '>'
-      )
-    );
+    DashboardProperties.FORMAT.addField(FieldFormatFactory.create('<' + DashboardProperties.FIELD_CLOSE_DASHBOARD_ON_REOPEN + '><B><A=0><D=' + Cres.get().getString('clCloseDashboardOnReopen') + '>'));
 
-    DashboardProperties.FORMAT.addField(
-      FieldFormatFactory.create('<' + DashboardProperties.FIELD_CLEANUP + '><B><F=H>')
-    );
+    DashboardProperties.FORMAT.addField(FieldFormatFactory.create('<' + DashboardProperties.FIELD_CLEANUP + '><B><F=H>'));
 
-    DashboardProperties.FORMAT.addField(
-      FieldFormatFactory.createWith(
-        DashboardProperties.FIELD_STORAGE_CONTEXT,
-        FieldConstants.STRING_FIELD,
-        Cres.get().getString('storageContext')
-      ).setNullable(true)
-    );
+    DashboardProperties.FORMAT.addField(FieldFormatFactory.createWith(DashboardProperties.FIELD_STORAGE_CONTEXT, FieldConstants.STRING_FIELD, Cres.get().getString('storageContext')).setNullable(true));
     DashboardProperties.FORMAT.addField(
       FieldFormatFactory.createType(DashboardProperties.FIELD_STORAGE_CLASS, FieldConstants.STRING_FIELD)
         .setNullable(true)
@@ -125,15 +95,7 @@ export default class DashboardProperties extends AggreGateBean {
     );
 
     DashboardProperties.FORMAT.setNamingExpression(
-      '{' +
-        DashboardProperties.FIELD_DESCRIPTION +
-        '} != null ? {' +
-        DashboardProperties.FIELD_DESCRIPTION +
-        '} : ({' +
-        DashboardProperties.FIELD_NAME +
-        '} != null ? {' +
-        DashboardProperties.FIELD_NAME +
-        "} : '')"
+      '{' + DashboardProperties.FIELD_DESCRIPTION + '} != null ? {' + DashboardProperties.FIELD_DESCRIPTION + '} : ({' + DashboardProperties.FIELD_NAME + '} != null ? {' + DashboardProperties.FIELD_NAME + "} : '')"
     );
   }
 
@@ -141,8 +103,8 @@ export default class DashboardProperties extends AggreGateBean {
   private description: string | null = null;
   private layout: number | null = null;
   private columns: number | null = null;
-  private closable: boolean = false;
-  private cleanup: boolean = false;
+  private closable = false;
+  private cleanup = false;
   private storageContext: string | null = null;
   private storageClass: string | null = null;
   private storageSessionId: number | null = null;
@@ -150,7 +112,7 @@ export default class DashboardProperties extends AggreGateBean {
   private dashboardContext: string | null = null;
   private elementId: string | null = null;
   private parentElementId: string | null = null;
-  private closeDashboardOnReopen: boolean = false;
+  private closeDashboardOnReopen = false;
 
   public isCloseDashboardOnReopen(): boolean | null {
     return this.closeDashboardOnReopen;
@@ -220,19 +182,7 @@ export default class DashboardProperties extends AggreGateBean {
   }
 
   public toString(): string | null {
-    return (
-      'Dashboard [name=' +
-      this.name +
-      ', description=' +
-      this.description +
-      ', id=' +
-      this.elementId +
-      ', parentId=' +
-      this.parentElementId +
-      ', layout=' +
-      this.layout +
-      ']'
-    );
+    return 'Dashboard [name=' + this.name + ', description=' + this.description + ', id=' + this.elementId + ', parentId=' + this.parentElementId + ', layout=' + this.layout + ']';
   }
 
   public getStorageContext(): string | null {
@@ -306,3 +256,5 @@ export default class DashboardProperties extends AggreGateBean {
     return dp;
   }
 }
+
+DashboardProperties._static_initializer_0();

@@ -2,7 +2,6 @@ import GenericActionCommand from '../GenericActionCommand';
 import TableFormat from '../../datatable/TableFormat';
 import Cres from '../../Cres';
 import DashboardsHierarchyInfo from '../../util/DashboardsHierarchyInfo';
-import ActionUtils from '../ActionUtils';
 import WindowLocation from '../../util/WindowLocation';
 import DashboardProperties from '../../util/DashboardProperties';
 import ByteBuffer from 'bytebuffer';
@@ -10,6 +9,7 @@ import DataTable from '../../datatable/DataTable';
 import SimpleDataTable from '../../datatable/SimpleDataTable';
 import DataRecord from '../../datatable/DataRecord';
 import Data from '../../data/Data';
+import ActionUtilsConstants from '../ActionUtilsConstants';
 
 export default class ShowReport extends GenericActionCommand {
   public static readonly CF_REPORT_DATA: string = 'reportData';
@@ -46,14 +46,8 @@ export default class ShowReport extends GenericActionCommand {
     ShowReport._init = true;
   }
 
-  public constructor(
-    titleOrFormat: string | TableFormat = ShowReport.CFT_SHOW_REPORT,
-    reportData?: ByteBuffer,
-    location?: WindowLocation,
-    dashboard?: DashboardProperties,
-    reportFormat?: string
-  ) {
-    super(ActionUtils.CMD_SHOW_REPORT, titleOrFormat, null);
+  public constructor(titleOrFormat: string | TableFormat = ShowReport.CFT_SHOW_REPORT, reportData?: ByteBuffer, location?: WindowLocation, dashboard?: DashboardProperties, reportFormat?: string) {
+    super(ActionUtilsConstants.CMD_SHOW_REPORT, titleOrFormat, null);
     if (reportData && location && dashboard && reportFormat) {
       this.reportData = reportData;
       this.location = location;

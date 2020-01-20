@@ -26,7 +26,7 @@ describe('TestAbstractContext', () => {
   });
 
   it('testAddChild', () => {
-    let child1 = new StubContext('child1');
+    const child1 = new StubContext('child1');
     root.addChild(child1);
     expect(root.getChildren().length).toBe(1);
     expect(root.getChildren()[0]).toBe(child1);
@@ -34,9 +34,9 @@ describe('TestAbstractContext', () => {
   });
 
   it('testAddChildWithIndexWhenSortingEnabled', () => {
-    let child1 = new StubContext('child1');
+    const child1 = new StubContext('child1');
     root.addChild(child1);
-    let child2 = new StubContext('child2');
+    const child2 = new StubContext('child2');
     expect(() => {
       root.addChild(child2, 0);
     }).toThrowError('Cannot add child with pre-defined index as children sorting is enabled');
@@ -44,15 +44,15 @@ describe('TestAbstractContext', () => {
 
   it('testAddChildWithIndexWhenSortingDisabled', () => {
     root.setChildrenSortingEnabled(false);
-    let child1 = new StubContext('child1');
+    const child1 = new StubContext('child1');
     root.addChild(child1);
-    let child2 = new StubContext('child2');
+    const child2 = new StubContext('child2');
     root.addChild(child2, 0);
     expect(root.getChildren()[0]).toBe(child2);
   });
 
   it('testDestroyChild', () => {
-    let child1 = new StubContext('child1');
+    const child1 = new StubContext('child1');
     root.addChild(child1);
     root.destroyChild(child1, false);
     expect(root.getChildren().length).toBe(0);
@@ -60,7 +60,7 @@ describe('TestAbstractContext', () => {
   });
 
   it('testDestroy', () => {
-    let child1 = new StubContext('child1');
+    const child1 = new StubContext('child1');
     root.addChild(child1);
     expect(root.isStarted()).toBeTruthy();
     root.destroy(false);
@@ -69,9 +69,9 @@ describe('TestAbstractContext', () => {
   });
 
   it('testMoveAndRename', () => {
-    let child1 = new StubContext('child1');
+    const child1 = new StubContext('child1');
     root.addChild(child1);
-    let child2 = new StubContext('child2');
+    const child2 = new StubContext('child2');
     root.addChild(child2);
     child2.move(root, 'newChild2');
     expect(root.getChildren().length).toBe(2);
@@ -80,9 +80,9 @@ describe('TestAbstractContext', () => {
   });
 
   it('testReoderChildWhenSortingEnabled', () => {
-    let child1 = new StubContext('child1');
+    const child1 = new StubContext('child1');
     root.addChild(child1);
-    let child2 = new StubContext('child2');
+    const child2 = new StubContext('child2');
     root.addChild(child2);
 
     expect(() => {
@@ -92,9 +92,9 @@ describe('TestAbstractContext', () => {
 
   it('testReorderChildWhenSortingDisabled', () => {
     root.setChildrenSortingEnabled(false);
-    let child1 = new StubContext('child1');
+    const child1 = new StubContext('child1');
     root.addChild(child1);
-    let child2 = new StubContext('child2');
+    const child2 = new StubContext('child2');
     root.addChild(child2);
 
     root.reorderChild(child2, 0);
@@ -128,7 +128,7 @@ describe('TestAbstractContext', () => {
   });
 
   it('testGetActionDefinition', () => {
-    let ad = new BasicActionDefinition('action');
+    const ad = new BasicActionDefinition('action');
 
     root.addActionDefinition(ad);
 
@@ -139,7 +139,7 @@ describe('TestAbstractContext', () => {
   });
 
   it('testRemoveActionDefinition', () => {
-    let ad = new BasicActionDefinition('action');
+    const ad = new BasicActionDefinition('action');
     root.addActionDefinition(ad);
     root.removeActionDefinition('action');
     expect(root.getActionDefinition('action')).toBeNull();
@@ -158,45 +158,45 @@ describe('TestAbstractContext', () => {
   });
 
   it('testAddEventDefinition', () => {
-    let ad = new EventDefinition('event', new TableFormat());
+    const ad = new EventDefinition('event', new TableFormat());
     root.addEventDefinition(ad);
     expect(root.getEventDefinition('event')).toBe(ad);
   });
 
   it('testAddAlreadyExistentEventDefinition', () => {
-    let ad = new EventDefinition('test', new TableFormat());
+    const ad = new EventDefinition('test', new TableFormat());
     root.addEventDefinition(ad);
     expect(root.getEventDefinition('test')).toBe(ad);
   });
 
   it('testRemoveEventDefinition', () => {
-    let ad = new EventDefinition('event', new TableFormat());
+    const ad = new EventDefinition('event', new TableFormat());
     root.addEventDefinition(ad);
     root.removeEventDefinition('event');
     expect(root.getEventDefinition('event')).toBeNull();
   });
 
   it('testAddFunctionDefinition', () => {
-    let ad = new FunctionDefinition('testFunction', new TableFormat(), new TableFormat());
+    const ad = new FunctionDefinition('testFunction', new TableFormat(), new TableFormat());
     root.addFunctionDefinition(ad);
     expect(root.getFunctionDefinition('testFunction')).toBe(ad);
   });
 
   it('testAddAlreadyExistentFunctionDefinition', () => {
-    let ad = new FunctionDefinition('function', new TableFormat(), new TableFormat());
+    const ad = new FunctionDefinition('function', new TableFormat(), new TableFormat());
     root.addFunctionDefinition(ad);
     expect(root.getFunctionDefinition('function')).toBe(ad);
   });
 
   it('testRemoveFunctionDefinition', () => {
-    let ad = new FunctionDefinition('testFunction', new TableFormat(), new TableFormat());
+    const ad = new FunctionDefinition('testFunction', new TableFormat(), new TableFormat());
     root.addFunctionDefinition(ad);
     root.removeFunctionDefinition('testFunction');
     expect(root.getFunctionDefinition('testFunction')).toBeNull();
   });
 
   it('testAddVariableDefinition', () => {
-    let ad = new VariableDefinition('variable', new TableFormat(), true, true);
+    const ad = new VariableDefinition('variable', new TableFormat(), true, true);
     root.addVariableDefinition(ad);
     expect(root.getVariableDefinition('variable')).toBe(ad);
   });
@@ -209,7 +209,7 @@ describe('TestAbstractContext', () => {
     expect(root.getVariableDefinition('variable')).toBe(variableDefinition);
   });
 
-  it('testModifyVariableDefinitionFormat', async done => {
+  it('testModifyVariableDefinitionFormat', async() => {
     const varName = 'variable';
 
     const format1 = new TableFormat();
@@ -218,7 +218,7 @@ describe('TestAbstractContext', () => {
     const variableDefinition = new VariableDefinition(varName, format1, true, true);
     root.addVariableDefinition(variableDefinition);
 
-    let record = new DataRecord(format1);
+    const record = new DataRecord(format1);
     record.addString('abc');
     await root.addVariableRecord(varName, root.getContextManager().getCallerController(), record);
 
@@ -252,15 +252,14 @@ describe('TestAbstractContext', () => {
 
     expect((await root.getVariable(varName)).equals(expectedTable1)).toBe(true);
 
-    let variableData3 = root.getVariableData(varName).getValue() as DataTable;
+    const variableData3 = root.getVariableData(varName).getValue() as DataTable;
 
     expect(variableData3.equals(expectedTable1)).toBe(true);
 
-    done();
   });
 
   it('testRemoveVariableDefinition', () => {
-    let ad = new VariableDefinition('variable', new TableFormat(), true, true);
+    const ad = new VariableDefinition('variable', new TableFormat(), true, true);
     root.addVariableDefinition(ad);
     root.removeVariableDefinition('variable');
     expect(root.getVariableDefinition('variable')).toBeNull();
@@ -280,40 +279,31 @@ describe('TestAbstractContext', () => {
     expect(root.hasParent(child1)).toBeFalsy();
   });
 
-  it('testExceptionWhenGetVariableObject', done => {
-    root.getVariableObject('test', null).catch(reason => {
-      expect(reason.message).toBe('Value class not defined for variable: Test (test)');
-      done();
-    });
+  it('testExceptionWhenGetVariableObject', async () => {
+    await expect(root.getVariableObject('test', null)).rejects.toThrow('Value class not defined for variable: Test (test)')
   });
-
-  it('testGetVariableObject', () => {});
-
-  it('testGetVariableObjectWhenContextSetupCompleted', () => {});
-
-  it('testSetVariableField', async done => {
+  
+  it('testSetVariableField', async () => {
     await root.setVariableField(StubContext.V_TEST, StubContext.VF_TEST_INT, 0, 123, null);
     expect((await root.getVariable(StubContext.V_TEST)).rec().getInt(StubContext.VF_TEST_INT)).toBe(123);
-    done();
   });
 
-  it('testExceptionWhenSettingVariableField', done => {
+  it('testExceptionWhenSettingVariableField', () => {return new Promise(done => {
     root.setVariableField(StubContext.V_TEST, StubContext.VF_TEST_INT, 1, 123, null).catch(reason => {
       expect(reason.message).toBe('index is out of range');
       done();
     });
-  });
+  })});
 
-  it('testAddRecordToVariable', async done => {
+  it('testAddRecordToVariable', async () => {
     root.addVariableDefinition(
       new VariableDefinition('testVar', StubContext.VFT_TEST.clone().setMaxRecords(10), true, true)
     );
     await root.addVariableRecord('testVar', null, [123]);
     expect((await root.getVariable('testVar', null)).getRecord(1).getInt(StubContext.VF_TEST_INT)).toBe(123);
-    done();
   });
 
-  it('testRemoveRecordFromVariable', async done => {
+  it('testRemoveRecordFromVariable', async () => {
     root.addVariableDefinition(
       new VariableDefinition('testVar', StubContext.VFT_TEST.clone().setMaxRecords(10), true, true)
     );
@@ -323,7 +313,6 @@ describe('TestAbstractContext', () => {
 
     expect((await root.getVariable('testVar', null)).getRecordCount()).toBe(2);
     expect((await root.getVariable('testVar', null)).getRecord(1).getInt(StubContext.VF_TEST_INT)).toBe(124);
-    done();
   });
 
   it('testVariableStatus', () => {
@@ -355,10 +344,10 @@ describe('TestAbstractContext', () => {
   it('testStatus', () => {
     root.enableStatus();
     root.setStatus(1, 'comment');
-    //@ts-ignore
-    expect(root.getStatus().getStatus()).toBe(1);
-    //@ts-ignore
-    expect(root.getStatus().getComment()).toBe('comment');
+
+    expect(root.getStatus()?.getStatus()).toBe(1);
+
+    expect(root.getStatus()?.getComment()).toBe('comment');
   });
 
   it('testInvalidNames', () => {

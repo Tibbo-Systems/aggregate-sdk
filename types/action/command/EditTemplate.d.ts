@@ -27,6 +27,7 @@ export default class EditTemplate extends GenericActionCommand {
     constructor(type: string, titleOrFormat?: string | null | TableFormat, responseFormat?: TableFormat | null);
     static createEditTemplateWithDataTable(type: string, title: string, parameters: DataTable): EditTemplate;
     static createEditTemplate(type: string, title: string | null, defaultContext: string, widgetContext: string, widget: string, editMode: number): EditTemplate;
+    protected constructParameters(): DataTable;
     getDefaultContext(): string | null;
     setDefaultContext(defaultContext: string): void;
     getWidgetContext(): string | null;

@@ -14,10 +14,10 @@ import AggreGateDevice from '../../protocol/AggreGateDevice';
 import ContextManager from '../../context/ContextManager';
 
 export default class FormatCache extends JObject {
-  private useExternalIds: boolean = false;
+  private useExternalIds = false;
   private name: string | null = null;
 
-  private currentId: number = 0;
+  private currentId = 0;
   // TODO TableFormat not works as a key
   private readonly reverse: Map<TableFormat, number> = new Map<TableFormat, number>();
   private readonly cache: Map<number, TableFormat> = new Map<number, TableFormat>();
@@ -61,7 +61,7 @@ export default class FormatCache extends JObject {
 
   // TODO: if the formats are not equal by reference, then you need to find everything by key and compare them. Not good for performance
   private findIdInReverseMap(format: TableFormat): number | null {
-    for (let entry of this.reverse) {
+    for (const entry of this.reverse) {
       const tf = entry[0];
       const id: number = entry[1] as number;
       if (format.equals(tf)) {
@@ -130,7 +130,7 @@ export default class FormatCache extends JObject {
   }
 
   public getSync(id: number): TableFormat | null {
-    let result: TableFormat | null = this.cache.get(id) ? (this.cache.get(id) as TableFormat) : null;
+    const result: TableFormat | null = this.cache.get(id) ? (this.cache.get(id) as TableFormat) : null;
     return result;
   }
 
@@ -148,27 +148,16 @@ export default class FormatCache extends JObject {
 
           const cm: ContextManager<any> | null = this.controller.getContextManager();
 
-          const rootContext: AbstractContext<any, any> | null =
-            cm != null ? cm.get(Contexts.CTX_ROOT, cm.getCallerController()) : null;
-          const utilitiesContext: AbstractContext<any, any> | null =
-            cm != null ? cm.get(Contexts.CTX_UTILITIES, cm.getCallerController()) : null;
+          const rootContext: AbstractContext<any, any> | null = cm != null ? cm.get(Contexts.CTX_ROOT, cm.getCallerController()) : null;
+          const utilitiesContext: AbstractContext<any, any> | null = cm != null ? cm.get(Contexts.CTX_UTILITIES, cm.getCallerController()) : null;
 
           if (rootContext != null && rootContext.getFunctionDefinition(RootContextConstants.F_GET_FORMAT) != null) {
             output = await rootContext.callFunction(RootContextConstants.F_GET_FORMAT, [id]);
-          } else if (
-            utilitiesContext != null &&
-            utilitiesContext.getFunctionDefinition(RootContextConstants.F_GET_FORMAT) != null
-          ) {
+          } else if (utilitiesContext != null && utilitiesContext.getFunctionDefinition(RootContextConstants.F_GET_FORMAT) != null) {
             output = await utilitiesContext.callFunction(RootContextConstants.F_GET_FORMAT, [id]);
           } else {
             const input: DataTable = DataRecord.createAndFill(CommonServerFormats.FIFT_GET_FORMAT, id).wrap();
-            output = await this.controller.callRemoteFunction(
-              Contexts.CTX_UTILITIES,
-              RootContextConstants.F_GET_FORMAT,
-              CommonServerFormats.FOFT_GET_FORMAT,
-              input,
-              null
-            );
+            output = await this.controller.callRemoteFunction(Contexts.CTX_UTILITIES, RootContextConstants.F_GET_FORMAT, CommonServerFormats.FOFT_GET_FORMAT, input, null);
           }
 
           const formatData: string = output.rec().getString(RootContextConstants.FOF_GET_FORMAT_DATA);

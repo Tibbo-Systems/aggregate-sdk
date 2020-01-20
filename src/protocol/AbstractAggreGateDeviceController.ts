@@ -35,10 +35,7 @@ import ElementList from '../util/ElementList';
 import Event from '../data/Event';
 import LoggerAdapter from '../util/logger/LoggerAdapter';
 
-export default abstract class AbstractAggreGateDeviceController<
-  D extends AggreGateDevice,
-  C extends ContextManager<any>
-> extends AbstractDeviceController<IncomingAggreGateCommand, OutgoingAggreGateCommand>
+export default abstract class AbstractAggreGateDeviceController<D extends AggreGateDevice, C extends ContextManager<any>> extends AbstractDeviceController<IncomingAggreGateCommand, OutgoingAggreGateCommand>
   implements AggreGateDeviceController<IncomingAggreGateCommand, OutgoingAggreGateCommand> {
   public static readonly FLAG_NO_REPLY: string = 'N';
 
@@ -50,13 +47,13 @@ export default abstract class AbstractAggreGateDeviceController<
 
   private readonly userSettings = new UserSettings();
 
-  private avoidSendingFormats: boolean = false;
+  private avoidSendingFormats = false;
 
   private readonly formatCache: FormatCache;
 
   private readonly maxEventQueueLength: number;
 
-  private usesCompression: boolean = false;
+  private usesCompression = false;
 
   protected readonly commandWriter = new CompressedCommandWriter<OutgoingAggreGateCommand>();
 
@@ -66,7 +63,7 @@ export default abstract class AbstractAggreGateDeviceController<
 
   private readonly commandBuilder: ProtocolCommandBuilder;
 
-  constructor(device: D, logger: LoggerAdapter, maxEventQueueLength: number, json: boolean = false) {
+  constructor(device: D, logger: LoggerAdapter, maxEventQueueLength: number, json = false) {
     super(device.getCommandTimeout(), logger);
     this.formatCache = new FormatCache(device.toString(), this);
     this.commandBuilder = new ProtocolCommandBuilder(json);
@@ -108,7 +105,7 @@ export default abstract class AbstractAggreGateDeviceController<
   }
 
   createClassicEncodingSettings(forSending: boolean): ClassicEncodingSettings {
-    let es = new ClassicEncodingSettings(false);
+    const es = new ClassicEncodingSettings(false);
     es.setProtocolVersion(this.protocolVersion);
 
     if (!forSending) {
@@ -136,22 +133,21 @@ export default abstract class AbstractAggreGateDeviceController<
 
     let lastReplyIsOk = false;
 
-    let versions: ProtocolVersion[] = [ProtocolVersion.V2, ProtocolVersion.V3, ProtocolVersion.V4];
+    const versions: ProtocolVersion[] = [ProtocolVersion.V2, ProtocolVersion.V3, ProtocolVersion.V4];
     let ans: IncomingAggreGateCommand | null = null;
 
     // Starting from higher version to lower
     //TODO start from V2, because we support only V2
     for (let i = 0; i < versions.length; i++) {
-      let version: ProtocolVersion = versions[i];
+      const version: ProtocolVersion = versions[i];
       ans = await this.sendCommand(this.commandBuilder.startMessage(version));
-      //@ts-ignore
-      lastReplyIsOk = ans.getReplyCode() === AggreGateCodes.REPLY_CODE_OK;
+      lastReplyIsOk = ans?.getReplyCode() === AggreGateCodes.REPLY_CODE_OK;
 
       if (lastReplyIsOk) break;
     }
     if (!lastReplyIsOk) throw new Error(Cres.get().getString('devUncompatibleVersion'));
 
-    let answer = ans as IncomingAggreGateCommand;
+    const answer = ans as IncomingAggreGateCommand;
     if (answer.hasParameter(AggreGateCommand.INDEX_START_PROTOCOL_VERSION)) {
       const replyVersion = answer.getParameter(AggreGateCommand.INDEX_START_PROTOCOL_VERSION);
 
@@ -170,10 +166,7 @@ export default abstract class AbstractAggreGateDeviceController<
       this.commandWriter.setVersion(this.protocolVersion);
       aggreGateCommandParser.setVersion(this.protocolVersion);
 
-      if (
-        answer.hasParameter(AggreGateCommand.INDEX_START_COMPRESSION) &&
-        answer.getParameter(AggreGateCommand.INDEX_START_COMPRESSION) == AggreGateCommand.MESSAGE_CODE_COMPRESSION
-      ) {
+      if (answer.hasParameter(AggreGateCommand.INDEX_START_COMPRESSION) && answer.getParameter(AggreGateCommand.INDEX_START_COMPRESSION) == AggreGateCommand.MESSAGE_CODE_COMPRESSION) {
         this.setUsesCompression(true);
       }
     }
@@ -197,55 +190,30 @@ export default abstract class AbstractAggreGateDeviceController<
 
   protected getProxyContexts(path: string): Array<ProxyContext<any, any>> {
     // Distributed: internal distributed architecture call
-    //@ts-ignore
-    let con = this.getContextManager().get(path, null) as ProxyContext<any, any>;
+    const con = this.getContextManager().get(path, null) as ProxyContext<any, any>;
     return con != null ? new Array(con) : [];
   }
 
   async sendCommandAndCheckReplyCode(cmd: OutgoingAggreGateCommand): Promise<IncomingAggreGateCommand | null> {
-    let ans = await this.sendCommand(cmd);
+    const ans = await this.sendCommand(cmd);
 
     if (ans == null) return null;
 
     if (ans.getReplyCode() === AggreGateCodes.REPLY_CODE_DENIED) {
-      const message =
-        ans.getNumberOfParameters() > AggreGateCommand.INDEX_REPLY_MESSAGE
-          ? ': ' + TransferEncodingHelper.decode(ans.getParameter(AggreGateCommand.INDEX_REPLY_MESSAGE))
-          : '';
+      const message = ans.getNumberOfParameters() > AggreGateCommand.INDEX_REPLY_MESSAGE ? ': ' + TransferEncodingHelper.decode(ans.getParameter(AggreGateCommand.INDEX_REPLY_MESSAGE)) : '';
       throw new Error(Cres.get().getString('devAccessDeniedReply') + message);
     }
 
     if (ans.getReplyCode() === AggreGateCodes.REPLY_CODE_PASSWORD_EXPIRED) {
-      const message =
-        ans.getNumberOfParameters() > AggreGateCommand.INDEX_REPLY_MESSAGE
-          ? ': ' + TransferEncodingHelper.decode(ans.getParameter(AggreGateCommand.INDEX_REPLY_MESSAGE))
-          : '';
-      const details =
-        ans.getNumberOfParameters() > AggreGateCommand.INDEX_REPLY_DETAILS
-          ? TransferEncodingHelper.decode(ans.getParameter(AggreGateCommand.INDEX_REPLY_DETAILS))
-          : null;
-      throw new Error(
-        Cres.get().getString('devServerReturnedError') + message + details + AggreGateCodes.REPLY_CODE_PASSWORD_EXPIRED
-      );
+      const message = ans.getNumberOfParameters() > AggreGateCommand.INDEX_REPLY_MESSAGE ? ': ' + TransferEncodingHelper.decode(ans.getParameter(AggreGateCommand.INDEX_REPLY_MESSAGE)) : '';
+      const details = ans.getNumberOfParameters() > AggreGateCommand.INDEX_REPLY_DETAILS ? TransferEncodingHelper.decode(ans.getParameter(AggreGateCommand.INDEX_REPLY_DETAILS)) : null;
+      throw new Error(Cres.get().getString('devServerReturnedError') + message + details + AggreGateCodes.REPLY_CODE_PASSWORD_EXPIRED);
     }
 
     if (ans.getReplyCode() !== AggreGateCodes.REPLY_CODE_OK) {
-      const message =
-        ans.getNumberOfParameters() > AggreGateCommand.INDEX_REPLY_MESSAGE
-          ? ': ' + TransferEncodingHelper.decode(ans.getParameter(AggreGateCommand.INDEX_REPLY_MESSAGE))
-          : '';
-      const details =
-        ans.getNumberOfParameters() > AggreGateCommand.INDEX_REPLY_DETAILS
-          ? TransferEncodingHelper.decode(ans.getParameter(AggreGateCommand.INDEX_REPLY_DETAILS))
-          : null;
-      throw new Error(
-        Cres.get().getString('devServerReturnedError') +
-          message +
-          " (error code: '" +
-          ans.getReplyCode() +
-          "')" +
-          details
-      );
+      const message = ans.getNumberOfParameters() > AggreGateCommand.INDEX_REPLY_MESSAGE ? ': ' + TransferEncodingHelper.decode(ans.getParameter(AggreGateCommand.INDEX_REPLY_MESSAGE)) : '';
+      const details = ans.getNumberOfParameters() > AggreGateCommand.INDEX_REPLY_DETAILS ? TransferEncodingHelper.decode(ans.getParameter(AggreGateCommand.INDEX_REPLY_DETAILS)) : null;
+      throw new Error(Cres.get().getString('devServerReturnedError') + message + " (error code: '" + ans.getReplyCode() + "')" + details);
     }
 
     return ans;
@@ -263,7 +231,7 @@ export default abstract class AbstractAggreGateDeviceController<
 
   private processEvent(cmd: IncomingAggreGateCommand): void {
     const _this = this;
-    let task = new (class extends Runnable {
+    const task = new (class extends Runnable {
       run(): void {
         if (!_this.isConnected()) {
           return;
@@ -273,32 +241,30 @@ export default abstract class AbstractAggreGateDeviceController<
           const contextPath = cmd.getParameter(AggreGateCommand.INDEX_EVENT_CONTEXT);
           const eventName = cmd.getParameter(AggreGateCommand.INDEX_EVENT_NAME);
 
-          let level = Number.parseInt(cmd.getParameter(AggreGateCommand.INDEX_EVENT_LEVEL));
+          const level = Number.parseInt(cmd.getParameter(AggreGateCommand.INDEX_EVENT_LEVEL));
 
           const idstr = cmd.getParameter(AggreGateCommand.INDEX_EVENT_ID);
-          let id = idstr.length > 0 ? Number.parseInt(idstr) : null;
+          const id = idstr.length > 0 ? Number.parseInt(idstr) : null;
 
           const listenerstr = cmd.getParameter(AggreGateCommand.INDEX_EVENT_LISTENER);
           const listener = listenerstr.length > 0 ? Number.parseInt(listenerstr) : null;
 
-          let contexts = _this.getProxyContexts(contextPath);
+          const contexts = _this.getProxyContexts(contextPath);
 
           if (contexts.length == 0) {
             Log.CONTEXT_EVENTS.info("Error firing event '" + eventName + "': context '" + contextPath + "' not found");
             return;
           }
 
-          for (let con of contexts) {
-            let ed = con.getEventDefinition(eventName);
+          for (const con of contexts) {
+            const ed = con.getEventDefinition(eventName);
 
             if (ed == null) {
-              Log.CONTEXT_EVENTS.warn(
-                "Error firing event: event '" + eventName + "' not available in context '" + contextPath + "'"
-              );
+              Log.CONTEXT_EVENTS.warn("Error firing event: event '" + eventName + "' not available in context '" + contextPath + "'");
               continue;
             }
 
-            let data = _this.decodeRemoteDataTable(ed.getFormat(), cmd.getEncodedDataTableFromEventMessage());
+            const data = _this.decodeRemoteDataTable(ed.getFormat(), cmd.getEncodedDataTableFromEventMessage());
 
             let timestamp: Date | null = null;
             if (cmd.hasParameter(AggreGateCommand.INDEX_EVENT_TIMESTAMP)) {
@@ -306,16 +272,7 @@ export default abstract class AbstractAggreGateDeviceController<
               timestamp = timestampstr.length > 0 ? new Date(Number.parseInt(timestampstr)) : null;
             }
 
-            const event = con.fireEvent(
-              ed.getName(),
-              data,
-              null,
-              level,
-              id,
-              timestamp,
-              listener,
-              FireEventRequestController.valueOf(false)
-            );
+            const event = con.fireEvent(ed.getName(), data, null, level, id, timestamp, listener, FireEventRequestController.valueOf(false));
 
             _this.confirmEvent(con, ed, event);
           }
@@ -333,45 +290,27 @@ export default abstract class AbstractAggreGateDeviceController<
       resolve();
     }).catch(reason => {
       this.rejectedEvents++;
-      this.getLogger().warn(
-        'Error processing asynchronous incoming command since the queue is full. Corresponding event rejected. Total rejected events: ' +
-          this.rejectedEvents +
-          '. Command: ' +
-          cmd +
-          'reason' +
-          reason
-      );
+      this.getLogger().warn('Error processing asynchronous incoming command since the queue is full. Corresponding event rejected. Total rejected events: ' + this.rejectedEvents + '. Command: ' + cmd + 'reason' + reason);
     });
   }
 
   protected confirmEvent(con: Context<any, any>, def: EventDefinition, event: Event | null): void {}
 
   toString(): string {
-    //@ts-ignore
-    return this.getDevice().toString();
+    return this.getDevice()?.toString() ?? 'device';
   }
 
-  public async callRemoteFunction(
-    context: string,
-    name: string,
-    outputFormat: TableFormat | null,
-    parameters: DataTable,
-    queueName: string | null,
-    isReplyRequired: boolean = true
-  ): Promise<DataTable> {
-    let encodedParameters = parameters.encode(new StringBuilder(), this.createClassicEncodingSettings(true), false, 0);
-    let isShallowDataReleased = this.releaseShallowData(parameters);
-    let flags = !isReplyRequired ? AbstractAggreGateDeviceController.FLAG_NO_REPLY : null;
-    //@ts-ignore
-    let cmd = this.commandBuilder.callFunctionOperation(context, name, encodedParameters.toString(), queueName, flags);
+  public async callRemoteFunction(context: string, name: string, outputFormat: TableFormat | null, parameters: DataTable, queueName: string | null, isReplyRequired = true): Promise<DataTable> {
+    const encodedParameters = parameters.encode(new StringBuilder(), this.createClassicEncodingSettings(true), false, 0);
+    const isShallowDataReleased = this.releaseShallowData(parameters);
+    const flags = !isReplyRequired ? AbstractAggreGateDeviceController.FLAG_NO_REPLY : null;
+    const cmd = this.commandBuilder.callFunctionOperation(context, name, encodedParameters.toString(), queueName, flags);
 
     cmd.setAsync(!isReplyRequired);
 
     if (isShallowDataReleased) cmd.setTimeout(ProxyContext.DURABLE_OPERATIONS_TIMEOUT);
-    let ans = await this.sendCommandAndCheckReplyCode(cmd);
-    return ans != null
-      ? this.decodeRemoteDataTable(outputFormat, ans.getEncodedDataTableFromReply())
-      : new SimpleDataTable(outputFormat);
+    const ans = await this.sendCommandAndCheckReplyCode(cmd);
+    return ans != null ? this.decodeRemoteDataTable(outputFormat, ans.getEncodedDataTableFromReply()) : new SimpleDataTable(outputFormat);
   }
 
   private releaseShallowData(parameters: DataTable): boolean {
@@ -380,15 +319,11 @@ export default abstract class AbstractAggreGateDeviceController<
 
       if (!parameters.rec().hasField(ServerContextConstants.FIF_STEP_ACTION_ACTION_RESPONSE)) return false;
 
-      const actionResponse: DataTable = parameters
-        .rec()
-        .getDataTable(ServerContextConstants.FIF_STEP_ACTION_ACTION_RESPONSE);
+      const actionResponse: DataTable = parameters.rec().getDataTable(ServerContextConstants.FIF_STEP_ACTION_ACTION_RESPONSE);
 
       if (actionResponse == null || actionResponse.getRecordCount() < 1) return false;
 
-      const actionParameters: DataTable = actionResponse
-        .rec()
-        .getDataTable(ProtocolHandler.FIELD_ACTION_RESPONSE_PARAMETERS);
+      const actionParameters: DataTable = actionResponse.rec().getDataTable(ProtocolHandler.FIELD_ACTION_RESPONSE_PARAMETERS);
 
       if (actionParameters == null || actionParameters.getRecordCount() < 1) return false;
 
@@ -436,18 +371,10 @@ export default abstract class AbstractAggreGateDeviceController<
     }
   }
 
-  private choseAppropriateDataTable(
-    encodedReply: string,
-    settings: ClassicEncodingSettings,
-    validate: boolean
-  ): DataTable {
+  private choseAppropriateDataTable(encodedReply: string, settings: ClassicEncodingSettings, validate: boolean): DataTable {
     const elements: ElementList = StringUtils.elements(encodedReply, settings.isUseVisibleSeparators());
     //const  containsID = elements.getElement(AbstractDataTable.ELEMENT_ID);
-    return /*containsID ? new ProxyDataTable(elements, settings, validate, this) : */ DataTableFactory.createAndDecode(
-      elements,
-      settings,
-      validate
-    );
+    return /*containsID ? new ProxyDataTable(elements, settings, validate, this) : */ DataTableFactory.createAndDecode(elements, settings, validate);
   }
 
   public isUsesCompression(): boolean {

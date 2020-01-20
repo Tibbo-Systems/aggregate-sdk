@@ -2,11 +2,11 @@ import DefaultRequestController from '../context/DefaultRequestController';
 import Event from '../data/Event';
 
 export default class FireEventRequestController extends DefaultRequestController {
-  private customExpirationPeriod: number = 0;
+  private customExpirationPeriod = 0;
 
-  private ignoreStorageErrors: boolean = false;
+  private ignoreStorageErrors = false;
 
-  private suppressIfNotEnoughMemory: boolean = false;
+  private suppressIfNotEnoughMemory = false;
 
   constructor(customExpirationPeriod: number) {
     super();

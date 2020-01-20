@@ -7,8 +7,7 @@ import ReplyMonitor from './ReplyMonitor';
 import CommandProcessorStatistics from './CommandProcessorStatistics';
 import LoggerAdapter from '../util/logger/LoggerAdapter';
 
-export default abstract class AbstractDeviceController<I extends Command, O extends Command>
-  implements CommandParserListener {
+export default abstract class AbstractDeviceController<I extends Command, O extends Command> implements CommandParserListener {
   private readonly logger: LoggerAdapter;
 
   private readonly commandTimeout: number;
@@ -17,12 +16,12 @@ export default abstract class AbstractDeviceController<I extends Command, O exte
 
   private processor: AsyncCommandProcessor<I, O, AbstractDeviceController<I, O>> = new AsyncCommandProcessor(this);
 
-  private connecting: boolean = false;
-  private connected: boolean = false;
+  private connecting = false;
+  private connected = false;
 
-  private loggingIn: boolean = false;
-  private loggedIn: boolean = false;
-  private resetTimeoutsOnData: boolean = false;
+  private loggingIn = false;
+  private loggedIn = false;
+  private resetTimeoutsOnData = false;
 
   constructor(commandTimeout: number, logger: LoggerAdapter) {
     this.commandTimeout = commandTimeout;
@@ -172,7 +171,7 @@ export default abstract class AbstractDeviceController<I extends Command, O exte
   }
 
   public getActiveCommands(): Array<ReplyMonitor<O, I>> {
-    return this.processor != null ? this.processor.getActiveCommands() : new Array();
+    return this.processor != null ? this.processor.getActiveCommands() : [];
   }
 
   public getStatistics(): CommandProcessorStatistics | null {

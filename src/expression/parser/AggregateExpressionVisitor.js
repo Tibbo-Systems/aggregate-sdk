@@ -1,6 +1,6 @@
 // Generated from src/expression/grammar/AggregateExpression.g4 by ANTLR 4.7.2
 // jshint ignore: start
-var antlr4 = require('antlr4/index');
+const antlr4 = require('antlr4/index');
 
 // This class defines a complete generic visitor for a parse tree produced by AggregateExpressionParser.
 
@@ -192,8 +192,74 @@ AggregateExpressionVisitor.prototype.visitFunctionExpression = function(ctx) {
 };
 
 
+// Visit a parse tree produced by AggregateExpressionParser#functionReferenceExpression.
+AggregateExpressionVisitor.prototype.visitFunctionReferenceExpression = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by AggregateExpressionParser#actionReferenceExpression.
+AggregateExpressionVisitor.prototype.visitActionReferenceExpression = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by AggregateExpressionParser#eventReferenceExpression.
+AggregateExpressionVisitor.prototype.visitEventReferenceExpression = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by AggregateExpressionParser#referenceSchema.
+AggregateExpressionVisitor.prototype.visitReferenceSchema = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by AggregateExpressionParser#referenceServer.
+AggregateExpressionVisitor.prototype.visitReferenceServer = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by AggregateExpressionParser#referenceContextMask.
+AggregateExpressionVisitor.prototype.visitReferenceContextMask = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by AggregateExpressionParser#referenceEntity.
+AggregateExpressionVisitor.prototype.visitReferenceEntity = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by AggregateExpressionParser#referenceRow.
+AggregateExpressionVisitor.prototype.visitReferenceRow = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by AggregateExpressionParser#referenceProperty.
+AggregateExpressionVisitor.prototype.visitReferenceProperty = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
 // Visit a parse tree produced by AggregateExpressionParser#valueReference.
 AggregateExpressionVisitor.prototype.visitValueReference = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by AggregateExpressionParser#arguments.
+AggregateExpressionVisitor.prototype.visitArguments = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by AggregateExpressionParser#agIdentifier.
+AggregateExpressionVisitor.prototype.visitAgIdentifier = function(ctx) {
   return this.visitChildren(ctx);
 };
 

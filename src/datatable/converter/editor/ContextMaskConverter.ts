@@ -18,52 +18,28 @@ export default class ContextMaskConverter extends AbstractEditorOptionsConverter
   private static readonly TYPE_FORMAT: TableFormat = new TableFormat(0, Number.MAX_VALUE);
 
   static __static_initializer_0() {
-    ContextMaskConverter.TYPE_FORMAT.addField(
-      FieldFormatFactory.createWith(
-        ContextMaskConverter.FIELD_CONTEXT_TYPE,
-        FieldConstants.STRING_FIELD,
-        Cres.get().getString('conContextType')
-      )
-    );
+    ContextMaskConverter.TYPE_FORMAT.addField(FieldFormatFactory.createWith(ContextMaskConverter.FIELD_CONTEXT_TYPE, FieldConstants.STRING_FIELD, Cres.get().getString('conContextType')));
   }
 
   private static readonly MASK_FORMAT: TableFormat = new TableFormat(0, Number.MAX_VALUE);
 
   static __static_initializer_1() {
-    ContextMaskConverter.MASK_FORMAT.addField(
-      FieldFormatFactory.createWith(
-        ContextMaskConverter.FIELD_CONTEXT_MASK,
-        FieldConstants.STRING_FIELD,
-        Cres.get().getString('conContextMask')
-      )
-    );
+    ContextMaskConverter.MASK_FORMAT.addField(FieldFormatFactory.createWith(ContextMaskConverter.FIELD_CONTEXT_MASK, FieldConstants.STRING_FIELD, Cres.get().getString('conContextMask')));
   }
 
   private static readonly FORMAT: TableFormat = new TableFormat(1, 1);
 
   static __static_initializer_2() {
     ContextMaskConverter.FORMAT.addField(
-      FieldFormatFactory.createWith(
-        ContextMaskConverter.FIELD_ROOT_CONTEXT,
-        FieldConstants.STRING_FIELD,
-        Cres.get().getString('wRoot')
-      )
+      FieldFormatFactory.createWith(ContextMaskConverter.FIELD_ROOT_CONTEXT, FieldConstants.STRING_FIELD, Cres.get().getString('wRoot'))
         .setEditor(FieldConstants.EDITOR_CONTEXT)
         .setNullable(true)
     );
     ContextMaskConverter.FORMAT.addField(
-      FieldFormatFactory.createWith(
-        ContextMaskConverter.FIELD_CONTEXT_TYPES,
-        FieldConstants.DATATABLE_FIELD,
-        Cres.get().getString('conContextTypes')
-      ).setDefault(DataTableFactory.of(ContextMaskConverter.TYPE_FORMAT))
+      FieldFormatFactory.createWith(ContextMaskConverter.FIELD_CONTEXT_TYPES, FieldConstants.DATATABLE_FIELD, Cres.get().getString('conContextTypes')).setDefault(DataTableFactory.of(ContextMaskConverter.TYPE_FORMAT))
     );
     ContextMaskConverter.FORMAT.addField(
-      FieldFormatFactory.createWith(
-        ContextMaskConverter.FIELD_CONTEXT_MASKS,
-        FieldConstants.DATATABLE_FIELD,
-        Cres.get().getString('conContextMasks')
-      ).setDefault(DataTableFactory.of(ContextMaskConverter.MASK_FORMAT))
+      FieldFormatFactory.createWith(ContextMaskConverter.FIELD_CONTEXT_MASKS, FieldConstants.DATATABLE_FIELD, Cres.get().getString('conContextMasks')).setDefault(DataTableFactory.of(ContextMaskConverter.MASK_FORMAT))
     );
   }
 

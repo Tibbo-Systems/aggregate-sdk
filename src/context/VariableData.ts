@@ -6,13 +6,13 @@ export default class VariableData implements Comparable<VariableData> {
 
   private value: any;
 
-  private getCount: number = 0;
+  private getCount = 0;
 
-  private setCount: number = 0;
+  private setCount = 0;
 
-  private getterCached: boolean = false;
+  private getterCached = false;
 
-  private setterCached: boolean = false;
+  private setterCached = false;
 
   private getterMethod: PropertyDescriptor | null = null;
 

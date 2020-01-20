@@ -1,6 +1,5 @@
 import TableFormat from '../../src/datatable/TableFormat';
 import DataTableFactory from '../../src/datatable/DataTableFactory';
-import DataTable from '../../src/datatable/DataTable';
 
 const createTable = () => {
   const rf: TableFormat = new TableFormat();

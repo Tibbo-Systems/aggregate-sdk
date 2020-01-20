@@ -22,7 +22,7 @@ export default class Permissions extends JObject implements Iterable<Permission>
     if (data) {
       const pd: Array<string> = StringUtils.split(data, Permissions.PERMISSIONS_SEPARATOR);
 
-      for (let pde of pd) {
+      for (const pde of pd) {
         const permSrc: string = pde.trim();
 
         if (permSrc.length > 0) {
@@ -41,9 +41,9 @@ export default class Permissions extends JObject implements Iterable<Permission>
   public encode(): string {
     const enc: StringBuilder = new StringBuilder();
 
-    let i: number = 0;
+    let i = 0;
 
-    for (let perm of this.permissions) {
+    for (const perm of this.permissions) {
       if (i > 0) {
         enc.append(Permissions.PERMISSIONS_SEPARATOR);
       }
@@ -75,7 +75,7 @@ export default class Permissions extends JObject implements Iterable<Permission>
   }
 
   public addAll(permissions: Permissions): Permissions {
-    for (let permission of permissions) {
+    for (const permission of permissions) {
       this.permissions.push(permission);
     }
 
@@ -99,7 +99,7 @@ export default class Permissions extends JObject implements Iterable<Permission>
     } else if (this.permissions.length !== other.permissions.length) {
       return false;
     } else {
-      for (let permission of this.permissions) {
+      for (const permission of this.permissions) {
         if (!other.permissions.find(otherPermission => Util.equals(permission, otherPermission))) {
           return false;
         }

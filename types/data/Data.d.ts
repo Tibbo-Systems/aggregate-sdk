@@ -6,7 +6,6 @@ import JObject from '../util/java/JObject';
 import ContextManager from '../context/ContextManager';
 import Context from '../context/Context';
 import CallerController from '../context/CallerController';
-import Class from '../util/java/Class';
 export default class Data extends JObject implements StringEncodable {
     private static readonly TRANSCODER_VERSION;
     static readonly BUFFER_MULTIPLIER: number;
@@ -45,5 +44,4 @@ export default class Data extends JObject implements StringEncodable {
     encode(sb: StringBuilder, settings: ClassicEncodingSettings | null, isTransferEncode: boolean, encodeLevel: number): StringBuilder;
     private appendBytes;
     releaseData(): void;
-    static getClass(): Class;
 }
