@@ -9,18 +9,27 @@ import StringIdentifier from './StringIdentifier';
 import ContextUtilsConstants from '../context/ContextUtilsConstants';
 
 export default class BasicActionDefinition extends AbstractEntityDefinition implements ActionDefinition, ActionCommandList {
-  //TODO Java PropertyChangeSupport
-  // private propertyChangeListeners: PropertyChangeSupport = new PropertyChangeSupport(this);
+  private static readonly GROUP_ID_SEPARATOR = '/';
+  private static readonly PROPERTY_NAME = 'name';
+  private static readonly PROPERTY_DESCRIPTION = 'description';
+  private static readonly PROPERTY_DROP_SOURCES = 'dropSources';
+  private static readonly PROPERTY_HELP = 'help';
+  private static readonly PROPERTY_ACCELERATOR = 'accelerator';
+  private static readonly PROPERTY_HIDDEN = 'hidden';
+  private static readonly PROPERTY_ENABLED = 'enabled';
+  private static readonly PROPERTY_GROUP_ID = 'groupId';
+  private static readonly PROPERTY_ICON_ID = 'iconId';
+  private static readonly PROPERTY_DEFAULT = 'default';
 
-  //TODO using Class in Java
-  private actionClass: any = null;
   private enabled = true;
-  private _isDefault = false;
+  private default = false;
   private hidden = false;
+  private actionClass: any | null = null;
   private executionGroup: GroupIdentifier | null = null;
   private dropSources: Array<TreeMask> | null = null;
   private commandList: Array<ActionCommand> | null = null;
   private concurrent = true;
+  private accelerator: string | null = null;
 
   constructor(name: string) {
     super();
@@ -51,7 +60,7 @@ export default class BasicActionDefinition extends AbstractEntityDefinition impl
   }
 
   isDefault(): boolean {
-    return this._isDefault;
+    return this.default;
   }
 
   isEnabled(): boolean {
@@ -71,28 +80,31 @@ export default class BasicActionDefinition extends AbstractEntityDefinition impl
   }
 
   setDefault(isDefault: boolean): void {
-    const oldIsDefault: boolean = this.isDefault();
-    //    TODO not implemented. using propertyChangeListeners
+    this.default = isDefault;
   }
 
   setEnabled(enabled: boolean): void {
-    //    TODO not implemented. using propertyChangeListeners
+    this.enabled = enabled;
   }
 
   setDropSources(dropSources: Array<TreeMask>) {
-    //    TODO not implemented. using propertyChangeListeners
+    this.dropSources = dropSources;
   }
 
   setHidden(hidden: boolean) {
-    //    TODO not implemented. using propertyChangeListeners
+    this.hidden = hidden;
   }
 
   setExecutionGroup(groupIdentifier: GroupIdentifier) {
-    //    TODO not implemented. using propertyChangeListeners
+    this.executionGroup = groupIdentifier;
   }
 
-  getAccelerator(): any {
-    //    TODO not use KeyStroke from Java
+  getAccelerator(): string | null {
+    return this.accelerator;
+  }
+
+  setAccelerator(accelerator: string): void {
+    this.accelerator = accelerator;
   }
 
   public setActionClass(actionClass: any | null) {
@@ -104,7 +116,7 @@ export default class BasicActionDefinition extends AbstractEntityDefinition impl
     if (this.actionClass == null) {
       throw new Error('Redirection to actions of proxy contexts is not supported');
     }
-    let action: any = null;
+    let action = null;
 
     try {
       action = this.actionClass.newInstance();
@@ -113,8 +125,6 @@ export default class BasicActionDefinition extends AbstractEntityDefinition impl
     }
     return action;
   }
-
-  // TODO implement ReentrantLock
 
   public getEntityType(): number {
     return ContextUtilsConstants.ENTITY_ACTION;

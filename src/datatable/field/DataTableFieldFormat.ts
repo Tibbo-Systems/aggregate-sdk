@@ -132,7 +132,7 @@ export default class DataTableFieldFormat extends FieldFormat<DataTable> {
       }
 
       if (res != null && validate) {
-        res.validate(null, null, null);
+        res.validate(null, null);
       }
 
       return res;
@@ -152,7 +152,7 @@ export default class DataTableFieldFormat extends FieldFormat<DataTable> {
     }
 
     if (settings != null) {
-      const compatibilityTransferEncode: boolean = ProtocolVersion.V3 === settings.getProtocolVersion();
+      const compatibilityTransferEncode: boolean = ProtocolVersion.V3 === settings.getProtocolVersion() || ProtocolVersion.V2 === settings.getProtocolVersion();
       if (compatibilityTransferEncode) {
         return TransferEncodingHelper.encode(strVal, sb, encodeLevel);
       }

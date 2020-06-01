@@ -73,9 +73,9 @@ export default class EntityRelatedActions {
 
   private static entityGroup(entity: string, entityType: number, con: Context<any, any>): string | null {
     if (con == null) return null;
-    const conVD = con.getVariableDefinition(entity, null);
-    const conFD = con.getFunctionDefinition(entity, null);
-    const conED = con.getEventDefinition(entity, null);
+    const conVD = con.getVariableDefinition(entity);
+    const conFD = con.getFunctionDefinition(entity);
+    const conED = con.getEventDefinition(entity);
     switch (entityType) {
       case ContextUtilsConstants.ENTITY_VARIABLE:
         if (conVD == null) return null;

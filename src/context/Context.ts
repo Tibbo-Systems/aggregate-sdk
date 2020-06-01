@@ -15,12 +15,13 @@ import FireEventRequestController from '../event/FireEventRequestController';
 import DefaultContextVisitor from './DefaultContextVisitor';
 import Permissions from '../security/Permissions';
 import DefaultContextEventListener from './DefaultContextEventListener';
+import JObject from '../util/java/JObject';
 
 /**
  * Context interface is used to provide a unified way to access any object in AggreGate. It may be some server object (e.g. alert or event filters storage), hardware device or widget component. When
  * server contexts are accessed remotely, so-called proxy contexts are created for operating server-side objects through the same interface.
  */
-export default abstract class Context<C extends Context<any, any>, M extends ContextManager<any>> {
+export default abstract class Context<C extends Context<any, any>, M extends ContextManager<any>> extends JObject {
   /**
    * This method is called after the context has been added to a context tree and it became aware of its full path. Note, that default implementation of this method in AbstractContext calls tree
    * methods: setupPermissions(), setupMyself() and setupChildren(). These methods should provide initialization logic in inherited classes instead of overridden setup() method.
@@ -197,12 +198,12 @@ export default abstract class Context<C extends Context<any, any>, M extends Con
   /**
    * Returns list of children contexts that are accessible by the specified <code>CallerController</code>.
    */
-  abstract getChildren(caller: CallerController | null): Array<Context<C, M>>;
+  abstract getChildren(caller?: CallerController): Array<Context<C, M>>;
 
   /**
    * Returns list of visible children contexts.
    */
-  abstract getVisibleChildren(caller: CallerController | null): Array<Context<C, M>>;
+  abstract getVisibleChildren(caller?: CallerController): Array<Context<C, M>>;
 
   /**
    * Returns true if context's visible children are mapped (e.g. for group and aggregation contexts).
@@ -212,7 +213,7 @@ export default abstract class Context<C extends Context<any, any>, M extends Con
   /**
    * Returns list of mapped children contexts.
    */
-  abstract getMappedChildren(caller: CallerController | null): Array<Context<C, M>>;
+  abstract getMappedChildren(caller?: CallerController): Array<Context<C, M>>;
 
   /**
    * Returns root context of the context tree containing this context.
@@ -226,7 +227,7 @@ export default abstract class Context<C extends Context<any, any>, M extends Con
    *
    * Note: if this Context is a part of distributed context tree and path argument is not relative, the method will return local context matching its remote "peer" with given path. To get the local
    */
-  abstract get(path: string | null, caller: CallerController | null): Context<C, M> | null;
+  abstract get(path: string | null, caller?: CallerController): Context<C, M> | null;
 
   /**
    * Returns child of this context with the specified name.
@@ -238,7 +239,7 @@ export default abstract class Context<C extends Context<any, any>, M extends Con
    *
    * This method uses provided <code>CallerController</code> for permission checking.
    */
-  abstract getChild(name: string, caller: CallerController | null): Context<C, M> | null;
+  abstract getChild(name: string, caller?: CallerController): Context<C, M> | null;
 
   /**
    * Adds new child to the current context.
@@ -300,17 +301,17 @@ export default abstract class Context<C extends Context<any, any>, M extends Con
   /**
    * Returns definition of variable with specified name if it's accessible by caller controller.
    */
-  abstract getVariableDefinition(name: string, caller: CallerController | null): VariableDefinition | null;
+  abstract getVariableDefinition(name: string, caller?: CallerController): VariableDefinition | null;
 
   /**
    * Returns list of variables belonging to <code>group</code> that are available for specified <code>CallerController</code>.
    */
-  abstract getVariableDefinitionsByGroup(group: string, caller: CallerController | null): Array<VariableDefinition>;
+  abstract getVariableDefinitionsByGroup(group: string, caller?: CallerController): Array<VariableDefinition>;
 
   /**
    * Returns list of variables.
    */
-  abstract getVariableDefinitions(caller: CallerController | null, includeHidden: boolean): Array<VariableDefinition>;
+  abstract getVariableDefinitions(includeHidden: boolean, caller?: CallerController): Array<VariableDefinition>;
 
   /**
    * Adds function definition to this context.
@@ -330,17 +331,17 @@ export default abstract class Context<C extends Context<any, any>, M extends Con
   /**
    * Returns definition of function with specified name if it's accessible by caller controller.
    */
-  abstract getFunctionDefinition(name: string, caller: CallerController | null): FunctionDefinition | null;
+  abstract getFunctionDefinition(name: string, caller?: CallerController): FunctionDefinition | null;
 
   /**
    * Returns list of functions belonging to <code>group</code> that are available for specified <code>CallerController</code>.
    */
-  abstract getFunctionDefinitionsByGroup(group: string, caller: CallerController): Array<FunctionDefinition>;
+  abstract getFunctionDefinitionsByGroup(group: string, caller?: CallerController): Array<FunctionDefinition>;
 
   /**
    * Returns list of functions.
    */
-  abstract getFunctionDefinitions(caller: CallerController | null, includeHidden: boolean): Array<FunctionDefinition>;
+  abstract getFunctionDefinitions(includeHidden: boolean, caller?: CallerController): Array<FunctionDefinition>;
 
   /**
    * Adds event definition to this context.
@@ -355,7 +356,7 @@ export default abstract class Context<C extends Context<any, any>, M extends Con
   /**
    * Returns definition of event with specified name if it's accessible by caller controller.
    */
-  abstract getEventDefinition(name: string, caller: CallerController | null): EventDefinition | null;
+  abstract getEventDefinition(name: string, caller?: CallerController): EventDefinition | null;
 
   /**
    * Returns <code>EventData</code> of event with specified name.
@@ -365,27 +366,27 @@ export default abstract class Context<C extends Context<any, any>, M extends Con
   /**
    * Returns list of events belonging to <code>group</code> that are available for specified <code>CallerController</code>.
    */
-  abstract getEventDefinitionsByGroup(group: string, caller: CallerController | null): Array<EventDefinition>;
+  abstract getEventDefinitionsByGroup(group: string, caller?: CallerController): Array<EventDefinition>;
 
   /**
    * Returns list of events.
    */
-  abstract getEventDefinitions(caller: CallerController | null, includeHidden: boolean): Array<EventDefinition>;
+  abstract getEventDefinitions(includeHidden: boolean, caller?: CallerController): Array<EventDefinition>;
 
   /**
    * Gets variable from context and returns its value. The value is immutable and will generate {@link IllegalStateException} on every change.
    */
-  abstract getVariable(name: string, caller?: CallerController | null, request?: RequestController | null): Promise<DataTable>;
+  abstract getVariable(name: string, caller?: CallerController, request?: RequestController): Promise<DataTable>;
 
   /**
    * Gets variable from context and returns its value. The value is mutable. Method has lower performance comparing to 'getVariable'.
    */
-  abstract getVariableClone(name: string, caller: CallerController): Promise<DataTable>;
+  abstract getVariableClone(name: string, caller?: CallerController): Promise<DataTable>;
 
   /**
    * Returns value of variable as bean or list of beans.
    */
-  abstract getVariableObject(name: string, caller: CallerController): Promise<any>;
+  abstract getVariableObject(name: string, caller?: CallerController): Promise<any>;
 
   /**
    * Sets context variable to specified <code>value</code>.
@@ -397,19 +398,19 @@ export default abstract class Context<C extends Context<any, any>, M extends Con
   /**
    * Gets variable, updates field value in the specified record, and sets variable.
    */
-  abstract setVariableField(variable: string, field: string, record: number, value: any, cc: CallerController): Promise<boolean>;
+  abstract setVariableField(variable: string, field: string, record: number, value: any, cc?: CallerController): Promise<boolean>;
 
   /**
    * Executes context function with specified <code>parameters</code> and returns its output.
    */
-  abstract callFunction(name: string, parameters: DataTable | Array<any> | null, caller?: CallerController | null, request?: RequestController | null): Promise<DataTable>;
+  abstract callFunction(name: string, parameters: DataTable | Array<any> | null, caller?: CallerController, request?: RequestController): Promise<DataTable>;
 
   /**
    * Fires context event.
    *
    * @return Event object or null if event was suppressed by context.
    */
-  abstract fireEvent(name: string, data: DataTable | null, caller: CallerController, level: number, id: number | null, creationtime: Date | null, listener: number | null, request: FireEventRequestController | null): Event | null;
+  abstract fireEvent(name: string, data: DataTable | null, level: number, id: number | null, creationtime: Date | null, listener: number | null, caller?: CallerController, request?: FireEventRequestController): Event | null;
 
   /**
    * Add a new action definition to the context.
@@ -445,7 +446,7 @@ export default abstract class Context<C extends Context<any, any>, M extends Con
    */
   abstract getDefaultActionDefinition(caller: CallerController): ActionDefinition | null;
 
-  abstract getActionDefinitions(caller: CallerController | null, includeHidden: boolean): Array<ActionDefinition>;
+  abstract getActionDefinitions(includeHidden: boolean, caller?: CallerController): Array<ActionDefinition>;
 
   /**
    * Returns context permissions.

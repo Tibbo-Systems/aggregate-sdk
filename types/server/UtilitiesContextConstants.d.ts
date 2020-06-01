@@ -8,6 +8,8 @@ export default class UtilitiesContextConstants {
     static readonly V_GENERATE_THREAD_DUMP_RESULT: string;
     static readonly V_GENERATE_HEAP_DUMP_RESULT_PATH: string;
     static readonly V_THREAD_DUMP_PREFIX: string;
+    static readonly F_EXECUTE_BINDINGS = "executeBindings";
+    static readonly FIF_EXECUTE_BINDINGS_DATATABLE = "datatable";
     static readonly V_HEAP_DUMP_PREFIX: string;
     static readonly V_HEAP_DUMP_EXTENSION: string;
     static readonly V_HEAP_DUMP_DIR: string;
@@ -165,6 +167,9 @@ export default class UtilitiesContextConstants {
     static readonly FOF_GET_DATA_DATA: string;
     static readonly FIF_SUMMARY_SERIES_NAME: string;
     static readonly FIF_SUMMARY_SERIES_DESCRIPTION: string;
+    static readonly FOF_EXECUTE_BINDINGS_DATATABLE = "datatable";
+    static readonly FOF_EXECUTE_BINDINGS_ERRORS = "errors";
+    static readonly FOF_EXECUTE_BINDINGS_RECORD_FORMATS = "recordFormats";
     static readonly FIF_SUMMARY_START_DATE: string;
     static readonly FIF_SUMMARY_END_DATE: string;
     static readonly FIF_SUMMARY_MASKS: string;

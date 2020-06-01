@@ -164,7 +164,7 @@ export default class ContextEventListenerSet extends JObject {
       return false;
     }
 
-    const fingerprint: string | null = listener.getFingerprint();
+    const fingerprint = listener.getFingerprint();
 
     let listeners: Array<DefaultContextEventListener> | undefined = this.filterListeners;
 

@@ -60,7 +60,7 @@ export default abstract class ServerAction extends SingleThreadAction<ServerActi
 
   protected processError(ex: Error): void {
     if (Util.getRootCause(ex) instanceof Error) {
-      Log.CONTEXT_ACTIONS.info('Action interrupted: ' + toString() + ' (caller: ' + this.getCallerController() + ')');
+      Log.CONTEXT_ACTIONS.info('Action interrupted: ' + this.toString() + ' (caller: ' + this.getCallerController() + ')');
     } else {
       this.getProcessor().showError(Cres.get().getString('error'), EventLevel.ERROR, ex.message, ex);
     }

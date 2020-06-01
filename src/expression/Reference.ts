@@ -53,28 +53,10 @@ export default class Reference extends JObject {
   private property: string | null = null;
   private appearance: number = Reference.APPEARANCE_LINK;
 
-  constructor(source?: string, server?: string | null, context?: string | null, entity?: string | null, entityType?: number | null, field?: string | null, ...parameters: any[]) {
+  constructor(source?: string) {
     super();
     if (source) {
       this.parse(source);
-    }
-    if (server) {
-      this.server = server;
-    }
-    if (context) {
-      this.context = context;
-    }
-    if (entity) {
-      this.entity = entity;
-    }
-    if (entityType) {
-      this.entityType = entityType;
-    }
-    if (field) {
-      this.field = field;
-    }
-    if (parameters) {
-      this.parameters.push(parameters);
     }
   }
 
@@ -382,7 +364,7 @@ export default class Reference extends JObject {
 
     let i = 0;
 
-    params.forEach(param => {
+    params.forEach((param) => {
       if (param == null) {
         sb.append(Reference.NULL_PARAM);
       } else {
@@ -411,7 +393,7 @@ export default class Reference extends JObject {
     return sb.toString();
   }
 
-  public static getFunctionParameters(paramsString: string, allowExpressions: boolean) {
+  public static getFunctionParameters(paramsString: string, allowExpressions: boolean): Array<any> {
     const params: Array<any> = new Array<any>();
     let insideSingleQuotedLiteral = false;
     let insideDoubleQuotedLiteral = false;

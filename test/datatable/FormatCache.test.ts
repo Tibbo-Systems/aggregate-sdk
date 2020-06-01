@@ -6,7 +6,7 @@ const format1 = '<<value><I><F=><A=0>><M=1><X=1>';
 const format2 = '<<value><I><F=><A=0><D=>><M=1><X=1>';
 
 describe('TestFormatCache', () => {
-  it('testServerFormatCache', () => {return new Promise(done => {
+  it('testServerFormatCache', () => {
     const f1: TableFormat = TableFormat.createWithFormatAndSettings(format1, new ClassicEncodingSettings(true));
 
     const f2: TableFormat = TableFormat.createWithFormatAndSettings(format2, new ClassicEncodingSettings(true));
@@ -21,30 +21,24 @@ describe('TestFormatCache', () => {
 
     expect(1 === id).toBeTruthy();
 
-    fc.get(0).then(result => {
-      expect(f1 == result).toBeTruthy();
-      done();
-    });
+    expect(f1.equals(fc.get(0))).toBeTruthy();
 
-    fc.get(1).then(result => {
-      expect(f2 == result).toBeTruthy();
-      done();
-    });
+    expect(f2.equals(fc.get(1))).toBeTruthy();
 
     const newf1: TableFormat = TableFormat.createWithFormatAndSettings(format1, new ClassicEncodingSettings(true));
 
     let res = fc.getCachedVersion(newf1) as TableFormat;
 
-    expect(f1 == res).toBeTruthy();
+    expect(f1.equals(res)).toBeTruthy();
 
     const newf2: TableFormat = TableFormat.createWithFormatAndSettings(format2, new ClassicEncodingSettings(true));
 
     res = fc.getCachedVersion(newf2) as TableFormat;
 
-    expect(res == f2).toBeTruthy();
-  })});
+    expect(res.equals(f2)).toBeTruthy();
+  });
 
-  it('testClientFormatCache', () => {return new Promise(done => {
+  it('testClientFormatCache', () => {
     const f1: TableFormat = TableFormat.createWithFormatAndSettings(format1, new ClassicEncodingSettings(true));
 
     const f2: TableFormat = TableFormat.createWithFormatAndSettings(format2, new ClassicEncodingSettings(true));
@@ -53,21 +47,15 @@ describe('TestFormatCache', () => {
 
     fc.put(123, f1);
 
-    fc.get(123).then(result => {
-      expect(f1 == result).toBeTruthy();
-      done();
-    });
+    expect(f1.equals(fc.get(123))).toBeTruthy();
 
-    const id: number = fc.getId(f1) as number;
+    //  const id: number = fc.getId(f1) as number;
 
-    expect(123 === id).toBeTruthy();
+    //  expect(123 === id).toBeTruthy(); disable reverse cache
 
     fc.put(456, f1);
     fc.put(456, f2);
 
-    fc.get(456).then(result => {
-      expect(f2 .equals(result)).toBeTruthy();
-      done();
-    });
-  })});
+    expect(f2.equals(fc.get(456))).toBeTruthy();
+  });
 });

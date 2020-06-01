@@ -29,12 +29,7 @@ describe('TestDataTable', () => {
 
     // Test datatable type field
 
-    const tbl: DataTable = DataTableFactory.createWithFirstRecord(
-      createFormat('<<int><I>> <<str><S>> <<bool><B>>'),
-      5,
-      'test',
-      true
-    );
+    const tbl: DataTable = DataTableFactory.createWithFirstRecord(createFormat('<<int><I>> <<str><S>> <<bool><B>>'), 5, 'test', true);
 
     const rec: DataRecord = new DataRecord(FieldFormatFactory.create('<tbl><T>').wrap());
     rec.addDataTable(tbl);
@@ -53,25 +48,17 @@ describe('TestDataTable', () => {
   });
 
   it('testClone', () => {
-    const format: TableFormat = FieldFormatFactory.create(
-      '<s1><S><F=N><A=default><D=Test><S=<desc=default><desc2=val2>><V=<L=1 10>>'
-    ).wrap();
+    const format: TableFormat = FieldFormatFactory.create('<s1><S><F=N><A=default><D=Test><S=<desc=default><desc2=val2>><V=<L=1 10>>').wrap();
     const dt: DataTable = DataTableFactory.of(format, 5);
 
-    const selectionValues: Map<any, string> = dt
-      .getFormat()
-      .getField('s1')
-      .getSelectionValues() as Map<any, string>;
+    const selectionValues: Map<any, string> = dt.getFormat().getField('s1').getSelectionValues() as Map<any, string>;
     expect(selectionValues.size).toBe(2);
 
     const clone: DataTable = dt.clone();
 
     expect(format === clone.getFormat()).toBeTruthy();
 
-    const selectionValuesFromClone: Map<any, string> = clone
-      .getFormat()
-      .getField('s1')
-      .getSelectionValues() as Map<any, string>;
+    const selectionValuesFromClone: Map<any, string> = clone.getFormat().getField('s1').getSelectionValues() as Map<any, string>;
 
     expect(selectionValuesFromClone.size).toBe(2);
 
@@ -81,9 +68,7 @@ describe('TestDataTable', () => {
   });
 
   it('testParameterizedReportThatWorksIncorrectly', () => {
-    const format: TableFormat = createFormat(
-      '<<devices><T><A=<F=<<devicePath><S><A=><D=Device Path>>><R=<aaa>><R=<bbb>>>>'
-    );
+    const format: TableFormat = createFormat('<<devices><T><A=<F=<<devicePath><S><A=><D=Device Path>>><R=<aaa>><R=<bbb>>>>');
 
     const result: DataTable = DataTableFactory.of(format, 1);
     const devices: DataTable = result.rec().getDataTable('devices');
@@ -231,16 +216,10 @@ describe('TestDataTable', () => {
   });
 
   it('testEncodingOfNestedTableWithoutDefaultValue', () => {
-    const tableFromat: TableFormat = FieldFormatFactory.createType(
-      'DATATABLE_FIELD',
-      FieldConstants.DATATABLE_FIELD
-    ).wrap();
+    const tableFromat: TableFormat = FieldFormatFactory.createType('DATATABLE_FIELD', FieldConstants.DATATABLE_FIELD).wrap();
     const mainTable: DataTable = DataTableFactory.of(tableFromat);
 
-    const nestedTableFormat: TableFormat = FieldFormatFactory.createType(
-      'STRING_FIELD',
-      FieldConstants.STRING_FIELD
-    ).wrap();
+    const nestedTableFormat: TableFormat = FieldFormatFactory.createType('STRING_FIELD', FieldConstants.STRING_FIELD).wrap();
     const nestedTable1: DataTable = DataTableFactory.of(nestedTableFormat);
     const nestedRecord11: DataRecord = nestedTable1.addRecord();
     nestedRecord11.addString('aaa1');
@@ -260,11 +239,7 @@ describe('TestDataTable', () => {
 
     const encoded: string = mainTable.encodeDataTable(false, new ClassicEncodingSettings(false)) as string;
 
-    const decoded: DataTable = DataTableFactory.createAndDecode(
-      encoded,
-      new ClassicEncodingSettings(ExpressionUtils.useVisibleSeparators(encoded)),
-      true
-    );
+    const decoded: DataTable = DataTableFactory.createAndDecode(encoded, new ClassicEncodingSettings(ExpressionUtils.useVisibleSeparators(encoded)), true);
 
     expect(mainTable.equals(decoded)).toBeTruthy();
   });
@@ -274,10 +249,7 @@ describe('TestDataTable', () => {
 
     const ff: FieldFormat<any> = FieldFormatFactory.createType('DATATABLE_FIELD', FieldConstants.DATATABLE_FIELD);
 
-    const nestedTableFormat: TableFormat = FieldFormatFactory.createType(
-      'STRING_FIELD',
-      FieldConstants.STRING_FIELD
-    ).wrap();
+    const nestedTableFormat: TableFormat = FieldFormatFactory.createType('STRING_FIELD', FieldConstants.STRING_FIELD).wrap();
     const nestedTable: DataTable = DataTableFactory.of(nestedTableFormat);
     const nestedRecord: DataRecord = nestedTable.addRecord();
     nestedRecord.addString('aaa1');
@@ -299,11 +271,7 @@ describe('TestDataTable', () => {
 
     const encoded: string = mainTable.encodeDataTable(false, new ClassicEncodingSettings(false)) as string;
 
-    const decoded: DataTable = DataTableFactory.createAndDecode(
-      encoded,
-      new ClassicEncodingSettings(ExpressionUtils.useVisibleSeparators(encoded)),
-      true
-    );
+    const decoded: DataTable = DataTableFactory.createAndDecode(encoded, new ClassicEncodingSettings(ExpressionUtils.useVisibleSeparators(encoded)), true);
 
     expect(mainTable.equals(decoded)).toBeTruthy();
   });

@@ -27,7 +27,7 @@ export default abstract class BufferedCommandParser<C extends Command> extends A
           return true;
         }
       } catch (error) {
-        Log.COMMANDS.debug('Buffer underflow error in ' + toString());
+        Log.COMMANDS.debug('Buffer underflow error in ' + this.toString());
         return false;
       }
     }

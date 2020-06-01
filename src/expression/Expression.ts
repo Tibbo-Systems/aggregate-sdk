@@ -43,4 +43,10 @@ export default class Expression extends JObject {
     }
     return this.text === obj.text;
   }
+
+  clone(): Expression {
+    const cl = new Expression(this.text);
+    cl.rootNode = this.rootNode;
+    return cl;
+  }
 }

@@ -29,7 +29,7 @@ import EventLevel from '../event/EventLevel';
 import ShowMessage from './command/ShowMessage';
 import ShowReport from './command/ShowReport';
 import SelectEntities from './command/SelectEntities';
-import Log4jLevelHelper from '../util/Log4jLevelHelper';
+
 import ShowGuide from './command/ShowGuide';
 import ShowEventLog from './command/ShowEventLog';
 import EntityList from '../context/EntityList';
@@ -114,16 +114,8 @@ export default class ServerActionCommandProcessor {
     if (actionParams.getData().getRecordCount() == 1) {
       let path: string | null = null;
 
-      if (
-        actionParams
-          .getData()
-          .getFormat()
-          .hasField(ActionUtils.FIELD_ACTION_FROM_CONTEXT)
-      ) {
-        path = actionParams
-          .getData()
-          .rec()
-          .getString(ActionUtils.FIELD_ACTION_FROM_CONTEXT);
+      if (actionParams.getData().getFormat().hasField(ActionUtils.FIELD_ACTION_FROM_CONTEXT)) {
+        path = actionParams.getData().rec().getString(ActionUtils.FIELD_ACTION_FROM_CONTEXT);
       }
 
       if (path != null) {
@@ -278,7 +270,7 @@ export default class ServerActionCommandProcessor {
 
   public showError(title: string, level: number, message: string, ex: Error): void {
     const cmd: ShowError = new ShowError(title, message, level, ex);
-    Log.CONTEXT_ACTIONS.log(Log4jLevelHelper.getLog4jLevelByAggreGateLevel(level), message, ex);
+    Log.CONTEXT_ACTIONS.log(EventLevel.eventLevelToLogLevel(level), message, ex);
     this.send(cmd);
   }
 
@@ -314,12 +306,7 @@ export default class ServerActionCommandProcessor {
       return -1;
     }
 
-    return (
-      resp
-        .getParameters()
-        ?.rec()
-        .getInt(ShowEventLog.RF_LISTENER_CODE) || null
-    );
+    return resp.getParameters()?.rec().getInt(ShowEventLog.RF_LISTENER_CODE) || null;
   }
 
   public showGuide(title: string, invokerContext: string, macroName: string): DataTable | null {

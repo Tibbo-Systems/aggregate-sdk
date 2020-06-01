@@ -6,12 +6,7 @@ import DateUtils from './DateUtils';
 import Context from '../context/Context';
 import ContextUtils from '../context/ContextUtils';
 import EditableChildContextConstants from '../server/EditableChildContextConstants';
-import DataRecord from '../datatable/DataRecord';
-import User from '../data/User';
 import Contexts from '../context/Contexts';
-import DataTable from '../datatable/DataTable';
-import UtilitiesContextConstants from '../server/UtilitiesContextConstants';
-import DataTableConversion from '../datatable/DataTableConversion';
 import Log from '../Log';
 
 export default class UserSettings extends JObject {
@@ -23,7 +18,7 @@ export default class UserSettings extends JObject {
   private variableActions: Array<EntityRelatedActionDescriptor> | null = null;
   private eventActions: Array<EntityRelatedActionDescriptor> | null = null;
 
-  constructor(cm: ContextManager<any> | null = null, callerController: CallerController | null = null) {
+  constructor(cm: ContextManager<any> | null = null, callerController?: CallerController) {
     super();
     if (cm != null) this.fill(cm, callerController);
   }
@@ -98,12 +93,12 @@ export default class UserSettings extends JObject {
     }
   }
 
-  public fill(cm: ContextManager<any>, callerController: CallerController | null) {
+  public fill(cm: ContextManager<any>, callerController?: CallerController) {
     this.fillBasicProperties(cm, callerController);
     this.fillActions(cm, callerController);
   }
 
-  public fillBasicProperties(cm: ContextManager<any>, callerController: CallerController | null) {
+  public fillBasicProperties(cm: ContextManager<any>, callerController?: CallerController) {
     if (callerController == null) {
       return;
     }
@@ -111,7 +106,7 @@ export default class UserSettings extends JObject {
     // Distributed: ok, getting info from directly connected server
     const userContext: Context<any, any> | null = cm.get(ContextUtils.userContextPath(callerController.getUsername() as string), callerController);
 
-    if (userContext == null || userContext.getVariableDefinition(EditableChildContextConstants.V_CHILD_INFO, null) == null) {
+    if (userContext == null || userContext.getVariableDefinition(EditableChildContextConstants.V_CHILD_INFO) == null) {
       return;
     }
 
@@ -129,7 +124,7 @@ export default class UserSettings extends JObject {
          });*/
   }
 
-  public fillActions(cm: ContextManager<any>, callerController: CallerController | null) {
+  public fillActions(cm: ContextManager<any>, callerController?: CallerController) {
     try {
       const utilities: Context<any, any> | null = cm.get(Contexts.CTX_UTILITIES, callerController);
 

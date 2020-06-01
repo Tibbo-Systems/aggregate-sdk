@@ -17,7 +17,7 @@ export default class EventUtils {
     static ENVIRONMENT_VALUE: string;
     static generateEventId(): number;
     static getRandomInt(min: number, max: number): number;
-    static getEvents(context: Context<any, any>, eventsMask: string, callerController: CallerController | null): Array<EventDefinition>;
+    static getEvents(context: Context<any, any>, eventsMask: string, callerController?: CallerController): Array<EventDefinition>;
     static matchesToMask(eventMask: string, ed: EventDefinition): boolean;
     static matchesToStringMask(eventMask: string, event: string): boolean;
 }

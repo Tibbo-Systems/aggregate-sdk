@@ -32,7 +32,7 @@ export default class KeyFieldsValidator extends AbstractRecordValidator {
     const query: DataTableQuery = new DataTableQuery();
     const key: Array<JObject | null> = new Array<JObject>();
 
-    keyFields.forEach(keyField => {
+    keyFields.forEach((keyField) => {
       const value: JObject | null = record.getValue(keyField);
       key.push(value);
       query.addCondition(new QueryCondition(keyField, value));

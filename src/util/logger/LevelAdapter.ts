@@ -1,12 +1,10 @@
 enum LevelAdapter {
-  OFF,
-  FATAL,
-  ERROR,
-  WARN,
-  INFO,
-  DEBUG,
-  TRACE,
-  ALL,
+  FATAL = 'fatal',
+  ERROR = 'error',
+  WARN = 'warn',
+  INFO = 'info',
+  DEBUG = 'debug',
+  TRACE = 'trace',
 }
 
 export default LevelAdapter;

@@ -10,7 +10,7 @@ export default class ProtocolCommandBuilder extends JObject {
     getVariableOperation(context: string, name: string): OutgoingAggreGateCommand;
     setVariableOperation(context: string, name: string, encodedValue: string, queueName: string | null): OutgoingAggreGateCommand;
     callFunctionOperation(context: string, name: string, encodedInput: string, queueName: string | null, flags: string | null): OutgoingAggreGateCommand;
-    addEventListenerOperation(context: string, name: string, listenerHashCode: number | null, filter: string | null, fingerprint: string | null): OutgoingAggreGateCommand;
-    removeEventListenerOperation(context: string, name: string, listenerHashCode: number | null, filter: string | null, fingerprint: string | null): OutgoingAggreGateCommand;
+    addEventListenerOperation(context: string, name: string, listenerHashCode: number | undefined, filter: string | null, fingerprint: string | undefined): OutgoingAggreGateCommand;
+    removeEventListenerOperation(context: string, name: string, listenerHashCode: number | undefined, filter: string | null, fingerprint: string | undefined): OutgoingAggreGateCommand;
     private eventListenerOperation;
 }

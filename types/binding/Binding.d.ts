@@ -1,6 +1,7 @@
 import Reference from '../expression/Reference';
 import Expression from '../expression/Expression';
-export default class Binding {
+import JObject from '../util/java/JObject';
+export default class Binding extends JObject {
     private id;
     private target;
     private expression;
@@ -12,4 +13,6 @@ export default class Binding {
     setId(id: number): void;
     getQueue(): string | null;
     setQueue(queue: string): void;
+    equals(obj: JObject | null): boolean;
+    clone(): Binding;
 }

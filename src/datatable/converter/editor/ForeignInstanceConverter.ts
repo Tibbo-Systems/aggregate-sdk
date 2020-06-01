@@ -245,7 +245,7 @@ export default class ForeignInstanceConverter extends AbstractEditorOptionsConve
 
   constructor() {
     super();
-    StringFieldFormat.initialize();
+    ForeignInstanceConverter.initialize();
     this.editors.push(FieldConstants.EDITOR_FOREIGN_INSTANCE);
     this.types.push(FieldConstants.LONG_FIELD);
     this.types.push(FieldConstants.STRING_FIELD);

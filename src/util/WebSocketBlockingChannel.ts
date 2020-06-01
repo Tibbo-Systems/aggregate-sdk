@@ -15,7 +15,7 @@ export default class WebSocketBlockingChannel extends JObject implements Blockin
 
   public setListener(listener: () => void) {
     const _this = this;
-    this.webSocket.onmessage = function(this: WebSocket, event: MessageEvent) {
+    this.webSocket.onmessage = function (this: WebSocket, event: MessageEvent) {
       const message: ArrayBuffer = event.data;
       _this.inputBuffer.append(message);
       listener();

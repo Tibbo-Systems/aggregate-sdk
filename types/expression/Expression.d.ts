@@ -11,4 +11,5 @@ export default class Expression extends JObject {
     getText(): string;
     toString(): string;
     equals(obj: JObject | null): boolean;
+    clone(): Expression;
 }

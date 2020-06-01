@@ -17,13 +17,7 @@ class DataTableComparatorTest {
   public static first: Event;
 
   static __static_initializer_1() {
-    DataTableComparatorTest.first = Event.createEvent(
-      'contexta',
-      'namea',
-      EventLevel.INFO,
-      SimpleDataTable.createSimpleDataTable(DataTableComparatorTest.format, 'testa', 1, true),
-      1
-    );
+    DataTableComparatorTest.first = Event.createEvent('contexta', 'namea', EventLevel.INFO, SimpleDataTable.createSimpleDataTable(DataTableComparatorTest.format, 'testa', 1, true), 1);
     DataTableComparatorTest.first.setCreationtime(new Date(Date.now() + 1));
     DataTableComparatorTest.first.setAcknowledgementsTable(new SimpleDataTable());
     DataTableComparatorTest.first.setEnrichmentsTable(new SimpleDataTable());
@@ -32,13 +26,7 @@ class DataTableComparatorTest {
   public static second: Event;
 
   static __static_initializer_2() {
-    DataTableComparatorTest.second = Event.createEvent(
-      'contextb',
-      'nameb',
-      EventLevel.WARNING,
-      SimpleDataTable.createSimpleDataTable(DataTableComparatorTest.format, 'testb', 2, true),
-      2
-    );
+    DataTableComparatorTest.second = Event.createEvent('contextb', 'nameb', EventLevel.WARNING, SimpleDataTable.createSimpleDataTable(DataTableComparatorTest.format, 'testb', 2, true), 2);
 
     DataTableComparatorTest.second.setCreationtime(new Date(Date.now() + 2));
     DataTableComparatorTest.second.setAcknowledgementsTable(new SimpleDataTable());
@@ -48,13 +36,7 @@ class DataTableComparatorTest {
   public static third: Event;
 
   static __static_initializer_3() {
-    DataTableComparatorTest.third = Event.createEvent(
-      'contextc',
-      'namec',
-      EventLevel.ERROR,
-      SimpleDataTable.createSimpleDataTable(DataTableComparatorTest.format, 'testc', 3, true),
-      3
-    );
+    DataTableComparatorTest.third = Event.createEvent('contextc', 'namec', EventLevel.ERROR, SimpleDataTable.createSimpleDataTable(DataTableComparatorTest.format, 'testc', 3, true), 3);
 
     DataTableComparatorTest.third.setCreationtime(new Date(Date.now() + 3));
     DataTableComparatorTest.third.setAcknowledgementsTable(new SimpleDataTable());
@@ -90,85 +72,25 @@ describe('DataTableComparatorTest', () => {
     const comparator = dataTableComparatorTest.getComparator();
 
     expect(
-      comparator.compareObjects(
-        DataTableComparatorTest.first.getContext(),
-        DataTableComparatorTest.second.getContext(),
-        true
-      ) ==
-        -comparator.compareObjects(
-          DataTableComparatorTest.second.getContext(),
-          DataTableComparatorTest.first.getContext(),
-          true
-        )
+      comparator.compareObjects(DataTableComparatorTest.first.getContext(), DataTableComparatorTest.second.getContext(), true) ==
+        -comparator.compareObjects(DataTableComparatorTest.second.getContext(), DataTableComparatorTest.first.getContext(), true)
     ).toBeTruthy();
     expect(
-      comparator.compareObjects(
-        DataTableComparatorTest.first.getContext(),
-        DataTableComparatorTest.second.getContext(),
-        false
-      ) ==
-        -comparator.compareObjects(
-          DataTableComparatorTest.second.getContext(),
-          DataTableComparatorTest.first.getContext(),
-          false
-        )
+      comparator.compareObjects(DataTableComparatorTest.first.getContext(), DataTableComparatorTest.second.getContext(), false) ==
+        -comparator.compareObjects(DataTableComparatorTest.second.getContext(), DataTableComparatorTest.first.getContext(), false)
     ).toBeTruthy();
 
     expect(
-      Math.sign(
-        comparator.compareObjects(
-          DataTableComparatorTest.first.getContext(),
-          DataTableComparatorTest.third.getContext(),
-          true
-        )
-      ) ==
-        Math.sign(
-          comparator.compareObjects(
-            DataTableComparatorTest.second.getContext(),
-            DataTableComparatorTest.third.getContext(),
-            true
-          )
-        )
+      Math.sign(comparator.compareObjects(DataTableComparatorTest.first.getContext(), DataTableComparatorTest.third.getContext(), true)) ==
+        Math.sign(comparator.compareObjects(DataTableComparatorTest.second.getContext(), DataTableComparatorTest.third.getContext(), true))
     ).toBeTruthy();
 
-    expect(
-      comparator.compareObjects(
-        DataTableComparatorTest.first.getContext(),
-        DataTableComparatorTest.second.getContext(),
-        true
-      ) <= 0
-    ).toBeTruthy();
-    expect(
-      comparator.compareObjects(
-        DataTableComparatorTest.second.getContext(),
-        DataTableComparatorTest.third.getContext(),
-        true
-      ) <= 0
-    ).toBeTruthy();
-    expect(
-      comparator.compareObjects(
-        DataTableComparatorTest.first.getContext(),
-        DataTableComparatorTest.third.getContext(),
-        true
-      ) <= 0
-    ).toBeTruthy();
+    expect(comparator.compareObjects(DataTableComparatorTest.first.getContext(), DataTableComparatorTest.second.getContext(), true) <= 0).toBeTruthy();
+    expect(comparator.compareObjects(DataTableComparatorTest.second.getContext(), DataTableComparatorTest.third.getContext(), true) <= 0).toBeTruthy();
+    expect(comparator.compareObjects(DataTableComparatorTest.first.getContext(), DataTableComparatorTest.third.getContext(), true) <= 0).toBeTruthy();
 
-    expect(
-      DataTableComparatorTest.first.equals(DataTableComparatorTest.first) &&
-        comparator.compareObjects(
-          DataTableComparatorTest.first.getContext(),
-          DataTableComparatorTest.first.getContext(),
-          true
-        ) == 0
-    ).toBeTruthy();
-    expect(
-      DataTableComparatorTest.first.equals(DataTableComparatorTest.first) &&
-        comparator.compareObjects(
-          DataTableComparatorTest.first.getContext(),
-          DataTableComparatorTest.first.getContext(),
-          false
-        ) == 0
-    ).toBeTruthy();
+    expect(DataTableComparatorTest.first.equals(DataTableComparatorTest.first) && comparator.compareObjects(DataTableComparatorTest.first.getContext(), DataTableComparatorTest.first.getContext(), true) == 0).toBeTruthy();
+    expect(DataTableComparatorTest.first.equals(DataTableComparatorTest.first) && comparator.compareObjects(DataTableComparatorTest.first.getContext(), DataTableComparatorTest.first.getContext(), false) == 0).toBeTruthy();
 
     expect(comparator.compareObjects(DataTableComparatorTest.first.getContext(), null, true) == 0).toBeFalsy();
     expect(comparator.compareObjects(null, DataTableComparatorTest.first.getContext(), true) == 0).toBeFalsy();

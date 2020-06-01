@@ -12,5 +12,6 @@ export default class LoggerAdapter {
     warn(message: string, error?: Error): void;
     trace(message: string, error?: Error): void;
     fatal(message: string, error?: Error): void;
+    setLevel(level: LevelAdapter): void;
     log(level: LevelAdapter, message: string, error?: Error): void;
 }

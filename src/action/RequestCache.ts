@@ -2,6 +2,7 @@ import RequestIdentifier from './RequestIdentifier';
 import ActionResponse from './ActionResponse';
 
 export default class RequestCache {
+  //TODO Use only primitives
   private requests: Map<RequestIdentifier, ActionResponse> = new Map();
 
   public getRequests(): Map<RequestIdentifier, ActionResponse> {

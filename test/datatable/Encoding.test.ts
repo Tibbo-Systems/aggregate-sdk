@@ -21,10 +21,7 @@ describe('TestEncoding', () => {
   it('testUtfEncoding', () => {
     const s = '\uFFFF\u0000\u0123';
 
-    const st: DataTable = DataTableFactory.createWithFirstRecord(
-      new TableFormat(1, 1, FieldFormatFactory.createType('f', FieldConstants.STRING_FIELD)),
-      s
-    );
+    const st: DataTable = DataTableFactory.createWithFirstRecord(new TableFormat(1, 1, FieldFormatFactory.createType('f', FieldConstants.STRING_FIELD)), s);
 
     const enc: string = st.encodeDataTable(false, new ClassicEncodingSettings(false)) as string;
 
@@ -36,8 +33,7 @@ describe('TestEncoding', () => {
   });
 
   it('testSpecialCharacterEncoding', () => {
-    let s: string =
-      DataTableUtils.ELEMENT_START + DataTableUtils.ELEMENT_END + DataTableUtils.ELEMENT_NAME_VALUE_SEPARATOR;
+    let s: string = DataTableUtils.ELEMENT_START + DataTableUtils.ELEMENT_END + DataTableUtils.ELEMENT_NAME_VALUE_SEPARATOR;
 
     s += TransferEncodingHelper.ESCAPE_CHAR + TransferEncodingHelper.SEPARATOR_CHAR;
 
@@ -45,10 +41,7 @@ describe('TestEncoding', () => {
 
     s += String.fromCharCode(AggreGateCommand.START_CHAR) + String.fromCharCode(AggreGateCommand.END_CHAR);
 
-    const st: DataTable = DataTableFactory.createWithFirstRecord(
-      new TableFormat(1, 1, FieldFormatFactory.createType('f', FieldConstants.STRING_FIELD)),
-      s
-    );
+    const st: DataTable = DataTableFactory.createWithFirstRecord(new TableFormat(1, 1, FieldFormatFactory.createType('f', FieldConstants.STRING_FIELD)), s);
 
     const enc: string = st.encodeDataTable(false, new ClassicEncodingSettings(false)) as string;
 
@@ -94,9 +87,7 @@ describe('TestEncoding', () => {
   });
 
   it('testHardNestedTableEncoding', () => {
-    const tf: TableFormat = FieldFormatFactory.createType('STRING_FIELD', FieldConstants.STRING_FIELD)
-      .setDefault('test % %% %%% test')
-      .wrap();
+    const tf: TableFormat = FieldFormatFactory.createType('STRING_FIELD', FieldConstants.STRING_FIELD).setDefault('test % %% %%% test').wrap();
 
     tf.addField(FieldFormatFactory.createType('BOOLEAN_FIELD', FieldConstants.BOOLEAN_FIELD).setDefault(false));
     const dataF: Data = new Data();
@@ -126,10 +117,7 @@ describe('TestEncoding', () => {
   });
 
   it('testTest', () => {
-    const tf: TableFormat = TableFormat.createWithFormatAndSettings(
-      '<<int><I>><<string><S>>',
-      new ClassicEncodingSettings(true)
-    );
+    const tf: TableFormat = TableFormat.createWithFormatAndSettings('<<int><I>><<string><S>>', new ClassicEncodingSettings(true));
     const table: DataTable = new DataRecord(tf).wrap();
 
     const encode: string = table.encodeDataTable(true) as string;
@@ -173,20 +161,10 @@ describe('TestEncoding', () => {
     ces.setFormatCache(new FormatCache('test'));
     ces.setKnownFormatCollector(new KnownFormatCollector());
 
-    const table: DataTable = DataTableFactory.createWithFirstRecord(
-      AbstractContext.EF_UPDATED.clone(),
-      'test',
-      nested,
-      null
-    );
+    const table: DataTable = DataTableFactory.createWithFirstRecord(AbstractContext.EF_UPDATED.clone(), 'test', nested, null);
 
     const encodedTable: string = table.encodeDataTable(true, ces) as string;
-    const expected: string =
-      '<F=<<variable><S><A=>><<value><T><A=<F=>>><<user><S><F=N><A=<NULL>>>' +
-      '<M=1><X=1>><D=0><R=<test>' +
-      '<<F=<<value><F><A=0.0>>' +
-      '<<quality><I><A=0>><M=1><X=1>><D=1>' +
-      '<R=<12345.67><123>>><<NULL>>>';
+    const expected: string = '<F=<<variable><S><A=>><<value><T><A=<F=>>><<user><S><F=N><A=<NULL>>>' + '<M=1><X=1>><D=0><R=<test>' + '<<F=<<value><F><A=0.0>>' + '<<quality><I><A=0>><M=1><X=1>><D=1>' + '<R=<12345.67><123>>><<NULL>>>';
 
     expect(encodedTable === expected).toBeTruthy();
   });

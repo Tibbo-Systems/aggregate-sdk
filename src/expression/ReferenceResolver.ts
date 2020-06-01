@@ -9,7 +9,7 @@ import Evaluator from './Evaluator';
 export default interface ReferenceResolver {
   setDefaultTable(defaultTable: DataTable | null): void;
 
-  resolveReference(ref: Reference, environment: EvaluationEnvironment): any;
+  resolveReference(ref: Reference, environment: EvaluationEnvironment): Promise<any>;
 
   setContextManager(cm: ContextManager<any>): void;
 
@@ -21,9 +21,9 @@ export default interface ReferenceResolver {
 
   getDefaultContext(): Context<any, any> | null;
 
-  setCallerController(callerController: CallerController | null): void;
+  setCallerController(callerController?: CallerController): void;
 
-  getCallerController(): CallerController | null;
+  getCallerController(): CallerController | undefined;
 
   setEvaluator(evaluator: Evaluator): void;
 

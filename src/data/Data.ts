@@ -136,7 +136,7 @@ export default class Data extends JObject implements StringEncodable {
 
     const context = cm.get(Contexts.CTX_UTILITIES, cc);
     if (!context) throw new Error(Contexts.CTX_UTILITIES + ' not found');
-    const dt = await context.callFunction(UtilitiesContextConstants.F_GET_DATA, new Array(this.getId()), cc, null);
+    const dt = await context.callFunction(UtilitiesContextConstants.F_GET_DATA, new Array(this.getId()), cc);
 
     const data = dt.rec().getData(UtilitiesContextConstants.FOF_GET_DATA_DATA);
     const receivedData = data ? (data as Data).getData() : null;
@@ -223,32 +223,35 @@ export default class Data extends JObject implements StringEncodable {
 
     tempSB.append(Data.SEPARATOR);
 
-    tempSB.append(this.getId() != null ? String(this.getId()) : DataTableUtils.DATA_TABLE_NULL);
+    const id = this.getId();
+    tempSB.append(id != null ? id.toString() : DataTableUtils.DATA_TABLE_NULL);
 
     tempSB.append(Data.SEPARATOR);
 
-    tempSB.append(this.getName() != null ? this.getName() : DataTableUtils.DATA_TABLE_NULL);
+    tempSB.append(this.getName() ?? DataTableUtils.DATA_TABLE_NULL);
 
     tempSB.append(Data.SEPARATOR);
 
-    tempSB.append(this.getPreview() != null ? String((this.getPreview() as ByteBuffer).limit) : String(-1));
+    const preview = this.getPreview();
+    tempSB.append(preview != null ? preview.limit.toString() : '-1');
 
     tempSB.append(Data.SEPARATOR);
 
-    tempSB.append(this.getData() != null ? String((this.getData() as ByteBuffer).limit) : String(-1));
+    const data = this.getData();
+    tempSB.append(data != null ? data.limit.toString() : '-1');
 
     tempSB.append(Data.SEPARATOR);
 
     if (isTransferEncode) sb.append(DataTableUtils.transferEncode(tempSB.toString()));
     else sb.append(tempSB.toString());
 
-    this.appendBytes(sb, this.getPreview() as ByteBuffer, isTransferEncode, encodeLevel);
-    this.appendBytes(sb, this.getData() as ByteBuffer, isTransferEncode, encodeLevel);
+    this.appendBytes(sb, preview, isTransferEncode, encodeLevel);
+    this.appendBytes(sb, data, isTransferEncode, encodeLevel);
 
     return sb;
   }
 
-  private appendBytes(sb: StringBuilder, data: ByteBuffer, isTransferEncode: boolean, encodeLevel: number): void {
+  private appendBytes(sb: StringBuilder, data: ByteBuffer | null, isTransferEncode: boolean, encodeLevel: number): void {
     if (data != null) {
       for (let i = 0; i <= data.limit; i += TransferEncodingHelper.LARGE_DATA_SIZE) {
         let end = i + TransferEncodingHelper.LARGE_DATA_SIZE;

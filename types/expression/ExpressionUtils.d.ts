@@ -5,4 +5,5 @@ export default class ExpressionUtils {
     static getValue(ao: AttributedObject | null): any;
     static toAttributed(value: any, first?: AttributedObject | null, second?: AttributedObject | null): AttributedObject;
     static parse(expression: Expression, showExpressionInErrorText: boolean): any;
+    static generateBindingId(): number;
 }

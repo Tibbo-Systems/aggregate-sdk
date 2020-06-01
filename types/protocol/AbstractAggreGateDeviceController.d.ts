@@ -22,7 +22,7 @@ export default abstract class AbstractAggreGateDeviceController<D extends AggreG
     static readonly FLAG_NO_REPLY: string;
     private device;
     private _contextManager;
-    private callerController;
+    private callerController?;
     private readonly userSettings;
     private avoidSendingFormats;
     private readonly formatCache;
@@ -37,7 +37,7 @@ export default abstract class AbstractAggreGateDeviceController<D extends AggreG
     setContextManager(contextManager: C): void;
     setDevice(device: D): void;
     getDevice(): D | null;
-    getCallerController(): CallerController | null;
+    getCallerController(): CallerController | undefined;
     protected setCallerController(callerController: CallerController): void;
     getFormatCache(): FormatCache;
     getSettings(): UserSettings;

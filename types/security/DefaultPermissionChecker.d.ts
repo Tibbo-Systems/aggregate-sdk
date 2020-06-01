@@ -10,7 +10,7 @@ export default class DefaultPermissionChecker implements PermissionChecker {
     canSee(perms: Permissions, context: string, cm: ContextManager<any> | null): boolean;
     getLevel(permissions: Permissions, accessedContext: string, accessedEntityType: number, accessedEntity: string, accessedEntityGroup: string, cm: ContextManager<any>): string;
     getPermissionLevels(): Map<string, string>;
-    has(caller: CallerController | null, requiredPermissions: Permissions, accessedContext: Context<any, any>, accessedEntityDefinition: EntityDefinition): boolean;
+    has(requiredPermissions: Permissions, accessedContext: Context<any, any>, accessedEntityDefinition: EntityDefinition, caller?: CallerController): boolean;
     isValid(permissionLevel: string | null): boolean;
     static getNullPermissions(): Permissions;
 }

@@ -43,5 +43,3 @@ describe('TestTableFormant', () => {
     expect(format.getFieldIndex('one')).toBe(0);
   });
 });
-
-

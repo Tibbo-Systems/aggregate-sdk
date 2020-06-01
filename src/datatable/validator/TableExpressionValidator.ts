@@ -4,7 +4,6 @@ import Expression from '../../expression/Expression';
 import TableFormat from '../TableFormat';
 import JObject from '../../util/java/JObject';
 import Log from '../../Log';
-import Evaluator from '../../expression/Evaluator';
 
 export default class TableExpressionValidator extends AbstractTableValidator {
   private readonly expression: Expression;
@@ -23,7 +22,9 @@ export default class TableExpressionValidator extends AbstractTableValidator {
   }
 
   public validate(table: DataTable): void {
-    const evaluator: Evaluator = new Evaluator(null, null, table, null);
+    //TODO FIXME:
+    /* const Evaluator = require('../../expression/Expression').default;
+    const evaluator = new Evaluator(null, null, table);
 
     try {
       const result: JObject = evaluator.evaluate(this.expression);
@@ -32,6 +33,6 @@ export default class TableExpressionValidator extends AbstractTableValidator {
       }
     } catch (ex) {
       Log.DATATABLE.warn("Error evaluating data table validator's expression '" + this.expression + "': " + ex.message, ex);
-    }
+    }*/
   }
 }

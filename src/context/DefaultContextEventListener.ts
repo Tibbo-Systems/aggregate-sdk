@@ -9,17 +9,17 @@ import Reference from '../expression/Reference';
 import EventEnvironmentResolver from './EventEnvironmentResolver';
 
 export default abstract class DefaultContextEventListener extends JObject implements ContextEventListener {
-  private callerController: CallerController | null;
-  private contextManager: ContextManager<any> | null;
+  private callerController?: CallerController;
+  private contextManager?: ContextManager<any>;
 
-  private listenerCode: number | null;
-  private filter: Expression | null;
+  private listenerCode?: number;
+  private filter?: Expression;
   private acceptEventsWithoutListenerCode = false;
 
   private evaluator: Evaluator | null = null;
-  private fingerprint: string | null;
+  private fingerprint?: string;
 
-  constructor(callerController: CallerController | null = null, contextManager: ContextManager<any> | null = null, listenerCode: number | null = null, filter: Expression | null = null, fingerprint: string | null = null) {
+  constructor(callerController?: CallerController, contextManager?: ContextManager<any>, listenerCode?: number, filter?: Expression, fingerprint?: string) {
     super();
     this.callerController = callerController;
     this.contextManager = contextManager;
@@ -28,19 +28,19 @@ export default abstract class DefaultContextEventListener extends JObject implem
     this.fingerprint = fingerprint;
   }
 
-  getCallerController(): CallerController | null {
+  getCallerController(): CallerController | undefined {
     return this.callerController;
   }
 
-  getFilter(): Expression | null {
+  getFilter(): Expression | undefined {
     return this.filter;
   }
 
-  getFingerprint(): string | null {
+  getFingerprint(): string | undefined {
     return this.fingerprint;
   }
 
-  getListenerCode(): number | null {
+  getListenerCode(): number | undefined {
     return this.listenerCode;
   }
 
@@ -54,7 +54,7 @@ export default abstract class DefaultContextEventListener extends JObject implem
     try {
       if (this.filter != null) {
         if (this.evaluator == null) {
-          this.evaluator = new Evaluator(this.getLocalContextManager(), null, null, null);
+          this.evaluator = new Evaluator(this.getLocalContextManager(), null, null);
         }
 
         this.prepareEvaluator(ev);
@@ -84,7 +84,7 @@ export default abstract class DefaultContextEventListener extends JObject implem
   private cleanEvaluator(): void {
     if (this.evaluator != null) {
       this.evaluator.getDefaultResolver().setDefaultTable(null);
-      this.evaluator.getDefaultResolver().setCallerController(null);
+      this.evaluator.getDefaultResolver().setCallerController(undefined);
       this.evaluator.setResolver(Reference.SCHEMA_ENVIRONMENT, null);
     }
   }
@@ -98,7 +98,7 @@ export default abstract class DefaultContextEventListener extends JObject implem
     evaluator.getDefaultResolver().setCallerController(this.getCallerController());
   }
 
-  public getLocalContextManager(): ContextManager<any> | null {
+  public getLocalContextManager(): ContextManager<any> | undefined {
     return this.contextManager;
   }
 

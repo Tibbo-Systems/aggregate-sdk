@@ -1,5 +1,6 @@
-import StorageHelper from './view/StorageHelper';
+/* eslint-disable @typescript-eslint/no-var-requires */
 import Cres from './Cres';
+import StorageHelper from './view/StorageHelper';
 import Log from './Log';
 import ActionCommand from './action/ActionCommand';
 import ActionCommandList from './action/ActionCommandList';
@@ -123,7 +124,6 @@ import IdValidator from './datatable/validator/IdValidator';
 import KeyFieldsValidator from './datatable/validator/KeyFieldsValidator';
 import LimitsValidator from './datatable/validator/LimitsValidator';
 import NonNullValidator from './datatable/validator/NonNullValidator';
-import RecordValidator from './datatable/validator/RecordValidator';
 import RegexValidator from './datatable/validator/RegexValidator';
 import TableExpressionValidator from './datatable/validator/TableExpressionValidator';
 import TableKeyFieldsValidator from './datatable/validator/TableKeyFieldsValidator';
@@ -282,8 +282,18 @@ import InvokeActionOperation from './action/client/InvokeActionOperation';
 import Operation from './action/client/Operation';
 import EntityGroupMember from './action/client/EntityGroupMember';
 import ActionUtilsConstants from './action/ActionUtilsConstants';
+import InvokeActionsOperation from './action/client/InvokeActionsOperation';
+import Quality from './util/Quality';
+import ViewFilterElement from './view/ViewFilterElement';
+import EvaluationOptions from './binding/EvaluationOptions';
+const AggregateExpressionLexer = require('./expression/parser/AggregateExpressionLexer.js');
+const AggregateExpressionParser = require('./expression/parser/AggregateExpressionParser.js');
+const AggregateExpressionVisitor = require('./expression/parser/AggregateExpressionVisitor.js');
 
 export {
+  AggregateExpressionLexer,
+  AggregateExpressionParser,
+  AggregateExpressionVisitor,
   AbstractCommandExecutor,
   ActionCommandExecutor,
   AbstractOperation,
@@ -291,6 +301,7 @@ export {
   ActionWorker,
   ExecutionHelper,
   InvokeActionOperation,
+  InvokeActionsOperation,
   Operation,
   EntityGroupMember,
   ActivateDashboard,
@@ -354,6 +365,7 @@ export {
   BindingProvider,
   Cres,
   Log,
+  Quality,
   ActionCommand,
   ActionCommandList,
   ActionDefinition,
@@ -458,6 +470,7 @@ export {
   ClassicEncodingSettings,
   EncodingSettings,
   FormatCache,
+  EvaluationOptions,
   KnownFormatCollector,
   TransferEncodingHelper,
   BooleanFieldFormat,
@@ -480,7 +493,6 @@ export {
   KeyFieldsValidator,
   LimitsValidator,
   NonNullValidator,
-  RecordValidator,
   RegexValidator,
   TableExpressionValidator,
   TableKeyFieldsValidator,
@@ -568,4 +580,5 @@ export {
   LoggerAdapter,
   StorageHelper,
   ActionUtilsConstants,
+  ViewFilterElement,
 };

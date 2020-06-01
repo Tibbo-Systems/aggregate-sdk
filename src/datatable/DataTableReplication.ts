@@ -125,7 +125,7 @@ export default class DataTableReplication {
           if (target.getRecordCount() < target.getFormat().getMaxRecords()) {
             const newRec: DataRecord = new DataRecord(target.getFormat());
 
-            this.copyRecord(sourceRec, newRec, copyReadOnlyFields, copyNonReplicatableFields, removeRecordsFromTarget, addRecordsToTarget, fields).forEach(element => {
+            this.copyRecord(sourceRec, newRec, copyReadOnlyFields, copyNonReplicatableFields, removeRecordsFromTarget, addRecordsToTarget, fields).forEach((element) => {
               errors.add(element);
             });
 
@@ -141,7 +141,7 @@ export default class DataTableReplication {
           }
         }
       } else {
-        this.copyRecord(sourceRec, targetRec, copyReadOnlyFields, copyNonReplicatableFields, removeRecordsFromTarget, addRecordsToTarget, fields).forEach(element => {
+        this.copyRecord(sourceRec, targetRec, copyReadOnlyFields, copyNonReplicatableFields, removeRecordsFromTarget, addRecordsToTarget, fields).forEach((element) => {
           errors.add(element);
         });
       }
@@ -181,7 +181,7 @@ export default class DataTableReplication {
       const srcRec: DataRecord = source.getRecord(i);
       const tgtRec: DataRecord = target.getRecord(i);
 
-      this.copyRecord(srcRec, tgtRec, copyReadOnlyFields, copyNonReplicatableFields, removeRecordsFromTarget, addRecordsToTarget, fields).forEach(element => {
+      this.copyRecord(srcRec, tgtRec, copyReadOnlyFields, copyNonReplicatableFields, removeRecordsFromTarget, addRecordsToTarget, fields).forEach((element) => {
         errors.add(element);
       });
     }
@@ -189,7 +189,7 @@ export default class DataTableReplication {
     if (addRecordsToTarget && (ignoreUnresizable || !target.getFormat().isUnresizable())) {
       if (source.getRecordCount() > target.getRecordCount()) {
         for (let i = target.getRecordCount(); i < Math.min(target.getFormat().getMaxRecords(), source.getRecordCount()); i++) {
-          this.copyRecord(source.getRecord(i), target.addRecord(), copyReadOnlyFields, copyNonReplicatableFields, removeRecordsFromTarget, addRecordsToTarget, fields).forEach(element => {
+          this.copyRecord(source.getRecord(i), target.addRecord(), copyReadOnlyFields, copyNonReplicatableFields, removeRecordsFromTarget, addRecordsToTarget, fields).forEach((element) => {
             errors.add(element);
           });
         }
@@ -226,7 +226,7 @@ export default class DataTableReplication {
 
       srcFf = source.getFormat().getField(fieldName);
 
-      if (fields != null && fields.findIndex(el => el === tgtFf.getName()) === -1) {
+      if (fields != null && fields.findIndex((el) => el === tgtFf.getName()) === -1) {
         continue;
       }
 
@@ -253,7 +253,7 @@ export default class DataTableReplication {
             if (Util.equals(targetTable.getFormat(), AbstractDataTable.DEFAULT_FORMAT)) {
               target.setValue(fieldName, sourceTable.clone());
             } else {
-              this.copy(sourceTable, targetTable, copyReadOnlyFields, copyNonReplicatableFields, removeRecordsFromTarget, addRecordsToTarget).forEach(element => {
+              this.copy(sourceTable, targetTable, copyReadOnlyFields, copyNonReplicatableFields, removeRecordsFromTarget, addRecordsToTarget).forEach((element) => {
                 errors.add(element);
               });
               target.setValue(fieldName, targetTable);

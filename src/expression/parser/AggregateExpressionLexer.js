@@ -1,10 +1,10 @@
 // Generated from src/expression/grammar/AggregateExpression.g4 by ANTLR 4.7.2
 // jshint ignore: start
-const antlr4 = require('antlr4/index');
+var antlr4 = require('antlr4/index');
 
 
 
-const serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
+var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u00023\u01a8\b\u0001\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004",
     "\u0004\t\u0004\u0004\u0005\t\u0005\u0004\u0006\t\u0006\u0004\u0007\t",
     "\u0007\u0004\b\t\b\u0004\t\t\t\u0004\n\t\n\u0004\u000b\t\u000b\u0004",
@@ -287,9 +287,9 @@ const serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0002"].join("");
 
 
-const atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
+var atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
 
-const decisionsToDFA = atn.decisionToState.map( function(ds, index) { return new antlr4.dfa.DFA(ds, index); });
+var decisionsToDFA = atn.decisionToState.map( function(ds, index) { return new antlr4.dfa.DFA(ds, index); });
 
 function AggregateExpressionLexer(input) {
 	antlr4.Lexer.call(this, input);

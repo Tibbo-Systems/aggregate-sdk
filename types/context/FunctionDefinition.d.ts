@@ -20,14 +20,14 @@ export default class FunctionDefinition extends AbstractEntityDefinition impleme
     getOutputFormat(): TableFormat | null;
     isHidden(): boolean;
     getPermissions(): Permissions | null;
-    getImplementation(): ((con: Context<any, any>, def: FunctionDefinition, caller: CallerController | null, request: RequestController | null, parameters: DataTable) => DataTable) | null;
+    getImplementation(): ((con: Context<any, any>, def: FunctionDefinition, parameters: DataTable, caller?: CallerController, request?: RequestController) => DataTable) | null;
     setInputFormat(inputFormat: TableFormat | null): void;
     setOutputFormat(outputFormat: TableFormat | null): void;
     setHidden(hidden: boolean): void;
     setPermissions(permissions: Permissions): void;
     isConcurrent(): boolean;
     setConcurrent(concurrent: boolean): void;
-    setImplementation(implementation: (con: Context<any, any>, def: FunctionDefinition, caller: CallerController | null, request: RequestController | null, parameters: DataTable) => DataTable): void;
+    setImplementation(implementation: (con: Context<any, any>, def: FunctionDefinition, parameters: DataTable, caller?: CallerController, request?: RequestController) => DataTable): void;
     compareTo(d: FunctionDefinition): number;
     equals(obj: JObject | null): boolean;
     getEntityType(): number;

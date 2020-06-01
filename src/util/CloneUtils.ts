@@ -12,8 +12,11 @@ export default class CloneUtils {
    * @param object
    *          The object to be copied.
    */
+  //TODO THIS method is not corrected
   public static deepClone<T>(object: T | null): T | null {
     if (null == object) return null;
+
+    if (object instanceof JObject) return (object.clone() as unknown) as T;
 
     return cloneDeep(object);
   }

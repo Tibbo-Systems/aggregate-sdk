@@ -22,7 +22,7 @@ export default class EntityList extends JObject implements Iterable<EntityRefere
     toString(): string;
     clone(): EntityList;
     [Symbol.iterator](): {
-        next(): IteratorResult<EntityReference, any>;
+        next(): IteratorResult<EntityReference>;
     };
     equals(obj: any): boolean;
 }

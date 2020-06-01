@@ -53,7 +53,7 @@ export default class EventEnvironmentResolver extends AbstractReferenceResolver 
     return this.resolver.resolveReference(ref, environment);
   }
 
-  public getCallerController(): CallerController | null {
+  public getCallerController(): CallerController | undefined {
     return this.resolver.getCallerController();
   }
 
@@ -77,7 +77,7 @@ export default class EventEnvironmentResolver extends AbstractReferenceResolver 
     this.resolver.addContextManager(schema, cm);
   }
 
-  public setCallerController(callerController: CallerController | null) {
+  public setCallerController(callerController?: CallerController) {
     this.resolver.setCallerController(callerController);
   }
 

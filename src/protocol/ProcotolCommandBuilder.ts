@@ -78,15 +78,15 @@ export default class ProtocolCommandBuilder extends JObject {
     return cmd;
   }
 
-  public addEventListenerOperation(context: string, name: string, listenerHashCode: number | null, filter: string | null, fingerprint: string | null): OutgoingAggreGateCommand {
+  public addEventListenerOperation(context: string, name: string, listenerHashCode: number | undefined, filter: string | null, fingerprint: string | undefined): OutgoingAggreGateCommand {
     return this.eventListenerOperation(AggreGateCommand.COMMAND_OPERATION_ADD_EVENT_LISTENER, context, name, listenerHashCode, filter, fingerprint);
   }
 
-  public removeEventListenerOperation(context: string, name: string, listenerHashCode: number | null, filter: string | null, fingerprint: string | null): OutgoingAggreGateCommand {
+  public removeEventListenerOperation(context: string, name: string, listenerHashCode: number | undefined, filter: string | null, fingerprint: string | undefined): OutgoingAggreGateCommand {
     return this.eventListenerOperation(AggreGateCommand.COMMAND_OPERATION_REMOVE_EVENT_LISTENER, context, name, listenerHashCode, filter, fingerprint);
   }
 
-  private eventListenerOperation(commandName: string, context: string, name: string, listenerHashCode: number | null, filter: string | null, fingerprint: string | null): OutgoingAggreGateCommand {
+  private eventListenerOperation(commandName: string, context: string, name: string, listenerHashCode: number | undefined, filter: string | null, fingerprint: string | undefined): OutgoingAggreGateCommand {
     const cmd = this.operationMessage();
 
     cmd.addParam(commandName);
@@ -101,7 +101,7 @@ export default class ProtocolCommandBuilder extends JObject {
       cmd.addParam('');
     }
 
-    if (fingerprint != null) {
+    if (fingerprint) {
       cmd.addParam(TransferEncodingHelper.encodeFromString(fingerprint) as string);
     }
 

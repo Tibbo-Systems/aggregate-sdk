@@ -7,7 +7,6 @@ import Cres from '../Cres';
 import FieldConstants from './field/FieldConstants';
 import Evaluator from '../expression/Evaluator';
 import ErrorCollector from '../util/ErrorCollector';
-//import DataTableFactory from "./DataTableFactory";
 
 export enum FilterMode {
   TEXT,
@@ -113,60 +112,13 @@ export default class DataTableUtils extends JObject {
     return DataTableUtils.EDITOR_SELECTION_VALUES;
   }
 
-  /* public static wrapToTable(values: Array<any>): DataTable {
-    const tableSource = new Map<string, object>();
-    for (let i = 0; i < values.length; i++) {
-      tableSource.set(i.toString(), values[i]);
-    }
-    return this.wrapMapToTable(tableSource);
-  }
-
-  //TODO fix this
-  public static wrapMapToTable(values: Map<string, any>): DataTable {
-   // if (values.size == 0) {
-      return DataTableFactory.of();
-   // }
-*/
-  /* const rf = new TableFormat();
-
-    for (let field of values.keys()) {
-      let value = values.get(field);
-  //    rf.addField(DataTableConversion.createFieldFormat(field, value));
-    }
-
-    const result = new DataRecord(rf);
-
-    for (let field of values.keys()) {
-      result.addValue(values.get(field));
-    }*/
-
-  //  return result.wrap();
-  //}
-
   static inlineData(tgtVal: DataTable, contextManager: ContextManager<any> | null, caller: CallerController) {}
 
   public static isEncodedTable(str: string): boolean {
     return str != null && str.length > 0 && str.charAt(0) == DataTableUtils.ELEMENT_START;
   }
 
-  public static processBindings(table: DataTable, evaluator: Evaluator, errorCollector: ErrorCollector | null = null, split = false): DataTable {
-    if (table == null) {
-      return table;
-    }
-
-    if (table.getFormat().getBindings().length == 0) {
-      return table;
-    }
-
-    let result: DataTable;
-    if (split) {
-      result = table.clone();
-      result.splitFormat();
-    } else {
-      result = table;
-    }
-
-    evaluator.getDefaultResolver().setDefaultTable(result);
-    return result;
+  public static processBindings(table: DataTable, evaluator: Evaluator, errorCollector: ErrorCollector | null): DataTable {
+    throw Error();
   }
 }

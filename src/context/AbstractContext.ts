@@ -58,7 +58,7 @@ import FieldFormatFactory from '../datatable/FieldFormatFactory';
 import DefaultContextEventListener from './DefaultContextEventListener';
 import LevelAdapter from '../util/logger/LevelAdapter';
 
-export default abstract class AbstractContext<C extends Context<C, M>, M extends ContextManager<any>> extends JObject implements Context<C, M> {
+export default abstract class AbstractContext<C extends Context<C, M>, M extends ContextManager<any>> extends Context<C, M> {
   static readonly IMPLEMENTATION_METHOD_PREFIX: string = 'callF';
 
   static readonly SETTER_METHOD_PREFIX: string = 'setV';
@@ -439,12 +439,12 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
   }
 
   public static EFT_INFO: TableFormat = new TableFormat(1, 1, '<' + AbstractContext.EF_INFO_INFO + '><S><D=' + Cres.get().getString('info') + '>');
-  public static EFT_VARIABLE_REMOVED: TableFormat = new TableFormat(1, 1, '<' + AbstractContext.EF_INFO_INFO + '><S><D=' + Cres.get().getString('info') + '>');
-  public static EFT_EVENT_REMOVED: TableFormat = new TableFormat(1, 1, '<' + AbstractContext.EF_VARIABLE_REMOVED_NAME + '><S>');
-  public static EFT_FUNCTION_REMOVED: TableFormat = new TableFormat(1, 1, '<' + AbstractContext.EF_EVENT_REMOVED_NAME + '><S>');
-  public static EFT_CHILD_REMOVED: TableFormat = new TableFormat(1, 1, '<' + AbstractContext.EF_FUNCTION_REMOVED_NAME + '><S>');
-  public static EFT_CHILD_ADDED: TableFormat = new TableFormat(1, 1, '<' + AbstractContext.EF_CHILD_REMOVED_CHILD + '><S>');
-  public static EFT_ACTION_REMOVED: TableFormat = new TableFormat(1, 1, '<' + AbstractContext.EF_CHILD_ADDED_CHILD + '><S>');
+  public static EFT_VARIABLE_REMOVED: TableFormat = new TableFormat(1, 1, '<' + AbstractContext.EF_VARIABLE_REMOVED_NAME + '><S><D=' + Cres.get().getString('info') + '>');
+  public static EFT_EVENT_REMOVED: TableFormat = new TableFormat(1, 1, '<' + AbstractContext.EF_EVENT_REMOVED_NAME + '><S>');
+  public static EFT_FUNCTION_REMOVED: TableFormat = new TableFormat(1, 1, '<' + AbstractContext.EF_FUNCTION_REMOVED_NAME + '><S>');
+  public static EFT_CHILD_REMOVED: TableFormat = new TableFormat(1, 1, '<' + AbstractContext.EF_CHILD_REMOVED_CHILD + '><S>');
+  public static EFT_CHILD_ADDED: TableFormat = new TableFormat(1, 1, '<' + AbstractContext.EF_CHILD_ADDED_CHILD + '><S>');
+  public static EFT_ACTION_REMOVED: TableFormat = new TableFormat(1, 1, '<' + AbstractContext.EF_ACTION_REMOVED_NAME + '><S>');
 
   public static VD_INFO: VariableDefinition;
 
@@ -601,13 +601,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
   public static ED_ACTION_ADDED: EventDefinition;
 
   private static __static_initializer_35() {
-    AbstractContext.ED_ACTION_ADDED = new EventDefinition(
-      AbstractContext.E_ACTION_ADDED,
-      AbstractContext.ACTION_DEF_FORMAT.clone()
-        .setMinRecords(1)
-        .setMaxRecords(1),
-      Cres.get().getString('conActionAdded')
-    );
+    AbstractContext.ED_ACTION_ADDED = new EventDefinition(AbstractContext.E_ACTION_ADDED, AbstractContext.ACTION_DEF_FORMAT.clone().setMinRecords(1).setMaxRecords(1), Cres.get().getString('conActionAdded'));
     AbstractContext.ED_ACTION_ADDED.setHidden(true);
     AbstractContext.ED_ACTION_ADDED.setPermissions(DefaultPermissionChecker.getNullPermissions());
   }
@@ -851,7 +845,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
       this.setupChildren();
     } catch (ex) {
-      throw new Error("Error setting up context '" + toString() + "': " + ex.message);
+      throw new Error("Error setting up context '" + this.toString() + "': " + ex.message);
     }
   }
 
@@ -916,7 +910,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
   teardown(): void {}
 
   start(): void {
-    this.children.forEach(child => {
+    this.children.forEach((child) => {
       if (this.isChildrenConcurrencyEnabled()) {
         const promise = new Promise((resolve, reject) => {
           child.start();
@@ -933,7 +927,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   stop(): void {
     this.stopped = true;
-    this.children.forEach(child => {
+    this.children.forEach((child) => {
       if (this.isChildrenConcurrencyEnabled()) {
         const promise = new Promise((resolve, reject) => {
           child.stop();
@@ -948,22 +942,22 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     this.started = false;
   }
 
-  getChildren(caller: CallerController | null = null): Array<Context<C, M>> {
-    if (!this.checkPermissions(this.getChildrenViewPermissions(), caller, this, null)) {
+  getChildren(caller?: CallerController): Array<Context<C, M>> {
+    if (!this.checkPermissions(this.getChildrenViewPermissions(), this, null, caller)) {
       if (Log.CONTEXT_CHILDREN.isDebugEnabled()) {
         Log.CONTEXT_CHILDREN.debug("Access to child '" + name + "' denied in context '" + this.getPath() + "'");
       }
       return [];
     }
 
-    return this.children.filter(child => this.shouldSeeChild(caller, child));
+    return this.children.filter((child) => this.shouldSeeChild(child, caller));
   }
 
-  private shouldSeeChild(caller: CallerController | null, cur: Context<any, any>): boolean {
-    return this.checkPermissions(cur.getPermissions(), caller, cur, null) || this.canSee(caller, cur);
+  private shouldSeeChild(cur: Context<any, any>, caller?: CallerController): boolean {
+    return this.checkPermissions(cur.getPermissions(), cur, null, caller) || this.canSee(cur, caller);
   }
 
-  private canSee(caller: CallerController | null, con: Context<any, any>): boolean {
+  private canSee(con: Context<any, any>, caller?: CallerController): boolean {
     if (!this.permissionCheckingEnabled) {
       return true;
     }
@@ -971,7 +965,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     return this.getPermissionChecker().canSee(caller != null ? caller.getPermissions() : null, con.getPath(), this.getContextManager());
   }
 
-  public getVisibleChildren(caller: CallerController | null = null): Array<Context<C, M>> {
+  public getVisibleChildren(caller?: CallerController): Array<Context<C, M>> {
     return this.getChildren(caller);
   }
 
@@ -979,7 +973,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     return false;
   }
 
-  public getMappedChildren(caller: CallerController | null = null): Array<Context<C, M>> {
+  public getMappedChildren(caller?: CallerController): Array<Context<C, M>> {
     return this.isMapped() ? this.getVisibleChildren(caller) : this.getChildren(caller);
   }
 
@@ -1030,7 +1024,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     return root as C;
   }
 
-  public get(contextPath: string, caller: CallerController | null = null): Context<C, M> | null {
+  public get(contextPath: string, caller?: CallerController): Context<C, M> | null {
     if (contextPath == null) {
       return null;
     }
@@ -1110,7 +1104,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     this.name = name;
   }
 
-  private getRootWithLookup(caller: CallerController | null): C {
+  private getRootWithLookup(caller?: CallerController): C {
     if (caller == null) {
       return this.getRoot();
     }
@@ -1176,18 +1170,18 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     this.childrenConcurrencyEnabled = childrenConcurrencyEnabled;
   }
 
-  protected checkThisPermissions(needPermissions: Permissions | null, caller: CallerController | null, accessedEntityDefinition: EntityDefinition): void {
-    if (!this.checkPermissions(needPermissions, caller, this, accessedEntityDefinition)) {
+  protected checkThisPermissions(needPermissions: Permissions | null, accessedEntityDefinition: EntityDefinition, caller?: CallerController): void {
+    if (!this.checkPermissions(needPermissions, this, accessedEntityDefinition, caller)) {
       throw new Error(MessageFormat.format(Cres.get().getString('conAccessDenied'), this.getPath(), caller != null ? caller.getPermissions() : '', needPermissions));
     }
   }
 
-  protected checkPermissions(needPermissions: Permissions | null, caller: CallerController | null, accessedContext: Context<C, M>, accessedEntityDefinition: EntityDefinition | null): boolean {
+  protected checkPermissions(needPermissions: Permissions | null, accessedContext: Context<C, M>, accessedEntityDefinition: EntityDefinition | null, caller?: CallerController): boolean {
     if (!this.permissionCheckingEnabled) {
       return true;
     }
 
-    return this.getPermissionChecker().has(caller, needPermissions, accessedContext, accessedEntityDefinition);
+    return this.getPermissionChecker().has(needPermissions, accessedContext, accessedEntityDefinition, caller);
   }
 
   addChild(child: Context<C, M>, index: number | null = null): void {
@@ -1357,14 +1351,14 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     this.moveFinalize(oldPath, oldName, newPath, newName);
   }
 
-  getChild(name: string, caller: CallerController | null = null): C | null {
-    if (!this.checkPermissions(this.getChildrenViewPermissions(), caller, this, null)) {
+  getChild(name: string, caller?: CallerController): C | null {
+    if (!this.checkPermissions(this.getChildrenViewPermissions(), this, null, caller)) {
       return null;
     }
 
     const child: C | null = this.getChildWithoutCheckingPerms(name);
 
-    if (child != null && this.shouldSeeChild(caller, child)) {
+    if (child != null && this.shouldSeeChild(child, caller)) {
       return child;
     }
 
@@ -1413,7 +1407,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
     try {
       const permissions: Permissions | null = ed.getDefinition().getPermissions() != null ? ed.getDefinition().getPermissions() : this.getPermissions();
-      this.checkThisPermissions(permissions, listener.getCallerController(), ed.getDefinition());
+      this.checkThisPermissions(permissions, ed.getDefinition(), listener.getCallerController());
     } catch (ex) {
       Log.CONTEXT_EVENTS.warn("Error adding listener '" + listener + "' of event '" + ed.getDefinition().getName() + "' in context '" + this.getPath() + "': " + ex.message);
       return false;
@@ -1442,7 +1436,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     return ed.removeListener(listener);
   }
 
-  getVariableDefinitions(caller: CallerController | null = null, includeHidden = false): Array<VariableDefinition> {
+  getVariableDefinitions(includeHidden = false, caller?: CallerController): Array<VariableDefinition> {
     const list = new Array<VariableDefinition>();
 
     const debug: boolean = caller != null && caller.getProperties().has(AbstractContext.CALLER_CONTROLLER_PROPERTY_DEBUG);
@@ -1456,8 +1450,8 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
       const readPermissions: Permissions | null = def.getReadPermissions() != null ? def.getReadPermissions() : this.getPermissions();
       const writePermissions: Permissions | null = def.getWritePermissions() != null ? def.getWritePermissions() : this.getPermissions();
 
-      const readAccessGranted: boolean = this.checkPermissions(readPermissions, caller, this, def);
-      const writeAccessGranted: boolean = this.checkPermissions(writePermissions, caller, this, def);
+      const readAccessGranted: boolean = this.checkPermissions(readPermissions, this, def, caller);
+      const writeAccessGranted: boolean = this.checkPermissions(writePermissions, this, def, caller);
 
       if (!readAccessGranted && !writeAccessGranted) {
         continue;
@@ -1478,9 +1472,9 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     return list;
   }
 
-  getVariableDefinitionsByGroup(group: string, caller: CallerController | null = null): Array<VariableDefinition> {
-    const vars = this.getVariableDefinitions(caller);
-    const defs = new Array(vars.length);
+  getVariableDefinitionsByGroup(group: string, caller?: CallerController): Array<VariableDefinition> {
+    const vars = this.getVariableDefinitions(false, caller);
+    const defs = new Array<VariableDefinition>();
 
     for (const vd of vars) {
       if (vd.getGroup() != null && (Util.equals(group, vd.getGroup()) || vd.getGroup().startsWith(group + ContextUtilsConstants.ENTITY_GROUP_SEPARATOR))) {
@@ -1539,7 +1533,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     return this.setupComplete;
   }
 
-  getFunctionDefinitions(caller: CallerController | null = null, includeHidden = false): Array<FunctionDefinition> {
+  getFunctionDefinitions(includeHidden = false, caller?: CallerController): Array<FunctionDefinition> {
     const list: Array<FunctionDefinition> = new Array<FunctionDefinition>();
     const debug = caller != null ? caller.getProperties().has(AbstractContext.CALLER_CONTROLLER_PROPERTY_DEBUG) : false;
     for (const d of this.functionData.values()) {
@@ -1547,7 +1541,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
       const permissions: Permissions | null = def.getPermissions() != null ? def.getPermissions() : this.getPermissions();
 
-      if (!this.checkPermissions(permissions, caller, this, def)) {
+      if (!this.checkPermissions(permissions, this, def, caller)) {
         continue;
       }
 
@@ -1560,10 +1554,10 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     return list;
   }
 
-  getFunctionDefinitionsByGroup(group: string, caller: CallerController | null = null): Array<FunctionDefinition> {
+  getFunctionDefinitionsByGroup(group: string, caller?: CallerController): Array<FunctionDefinition> {
     const defs: Array<FunctionDefinition> = [];
 
-    for (const fd of this.getFunctionDefinitions(caller)) {
+    for (const fd of this.getFunctionDefinitions(false, caller)) {
       if (fd.getGroup() != null && (Util.equals(group, fd.getGroup()) || fd.getGroup().startsWith(group + ContextUtilsConstants.ENTITY_GROUP_SEPARATOR))) {
         defs.push(fd);
       }
@@ -1670,10 +1664,10 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     }
   }
 
-  getEventDefinitionsByGroup(group: string, caller: CallerController | null = null): Array<EventDefinition> {
+  getEventDefinitionsByGroup(group: string, caller?: CallerController): Array<EventDefinition> {
     const res: Array<EventDefinition> = new Array<EventDefinition>();
 
-    for (const ed of this.getEventDefinitions(caller)) {
+    for (const ed of this.getEventDefinitions(false, caller)) {
       if (ed.getGroup() != null && (Util.equals(group, ed.getGroup()) || ed.getGroup().startsWith(group + ContextUtilsConstants.ENTITY_GROUP_SEPARATOR))) {
         res.push(ed);
       }
@@ -1681,13 +1675,13 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     return res;
   }
 
-  getEventDefinitions(caller: CallerController | null = null, includeHidden = false): Array<EventDefinition> {
+  getEventDefinitions(includeHidden = false, caller?: CallerController): Array<EventDefinition> {
     const list: Array<EventDefinition> = new Array<EventDefinition>();
     const debug = caller != null ? caller.getProperties().has(AbstractContext.CALLER_CONTROLLER_PROPERTY_DEBUG) : false;
     for (const d of this.eventData.values()) {
       const permissions: Permissions | null = d.getDefinition().getPermissions() != null ? d.getDefinition().getPermissions() : this.getPermissions();
 
-      if (!this.checkPermissions(permissions, caller, this, d.getDefinition())) {
+      if (!this.checkPermissions(permissions, this, d.getDefinition(), caller)) {
         continue;
       }
 
@@ -1703,7 +1697,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
   getActionDefinition(name: string, caller?: CallerController): ActionDefinition | null {
     let actions;
 
-    if (caller) actions = this.getActionDefinitions(caller, true);
+    if (caller) actions = this.getActionDefinitions(true, caller);
     else actions = this.actionDefinitions;
 
     for (const def of actions) {
@@ -1716,7 +1710,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
   }
 
   getDefaultActionDefinition(caller: CallerController): ActionDefinition | null {
-    for (const def of this.getActionDefinitions(caller, true)) {
+    for (const def of this.getActionDefinitions(true, caller)) {
       if (def.getName() === name) {
         return def;
       }
@@ -1728,7 +1722,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     if (def.getName() == null) {
       throw new Error("Action name can't be NULL");
     }
-    this.actionDefinitions = this.actionDefinitions.filter(actionDefinition => def.getName() !== actionDefinition.getName());
+    this.actionDefinitions = this.actionDefinitions.filter((actionDefinition) => def.getName() !== actionDefinition.getName());
     this.actionDefinitions.push(def);
     this.actionDefinitions.sort((a, b) => {
       return a.compareTo(b);
@@ -1741,11 +1735,11 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     }
   }
 
-  getActionDefinitions(caller: CallerController | null = null, includeHidden = false): Array<ActionDefinition> {
+  getActionDefinitions(includeHidden = false, caller?: CallerController): Array<ActionDefinition> {
     const list: Array<ActionDefinition> = new Array<ActionDefinition>();
     const debug: boolean = caller != null ? caller.getProperties().has(AbstractContext.CALLER_CONTROLLER_PROPERTY_DEBUG) : false;
     for (const d of this.actionDefinitions) {
-      if (!this.checkPermissions(d.getPermissions() != null ? d.getPermissions() : this.getPermissions(), caller, this, d)) {
+      if (!this.checkPermissions(d.getPermissions() != null ? d.getPermissions() : this.getPermissions(), this, d, caller)) {
         continue;
       }
 
@@ -1779,10 +1773,10 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     def.setDescription(rec.getString(ActionConstants.FIELD_AD_DESCRIPTION));
     def.setHelp(rec.getString(ActionConstants.FIELD_AD_HELP));
 
-    /* const accelerator: string = rec.getString(ActionConstants.FIELD_AD_ACCELERATOR);
-         if (accelerator != null) {
-             def.setAccelerator(new KeyStroke(accelerator));
-         }*/
+    const accelerator: string = rec.getString(ActionConstants.FIELD_AD_ACCELERATOR);
+    if (accelerator != null) {
+      def.setAccelerator(accelerator);
+    }
 
     const dropSourcesTable: DataTable = rec.getDataTable(ActionConstants.FIELD_AD_DROP_SOURCES);
     if (dropSourcesTable != null && dropSourcesTable.getRecordCount() > 0) {
@@ -1809,20 +1803,20 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     return def;
   }
 
-  private async getVariableByDefinition(def: VariableDefinition, caller: CallerController | null, request: RequestController | null): Promise<DataTable> {
+  private async getVariableByDefinition(def: VariableDefinition, caller?: CallerController, request?: RequestController): Promise<DataTable> {
     const startTime = Date.now();
     this.setupVariables();
     const data: VariableData = this.getVariableData(def.getName());
     try {
       const permissions: Permissions | null = def.getReadPermissions() != null ? def.getReadPermissions() : this.getPermissions();
-      this.checkThisPermissions(permissions, caller, def);
+      this.checkThisPermissions(permissions, def, caller);
       if (Log.CONTEXT_VARIABLES.isDebugEnabled()) {
         Log.CONTEXT_VARIABLES.debug("Trying to get variable '" + def.getName() + "' from context '" + this.getPath() + "'");
       }
 
       const result: DataTable = await this.executeGetter(data, caller, request);
       if (result.isInvalid()) {
-        throw new Error(result.getInvalidationMessage() as string);
+        throw new Error(result.getInvalidationMessage());
       }
       const endTime = Date.now();
       if (endTime - startTime > AbstractContext.LOW_PERFORMANCE_THRESHOLD) {
@@ -1832,13 +1826,13 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
       return result;
     } catch (e) {
-      throw new Error(MessageFormat.format(Cres.get().getString('conErrGettingVar'), def.toString(), toString()) + e.message);
+      throw new Error(MessageFormat.format(Cres.get().getString('conErrGettingVar'), def.toString(), this.toString()) + e.message);
     } finally {
       data.registerGetOperation();
     }
   }
 
-  private checkVariableValue(def: VariableDefinition, val: DataTable, caller: CallerController | null): DataTable {
+  private checkVariableValue(def: VariableDefinition, val: DataTable, caller?: CallerController): DataTable {
     if (!this.valueCheckingEnabled) {
       return val;
     }
@@ -1888,7 +1882,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     return null;
   }
 
-  private async executeGetter(data: VariableData, caller: CallerController | null, request: RequestController | null): Promise<DataTable> {
+  private async executeGetter(data: VariableData, caller?: CallerController, request?: RequestController): Promise<DataTable> {
     let result: DataTable | null = this.executeGetterMethod(data, caller, request);
     if (result != null) {
       return result;
@@ -1909,10 +1903,10 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
       return result;
     }
 
-    return this.executeDefaultGetterByDefinition(def, caller, false, true); // Setting check to false as we'll check value later
+    return this.executeDefaultGetterByDefinition(def, false, true, caller); // Setting check to false as we'll check value later
   }
 
-  private executeGetterMethod(data: VariableData, caller: CallerController | null, request: RequestController | null): DataTable | null {
+  private executeGetterMethod(data: VariableData, caller?: CallerController, request?: RequestController): DataTable | null {
     if (!data.isGetterCached()) {
       const method = Object.getOwnPropertyDescriptor(this, AbstractContext.GETTER_METHOD_PREFIX + data.getDefinition().getName());
       data.setGetterCached(true);
@@ -1936,10 +1930,10 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
       throw new Error(MessageFormat.format(Cres.get().getString('conVarNotAvailExt'), name, this.getPath()));
     }
 
-    return this.executeDefaultGetterByDefinition(def, caller, check, createDefault);
+    return this.executeDefaultGetterByDefinition(def, check, createDefault, caller);
   }
 
-  private executeDefaultGetterByDefinition(def: VariableDefinition, caller: CallerController | null, check: boolean, createDefault: boolean): DataTable {
+  private executeDefaultGetterByDefinition(def: VariableDefinition, check: boolean, createDefault: boolean, caller?: CallerController): DataTable {
     const value: DataTable = this.executeDefaultGetterImpl(def, caller);
 
     if (value == null) {
@@ -1950,7 +1944,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     return check ? this.checkVariableValue(def, value, caller) : value;
   }
 
-  protected executeDefaultGetterImpl(vd: VariableDefinition, caller: CallerController | null): DataTable {
+  protected executeDefaultGetterImpl(vd: VariableDefinition, caller?: CallerController): DataTable {
     const value = this.getVariableData(vd.getName()).getValue();
 
     return value != null ? (value as DataTable) : this.getDefaultValue(vd);
@@ -1971,19 +1965,19 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     return true;
   }
 
-  async getVariable(name: string, caller?: CallerController | null, request?: RequestController | null): Promise<DataTable> {
-    return await this.getVariableByDefinition(this.getAndCheckVariableDefinition(name), caller ?? null, request ?? null);
+  async getVariable(name: string, caller?: CallerController, request?: RequestController): Promise<DataTable> {
+    return await this.getVariableByDefinition(this.getAndCheckVariableDefinition(name), caller, request);
   }
 
-  async getVariableClone(name: string, caller: CallerController | null): Promise<DataTable> {
+  async getVariableClone(name: string, caller?: CallerController): Promise<DataTable> {
     return (await this.getVariable(name, caller)).clone();
   }
 
-  protected async getVariableImpl(def: VariableDefinition, caller: CallerController | null, request: RequestController | null): Promise<DataTable | null> {
+  protected async getVariableImpl(def: VariableDefinition, caller?: CallerController, request?: RequestController): Promise<DataTable | null> {
     return null;
   }
 
-  async getVariableObject(name: string, caller: CallerController | null): Promise<any> {
+  async getVariableObject(name: string, caller?: CallerController): Promise<any> {
     const def: VariableDefinition = this.getAndCheckVariableDefinition(name);
     const data: VariableData = this.getVariableData(name);
     if (this.isSetupComplete() && data.getValue() != null) {
@@ -2013,7 +2007,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     return value;
   }
 
-  private async setVariableByDefinition(def: VariableDefinition, caller: CallerController | null, request: RequestController | null, value: DataTable): Promise<void> {
+  private async setVariableByDefinition(def: VariableDefinition, value: DataTable, caller?: CallerController, request?: RequestController): Promise<void> {
     const startTime = Date.now();
     this.setupVariables();
     const data: VariableData = this.getVariableData(def.getName());
@@ -2023,7 +2017,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
       }
       let resultingValue: DataTable = value;
       const permissions: Permissions | null = def.getWritePermissions() != null ? def.getWritePermissions() : this.getPermissions();
-      this.checkThisPermissions(permissions, caller, def);
+      this.checkThisPermissions(permissions, def, caller);
       if (!def.isWritable() && caller != null && caller.isPermissionCheckingEnabled()) {
         throw new Error(Cres.get().getString('conVarReadOnly'));
       }
@@ -2068,7 +2062,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
         data.setValue(null); // Resetting cache
       }
 
-      if (this.executeSetter(data, caller, request, resultingValue)) this.variableUpdated(def, caller, resultingValue);
+      if (await this.executeSetter(data, resultingValue, caller, request)) this.variableUpdated(def, resultingValue, caller);
 
       const endTime = Date.now();
       if (endTime - startTime > AbstractContext.LOW_PERFORMANCE_THRESHOLD) {
@@ -2080,13 +2074,13 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     }
   }
 
-  protected variableUpdated(def: VariableDefinition, caller: CallerController | null, value: DataTable): void {
-    this.fireUpdatedEvent(def, caller, value);
+  protected variableUpdated(def: VariableDefinition, value: DataTable, caller?: CallerController): void {
+    this.fireUpdatedEvent(def, value, caller);
 
-    this.fireChangeEvent(def, caller, new Date(), value);
+    this.fireChangeEvent(def, new Date(), value, caller);
   }
 
-  protected fireUpdatedEvent(def: VariableDefinition, caller: CallerController | null, value: DataTable): void {
+  protected fireUpdatedEvent(def: VariableDefinition, value: DataTable, caller?: CallerController): void {
     const callerAllowsUpdatedEvents: boolean = caller == null || !caller.getProperties().has(AbstractContext.CALLER_CONTROLLER_PROPERTY_NO_UPDATED_EVENTS);
 
     if (this.isAllowUpdatedEvents(def) && callerAllowsUpdatedEvents) {
@@ -2097,7 +2091,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     }
   }
 
-  public fireChangeEvent(def: VariableDefinition, caller: CallerController | null, timestamp: Date, value: DataTable): void {
+  public fireChangeEvent(def: VariableDefinition, timestamp: Date, value: DataTable, caller?: CallerController): void {
     const callerAllowsChangeEvents: boolean = caller == null || !caller.getProperties().has(AbstractContext.CALLER_CONTROLLER_PROPERTY_NO_CHANGE_EVENTS);
 
     if (this.isAllowUpdatedEvents(def) && callerAllowsChangeEvents) {
@@ -2107,7 +2101,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
         const eventData = DataTableFactory.createWithFirstRecord(ed.getFormat(), def.getName());
 
-        this._fireEvent(ed, eventData, EventLevel.NONE, null, timestamp, null, caller, fer, null);
+        this._fireEvent(ed, eventData, EventLevel.NONE, null, timestamp, null, caller, fer);
       }
     }
   }
@@ -2118,30 +2112,30 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   protected setupVariables(): void {}
 
-  private executeSetter(data: VariableData, caller: CallerController | null, request: RequestController | null, value: DataTable): boolean {
+  private async executeSetter(data: VariableData, value: DataTable, caller?: CallerController, request?: RequestController): Promise<boolean> {
     const def: VariableDefinition = data.getDefinition();
 
-    if (!this.isAllowSetterExecution(def, request, value)) return false;
+    if (!this.isAllowSetterExecution(def, value, request)) return false;
 
-    if (this.executeSetterMethod(data, caller, request, value)) {
+    if (this.executeSetterMethod(data, value, caller, request)) {
       return true;
     }
     const setter = def.getSetter();
     if (setter != null) {
-      if (setter(this, def, caller, request, value)) {
+      if (setter(this, def, value, caller, request)) {
         return true;
       }
     }
 
-    if (this.setVariableImpl(def, caller, request, value)) {
+    if (await this.setVariableImpl(def, value, caller, request)) {
       return true;
     }
 
-    this.executeDefaultSetter(def, caller, value);
+    this.executeDefaultSetter(def, value, caller);
     return true;
   }
 
-  private executeSetterMethod(data: VariableData, caller: CallerController | null, request: RequestController | null, value: DataTable): boolean {
+  private executeSetterMethod(data: VariableData, value: DataTable, caller?: CallerController, request?: RequestController): boolean {
     if (!data.isSetterCached()) {
       const method = Object.getOwnPropertyDescriptor(this, AbstractContext.SETTER_METHOD_PREFIX + data.getDefinition().getName());
       data.setSetterCached(true);
@@ -2165,24 +2159,24 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     return new SimpleDataTable(def.getFormat(), true);
   }
 
-  public executeDefaultSetter(def: VariableDefinition, caller: CallerController | null, value: DataTable): void {
-    this.executeDefaultSetterImpl(def, caller, value);
+  public executeDefaultSetter(def: VariableDefinition, value: DataTable, caller?: CallerController): void {
+    this.executeDefaultSetterImpl(def, value, caller);
   }
 
-  protected executeDefaultSetterImpl(vd: VariableDefinition, caller: CallerController | null, value: DataTable): void {
+  protected executeDefaultSetterImpl(vd: VariableDefinition, value: DataTable, caller?: CallerController): void {
     this.getVariableData(vd.getName()).setValue(value);
   }
 
-  async setVariable(name: string, value: DataTable, caller?: CallerController | null, request?: RequestController | null): Promise<void> {
+  async setVariable(name: string, value: DataTable, caller?: CallerController, request?: RequestController): Promise<void> {
     const def = this.getAndCheckVariableDefinition(name);
-    await this.setVariableByDefinition(def, caller ?? null, request ?? null, value);
+    await this.setVariableByDefinition(def, value, caller, request);
   }
 
-  protected setVariableImpl(def: VariableDefinition, caller: CallerController | null, request: RequestController | null, value: DataTable): boolean {
+  protected async setVariableImpl(def: VariableDefinition, value: DataTable, caller?: CallerController, request?: RequestController): Promise<boolean> {
     return false;
   }
 
-  protected isAllowSetterExecution(data: VariableDefinition, request: RequestController | null, value: DataTable): boolean {
+  protected isAllowSetterExecution(data: VariableDefinition, value: DataTable, request?: RequestController): boolean {
     return true;
   }
 
@@ -2197,17 +2191,17 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     return def;
   }
 
-  async setVariableField(variable: string, field: string, record = 0, value: any, cc: CallerController | null): Promise<boolean> {
+  async setVariableField(variable: string, field: string, record = 0, value: any, cc?: CallerController): Promise<boolean> {
     const tab: DataTable = await this.getVariableClone(variable, cc);
 
     tab.setTimestamp(new Date());
     const old = tab.getRecord(record).getValue(field);
     tab.getRecord(record).setValue(field, value);
-    this.setVariable(variable, tab, cc);
+    await this.setVariable(variable, tab, cc);
     return old == null ? value != null : !Util.equals(old, value);
   }
 
-  public async addVariableRecord(variable: string, cc: CallerController | null, record: DataRecord | Array<any>): Promise<void> {
+  public async addVariableRecord(variable: string, record: DataRecord | Array<any>, cc?: CallerController): Promise<void> {
     const tab = await this.getVariableClone(variable, cc);
 
     if (record instanceof DataRecord) {
@@ -2234,7 +2228,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     }
   }
 
-  public async removeVariableRecords(variable: string, cc: CallerController | null, field: string, value: any): Promise<void> {
+  public async removeVariableRecords(variable: string, field: string, value: any, cc?: CallerController): Promise<void> {
     const tab = await this.getVariableClone(variable, cc);
 
     for (let i = 0; i < tab.getRecords().length; i++) {
@@ -2246,19 +2240,19 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     await this.setVariable(variable, tab, cc);
   }
 
-  protected async callFunctionByDefinition(def: FunctionDefinition, parameters: DataTable, caller: CallerController | null, request: RequestController | null): Promise<DataTable> {
+  protected async callFunctionByDefinition(def: FunctionDefinition, parameters: DataTable, caller?: CallerController, request?: RequestController): Promise<DataTable> {
     const startTime = Date.now();
 
     this.setupFunctions();
 
     const data: FunctionData = this.getFunctionData(def.getName());
     try {
-      this.checkThisPermissions(def.getPermissions() != null ? def.getPermissions() : this.getPermissions(), caller, def);
+      this.checkThisPermissions(def.getPermissions() != null ? def.getPermissions() : this.getPermissions(), def, caller);
 
       Log.CONTEXT_FUNCTIONS.debug("Trying to call function '" + def.getName() + "' of context '" + this.getPath() + "'");
 
       if (def.getPermissions() != null) {
-        this.checkThisPermissions(def.getPermissions(), caller, def);
+        this.checkThisPermissions(def.getPermissions(), def, caller);
       }
 
       const requiredInputFormat: TableFormat | null = def.getInputFormat();
@@ -2281,7 +2275,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
           }
         }
       }
-      let result: DataTable = await this.executeImplementation(data, caller, request, parameters);
+      let result: DataTable = await this.executeImplementation(data, parameters, caller, request);
 
       if (result.isInvalid()) {
         if (result.getInvalidationMessage() != null) throw new Error(result.getInvalidationMessage() as string);
@@ -2314,14 +2308,14 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
       }
       return result;
     } catch (e) {
-      throw new Error(MessageFormat.format(Cres.get().getString('conErrCallingFunc'), def.toString(), toString()) + e.message);
+      throw new Error(MessageFormat.format(Cres.get().getString('conErrCallingFunc'), def.toString(), this.toString()) + e.message);
     } finally {
       data.registerExecution();
     }
   }
 
-  private async executeImplementation(data: FunctionData, caller: CallerController | null, request: RequestController | null, parameters: DataTable): Promise<DataTable> {
-    let result: DataTable | null = this.executeImplementationMethod(data, caller, request, parameters);
+  private async executeImplementation(data: FunctionData, parameters: DataTable, caller?: CallerController, request?: RequestController): Promise<DataTable> {
+    let result: DataTable | null = this.executeImplementationMethod(data, parameters, caller, request);
 
     if (result != null) {
       return result;
@@ -2330,7 +2324,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     const def: FunctionDefinition = data.getDefinition();
     const impl = def.getImplementation();
     if (impl != null) {
-      result = impl(this, def, caller, request, parameters);
+      result = impl(this, def, parameters, caller, request);
 
       if (result != null) {
         return result;
@@ -2339,7 +2333,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
       return this.getDefaultFunctionOutput(def);
     }
 
-    result = await this.callFunctionImpl(def, caller, request, parameters);
+    result = await this.callFunctionImpl(def, parameters, caller, request);
 
     if (result != null) {
       return result;
@@ -2348,10 +2342,11 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     throw new Error(MessageFormat.format(Cres.get().getString('conFuncNotImpl'), def.getName(), this.getPath()));
   }
 
-  private executeImplementationMethod(data: FunctionData, caller: CallerController | null, request: RequestController | null, parameters: DataTable): DataTable | null {
+  private executeImplementationMethod(data: FunctionData, parameters: DataTable, caller?: CallerController, request?: RequestController): DataTable | null {
     const def: FunctionDefinition = data.getDefinition();
     if (!data.isImplementationCached()) {
-      const method = Object.getOwnPropertyDescriptor(this, AbstractContext.IMPLEMENTATION_METHOD_PREFIX + data.getDefinition().getName());
+      //FIX: AbstractContext.prototype. It does not work for children
+      const method = Object.getOwnPropertyDescriptor(AbstractContext.prototype, AbstractContext.IMPLEMENTATION_METHOD_PREFIX + data.getDefinition().getName());
       data.setImplementationCached(true);
       if (method) {
         data.setImplementationMethod(method);
@@ -2377,22 +2372,19 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   protected setupFunctions(): void {}
 
-  async callFunction(name: string, parameters: DataTable | Array<any> | null = null, caller?: CallerController | null, request?: RequestController | null): Promise<DataTable> {
-    const c = caller ?? null;
-    const r = request ?? null;
-
+  async callFunction(name: string, parameters: DataTable | Array<any> | null = null, caller?: CallerController, request?: RequestController): Promise<DataTable> {
     const def: FunctionDefinition = this.getAndCheckFunctionDefinition(name);
     if (parameters === null) {
-      return await this.callFunctionByDefinition(def, new SimpleDataTable(def.getInputFormat(), true), c, r);
+      return this.callFunctionByDefinition(def, new SimpleDataTable(def.getInputFormat(), true), caller, request);
     }
     if (parameters instanceof AbstractDataTable) {
-      return await this.callFunctionByDefinition(def, parameters as AbstractDataTable, c, r);
+      return this.callFunctionByDefinition(def, parameters as AbstractDataTable, caller, request);
     } else {
-      return await this.callFunctionByDefinition(def, DataTableFactory.createWithFirstRecord(def.getInputFormat(), ...parameters), c, r);
+      return this.callFunctionByDefinition(def, DataTableFactory.createWithFirstRecord(def.getInputFormat(), ...parameters), caller, request);
     }
   }
 
-  protected async callFunctionImpl(def: FunctionDefinition, caller: CallerController | null, request: RequestController | null, parameters: DataTable): Promise<DataTable | null> {
+  protected async callFunctionImpl(def: FunctionDefinition, parameters: DataTable, caller?: CallerController, request?: RequestController): Promise<DataTable | null> {
     return null;
   }
 
@@ -2545,7 +2537,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     return this.variableData.get(name.toLocaleLowerCase()) as VariableData;
   }
 
-  getVariableDefinition(name: string, caller: CallerController | null = null): VariableDefinition | null {
+  getVariableDefinition(name: string, caller?: CallerController): VariableDefinition | null {
     if (!caller) {
       const data = this.getVariableData(name);
       return data != null ? data.getDefinition() : null;
@@ -2559,8 +2551,8 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     const readPermissions: Permissions | null = def.getReadPermissions() != null ? def.getReadPermissions() : this.getPermissions();
     const writePermissions: Permissions | null = def.getWritePermissions() != null ? def.getWritePermissions() : this.getPermissions();
 
-    const readAccessGranted: boolean = this.checkPermissions(readPermissions, caller, this, def);
-    const writeAccessGranted: boolean = this.checkPermissions(writePermissions, caller, this, def);
+    const readAccessGranted: boolean = this.checkPermissions(readPermissions, this, def, caller);
+    const writeAccessGranted: boolean = this.checkPermissions(writePermissions, this, def, caller);
 
     return readAccessGranted || writeAccessGranted ? def : null;
   }
@@ -2569,7 +2561,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     return this.functionData.get(name.toLowerCase()) as FunctionData;
   }
 
-  getFunctionDefinition(name: string, caller: CallerController | null = null): FunctionDefinition | null {
+  getFunctionDefinition(name: string, caller?: CallerController): FunctionDefinition | null {
     const data: FunctionData = this.getFunctionData(name);
     const def = data != null ? data.getDefinition() : null;
 
@@ -2577,7 +2569,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
       return null;
     }
     const permissions: Permissions | null = def.getPermissions() != null ? def.getPermissions() : this.getPermissions();
-    const accessGranted: boolean = this.checkPermissions(permissions, caller, this, def);
+    const accessGranted: boolean = this.checkPermissions(permissions, this, def, caller);
 
     return accessGranted ? def : null;
   }
@@ -2586,7 +2578,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     return this.eventData.get(name.toLowerCase()) as EventData;
   }
 
-  getEventDefinition(name: string, caller: CallerController | null = null): EventDefinition | null {
+  getEventDefinition(name: string, caller?: CallerController): EventDefinition | null {
     const data: EventData = this.getEventData(name);
     const def = data != null ? data.getDefinition() : null;
 
@@ -2594,7 +2586,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
       return null;
     }
     const permissions: Permissions | null = def.getPermissions() != null ? def.getPermissions() : this.getPermissions();
-    const accessGranted: boolean = this.checkPermissions(permissions, caller, this, def);
+    const accessGranted: boolean = this.checkPermissions(permissions, this, def, caller);
 
     return accessGranted ? def : null;
   }
@@ -2613,9 +2605,9 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   protected setupEvents(): void {}
 
-  protected postEvent(ev: Event, ed: EventDefinition, caller: CallerController | null, request: FireEventRequestController | null): void {}
+  protected postEvent(ev: Event, ed: EventDefinition, caller?: CallerController, request?: FireEventRequestController): void {}
 
-  protected updateEvent(ev: Event, ed: EventDefinition, caller: CallerController | null, request: FireEventRequestController | null): void {}
+  protected updateEvent(ev: Event, ed: EventDefinition, caller?: CallerController, request?: FireEventRequestController): void {}
 
   protected _fireEvent(
     ed: EventDefinition,
@@ -2624,9 +2616,9 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     id: number | null,
     creationtime: Date | null,
     listener: number | null,
-    caller: CallerController | null,
-    request: FireEventRequestController | null,
-    permissions: Permissions | null
+    caller?: CallerController,
+    request?: FireEventRequestController,
+    permissions?: Permissions
   ): Event | null {
     if (id == null) {
       id = EventUtils.generateEventId();
@@ -2636,10 +2628,10 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     return this._fireEventWithEvent(ed, event, listener, caller, request);
   }
 
-  protected _fireEventWithEvent(ed: EventDefinition, event: Event, listener: number | null, caller: CallerController | null, request: FireEventRequestController | null): Event | null {
+  protected _fireEventWithEvent(ed: EventDefinition, event: Event, listener: number | null, caller?: CallerController, request?: FireEventRequestController): Event | null {
     const logger = Log.CONTEXT_EVENTS;
     if (caller != null) {
-      this.checkThisPermissions(ed.getFirePermissions() != null ? ed.getFirePermissions() : this.getPermissions(), caller, ed);
+      this.checkThisPermissions(ed.getFirePermissions() != null ? ed.getFirePermissions() : this.getPermissions(), ed, caller);
     }
     const rule: EventProcessingRule | null = this.getEventProcessingRule(event);
 
@@ -2764,12 +2756,12 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
   fireEvent(
     name: string,
     data: DataTable | Array<any> | null = null,
-    caller: CallerController | null = null,
     level: number = AbstractContext.DEFAULT_EVENT_LEVEL,
     id: number | null = null,
     creationtime: Date | null = null,
     listener: number | null = null,
-    request: FireEventRequestController | null = null
+    caller?: CallerController,
+    request?: FireEventRequestController
   ): Event | null {
     let params;
     const ed = this.getAndCheckEventDefinition(name);
@@ -2781,7 +2773,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
       params = data;
     }
 
-    return this._fireEvent(this.getAndCheckEventDefinition(name), params, level, id, creationtime, listener, caller, request, null);
+    return this._fireEvent(this.getAndCheckEventDefinition(name), params, level, id, creationtime, listener, caller, request);
   }
 
   protected getEventProcessingRule(event: Event): EventProcessingRule | null {
@@ -2790,7 +2782,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   protected processBindings(event: Event): void {}
 
-  private processEnrichments(event: Event, rule: EventProcessingRule | null, caller: CallerController | null): void {
+  private processEnrichments(event: Event, rule: EventProcessingRule | null, caller?: CallerController): void {
     if (rule == null || rule.getEnrichments() == null) {
       return;
     }
@@ -2856,7 +2848,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public getVvariables(def: VariableDefinition, caller: CallerController, request: RequestController): DataTable {
     const ans: DataTable = new SimpleDataTable(def.getFormat());
-    for (const vardef of this.getVariableDefinitions(caller)) {
+    for (const vardef of this.getVariableDefinitions(false, caller)) {
       ans.addRecordFromRecord(this.varDefToDataRecord(vardef, caller));
     }
     return ans;
@@ -2921,7 +2913,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public getVfunctions(def: VariableDefinition, caller: CallerController, request: RequestController): DataTable {
     const ans: DataTable = new SimpleDataTable(def.getFormat());
-    for (const funcdef of this.getFunctionDefinitions(caller)) {
+    for (const funcdef of this.getFunctionDefinitions(false, caller)) {
       ans.addRecordFromRecord(this.funcDefToDataRecord(funcdef, caller));
     }
     return ans;
@@ -2972,14 +2964,14 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
   }
 
   loadContext(): Promise<Context<C, M>> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       return null;
     });
   }
 
   public getVevents(def: VariableDefinition, caller: CallerController, request: RequestController): DataTable {
     const ans: DataTable = new SimpleDataTable(def.getFormat());
-    for (const ed of this.getEventDefinitions(caller)) {
+    for (const ed of this.getEventDefinitions(false, caller)) {
       ans.addRecordFromRecord(this.evtDefToDataRecord(ed, caller));
     }
     return ans;
@@ -3016,7 +3008,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public getVactions(def: VariableDefinition, caller: CallerController, request: RequestController): DataTable {
     const ans: DataTable = new SimpleDataTable(def.getFormat());
-    for (const adef of this.getActionDefinitions(caller)) {
+    for (const adef of this.getActionDefinitions(false, caller)) {
       ans.addRecordFromRecord(this.actDefToDataRecord(adef));
     }
     return ans;
@@ -3098,10 +3090,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
     for (const [name, vs] of statuses.entries()) {
       const record: DataRecord = table.addRecord() as DataRecord;
-      record
-        .addString(name)
-        .addString(vs.getStatus())
-        .addString(vs.getComment());
+      record.addString(name).addString(vs.getStatus()).addString(vs.getComment());
     }
     this.variableStatusesTable = table;
     return table;
@@ -3224,7 +3213,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
         }
       }
     }
-    for (const vd of this.getVariableDefinitions(caller)) {
+    for (const vd of this.getVariableDefinitions(false, caller)) {
       if (group != null && !Util.equals(ContextUtils.getBaseGroup(vd.getGroup()), group)) {
         continue;
       }
@@ -3245,7 +3234,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
         let skip = true;
 
         for (const recipient of recipients) {
-          const rvd: VariableDefinition | null = recipient.getVariableDefinition(vd.getName(), null);
+          const rvd: VariableDefinition | null = recipient.getVariableDefinition(vd.getName());
           if (rvd != null && rvd.isWritable() && (rvd.getFormat() == null || rvd.getFormat()?.isReplicated())) {
             skip = false;
           }
@@ -3269,20 +3258,12 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
         if (!ff.isHidden() && !ff.isReadonly() && !ff.isNotReplicated()) {
           const record: DataRecord = fields.addRecord() as DataRecord;
-          record
-            .addString(ff.getName())
-            .addString(ff.toString())
-            .addBoolean(true);
+          record.addString(ff.getName()).addString(ff.toString()).addBoolean(true);
         }
       }
 
       const record: DataRecord = fields.addRecord() as DataRecord;
-      record
-        .addString(vd.getName())
-        .addString(vd.getDescription())
-        .addBoolean(false)
-        .addDataTable(fields)
-        .addDataTable(value);
+      record.addString(vd.getName()).addString(vd.getDescription()).addBoolean(false).addDataTable(fields).addDataTable(value);
     }
 
     result.fixRecords();
@@ -3304,10 +3285,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
       if (targetVd == null) {
         const record: DataRecord = result.addRecord() as DataRecord;
-        record
-          .addString(providedDesc)
-          .addBoolean(false)
-          .addString(Cres.get().getString('conVarNotAvailInTgt'));
+        record.addString(providedDesc).addBoolean(false).addString(Cres.get().getString('conVarNotAvailInTgt'));
         continue;
       }
 
@@ -3315,10 +3293,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
       if (!targetVd.isWritable()) {
         const record: DataRecord = result.addRecord() as DataRecord;
-        record
-          .addString(varDesc)
-          .addBoolean(false)
-          .addString(Cres.get().getString('conVarNotWritableInTgt'));
+        record.addString(varDesc).addBoolean(false).addString(Cres.get().getString('conVarNotWritableInTgt'));
         continue;
       }
       let tgtVal: DataTable;
@@ -3345,7 +3320,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
       DataTableUtils.inlineData(tgtVal, this.getContextManager(), caller);
 
       try {
-        this.setVariableByDefinition(targetVd, caller, request, tgtVal);
+        this.setVariableByDefinition(targetVd, tgtVal, caller, request);
       } catch (ex) {
         Log.CONTEXT_FUNCTIONS.warn('Error setting variable during context copy', ex);
         const record: DataRecord = result.addRecord() as DataRecord;
@@ -3406,21 +3381,13 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
         conRes = await child.callFunction(AbstractContext.F_COPY, parameters, caller, request);
       } catch (ex) {
         const record: DataRecord = result.addRecord() as DataRecord;
-        record
-          .addString(conDesc)
-          .addString(null)
-          .addBoolean(false)
-          .addString(ex.message);
+        record.addString(conDesc).addString(null).addBoolean(false).addString(ex.message);
         continue;
       }
 
       for (const rec of conRes) {
         const record: DataRecord = result.addRecord() as DataRecord;
-        record
-          .addString(conDesc)
-          .addString(rec.getString(AbstractContext.FIELD_REPLICATE_VARIABLE))
-          .addBoolean(rec.getBoolean(AbstractContext.FIELD_REPLICATE_SUCCESSFUL))
-          .addString(rec.getString(AbstractContext.FIELD_REPLICATE_ERRORS));
+        record.addString(conDesc).addString(rec.getString(AbstractContext.FIELD_REPLICATE_VARIABLE)).addBoolean(rec.getBoolean(AbstractContext.FIELD_REPLICATE_SUCCESSFUL)).addString(rec.getString(AbstractContext.FIELD_REPLICATE_ERRORS));
       }
     }
 

@@ -58,17 +58,10 @@ export default class StubContext extends AbstractContext<Context<any, any>, Cont
   setupMyself(): void {
     super.setupMyself();
 
-    const vd = new VariableDefinition(
-      StubContext.V_TEST,
-      StubContext.VFT_TEST,
-      true,
-      true,
-      'Test',
-      ContextUtilsConstants.GROUP_DEFAULT
-    );
+    const vd = new VariableDefinition(StubContext.V_TEST, StubContext.VFT_TEST, true, true, 'Test', ContextUtilsConstants.GROUP_DEFAULT);
     const _this = this;
 
-    vd.setSetter((con, def, caller, request, value) => {
+    vd.setSetter((con, def, value, caller, request) => {
       _this.count = value.rec().getInt(0);
       return true;
     });
@@ -81,27 +74,16 @@ export default class StubContext extends AbstractContext<Context<any, any>, Cont
 
     this.addVariableDefinition(vd);
 
-    this.addEventDefinition(
-      new EventDefinition(StubContext.E_TEST, StubContext.EFT_TEST, 'Test Event', ContextUtilsConstants.GROUP_DEFAULT)
-    );
+    this.addEventDefinition(new EventDefinition(StubContext.E_TEST, StubContext.EFT_TEST, 'Test Event', ContextUtilsConstants.GROUP_DEFAULT));
 
     const fd = new FunctionDefinition(StubContext.F_FUNCTION, StubContext.FIFT_FUNCTION, StubContext.FOFT_FUNCTION);
-    fd.setImplementation((con, def, caller, request, parameters) => {
+    fd.setImplementation((con, def, parameters, caller, request) => {
       _this.count = parameters.rec().getInt(0);
-      return DataTableFactory.createWithFirstRecord(
-        StubContext.FOFT_FUNCTION,
-        parameters.rec().getString(StubContext.FIF_PARAMETER)
-      );
+      return DataTableFactory.createWithFirstRecord(StubContext.FOFT_FUNCTION, parameters.rec().getString(StubContext.FIF_PARAMETER));
     });
     this.addFunctionDefinition(fd);
 
-    const emptyFd = new FunctionDefinition(
-      StubContext.F_TEST,
-      TableFormat.EMPTY_FORMAT,
-      TableFormat.EMPTY_FORMAT,
-      'Test Function',
-      ContextUtilsConstants.GROUP_DEFAULT
-    );
+    const emptyFd = new FunctionDefinition(StubContext.F_TEST, TableFormat.EMPTY_FORMAT, TableFormat.EMPTY_FORMAT, 'Test Function', ContextUtilsConstants.GROUP_DEFAULT);
     this.addFunctionDefinition(emptyFd);
   }
 }

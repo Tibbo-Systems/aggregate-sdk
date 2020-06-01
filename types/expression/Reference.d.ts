@@ -37,7 +37,7 @@ export default class Reference extends JObject {
     private row;
     private property;
     private appearance;
-    constructor(source?: string, server?: string | null, context?: string | null, entity?: string | null, entityType?: number | null, field?: string | null, ...parameters: any[]);
+    constructor(source?: string);
     protected parse(source: string): void;
     getServer(): string | null;
     getContext(): string | null;
@@ -63,6 +63,6 @@ export default class Reference extends JObject {
     clone(): Reference;
     equals(obj: JObject | null): boolean;
     static getFunctionParametersFromArray(params: Array<any>): string;
-    static getFunctionParameters(paramsString: string, allowExpressions: boolean): any[];
+    static getFunctionParameters(paramsString: string, allowExpressions: boolean): Array<any>;
     private static prepareParameter;
 }

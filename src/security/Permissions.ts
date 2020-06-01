@@ -100,7 +100,7 @@ export default class Permissions extends JObject implements Iterable<Permission>
       return false;
     } else {
       for (const permission of this.permissions) {
-        if (!other.permissions.find(otherPermission => Util.equals(permission, otherPermission))) {
+        if (!other.permissions.find((otherPermission) => Util.equals(permission, otherPermission))) {
           return false;
         }
       }

@@ -7,6 +7,13 @@ import CallerController from './CallerController';
 import ContextUtilsConstants from './ContextUtilsConstants';
 
 export default class ContextUtils {
+  public static readonly ENTITY_ANY_TYPE = 0;
+  public static readonly ENTITY_VARIABLE = 1;
+  public static readonly ENTITY_FUNCTION = 2;
+  public static readonly ENTITY_EVENT = 4;
+  public static readonly ENTITY_ACTION = 8;
+  public static readonly ENTITY_INSTANCE = 100;
+
   static userContextPath(username: string): string {
     return ContextUtils.createName(Contexts.CTX_USERS, username);
   }
@@ -228,21 +235,21 @@ export default class ContextUtils {
     return name.indexOf(ContextUtilsConstants.CONTEXT_GROUP_MASK.charAt(0)) > -1;
   }
 
-  static expandMaskListToContexts(masks: string, contextManager: ContextManager<any>, caller: any = null, useVisibleChildren = false): Array<Context<any, any>> {
+  static expandMaskListToContexts(masks: string, contextManager: ContextManager<any>, useVisibleChildren = false, caller?: CallerController): Array<Context<any, any>> {
     const result: Array<Context<any, any>> = [];
     const maskList: Array<string> = StringUtils.split(masks, ContextUtilsConstants.MASK_LIST_SEPARATOR.charAt(0));
 
     for (const mask of maskList) {
-      const contexts: Array<Context<any, any>> = this.expandMaskToContexts(mask, contextManager, caller, useVisibleChildren);
+      const contexts: Array<Context<any, any>> = this.expandMaskToContexts(mask, contextManager, useVisibleChildren, caller);
       result.push(...contexts);
     }
 
     return result;
   }
 
-  static expandMaskToContexts(mask: string, contextManager: ContextManager<any>, caller: CallerController | null = null, useVisibleChildren = false): Array<Context<any, any>> {
+  static expandMaskToContexts(mask: string, contextManager: ContextManager<any>, useVisibleChildren = false, caller?: CallerController): Array<Context<any, any>> {
     const res: Array<Context<any, any>> = [];
-    const paths: Array<string> = this.expandMaskToPaths(mask, contextManager, caller, useVisibleChildren);
+    const paths: Array<string> = this.expandMaskToPaths(mask, contextManager, useVisibleChildren, caller);
 
     for (const path of paths) {
       const con: Context<any, any> = contextManager.get(path, caller);
@@ -254,7 +261,7 @@ export default class ContextUtils {
     return res;
   }
 
-  static expandMaskToPaths(mask: string, contextManager: ContextManager<any>, caller: CallerController | null, useVisibleChildren = false): Array<string> {
+  static expandMaskToPaths(mask: string, contextManager: ContextManager<any>, useVisibleChildren = false, caller?: CallerController): Array<string> {
     const result: Array<string> = new Array<string>();
     const parts: Array<string> = StringUtils.split(mask, ContextUtilsConstants.CONTEXT_NAME_SEPARATOR.charAt(0));
     for (let i = 0; i < parts.length; i++) {
@@ -273,7 +280,7 @@ export default class ContextUtils {
           tail.append(parts[j]);
         }
 
-        const res: Array<string> = this.expandMaskPart(head.toString(), tail.toString(), contextManager, caller, useVisibleChildren);
+        const res: Array<string> = this.expandMaskPart(head.toString(), tail.toString(), contextManager, useVisibleChildren, caller);
         return [...result, ...res];
       }
     }
@@ -283,7 +290,7 @@ export default class ContextUtils {
     return result;
   }
 
-  static expandMaskPart(head: string, tail: string, contextManager: ContextManager<any>, caller: CallerController | null, useVisibleChildren: boolean): Array<string> {
+  static expandMaskPart(head: string, tail: string, contextManager: ContextManager<any>, useVisibleChildren: boolean, caller?: CallerController): Array<string> {
     // logger.debug("Expanding context mask part '" + head + " * " + tail + "'");
     const result: Array<string> = new Array<string>();
     const con: Context<any, any> = contextManager.get(head, caller);
@@ -301,16 +308,16 @@ export default class ContextUtils {
       const children: Array<Context<any, any>> = useVisibleChildren ? con.getVisibleChildren(caller) : con.getChildren(caller);
       for (const child of children) {
         if (useVisibleChildren) {
-          const realChild: Context<any, any> | null = con.getChild(child.getName(), null);
+          const realChild: Context<any, any> | null = con.getChild(child.getName());
 
           if (realChild == null || realChild.getPath() !== child.getPath()) {
-            const res: Array<string> = this.expandMaskToPaths(child.getPath() + tail, contextManager, caller, useVisibleChildren);
+            const res: Array<string> = this.expandMaskToPaths(child.getPath() + tail, contextManager, useVisibleChildren, caller);
             result.push(...res);
             continue;
           }
         }
 
-        result.push(...this.expandMaskToPaths(head + ContextUtilsConstants.CONTEXT_NAME_SEPARATOR + child.getName() + tail, contextManager, caller, useVisibleChildren));
+        result.push(...this.expandMaskToPaths(head + ContextUtilsConstants.CONTEXT_NAME_SEPARATOR + child.getName() + tail, contextManager, useVisibleChildren, caller));
       }
     }
 

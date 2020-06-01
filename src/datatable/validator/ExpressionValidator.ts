@@ -1,12 +1,9 @@
 import AbstractFieldValidator from './AbstractFieldValidator';
-import JObject from '../../util/java/JObject';
 import Context from '../../context/Context';
 import ContextManager from '../../context/ContextManager';
 import CallerController from '../../context/CallerController';
-import Util from '../../util/Util';
 import MessageFormat from '../../util/java/MessageFormat';
 import Cres from '../../Cres';
-import Evaluator from '../../expression/Evaluator';
 import Expression from '../../expression/Expression';
 import FieldConstants from '../field/FieldConstants';
 
@@ -48,11 +45,9 @@ export default class ExpressionValidator extends AbstractFieldValidator<any> {
 
   public evaluateExpression(context: Context<any, any>, contextManager: ContextManager<Context<any, any>>, caller: CallerController, value: any): boolean {
     let result = false;
-    const evaluator: Evaluator = new Evaluator(contextManager, context, null, caller);
-    evaluator
-      .getEnvironmentResolver()
-      .getEnvironment()
-      .set('value', value);
+    const Evaluator = require('../../expression/Expression').default;
+    const evaluator = new Evaluator(contextManager, context, null, caller);
+    evaluator.getEnvironmentResolver().getEnvironment().set('value', value);
 
     if (this.expression != null && this.expression.length !== 0) {
       try {

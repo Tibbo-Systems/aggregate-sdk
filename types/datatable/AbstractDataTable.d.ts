@@ -63,7 +63,7 @@ export default abstract class AbstractDataTable extends DataTable {
     abstract setId(id: number | null): void;
     hasField(field: string): boolean;
     encodeToString(): string;
-    validate(context: Context<any, any>, contextManager: ContextManager<any> | null, caller: CallerController | null): void;
+    validate(context: Context<any, any>, contextManager: ContextManager<any> | null, caller?: CallerController): void;
     abstract setRecord(index: number, record: DataRecord): DataTable;
     swapRecords(index1: number, index2: number): void;
     isInvalid(): boolean;
@@ -109,8 +109,9 @@ export default abstract class AbstractDataTable extends DataTable {
     close(): void;
     abstract isSimple(): boolean;
     accomplishConstruction(elements: ElementList, settings: ClassicEncodingSettings, validate: boolean): void;
+    toString(): string;
     decodeAdvancedElement(el: Element): void;
     [Symbol.iterator](): {
-        next(): IteratorResult<DataRecord | null, any>;
+        next(): IteratorResult<DataRecord | null>;
     };
 }

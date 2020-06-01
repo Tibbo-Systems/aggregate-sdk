@@ -24,13 +24,13 @@ export default abstract class AbstractEditorOptionsConverter implements EditorOp
    */
   public isSupportingEditor(editor: string | null): boolean {
     if (editor == null) return false;
-    return this.editors.findIndex(el => el === editor) !== -1;
+    return this.editors.findIndex((el) => el === editor) !== -1;
   }
 
   /* (non-Javadoc)
    * @see com.tibbo.aggregate.common.datatable.converter.editor.EditorOptionsConverter#isSupportingType(java.lang.String)
    */
   public isSupportingType(type: string): boolean {
-    return this.types.findIndex(el => el === type) !== -1;
+    return this.types.findIndex((el) => el === type) !== -1;
   }
 }

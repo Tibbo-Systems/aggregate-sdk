@@ -18,7 +18,7 @@ export default class FunctionDefinition extends AbstractEntityDefinition impleme
 
   private concurrent = false;
 
-  private implementation: ((con: Context<any, any>, def: FunctionDefinition, caller: CallerController | null, request: RequestController | null, parameters: DataTable) => DataTable) | null = null;
+  private implementation: ((con: Context<any, any>, def: FunctionDefinition, parameters: DataTable, caller?: CallerController, request?: RequestController) => DataTable) | null = null;
 
   constructor(name: string, inputFormat: TableFormat | null, outputFormat: TableFormat | null, description?: string, group?: string) {
     super();
@@ -51,7 +51,7 @@ export default class FunctionDefinition extends AbstractEntityDefinition impleme
     return this.permissions;
   }
 
-  public getImplementation(): ((con: Context<any, any>, def: FunctionDefinition, caller: CallerController | null, request: RequestController | null, parameters: DataTable) => DataTable) | null {
+  public getImplementation(): ((con: Context<any, any>, def: FunctionDefinition, parameters: DataTable, caller?: CallerController, request?: RequestController) => DataTable) | null {
     return this.implementation;
   }
 
@@ -85,7 +85,7 @@ export default class FunctionDefinition extends AbstractEntityDefinition impleme
     this.concurrent = concurrent;
   }
 
-  public setImplementation(implementation: (con: Context<any, any>, def: FunctionDefinition, caller: CallerController | null, request: RequestController | null, parameters: DataTable) => DataTable) {
+  public setImplementation(implementation: (con: Context<any, any>, def: FunctionDefinition, parameters: DataTable, caller?: CallerController, request?: RequestController) => DataTable) {
     this.implementation = implementation;
   }
 

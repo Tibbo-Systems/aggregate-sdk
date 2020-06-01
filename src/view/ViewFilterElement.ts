@@ -6,7 +6,6 @@ import Cres from '../Cres';
 import FieldConstants from '../datatable/field/FieldConstants';
 import DataTableBindingProvider from '../datatable/DataTableBindingProvider';
 import DefaultReferenceResolver from '../expression/DefaultReferenceResolver';
-import StorageHelper from './StorageHelper';
 import Functions from '../expression/functions/Functions';
 import DataRecord from '../datatable/DataRecord';
 
@@ -211,7 +210,7 @@ export default class ViewFilterElement extends AggreGateBean {
 
   private logical: number | null = null;
   private type: number | null = null;
-  private view: string | null = null;
+  private storage: string | null = null;
   private table: string | null = null;
   private column: string | null = null;
   private operation: string | null = null;
@@ -220,7 +219,7 @@ export default class ViewFilterElement extends AggreGateBean {
 
   private local = false;
 
-  public constructor(data: DataRecord) {
+  public constructor(data?: DataRecord) {
     super(ViewFilterElement.FORMAT, data);
   }
 
@@ -240,12 +239,12 @@ export default class ViewFilterElement extends AggreGateBean {
     this.type = type;
   }
 
-  public getView(): string | null {
-    return this.view;
+  public getStorage(): string | null {
+    return this.storage;
   }
 
-  public setView(view: string): void {
-    this.view = view;
+  public setStorage(storage: string): void {
+    this.storage = storage;
   }
 
   public getTable(): string | null {

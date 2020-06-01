@@ -41,11 +41,7 @@ export default class Confirm extends GenericActionCommand {
   }
 
   protected constructParameters(): DataTable {
-    return new DataRecord(Confirm.CFT_CONFIRM)
-      .addString(this.message)
-      .addInt(this.optionType)
-      .addInt(this.messageType)
-      .wrap();
+    return new DataRecord(Confirm.CFT_CONFIRM).addString(this.message).addInt(this.optionType).addInt(this.messageType).wrap();
   }
 
   public static createDefault() {

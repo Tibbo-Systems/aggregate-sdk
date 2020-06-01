@@ -9,7 +9,7 @@ export default class UserSettings extends JObject {
     private weekStartDay;
     private variableActions;
     private eventActions;
-    constructor(cm?: ContextManager<any> | null, callerController?: CallerController | null);
+    constructor(cm?: ContextManager<any> | null, callerController?: CallerController);
     getDatePattern(): string;
     setDatePattern(datePattern: string): void;
     getTimePattern(): string;
@@ -24,7 +24,7 @@ export default class UserSettings extends JObject {
     getEventActions(): Array<EntityRelatedActionDescriptor> | null;
     setEventActions(eventActions: Array<EntityRelatedActionDescriptor>): void;
     clone(): UserSettings;
-    fill(cm: ContextManager<any>, callerController: CallerController | null): void;
-    fillBasicProperties(cm: ContextManager<any>, callerController: CallerController | null): void;
-    fillActions(cm: ContextManager<any>, callerController: CallerController | null): void;
+    fill(cm: ContextManager<any>, callerController?: CallerController): void;
+    fillBasicProperties(cm: ContextManager<any>, callerController?: CallerController): void;
+    fillActions(cm: ContextManager<any>, callerController?: CallerController): void;
 }

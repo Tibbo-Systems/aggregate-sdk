@@ -35,9 +35,7 @@ class GageCreator {
 
   public static getGageBeanList(count: number): Array<GageBean> {
     const gageTable: DataTable = StaticTestUtils.createTestDataTable(false, count);
-    return DataTableConversion.beansFromTable(gageTable, GageBean, StaticTestUtils.TEST_TABLE_FORMAT, true) as Array<
-      GageBean
-    >;
+    return DataTableConversion.beansFromTable(gageTable, GageBean, StaticTestUtils.TEST_TABLE_FORMAT, true) as Array<GageBean>;
   }
 }
 
@@ -48,12 +46,7 @@ describe('TestDataTableConversion', () => {
     const gage: GageBean = GageCreator.getGageBean();
 
     const gageTable: DataTable = DataTableConversion.beanToTable(gage, StaticTestUtils.TEST_TABLE_FORMAT);
-    const blackSheep: GageBean = DataTableConversion.beanFromTable(
-      gageTable,
-      GageBean,
-      StaticTestUtils.TEST_TABLE_FORMAT,
-      true
-    );
+    const blackSheep: GageBean = DataTableConversion.beanFromTable(gageTable, GageBean, StaticTestUtils.TEST_TABLE_FORMAT, true);
     const blackSheepTable: DataTable = DataTableConversion.beanToTable(blackSheep, StaticTestUtils.TEST_TABLE_FORMAT);
 
     expect(gageTable.equals(blackSheepTable)).toBeTruthy();
@@ -62,17 +55,8 @@ describe('TestDataTableConversion', () => {
   it('testSeveralGageBeanConversion', () => {
     const beans: Array<GageBean> = GageCreator.getGageBeanList(5);
     const gageTable: DataTable = DataTableConversion.beansToTable(beans, StaticTestUtils.TEST_TABLE_FORMAT, true);
-    const blackSheeps: Array<any> = DataTableConversion.beansFromTable(
-      gageTable,
-      GageBean,
-      StaticTestUtils.TEST_TABLE_FORMAT,
-      true
-    );
-    const blackSheepsTable: DataTable = DataTableConversion.beansToTable(
-      blackSheeps,
-      StaticTestUtils.TEST_TABLE_FORMAT,
-      true
-    );
+    const blackSheeps: Array<any> = DataTableConversion.beansFromTable(gageTable, GageBean, StaticTestUtils.TEST_TABLE_FORMAT, true);
+    const blackSheepsTable: DataTable = DataTableConversion.beansToTable(blackSheeps, StaticTestUtils.TEST_TABLE_FORMAT, true);
 
     expect(gageTable.equals(blackSheepsTable)).toBeTruthy();
   });
@@ -96,12 +80,7 @@ describe('TestDataTableConversion', () => {
     ggb.setGage(gageBeans);
 
     const ggbTable: DataTable = DataTableConversion.beanToTable(ggb, GageCreator.GG_TEST_TABLE_FORMAT);
-    const blackSheep: GageBean = DataTableConversion.beanFromTable(
-      ggbTable,
-      GageGageBean,
-      GageCreator.GG_TEST_TABLE_FORMAT,
-      true
-    ) as GageBean;
+    const blackSheep: GageBean = DataTableConversion.beanFromTable(ggbTable, GageGageBean, GageCreator.GG_TEST_TABLE_FORMAT, true) as GageBean;
     const blackSheepTable: DataTable = DataTableConversion.beanToTable(blackSheep, GageCreator.GG_TEST_TABLE_FORMAT);
 
     expect(ggbTable.equals(blackSheepTable)).toBeTruthy();
@@ -112,12 +91,7 @@ describe('TestDataTableConversion', () => {
     const sourceDt: DataTable = DataTableConversion.beanToTable(gageBean, StaticTestUtils.TEST_TABLE_FORMAT);
     const ab: MegaGageBean = MegaGageBean.fromGageBean(gageBean);
 
-    const blackSheep: MegaGageBean = DataTableConversion.beanFromTable(
-      ab.toDataTable(),
-      MegaGageBean,
-      StaticTestUtils.TEST_TABLE_FORMAT,
-      true
-    );
+    const blackSheep: MegaGageBean = DataTableConversion.beanFromTable(ab.toDataTable(), MegaGageBean, StaticTestUtils.TEST_TABLE_FORMAT, true);
 
     expect(sourceDt.equals(blackSheep.toDataTable())).toBeTruthy();
   });

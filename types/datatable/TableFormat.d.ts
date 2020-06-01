@@ -4,10 +4,10 @@ import ClassicEncodingSettings from './encoding/ClassicEncodingSettings';
 import StringBuilder from '../util/java/StringBuilder';
 import Binding from '../binding/Binding';
 import Expression from '../expression/Expression';
-import RecordValidator from './validator/RecordValidator';
 import TableValidator from './validator/TableValidator';
 import DataTable from './DataTable';
 import FieldFormat from './FieldFormat';
+import AbstractRecordValidator from './validator/AbstractRecordValidator';
 export default class TableFormat extends JObject implements StringEncodable, Iterable<FieldFormat<any>> {
     static readonly EMPTY_FORMAT: TableFormat;
     private fields;
@@ -61,7 +61,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
     /**
      * Returns modifiable list of record validators.
      */
-    getRecordValidators(): Array<RecordValidator>;
+    getRecordValidators(): Array<AbstractRecordValidator>;
     /**
      * Returns minimal number of records allowed by format.
      */
@@ -95,7 +95,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
     /**
      * Adds new record validator to the format.
      */
-    addRecordValidator(rv: RecordValidator): void;
+    addRecordValidator(rv: AbstractRecordValidator): void;
     /**
      * Returns maximal number of records allowed by format.
      */

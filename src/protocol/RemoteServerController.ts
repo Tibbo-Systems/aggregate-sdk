@@ -59,9 +59,11 @@ export default class RemoteServerController extends AbstractAggreGateDeviceContr
       try {
         if (this.dataChannel == null && device.getAddress() != null) {
           Log.PROTOCOL.debug('Connecting to remote server (' + this.getDevice() + ')');
-          const ws = new WebSocket('ws://' + device.getAddress() + ':' + device.getPort() + '/websockets/client');
+          const wsProtocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+          const ws = new WebSocket(wsProtocol + device.getAddress() + ':' + device.getPort() + '/web/ws/client');
           ws.binaryType = 'arraybuffer';
           ws.onopen = () => {
+            Log.PROTOCOL.debug('Connection with remote server established');
             resolve();
           };
           this.dataChannel = new WebSocketBlockingChannel(ws);
@@ -70,8 +72,6 @@ export default class RemoteServerController extends AbstractAggreGateDeviceContr
         if (this.dataChannel != null) {
           this.setCommandParser(new AggreGateCommandParser(this.dataChannel));
         }
-
-        Log.PROTOCOL.debug('Connection with remote server established');
       } catch (e) {
         reject();
         throw new Error(MessageFormat.format(Cres.get().getString('devErrConnecting'), device.getDescription() + ' (' + device.getInfo() + ')') + e.message);

@@ -110,26 +110,10 @@ export default class EditData extends GenericActionCommand {
     EditData.CFT_EDIT_DATA.addField('<' + EditData.CF_ICON_ID + '><S><F=AN><D=' + Cres.get().getString('conIconId') + '>');
     EditData.CFT_EDIT_DATA.addField('<' + EditData.CF_HELP_ID + '><S><F=AN><D=' + Cres.get().getString('conHelpId') + '>');
     EditData.CFT_EDIT_DATA.addField('<' + EditData.CF_HELP + '><S><F=AN><D=' + Cres.get().getString('help') + '>');
-    EditData.CFT_EDIT_DATA.addField(
-      FieldFormatFactory.createWith(EditData.CF_SHOW_TOOLBAR, FieldConstants.BOOLEAN_FIELD, Cres.get().getString('showToolbar'))
-        .setDefault(true)
-        .setAdvanced(true)
-    );
-    EditData.CFT_EDIT_DATA.addField(
-      FieldFormatFactory.createWith(EditData.CF_SHOW_HEADER, FieldConstants.BOOLEAN_FIELD, Cres.get().getString('showHeader'))
-        .setNullable(true)
-        .setAdvanced(true)
-    );
-    EditData.CFT_EDIT_DATA.addField(
-      FieldFormatFactory.createWith(EditData.CF_SHOW_LINE_NUMBERS, FieldConstants.BOOLEAN_FIELD, Cres.get().getString('showLineNumbers'))
-        .setNullable(true)
-        .setAdvanced(true)
-    );
-    EditData.CFT_EDIT_DATA.addField(
-      FieldFormatFactory.createWith(EditData.CF_HORIZONTAL_SCROLLING, FieldConstants.BOOLEAN_FIELD, Cres.get().getString('horizontalScrolling'))
-        .setNullable(true)
-        .setAdvanced(true)
-    );
+    EditData.CFT_EDIT_DATA.addField(FieldFormatFactory.createWith(EditData.CF_SHOW_TOOLBAR, FieldConstants.BOOLEAN_FIELD, Cres.get().getString('showToolbar')).setDefault(true).setAdvanced(true));
+    EditData.CFT_EDIT_DATA.addField(FieldFormatFactory.createWith(EditData.CF_SHOW_HEADER, FieldConstants.BOOLEAN_FIELD, Cres.get().getString('showHeader')).setNullable(true).setAdvanced(true));
+    EditData.CFT_EDIT_DATA.addField(FieldFormatFactory.createWith(EditData.CF_SHOW_LINE_NUMBERS, FieldConstants.BOOLEAN_FIELD, Cres.get().getString('showLineNumbers')).setNullable(true).setAdvanced(true));
+    EditData.CFT_EDIT_DATA.addField(FieldFormatFactory.createWith(EditData.CF_HORIZONTAL_SCROLLING, FieldConstants.BOOLEAN_FIELD, Cres.get().getString('horizontalScrolling')).setNullable(true).setAdvanced(true));
     EditData.CFT_EDIT_DATA.addField('<' + EditData.CF_DASHBOARDS_HIERARCHY_INFO + '><T><F=N>');
     ff = FieldFormatFactory.create('<' + EditData.CF_ADD_ROW_TABLE_ACTION + '><S><F=N><D=' + Cres.get().getString('dtEditorAddRowTableAction') + '>')
       .setGroup(Cres.get().getString('actions'))

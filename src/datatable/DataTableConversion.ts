@@ -161,7 +161,7 @@ export default class DataTableConversion {
   public static populateBeanFromRecord(bean: any, rec: DataRecord, format: TableFormat, setReadOnlyFields: boolean, fieldsToSkip: Array<string> = new Array<string>()): void {
     try {
       for (const ff of format) {
-        if (fieldsToSkip.filter(el => el === ff.getName()).length > 1) {
+        if (fieldsToSkip.filter((el) => el === ff.getName()).length > 1) {
           continue;
         }
 
@@ -248,7 +248,7 @@ export default class DataTableConversion {
       // }
 
       for (const ff of format) {
-        if (fieldsToSkip.filter(el => el === ff.getName()).length > 1 || (!setReadOnlyFields && ff.isReadonly())) {
+        if (fieldsToSkip.filter((el) => el === ff.getName()).length > 1 || (!setReadOnlyFields && ff.isReadonly())) {
           continue;
         }
 
@@ -298,7 +298,7 @@ export default class DataTableConversion {
   static beansToTable(beans: Array<any>, format: TableFormat, setReadOnlyFields = true): DataTable {
     const table: DataTable = DataTableFactory.of(format);
 
-    beans.forEach(bean => {
+    beans.forEach((bean) => {
       table.addRecordFromRecord(DataTableConversion.beanToRecord(bean, format, setReadOnlyFields, false));
     });
 
@@ -311,13 +311,13 @@ export default class DataTableConversion {
     return ff;
   }
 
-  /*  public static createFieldFormat(name: string, value: object): FieldFormat<any> {
+  public static createFieldFormat(name: string, value: any): FieldFormat<any> {
     let ff: FieldFormat<any> = FieldFormatFactory.createType(name, FieldConstants.STRING_FIELD);
     if (value == null) {
       ff.setNullable(true);
     } else {
       try {
-        ff = this.createFieldFormatOfClass(name, Reflection.getClass(value));
+        ff = DataTableConversion.createFieldFormatOfClass(name, value);
       } catch (ex) {
         Log.DATATABLE.debug('Error constructing field format for value', ex);
       }
@@ -325,23 +325,45 @@ export default class DataTableConversion {
     return ff;
   }
 
-  public static createFieldFormatOfClass(name: string, valueClass: Class): FieldFormat<any> {
-    // TODO need make
-    //FORMAT_CONVERTERS_LOCK.readLock().lock();
+  public static wrapToTable(values: Array<any>): DataTable {
+    const tableSource = new Map<string, any>();
+    for (let i = 0; i < values.length; i++) {
+      tableSource.set(i.toString(), values[i]);
+    }
+    return DataTableConversion.wrapMapToTable(tableSource);
+  }
 
-    try {
-      for (let converter of this.FORMAT_CONVERTERS) {
-        if (valueClass.getName() === converter.getValueClass()) {
-          return converter.createFieldFormat(name);
-        }
-      }
-    } finally {
-      // TODO need make
-      //FORMAT_CONVERTERS_LOCK.readLock().unlock();
+  public static wrapMapToTable(values: Map<string, any>): DataTable {
+    if (values.size == 0) {
+      return DataTableFactory.of();
     }
 
-    return FieldFormat.create(name, valueClass);
-  }*/
+    const rf = new TableFormat();
+
+    for (const field of values.keys()) {
+      const value = values.get(field);
+      rf.addField(DataTableConversion.createFieldFormat(field, value));
+    }
+
+    const result = new DataRecord(rf);
+
+    for (const field of values.keys()) {
+      result.addValue(values.get(field));
+    }
+
+    return result.wrap();
+  }
+
+  public static createFieldFormatOfClass(name: string, value: any): FieldFormat<any> {
+    const type = FieldFormat.getFieldFormatType(value);
+    for (const converter of this.FORMAT_CONVERTERS) {
+      if (converter.getValueClass() === type) {
+        return converter.createFieldFormat(name);
+      }
+    }
+
+    return FieldFormatFactory.createType(name, type);
+  }
 
   private static getFormatFromDefaultValue(ff: FieldFormat<any>): TableFormat | null {
     let frmt = null;

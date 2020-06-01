@@ -24,6 +24,6 @@ export default abstract class ActionUtils {
     static createDndActionParameters(accepterContextPath: string): DataTable;
     static createActionInput(executionParameters: DataTable): ServerActionInput;
     static initActionCreate(context: Context<any, any>, actionName: string, initialParameters: ServerActionInput, inputData: DataTable, mode: ActionExecutionMode, callerController: CallerController): Promise<ActionIdentifier>;
-    static initAction(context: Context<any, any>, actionName: string, initialParameters: ServerActionInput, inputData: DataTable | null, environment: Map<string, any> | null, mode: ActionExecutionMode, callerController: CallerController | null, collector: ErrorCollector | null): Promise<ActionIdentifier>;
-    static stepAction(context: Context<any, any>, actionId: ActionIdentifier, actionResponse: GenericActionResponse | null, callerController: CallerController | null): Promise<GenericActionCommand | null>;
+    static initAction(context: Context<any, any>, actionName: string, initialParameters: ServerActionInput, inputData: DataTable | null, environment: Map<string, any> | null, mode: ActionExecutionMode, callerController?: CallerController, collector?: ErrorCollector): Promise<ActionIdentifier>;
+    static stepAction(context: Context<any, any>, actionId: ActionIdentifier, actionResponse: GenericActionResponse | null, callerController?: CallerController): Promise<GenericActionCommand | null>;
 }

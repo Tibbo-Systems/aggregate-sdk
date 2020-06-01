@@ -44,7 +44,7 @@ export default class AsyncCommandProcessor<I extends Command, O extends Command,
   }
 
   public resetSentCommandTimeouts(): void {
-    this.sentCommandsQueue.forEach(e => e.reset());
+    this.sentCommandsQueue.forEach((e) => e.reset());
   }
 
   private sendCommandImplementation(cmd: O): void {
@@ -75,7 +75,7 @@ export default class AsyncCommandProcessor<I extends Command, O extends Command,
       await mon.waitReply(timeout);
     }
 
-    this.sentCommandsQueue = this.sentCommandsQueue.filter(e => e !== mon);
+    this.sentCommandsQueue = this.sentCommandsQueue.filter((e) => e !== mon);
 
     if (mon.getReply() != null) {
       return mon.getReply();
@@ -104,7 +104,7 @@ export default class AsyncCommandProcessor<I extends Command, O extends Command,
         } else {
           let found = false;
           const thisTime = Date.now();
-          this.sentCommandsQueue.filter(cur => {
+          this.sentCommandsQueue.filter((cur) => {
             if (cur.getCommand().getId() === cmd.getId()) {
               cur.setReply(command);
               found = true;
@@ -132,7 +132,7 @@ export default class AsyncCommandProcessor<I extends Command, O extends Command,
   }
 
   public interrupt(): void {
-    this.sentCommandsQueue.forEach(cmd => {
+    this.sentCommandsQueue.forEach((cmd) => {
       cmd.terminate();
     });
     this.sentCommandsQueue = [];

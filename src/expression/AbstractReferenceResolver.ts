@@ -10,7 +10,7 @@ import CallerController from '../context/CallerController';
 
 export default abstract class AbstractReferenceResolver extends JObject implements ReferenceResolver {
   private contextManager: ContextManager<Context<any, any>> | null = null;
-  private callerController: CallerController | null = null;
+  private callerController?: CallerController;
   private defaultContext: Context<any, any> | null = null;
   private evaluator: Evaluator | null = null;
 
@@ -26,13 +26,13 @@ export default abstract class AbstractReferenceResolver extends JObject implemen
     return this.defaultTable;
   }
 
-  abstract resolveReference(ref: Reference, environment: EvaluationEnvironment): any;
+  abstract async resolveReference(ref: Reference, environment: EvaluationEnvironment): Promise<any>;
 
   public setContextManager(contextManager: ContextManager<Context<any, any>> | null): void {
     this.contextManager = contextManager;
   }
 
-  public setCallerController(callerController: CallerController | null): void {
+  public setCallerController(callerController?: CallerController): void {
     this.callerController = callerController;
   }
 
@@ -44,7 +44,7 @@ export default abstract class AbstractReferenceResolver extends JObject implemen
     this.evaluator = evaluator;
   }
 
-  public getCallerController(): CallerController | null {
+  public getCallerController(): CallerController | undefined {
     return this.callerController;
   }
 

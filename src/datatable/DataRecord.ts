@@ -40,7 +40,7 @@ export default class DataRecord extends JObject implements StringEncodable {
    */
   public static createAndFill(tableFormat: TableFormat, ...data: Array<any>): DataRecord {
     const dataRecord = new DataRecord(tableFormat);
-    data.forEach(param => dataRecord.addValue(param));
+    data.forEach((param) => dataRecord.addValue(param));
 
     return dataRecord;
   }
@@ -249,7 +249,7 @@ export default class DataRecord extends JObject implements StringEncodable {
     this.ensureMutable();
 
     const recordTable: DataTable | null = this.getTable();
-    const isRecursive: boolean = value != null && value == recordTable;
+    const isRecursive: boolean = value != null && value === recordTable;
     if (isRecursive) {
       value = recordTable !== null ? recordTable.clone() : null;
     }

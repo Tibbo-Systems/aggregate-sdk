@@ -154,11 +154,7 @@ export default class ReferenceConverter extends AbstractEditorOptionsConverter {
     const exp5: string = Functions.CALL_FUNCTION + "('" + Contexts.CTX_UTILITIES + "','" + UtilitiesContextConstants.F_VARIABLES_BY_MASK + "'," + contextTypeExpression + ')' + '' + ')))';
 
     const sb: StringBuilder = new StringBuilder();
-    sb.append(exp1)
-      .append(exp2)
-      .append(exp3)
-      .append(exp4)
-      .append(exp5);
+    sb.append(exp1).append(exp2).append(exp3).append(exp4).append(exp5);
 
     ReferenceConverter.FORMAT.addBinding(ref, sb.toString());
   }

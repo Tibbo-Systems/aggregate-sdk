@@ -70,6 +70,7 @@ export default abstract class FieldFormat<T> extends JObject {
     protected constructor(name: string);
     makeImmutable(): void;
     static createFieldValidatorByType(type: string, args?: any[]): AbstractFieldValidator<any>;
+    static getFieldFormatType(value: any): string;
     protected setTransferEncode(transferEncode: boolean): FieldFormat<T>;
     static isFieldClass(valueClass: string): boolean;
     setValidators(validators: Array<FieldValidator<T>>): void;

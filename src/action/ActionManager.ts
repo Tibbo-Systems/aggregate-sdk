@@ -20,6 +20,7 @@ import RequestCache from './RequestCache';
 export default class ActionManager extends JObject {
   private actionDirectory: ActionDirectory<ActionLocator> | null = null;
   private actionIdGenerator: ActionIdGenerator = new ActionIdGenerator();
+  //TODO rework maps. Should not use objects as keys.
   private actions: Map<ActionIdentifier, Action<InitialRequest, ActionCommand, ActionResponse>> = new Map();
   private actionIDs: Map<Action<InitialRequest, ActionCommand, ActionResponse>, ActionIdentifier> = new Map();
   private actionContexts: Map<Action<InitialRequest, ActionCommand, ActionResponse>, ActionContext> = new Map();
@@ -33,7 +34,7 @@ export default class ActionManager extends JObject {
   }
 
   public resolveDefinitions(actionLocators: Array<ActionLocator>): Array<ActionDefinition> {
-    const actionDefinitions: Array<ActionDefinition> = actionLocators.map(element => {
+    const actionDefinitions: Array<ActionDefinition> = actionLocators.map((element) => {
       const actionDefinition = this.actionDirectory !== null ? this.actionDirectory.getActionDefinition(element) : null;
       if (actionDefinition == null) {
         throw new Error("Can't resolve: " + element);

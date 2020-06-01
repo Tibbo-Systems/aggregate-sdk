@@ -62,7 +62,7 @@ export default abstract class DataTable extends AttributedObject implements Stri
     abstract addRecord(): DataRecord;
     abstract addRecordFromRecord(record: DataRecord): DataTable;
     abstract addRecordWith(...fieldValues: any[]): DataRecord;
-    abstract validate(context: Context<any, any> | null, contextManager: ContextManager<any> | null, caller: CallerController | null): void;
+    abstract validate(context: Context<any, any> | null, contextManager: ContextManager<any> | null, caller?: CallerController): void;
     abstract validateRecord(record: DataRecord): void;
     /**
      * Replaces record at the specified index.

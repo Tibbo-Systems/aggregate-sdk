@@ -156,7 +156,6 @@ export default class FieldFormatFactory {
     if (el != null) {
       ff.setGroup(DataTableUtils.transferDecode(el.getValue()));
     }
-
     return ff;
   }
 }

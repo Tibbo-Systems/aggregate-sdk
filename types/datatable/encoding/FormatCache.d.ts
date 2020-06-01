@@ -18,7 +18,8 @@ export default class FormatCache extends JObject {
     add(format: TableFormat | null): number;
     private addImpl;
     put(id: number, format: TableFormat): void;
-    getSync(id: number): TableFormat | null;
-    get(id: number): Promise<TableFormat>;
+    get(id: number): TableFormat | null;
+    hasFormat(id: number): boolean;
+    getFormatFromServer(id: number): Promise<TableFormat>;
     clear(): void;
 }

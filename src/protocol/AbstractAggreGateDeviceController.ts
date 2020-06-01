@@ -43,7 +43,7 @@ export default abstract class AbstractAggreGateDeviceController<D extends AggreG
 
   private _contextManager: C | null = null;
 
-  private callerController: CallerController | null = null;
+  private callerController?: CallerController;
 
   private readonly userSettings = new UserSettings();
 
@@ -88,7 +88,7 @@ export default abstract class AbstractAggreGateDeviceController<D extends AggreG
     return this.device;
   }
 
-  getCallerController(): CallerController | null {
+  getCallerController(): CallerController | undefined {
     return this.callerController;
   }
 
@@ -190,7 +190,7 @@ export default abstract class AbstractAggreGateDeviceController<D extends AggreG
 
   protected getProxyContexts(path: string): Array<ProxyContext<any, any>> {
     // Distributed: internal distributed architecture call
-    const con = this.getContextManager().get(path, null) as ProxyContext<any, any>;
+    const con = this.getContextManager().get(path) as ProxyContext<any, any>;
     return con != null ? new Array(con) : [];
   }
 
@@ -272,7 +272,7 @@ export default abstract class AbstractAggreGateDeviceController<D extends AggreG
               timestamp = timestampstr.length > 0 ? new Date(Number.parseInt(timestampstr)) : null;
             }
 
-            const event = con.fireEvent(ed.getName(), data, null, level, id, timestamp, listener, FireEventRequestController.valueOf(false));
+            const event = con.fireEvent(ed.getName(), data, level, id, timestamp, listener, undefined, FireEventRequestController.valueOf(false));
 
             _this.confirmEvent(con, ed, event);
           }
@@ -288,7 +288,7 @@ export default abstract class AbstractAggreGateDeviceController<D extends AggreG
     new Promise((resolve, reject) => {
       task.run();
       resolve();
-    }).catch(reason => {
+    }).catch((reason) => {
       this.rejectedEvents++;
       this.getLogger().warn('Error processing asynchronous incoming command since the queue is full. Corresponding event rejected. Total rejected events: ' + this.rejectedEvents + '. Command: ' + cmd + 'reason' + reason);
     });
@@ -331,18 +331,8 @@ export default abstract class AbstractAggreGateDeviceController<D extends AggreG
 
       let hasShallow = false;
       for (let i = 0; i < params.getFieldCount(); i++) {
-        if (
-          params
-            .getFormat()
-            .getField(i)
-            .isShallow()
-        ) {
-          if (
-            params
-              .getFormat()
-              .getField(i)
-              .getType() == FieldConstants.DATA_FIELD
-          ) {
+        if (params.getFormat().getField(i).isShallow()) {
+          if (params.getFormat().getField(i).getType() == FieldConstants.DATA_FIELD) {
             params.getData(i).releaseData();
             hasShallow = true;
           }
@@ -367,7 +357,8 @@ export default abstract class AbstractAggreGateDeviceController<D extends AggreG
     try {
       return this.choseAppropriateDataTable(encodedReply, this.createClassicEncodingSettings(false), false);
     } catch (ex) {
-      throw new Error("Error parsing encoded data table '" + encodedReply + "': " + ex.message);
+      ex.message = "Error parsing encoded data table '" + encodedReply + "': " + ex.message;
+      throw ex;
     }
   }
 

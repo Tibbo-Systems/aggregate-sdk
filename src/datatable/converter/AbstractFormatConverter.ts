@@ -12,6 +12,7 @@ export default abstract class AbstractFormatConverter<T> implements FormatConver
 
   constructor(valueClass: string, format: TableFormat | null = null) {
     this.valueClass = valueClass;
+    this.format = format;
   }
 
   abstract convertToBean(value: any, originalValue: T | null): T;

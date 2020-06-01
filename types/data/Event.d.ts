@@ -23,7 +23,7 @@ export default class Event extends JObject {
     private deduplicationId;
     private sessionID;
     constructor();
-    static createEventWithPermission(context: string, def: EventDefinition, level: number, data: DataTable, id: number, creationtime: Date | null, permissions: Permissions | null): Event;
+    static createEventWithPermission(context: string, def: EventDefinition, level: number, data: DataTable, id: number, creationtime: Date | null, permissions?: Permissions): Event;
     static createEvent(context: string, name: string, level: number, data: DataTable, id: number): Event;
     private init;
     getId(): number;

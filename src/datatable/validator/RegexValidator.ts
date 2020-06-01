@@ -50,7 +50,7 @@ export default class RegexValidator extends AbstractFieldValidator<any> {
       throw new Error(ex.message);
     }
 
-    return value || null;
+    return value;
   }
 
   public equals(obj: any): boolean {

@@ -27,7 +27,7 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
     stop(): void;
     getRoot(): T | null;
     setRoot(newRoot: T): void;
-    get(contextName: string, caller?: CallerController | null): T | null;
+    get(contextName: string, caller?: CallerController): T | null;
     private addEventListener;
     protected addListenerToContext(con: T, event: string, listener: DefaultContextEventListener, mask: boolean, weak: boolean): void;
     private removeEventListener;
@@ -52,7 +52,7 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
     getEventQueueStatistics(): Map<string, number>;
     getEventsProcessed(): number;
     getEventsScheduled(): number;
-    queue(ed: EventData, ev: Event, request: FireEventRequestController | null): void;
+    queue(ed: EventData, ev: Event, request?: FireEventRequestController): void;
     variableAdded(con: T, vd: VariableDefinition): void;
     variableRemoved(con: T, vd: VariableDefinition): void;
     private ensureDispatcher;

@@ -46,14 +46,8 @@ const getFormatAsDataTable = () => {
   dt.rec().setValue(DataTableBuildingConstants.FIELD_TABLE_FORMAT_MAX_RECORDS, 10);
   dt.rec().setValue(DataTableBuildingConstants.FIELD_TABLE_FORMAT_REORDERABLE, false);
   dt.rec().setValue(DataTableBuildingConstants.FIELD_TABLE_FORMAT_UNRESIZABLE, false);
-  dt.rec().setValue(
-    DataTableBuildingConstants.FIELD_TABLE_FORMAT_BINDINGS,
-    DataTableFactory.of(DataTableBuilding.BINDINGS_FORMAT)
-  );
-  dt.rec().setValue(
-    DataTableBuildingConstants.FIELD_TABLE_FORMAT_ENCODED,
-    '<<testField><I><A=0><D=testField><V=<L=1 10>>><<testField2><S><F=R><A=test><D=desc for testField2><V=<N=>>><M=1><X=10>'
-  );
+  dt.rec().setValue(DataTableBuildingConstants.FIELD_TABLE_FORMAT_BINDINGS, DataTableFactory.of(DataTableBuilding.BINDINGS_FORMAT));
+  dt.rec().setValue(DataTableBuildingConstants.FIELD_TABLE_FORMAT_ENCODED, '<<testField><I><A=0><D=testField><V=<L=1 10>>><<testField2><S><F=R><A=test><D=desc for testField2><V=<N=>>><M=1><X=10>');
 
   const fields: DataTable = DataTableFactory.of(DataTableBuilding.FIELDS_FORMAT);
   let field = fields.addRecord();
@@ -63,17 +57,11 @@ const getFormatAsDataTable = () => {
   field.setValue(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_NULLABLE, false);
   field.setValue(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_DEFAULT_VALUE, 0);
   field.setValue(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_DESCRIPTION, 'testField');
-  field.setValue(
-    DataTableBuildingConstants.FIELD_FIELDS_FORMAT_EDITOR_OPTIONS,
-    EditorOptionsUtils.createEditorOptionsTable('I', null, null)
-  );
+  field.setValue(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_EDITOR_OPTIONS, EditorOptionsUtils.createEditorOptionsTable('I', null, null));
   field.setValue(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_READONLY, false);
   field.setValue(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_KEY, false);
   field.setValue(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_GROUP, null);
-  field.setValue(
-    DataTableBuildingConstants.FIELD_FIELDS_FORMAT_SELVALS,
-    DataTableFactory.of(DataTableBuilding.SELECTION_VALUES_FORMAT)
-  );
+  field.setValue(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_SELVALS, DataTableFactory.of(DataTableBuilding.SELECTION_VALUES_FORMAT));
   field.setValue(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_HIDDEN, false);
   field.setValue(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_EXTSELVALS, false);
   field.setValue(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_HELP, null);
@@ -86,19 +74,13 @@ const getFormatAsDataTable = () => {
   field.setValue(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_TYPE, FieldConstants.STRING_FIELD);
   field.setValue(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_DESCRIPTION, 'desc for testField2');
   field.setValue(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_READONLY, true);
-  field.setValue(
-    DataTableBuildingConstants.FIELD_FIELDS_FORMAT_EDITOR_OPTIONS,
-    EditorOptionsUtils.createEditorOptionsTable('S', null, null)
-  );
+  field.setValue(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_EDITOR_OPTIONS, EditorOptionsUtils.createEditorOptionsTable('S', null, null));
   field.setValue(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_VALIDATORS, getNonNullValidator());
   field.setValue(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_DEFAULT_VALUE, 'test');
   field.setValue(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_KEY, false);
   field.setValue(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_GROUP, null);
   field.setValue(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_NULLABLE, false);
-  field.setValue(
-    DataTableBuildingConstants.FIELD_FIELDS_FORMAT_SELVALS,
-    DataTableFactory.of(DataTableBuilding.SELECTION_VALUES_FORMAT)
-  );
+  field.setValue(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_SELVALS, DataTableFactory.of(DataTableBuilding.SELECTION_VALUES_FORMAT));
   field.setValue(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_HIDDEN, false);
   field.setValue(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_EXTSELVALS, false);
   field.setValue(DataTableBuildingConstants.FIELD_FIELDS_FORMAT_HELP, null);

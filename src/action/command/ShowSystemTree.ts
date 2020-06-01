@@ -65,16 +65,11 @@ export default class ShowSystemTree extends GenericActionCommand {
     ShowSystemTree.CFT_SHOW_SYSTEM_TREE.addField(ff);
 
     ShowSystemTree.CFT_SHOW_SYSTEM_TREE.addField(
-      FieldFormatFactory.createWith(ShowSystemTree.CF_NODE_CLICK_EXPRESSION, FieldConstants.STRING_FIELD, Cres.get().getString('nodeClickExpression'))
-        .setNullable(true)
-        .setDefault(null)
-        .setEditor(FieldConstants.EDITOR_EXPRESSION)
+      FieldFormatFactory.createWith(ShowSystemTree.CF_NODE_CLICK_EXPRESSION, FieldConstants.STRING_FIELD, Cres.get().getString('nodeClickExpression')).setNullable(true).setDefault(null).setEditor(FieldConstants.EDITOR_EXPRESSION)
     );
 
     ShowSystemTree.CFT_SHOW_SYSTEM_TREE.addField(
-      FieldFormatFactory.createWith(ShowSystemTree.CF_NODE_FILTER_EXPRESSION, FieldConstants.STRING_FIELD, Cres.get().getString('nodeFilterExpression'))
-        .setNullable(true)
-        .setEditor(FieldConstants.EDITOR_EXPRESSION)
+      FieldFormatFactory.createWith(ShowSystemTree.CF_NODE_FILTER_EXPRESSION, FieldConstants.STRING_FIELD, Cres.get().getString('nodeFilterExpression')).setNullable(true).setEditor(FieldConstants.EDITOR_EXPRESSION)
     );
 
     ShowSystemTree.CFT_SHOW_SYSTEM_TREE.addBinding(ShowSystemTree.CF_NODE_CLICK_EXPRESSION + '#' + DataTableBindingProvider.PROPERTY_HIDDEN, true.toString());

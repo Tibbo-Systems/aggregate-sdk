@@ -13,6 +13,8 @@ import DataTableFactory from '../../src/datatable/DataTableFactory';
 import DataTable from '../../src/datatable/DataTable';
 import VariableStatus from '../../src/context/VariableStatus';
 import ContextUtils from '../../src/context/ContextUtils';
+import Cres from '../../src/Cres';
+import MessageFormat from '../../src/util/java/MessageFormat';
 
 describe('TestAbstractContext', () => {
   let contextManager: DefaultContextManager<any>;
@@ -110,7 +112,7 @@ describe('TestAbstractContext', () => {
   });
 
   it('testGetFunctionDefinitionsIncludeHidden', () => {
-    expect(root.getFunctionDefinitions(null, true).length).toBe(6);
+    expect(root.getFunctionDefinitions(true).length).toBe(6);
   });
 
   it('testGetActionDefinitions', () => {
@@ -150,7 +152,7 @@ describe('TestAbstractContext', () => {
   });
 
   it('testGetEventDefinition', () => {
-    expect(root.getEventDefinitions(null, true).length).toBe(17);
+    expect(root.getEventDefinitions(true).length).toBe(17);
   });
 
   it('testGetEventDefinitionDefaultGroup', () => {
@@ -209,7 +211,7 @@ describe('TestAbstractContext', () => {
     expect(root.getVariableDefinition('variable')).toBe(variableDefinition);
   });
 
-  it('testModifyVariableDefinitionFormat', async() => {
+  it('testModifyVariableDefinitionFormat', async () => {
     const varName = 'variable';
 
     const format1 = new TableFormat();
@@ -220,7 +222,7 @@ describe('TestAbstractContext', () => {
 
     const record = new DataRecord(format1);
     record.addString('abc');
-    await root.addVariableRecord(varName, root.getContextManager().getCallerController(), record);
+    await root.addVariableRecord(varName, record, root.getContextManager().getCallerController());
 
     const expectedTable1 = DataTableFactory.of(format1);
     expectedTable1.addRecordFromRecord(record);
@@ -255,7 +257,6 @@ describe('TestAbstractContext', () => {
     const variableData3 = root.getVariableData(varName).getValue() as DataTable;
 
     expect(variableData3.equals(expectedTable1)).toBe(true);
-
   });
 
   it('testRemoveVariableDefinition', () => {
@@ -280,39 +281,37 @@ describe('TestAbstractContext', () => {
   });
 
   it('testExceptionWhenGetVariableObject', async () => {
-    await expect(root.getVariableObject('test', null)).rejects.toThrow('Value class not defined for variable: Test (test)')
+    await expect(root.getVariableObject('test')).rejects.toThrow('Value class not defined for variable: Test (test)');
   });
-  
+
   it('testSetVariableField', async () => {
-    await root.setVariableField(StubContext.V_TEST, StubContext.VF_TEST_INT, 0, 123, null);
+    await root.setVariableField(StubContext.V_TEST, StubContext.VF_TEST_INT, 0, 123);
     expect((await root.getVariable(StubContext.V_TEST)).rec().getInt(StubContext.VF_TEST_INT)).toBe(123);
   });
 
-  it('testExceptionWhenSettingVariableField', () => {return new Promise(done => {
-    root.setVariableField(StubContext.V_TEST, StubContext.VF_TEST_INT, 1, 123, null).catch(reason => {
-      expect(reason.message).toBe('index is out of range');
-      done();
+  it('testExceptionWhenSettingVariableField', () => {
+    return new Promise((done) => {
+      root.setVariableField(StubContext.V_TEST, StubContext.VF_TEST_INT, 1, 123).catch((reason) => {
+        expect(reason.message).toBe('index is out of range');
+        done();
+      });
     });
-  })});
+  });
 
   it('testAddRecordToVariable', async () => {
-    root.addVariableDefinition(
-      new VariableDefinition('testVar', StubContext.VFT_TEST.clone().setMaxRecords(10), true, true)
-    );
-    await root.addVariableRecord('testVar', null, [123]);
-    expect((await root.getVariable('testVar', null)).getRecord(1).getInt(StubContext.VF_TEST_INT)).toBe(123);
+    root.addVariableDefinition(new VariableDefinition('testVar', StubContext.VFT_TEST.clone().setMaxRecords(10), true, true));
+    await root.addVariableRecord('testVar', [123]);
+    expect((await root.getVariable('testVar')).getRecord(1).getInt(StubContext.VF_TEST_INT)).toBe(123);
   });
 
   it('testRemoveRecordFromVariable', async () => {
-    root.addVariableDefinition(
-      new VariableDefinition('testVar', StubContext.VFT_TEST.clone().setMaxRecords(10), true, true)
-    );
-    await root.addVariableRecord('testVar', null, [123]);
-    await root.addVariableRecord('testVar', null, [124]);
-    await root.removeVariableRecords('testVar', null, StubContext.VF_TEST_INT, 123);
+    root.addVariableDefinition(new VariableDefinition('testVar', StubContext.VFT_TEST.clone().setMaxRecords(10), true, true));
+    await root.addVariableRecord('testVar', [123]);
+    await root.addVariableRecord('testVar', [124]);
+    await root.removeVariableRecords('testVar', StubContext.VF_TEST_INT, 123);
 
-    expect((await root.getVariable('testVar', null)).getRecordCount()).toBe(2);
-    expect((await root.getVariable('testVar', null)).getRecord(1).getInt(StubContext.VF_TEST_INT)).toBe(124);
+    expect((await root.getVariable('testVar')).getRecordCount()).toBe(2);
+    expect((await root.getVariable('testVar')).getRecord(1).getInt(StubContext.VF_TEST_INT)).toBe(124);
   });
 
   it('testVariableStatus', () => {
@@ -332,7 +331,7 @@ describe('TestAbstractContext', () => {
   it('testVariableStatusWhenDisabledStatuses', () => {
     expect(() => {
       root.updateVariableStatus(StubContext.V_TEST, new VariableStatus('status', 'comment'), true);
-    }).toThrowError('conEvtNotAvailExtvariableStatusChangedroot');
+    }).toThrowError(MessageFormat.format(Cres.get().getString('conEvtNotAvailExt'), 'variableStatusChanged', 'root'));
   });
 
   it('testStatusWhenDisabled', () => {

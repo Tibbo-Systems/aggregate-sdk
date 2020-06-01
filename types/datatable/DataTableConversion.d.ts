@@ -22,6 +22,10 @@ export default class DataTableConversion {
     static beanToRecord(bean: any, format: TableFormat, setReadOnlyFields: boolean, ignoreErrors: boolean, fieldsToSkip?: Array<string>): DataRecord;
     static beansToTable(beans: Array<any>, format: TableFormat, setReadOnlyFields?: boolean): DataTable;
     static createTableField(name: string, format: TableFormat | null): FieldFormat<any>;
+    static createFieldFormat(name: string, value: any): FieldFormat<any>;
+    static wrapToTable(values: Array<any>): DataTable;
+    static wrapMapToTable(values: Map<string, any>): DataTable;
+    static createFieldFormatOfClass(name: string, value: any): FieldFormat<any>;
     private static getFormatFromDefaultValue;
     static createAggreGateBean(value: any): DataTable;
     private static convertList;

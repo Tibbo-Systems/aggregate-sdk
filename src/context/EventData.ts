@@ -90,7 +90,7 @@ export default class EventData extends JObject implements Comparable<EventData> 
     if (memoryStorateSize == null) {
       return null;
     }
-    this.history = this.history.filter(cur => {
+    this.history = this.history.filter((cur) => {
       // Removing if expired
       const exprTime = cur.getExpirationtime();
       if (exprTime != null && exprTime.getTime() < Date.now()) {

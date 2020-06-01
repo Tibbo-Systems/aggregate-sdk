@@ -35,14 +35,14 @@ export default class Event extends JObject {
     this.setCreationtime(new Date(Date.now()));
   }
 
-  public static createEventWithPermission(context: string, def: EventDefinition, level: number, data: DataTable, id: number, creationtime: Date | null, permissions: Permissions | null): Event {
+  public static createEventWithPermission(context: string, def: EventDefinition, level: number, data: DataTable, id: number, creationtime: Date | null, permissions?: Permissions): Event {
     const event = new Event();
     event.init(context, def.getName(), level, data, id);
-    event.name = def.getName();
-    event.permissions = permissions;
+    event.setName(def.getName());
+    if (permissions) event.setPermissions(permissions);
 
     if (creationtime != null) {
-      event.creationtime = creationtime;
+      event.setCreationtime(creationtime);
     }
 
     if (def.getExpirationPeriod() > 0) {

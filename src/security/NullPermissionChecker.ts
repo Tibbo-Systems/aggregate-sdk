@@ -23,7 +23,7 @@ export default class NullPermissionChecker implements PermissionChecker {
     return new Map();
   }
 
-  has(caller: CallerController | null, requiredPermissions: Permissions, accessedContext: Context<any, any>, accessedEntityDefinition: EntityDefinition): boolean {
+  has(requiredPermissions: Permissions, accessedContext: Context<any, any>, accessedEntityDefinition: EntityDefinition, caller?: CallerController): boolean {
     return true;
   }
 

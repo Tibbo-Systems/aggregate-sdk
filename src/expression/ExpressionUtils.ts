@@ -5,10 +5,18 @@ import DefaultAttributedObject from './DefaultAttributedObject';
 
 import Expression from './Expression';
 import Cres from '../Cres';
+import { ErrorListener } from 'antlr4/error';
+import { Recognizer, Token } from 'antlr4';
 
 const AggregateExpressionLexer = require('../../src/expression/parser/AggregateExpressionLexer.js');
 const AggregateExpressionParser = require('../../src/expression/parser/AggregateExpressionParser.js');
 const antlr4 = require('antlr4');
+
+class ExpressionErrorListener extends ErrorListener {
+  syntaxError(recognizer: Recognizer, offendingSymbol: Token, line: number, column: number, msg: string, e: any): void {
+    throw new Error('Error on line: ' + line + ' column: ' + column + ' message: ' + msg);
+  }
+}
 
 export default class ExpressionUtils {
   public static useVisibleSeparators(formatString: string | null): boolean {
@@ -76,9 +84,14 @@ export default class ExpressionUtils {
       lexer.strictMode = false;
       const tokens = new antlr4.CommonTokenStream(lexer);
       const parser = new AggregateExpressionParser.AggregateExpressionParser(tokens);
+      parser.addErrorListener(new ExpressionErrorListener());
       return parser.compilationUnit();
     } catch (e) {
       throw new Error(Cres.get().getString('exprParseErr') + (showExpressionInErrorText ? " '" + expression + "': " : ': ') + e.message);
     }
+  }
+
+  public static generateBindingId() {
+    return Math.round(Math.random() * Number.MAX_VALUE);
   }
 }

@@ -54,12 +54,8 @@ export default class RemoteContextManager extends DefaultContextManager<ProxyCon
     try {
       const expr = listener.getFilter();
       const filterText: string | null = expr != null ? expr.getText() : null;
-      const fingerprint: string | null = listener.getFingerprint();
-      this.getController().sendCommandAndCheckReplyCode(
-        this.getController()
-          .getCommandBuilder()
-          .addEventListenerOperation(context, event, listener.getListenerCode(), filterText, fingerprint)
-      );
+      const fingerprint = listener.getFingerprint();
+      this.getController().sendCommandAndCheckReplyCode(this.getController().getCommandBuilder().addEventListenerOperation(context, event, listener.getListenerCode(), filterText, fingerprint));
     } catch (ex) {
       const msg = MessageFormat.format(Cres.get().getString('conErrAddingListener'), event, context);
       throw new Error(msg + ': ' + ex.message);
@@ -76,11 +72,7 @@ export default class RemoteContextManager extends DefaultContextManager<ProxyCon
       const expr = listener.getFilter();
       const filter = expr != null ? expr.getText() : null;
       const fingerprint = listener.getFingerprint();
-      this.getController().sendCommandAndCheckReplyCode(
-        this.getController()
-          .getCommandBuilder()
-          .removeEventListenerOperation(context, event, listener.getListenerCode(), filter, fingerprint)
-      );
+      this.getController().sendCommandAndCheckReplyCode(this.getController().getCommandBuilder().removeEventListenerOperation(context, event, listener.getListenerCode(), filter, fingerprint));
     } catch (ex) {
       const msg = MessageFormat.format(Cres.get().getString('conErrRemovingListener'), event, context);
       throw new Error(msg + ': ' + ex.message);

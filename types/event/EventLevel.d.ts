@@ -1,3 +1,4 @@
+import LevelAdapter from '../util/logger/LevelAdapter';
 export default class EventLevel {
     private static readonly LEVELS;
     private static readonly SELECTION_VALUES;
@@ -13,4 +14,5 @@ export default class EventLevel {
     static isValid(level: number): boolean;
     static getName(level: number): string;
     static getSelectionValues(): Map<number, string>;
+    static eventLevelToLogLevel(eventLevel: number): LevelAdapter;
 }

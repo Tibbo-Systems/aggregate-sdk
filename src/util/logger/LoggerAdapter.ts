@@ -9,15 +9,15 @@ export default class LoggerAdapter {
   }
 
   public isDebugEnabled(): boolean {
-    return this.logger.levelVal === LevelAdapter.ERROR;
+    return this.logger.level === LevelAdapter.DEBUG;
   }
 
   public isTraceEnabled(): boolean {
-    return this.logger.levelVal === LevelAdapter.TRACE;
+    return this.logger.level === LevelAdapter.TRACE;
   }
 
   isInfoEnabled(): boolean {
-    return this.logger.levelVal === LevelAdapter.INFO;
+    return this.logger.level === LevelAdapter.INFO;
   }
 
   public info(message: string, error?: Error): void {
@@ -48,6 +48,10 @@ export default class LoggerAdapter {
   public fatal(message: string, error?: Error): void {
     if (error != null) this.logger.fatal(error, message);
     else this.logger.fatal(message);
+  }
+
+  public setLevel(level: LevelAdapter): void {
+    this.logger.level = level;
   }
 
   public log(level: LevelAdapter, message: string, error?: Error): void {

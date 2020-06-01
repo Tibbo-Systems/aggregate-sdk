@@ -19,6 +19,7 @@ import DefaultEvaluatingVisitor from './DefaultEvaluatingVisitor';
 import Function from './functions/Function';
 import AbstractEvaluatingVisitor from './AbstractEvaluatingVisitor';
 import Tracer from './util/Tracer';
+import ErrorCollector from '../util/ErrorCollector';
 
 export default class Evaluator extends JObject {
   private static readonly ENVIRONMENT_PREVIOUS: string = 'previous';
@@ -80,9 +81,8 @@ export default class Evaluator extends JObject {
     }
   })(this);
 
-  constructor(cm: ContextManager<any> | null = null, defaultContext: Context<any, any> | null = null, defaultTable: DataTable | null = null, caller: CallerController | null = null) {
+  constructor(cm: ContextManager<any> | null = null, defaultContext: Context<any, any> | null = null, defaultTable: DataTable | null = null, caller?: CallerController) {
     super();
-
     const resolver: DefaultReferenceResolver = new DefaultReferenceResolver();
     resolver.setContextManager(cm);
     resolver.setCallerController(caller);
@@ -97,7 +97,7 @@ export default class Evaluator extends JObject {
     return result != null ? result.toString() : '';
   }
 
-  private init(defaultResolver: ReferenceResolver): void {
+  public init(defaultResolver: ReferenceResolver): void {
     defaultResolver.setEvaluator(this);
 
     this.resolvers.set(null, defaultResolver);
@@ -107,11 +107,6 @@ export default class Evaluator extends JObject {
 
   public setResolver(schema: string, resolver: ReferenceResolver | null) {
     this.resolvers.set(schema, resolver);
-  }
-
-  //TODO: not-implemented
-  public static createWithResolver(resolver: ReferenceResolver) {
-    return new Evaluator();
   }
 
   public evaluate(expression: Expression | null, environment: EvaluationEnvironment = new EvaluationEnvironment(), attributed = false): any {
@@ -129,8 +124,7 @@ export default class Evaluator extends JObject {
 
       const visitor: DefaultEvaluatingVisitor = new DefaultEvaluatingVisitor(this, environment);
 
-      visitor.visitCompilationUnit(root);
-      let result: any = visitor.getResult();
+      let result: any = visitor.visitCompilationUnit(root);
       if (!attributed && result instanceof AttributedObject) {
         result = (result as AttributedObject).getValue();
       }
@@ -160,10 +154,16 @@ export default class Evaluator extends JObject {
     return new SimpleDataTable();
   }
 
-  setDefaultTable(data: DataTable | null) {}
+  setDefaultTable(data: DataTable | null): void {
+    this.getDefaultResolver().setDefaultTable(data);
+  }
+
+  public setDefaultContext(aContext: Context<any, any>): void {
+    this.getDefaultResolver().setDefaultContext(aContext);
+  }
 
   getDefaultResolver(): ReferenceResolver {
-    return new DefaultReferenceResolver();
+    return this.resolvers.get(null) as ReferenceResolver;
   }
 
   getResolvers(): Map<string | null, ReferenceResolver | null> {
@@ -183,11 +183,51 @@ export default class Evaluator extends JObject {
     return this.tracer;
   }
 
+  setTracer(tracer: Tracer | null): void {
+    this.tracer = tracer;
+  }
+
+  setPreviousResult(previousResult: any) {
+    this.keepPreviousResult = true;
+    this.previousResult = previousResult;
+  }
+
   registerCustomFunction(name: string, impl: Function) {
     if (AbstractEvaluatingVisitor.DEFAULT_FUNCTIONS.has(name) || this.customFunctions.has(name)) {
       throw new Error('Function already registered:' + name);
     }
 
     this.customFunctions.set(name, impl);
+  }
+
+  public static processBindings(table: DataTable, evaluator: Evaluator, errorCollector: ErrorCollector | null = null, split = false): DataTable {
+    if (table == null) {
+      return table;
+    }
+
+    if (table.getFormat().getBindings().length == 0) {
+      return table;
+    }
+
+    let result: DataTable;
+    if (split) {
+      result = table.clone();
+      result.splitFormat();
+    } else {
+      result = table;
+    }
+
+    evaluator.getDefaultResolver().setDefaultTable(result);
+    return result;
+  }
+
+  getResolver(schema: string | null): ReferenceResolver | null {
+    return this.resolvers.get(schema) ?? null;
+  }
+
+  evaluateAttributed(expression: Expression, environment: EvaluationEnvironment = new EvaluationEnvironment()) {
+    const result = this.evaluate(expression, environment, true);
+
+    return ExpressionUtils.toAttributed(result);
   }
 }

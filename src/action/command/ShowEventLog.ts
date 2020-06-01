@@ -67,21 +67,9 @@ export default class ShowEventLog extends GenericActionCommand {
 
     ShowEventLog.CFT_SHOW_EVENT_LOG.addField('<' + ShowEventLog.CF_KEY + '><S><F=NH><D=' + Cres.get().getString('key') + '>');
 
-    ShowEventLog.CFT_SHOW_EVENT_LOG.addField(
-      FieldFormatFactory.createType(ShowEventLog.CF_DEFAULT_CONTEXT, FieldConstants.STRING_FIELD)
-        .setNullable(true)
-        .setHidden(true)
-    );
-    ShowEventLog.CFT_SHOW_EVENT_LOG.addField(
-      FieldFormatFactory.createType(ShowEventLog.CF_CLASS_NAME, FieldConstants.STRING_FIELD)
-        .setNullable(true)
-        .setHidden(true)
-    );
-    ShowEventLog.CFT_SHOW_EVENT_LOG.addField(
-      FieldFormatFactory.createType(ShowEventLog.CF_INSTANCE_ID, FieldConstants.LONG_FIELD)
-        .setNullable(true)
-        .setHidden(true)
-    );
+    ShowEventLog.CFT_SHOW_EVENT_LOG.addField(FieldFormatFactory.createType(ShowEventLog.CF_DEFAULT_CONTEXT, FieldConstants.STRING_FIELD).setNullable(true).setHidden(true));
+    ShowEventLog.CFT_SHOW_EVENT_LOG.addField(FieldFormatFactory.createType(ShowEventLog.CF_CLASS_NAME, FieldConstants.STRING_FIELD).setNullable(true).setHidden(true));
+    ShowEventLog.CFT_SHOW_EVENT_LOG.addField(FieldFormatFactory.createType(ShowEventLog.CF_INSTANCE_ID, FieldConstants.LONG_FIELD).setNullable(true).setHidden(true));
 
     ShowEventLog.CFT_SHOW_EVENT_LOG.addField('<' + ShowEventLog.CF_DASHBOARDS_HIERARCHY_INFO + '><T><F=N>');
 

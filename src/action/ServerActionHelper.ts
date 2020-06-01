@@ -50,11 +50,7 @@ export default class ServerActionHelper {
 
   static __static_initializer_0() {
     ServerActionHelper.CONTEXTS_FORMAT.setUnresizable(true);
-    ServerActionHelper.CONTEXTS_FORMAT.addField(
-      FieldFormatFactory.createWith(ServerActionHelper.FIELD_CONTEXT, FieldConstants.STRING_FIELD, Cres.get().getString('context'))
-        .setEditor(FieldConstants.EDITOR_CONTEXT)
-        .setReadonly(true)
-    );
+    ServerActionHelper.CONTEXTS_FORMAT.addField(FieldFormatFactory.createWith(ServerActionHelper.FIELD_CONTEXT, FieldConstants.STRING_FIELD, Cres.get().getString('context')).setEditor(FieldConstants.EDITOR_CONTEXT).setReadonly(true));
     ServerActionHelper.CONTEXTS_FORMAT.addField(FieldFormatFactory.createWith(ServerActionHelper.FIELD_SELECT, FieldConstants.BOOLEAN_FIELD, Cres.get().getString('select'), true));
   }
 

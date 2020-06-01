@@ -50,6 +50,10 @@ export default abstract class AbstractEntityDefinition extends JObject implement
     return this.description != null ? this.description + ' (' + this.name + ')' : this.name;
   }
 
+  toString(): string {
+    return this.description ?? this.name;
+  }
+
   public setName(name: string): void {
     if (Log.CONTEXT.isDebugEnabled()) {
       try {

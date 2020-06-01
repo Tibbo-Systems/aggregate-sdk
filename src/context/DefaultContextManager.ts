@@ -89,7 +89,7 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
     this.contextAdded(newRoot);
   }
 
-  get(contextName: string, caller: CallerController | null = null): T | null {
+  get(contextName: string, caller?: CallerController): T | null {
     const root: T | null = this.getRoot();
     return root != null ? (root.get(contextName, caller) as T) : null;
   }
@@ -126,7 +126,7 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
     const con: T | null = this.get(context, listener.getCallerController());
 
     if (con != null) {
-      if (con.getEventDefinition(event, null) != null) {
+      if (con.getEventDefinition(event) != null) {
         this.removeListenerFromContext(con, event, listener, mask);
       }
     } else {
@@ -145,7 +145,7 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
   }
 
   addMaskEventListener(mask: string, event: string, listener: DefaultContextEventListener, weak = false): void {
-    const contexts: Array<string> = ContextUtils.expandMaskToPaths(mask, this, listener.getCallerController(), false);
+    const contexts: Array<string> = ContextUtils.expandMaskToPaths(mask, this, false, listener.getCallerController());
 
     for (const con of contexts) {
       this.addEventListener(con, event, listener, true, weak);
@@ -157,7 +157,7 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
   }
 
   removeMaskEventListener(mask: string, event: string, listener: DefaultContextEventListener): void {
-    const contexts: Array<Context<any, any>> = ContextUtils.expandMaskToContexts(mask, this, listener.getCallerController());
+    const contexts: Array<Context<any, any>> = ContextUtils.expandMaskToContexts(mask, this, false, listener.getCallerController());
 
     for (const con of contexts) {
       if (!con.isInitializedEvents()) {
@@ -293,7 +293,7 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
       new (class Visitor extends DefaultContextVisitor {
         visit(vc: Context<any, any>): void {
           const cel: Map<string, ContextEventListenerSet> = _this.getContextListeners(vc.getPath());
-          const eventDefinitions: Array<EventDefinition> = vc.getEventDefinitions(_this.callerController, false);
+          const eventDefinitions: Array<EventDefinition> = vc.getEventDefinitions(false, _this.callerController);
           for (const ed of eventDefinitions) {
             const edata: EventData = vc.getEventData(ed.getName());
             const listeners = cel.get(ed.getName());
@@ -354,7 +354,7 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
     return 0;
   }
 
-  queue(ed: EventData, ev: Event, request: FireEventRequestController | null): void {
+  queue(ed: EventData, ev: Event, request?: FireEventRequestController): void {
     const dispatcher: EventDispatcher | null = this.eventDispatcher;
 
     if (dispatcher != null) {

@@ -38,7 +38,7 @@ export default class TableKeyFieldsValidator extends AbstractTableValidator {
     const query: DataTableQuery = new DataTableQuery();
     const key: Array<any> = new Array<any>();
 
-    keyFields.forEach(keyField => {
+    keyFields.forEach((keyField) => {
       const value: any = record.getValue(keyField);
       key.push(value);
       query.addCondition(new QueryCondition(keyField, value));

@@ -10,9 +10,9 @@ export default interface ContextEventListener {
      * Handles the event
      */
     handle(event: Event): void;
-    getCallerController(): CallerController | null;
-    getListenerCode(): number | null;
-    getFilter(): Expression | null;
-    getFingerprint(): string | null;
+    getCallerController(): CallerController | undefined;
+    getListenerCode(): number | undefined;
+    getFilter(): Expression | undefined;
+    getFingerprint(): string | undefined;
     isAsync(): boolean;
 }

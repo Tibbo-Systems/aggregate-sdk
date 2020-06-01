@@ -32,9 +32,7 @@ export default class StringFieldFormat extends FieldFormat<string> {
     this.EXPRESSION_BUILDER_OPTIONS_FORMAT.addField(FieldFormatFactory.createWith(FieldConstants.FIELD_DEFAULT_CONTEXT, FieldConstants.STRING_FIELD, Cres.get().getString('conDefaultContext')).setNullable(true));
     this.EXPRESSION_BUILDER_OPTIONS_FORMAT.addField(FieldFormatFactory.createWith(FieldConstants.FIELD_DEFAULT_TABLE, FieldConstants.DATATABLE_FIELD, Cres.get().getString('defaultTable')).setNullable(true));
     this.EXPRESSION_BUILDER_OPTIONS_FORMAT.addField(
-      FieldFormatFactory.createWith(FieldConstants.FIELD_REFERENCES, FieldConstants.DATATABLE_FIELD, Cres.get().getString('references'))
-        .setNullable(true)
-        .setDefault(DataTableFactory.of(this.ADDITIONAL_REFERENCES_FORMAT))
+      FieldFormatFactory.createWith(FieldConstants.FIELD_REFERENCES, FieldConstants.DATATABLE_FIELD, Cres.get().getString('references')).setNullable(true).setDefault(DataTableFactory.of(this.ADDITIONAL_REFERENCES_FORMAT))
     );
     this.EXPRESSION_BUILDER_OPTIONS_FORMAT.addField(FieldFormatFactory.createWith(FieldConstants.FIELD_EXPECTED_RESULT, FieldConstants.STRING_FIELD, Cres.get().getString('expectedResultType')).setNullable(true));
     this.EXPRESSION_BUILDER_OPTIONS_FORMAT.addField(FieldFormatFactory.createWith(FieldConstants.FIELD_DEFAULT_CONTEXT_DESCRIPTION, FieldConstants.STRING_FIELD, Cres.get().getString('defaultContextDesc')).setNullable(true));
@@ -136,10 +134,7 @@ export default class StringFieldFormat extends FieldFormat<string> {
     options.rec().setValue(ContextMaskConverter.FIELD_ROOT_CONTEXT, rootContext);
 
     if (contextTypes != null) {
-      const typesTable: DataTable = options
-        .rec()
-        .getDataTable(ContextMaskConverter.FIELD_CONTEXT_TYPES)
-        .clone();
+      const typesTable: DataTable = options.rec().getDataTable(ContextMaskConverter.FIELD_CONTEXT_TYPES).clone();
       for (const contextType of contextTypes) {
         typesTable.addRecordWith(contextType);
       }
@@ -147,10 +142,7 @@ export default class StringFieldFormat extends FieldFormat<string> {
     }
 
     if (contextMasks != null) {
-      const masksTable: DataTable = options
-        .rec()
-        .getDataTable(ContextMaskConverter.FIELD_CONTEXT_MASKS)
-        .clone();
+      const masksTable: DataTable = options.rec().getDataTable(ContextMaskConverter.FIELD_CONTEXT_MASKS).clone();
       for (const contextMask of contextMasks) {
         masksTable.addRecordWith(contextMask);
       }

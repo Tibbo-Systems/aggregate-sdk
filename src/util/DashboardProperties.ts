@@ -59,40 +59,16 @@ export default class DashboardProperties extends AggreGateBean {
     DashboardProperties.FORMAT.addField(FieldFormatFactory.create('<' + DashboardProperties.FIELD_CLEANUP + '><B><F=H>'));
 
     DashboardProperties.FORMAT.addField(FieldFormatFactory.createWith(DashboardProperties.FIELD_STORAGE_CONTEXT, FieldConstants.STRING_FIELD, Cres.get().getString('storageContext')).setNullable(true));
-    DashboardProperties.FORMAT.addField(
-      FieldFormatFactory.createType(DashboardProperties.FIELD_STORAGE_CLASS, FieldConstants.STRING_FIELD)
-        .setNullable(true)
-        .setHidden(true)
-    );
-    DashboardProperties.FORMAT.addField(
-      FieldFormatFactory.createType(DashboardProperties.FIELD_STORAGE_SESSION_ID, FieldConstants.LONG_FIELD)
-        .setNullable(true)
-        .setHidden(true)
-    );
+    DashboardProperties.FORMAT.addField(FieldFormatFactory.createType(DashboardProperties.FIELD_STORAGE_CLASS, FieldConstants.STRING_FIELD).setNullable(true).setHidden(true));
+    DashboardProperties.FORMAT.addField(FieldFormatFactory.createType(DashboardProperties.FIELD_STORAGE_SESSION_ID, FieldConstants.LONG_FIELD).setNullable(true).setHidden(true));
 
-    DashboardProperties.FORMAT.addField(
-      FieldFormatFactory.createType(DashboardProperties.FIELD_DEFAULT_EVENT, FieldConstants.STRING_FIELD)
-        .setNullable(true)
-        .setHidden(true)
-    );
+    DashboardProperties.FORMAT.addField(FieldFormatFactory.createType(DashboardProperties.FIELD_DEFAULT_EVENT, FieldConstants.STRING_FIELD).setNullable(true).setHidden(true));
 
-    DashboardProperties.FORMAT.addField(
-      FieldFormatFactory.createType(DashboardProperties.FIELD_DASHBOARD_CONTEXT, FieldConstants.STRING_FIELD)
-        .setNullable(true)
-        .setHidden(false)
-    );
+    DashboardProperties.FORMAT.addField(FieldFormatFactory.createType(DashboardProperties.FIELD_DASHBOARD_CONTEXT, FieldConstants.STRING_FIELD).setNullable(true).setHidden(false));
 
-    DashboardProperties.FORMAT.addField(
-      FieldFormatFactory.createType(DashboardProperties.FIELD_ELEMENT_ID, FieldConstants.STRING_FIELD)
-        .setNullable(true)
-        .setHidden(false)
-    );
+    DashboardProperties.FORMAT.addField(FieldFormatFactory.createType(DashboardProperties.FIELD_ELEMENT_ID, FieldConstants.STRING_FIELD).setNullable(true).setHidden(false));
 
-    DashboardProperties.FORMAT.addField(
-      FieldFormatFactory.createType(DashboardProperties.FIELD_PARENT_ELEMENT_ID, FieldConstants.STRING_FIELD)
-        .setNullable(true)
-        .setHidden(false)
-    );
+    DashboardProperties.FORMAT.addField(FieldFormatFactory.createType(DashboardProperties.FIELD_PARENT_ELEMENT_ID, FieldConstants.STRING_FIELD).setNullable(true).setHidden(false));
 
     DashboardProperties.FORMAT.setNamingExpression(
       '{' + DashboardProperties.FIELD_DESCRIPTION + '} != null ? {' + DashboardProperties.FIELD_DESCRIPTION + '} : ({' + DashboardProperties.FIELD_NAME + '} != null ? {' + DashboardProperties.FIELD_NAME + "} : '')"

@@ -2,6 +2,12 @@ import Context from './Context';
 import ContextManager from './ContextManager';
 import CallerController from './CallerController';
 export default class ContextUtils {
+    static readonly ENTITY_ANY_TYPE = 0;
+    static readonly ENTITY_VARIABLE = 1;
+    static readonly ENTITY_FUNCTION = 2;
+    static readonly ENTITY_EVENT = 4;
+    static readonly ENTITY_ACTION = 8;
+    static readonly ENTITY_INSTANCE = 100;
     static userContextPath(username: string): string;
     static deviceServersContextPath(owner: string): string;
     static dsGroupsContextPath(owner: string): string;
@@ -40,10 +46,10 @@ export default class ContextUtils {
     static pluginIdToContextName(pluginId: string): string;
     static matchesToMask(mask: string, context: string, contextMayExtendMask?: boolean, maskMayExtendContext?: boolean): boolean;
     static isMask(name: string): boolean;
-    static expandMaskListToContexts(masks: string, contextManager: ContextManager<any>, caller?: any, useVisibleChildren?: boolean): Array<Context<any, any>>;
-    static expandMaskToContexts(mask: string, contextManager: ContextManager<any>, caller?: CallerController | null, useVisibleChildren?: boolean): Array<Context<any, any>>;
-    static expandMaskToPaths(mask: string, contextManager: ContextManager<any>, caller: CallerController | null, useVisibleChildren?: boolean): Array<string>;
-    static expandMaskPart(head: string, tail: string, contextManager: ContextManager<any>, caller: CallerController | null, useVisibleChildren: boolean): Array<string>;
+    static expandMaskListToContexts(masks: string, contextManager: ContextManager<any>, useVisibleChildren?: boolean, caller?: CallerController): Array<Context<any, any>>;
+    static expandMaskToContexts(mask: string, contextManager: ContextManager<any>, useVisibleChildren?: boolean, caller?: CallerController): Array<Context<any, any>>;
+    static expandMaskToPaths(mask: string, contextManager: ContextManager<any>, useVisibleChildren?: boolean, caller?: CallerController): Array<string>;
+    static expandMaskPart(head: string, tail: string, contextManager: ContextManager<any>, useVisibleChildren: boolean, caller?: CallerController): Array<string>;
     static isRelative(name: string): boolean;
     /**
      * Returns base group name. Useful for composite group names that contain several group names delimited with group separator symbol.

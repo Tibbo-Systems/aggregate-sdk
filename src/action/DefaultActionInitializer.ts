@@ -19,10 +19,10 @@ export default class DefaultActionInitializer implements ActionInitializer {
     inputData: DataTable | null,
     environment: Map<string, any>,
     mode: ActionExecutionMode,
-    callerController: CallerController | null,
-    collector: ErrorCollector
+    callerController?: CallerController,
+    collector?: ErrorCollector
   ): Promise<ActionIdentifier> {
-    const def: FunctionDefinition | null = context.getFunctionDefinition(ServerContextConstants.F_INIT_ACTION, null);
+    const def: FunctionDefinition | null = context.getFunctionDefinition(ServerContextConstants.F_INIT_ACTION);
     const FIELD_COUNT = 3;
 
     if (def == null) {
@@ -37,7 +37,7 @@ export default class DefaultActionInitializer implements ActionInitializer {
       rec.addValue(mode.getCode());
     }
 
-    const res: DataTable = await context.callFunction(ServerContextConstants.F_INIT_ACTION, rec.wrap(), callerController, null);
+    const res: DataTable = await context.callFunction(ServerContextConstants.F_INIT_ACTION, rec.wrap(), callerController);
 
     return new ActionIdentifier(res.rec().getString(ServerContextConstants.FOF_INIT_ACTION_ACTION_ID));
   }

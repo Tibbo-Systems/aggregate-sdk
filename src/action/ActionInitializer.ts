@@ -14,7 +14,7 @@ export default interface ActionInitializer {
     inputData: DataTable | null,
     environment: Map<string, any> | null,
     mode: ActionExecutionMode,
-    callerController: CallerController | null,
-    collector: ErrorCollector | null
+    callerController?: CallerController,
+    collector?: ErrorCollector
   ): Promise<ActionIdentifier>;
 }

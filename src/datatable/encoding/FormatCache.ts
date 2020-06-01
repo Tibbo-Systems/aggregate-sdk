@@ -102,7 +102,7 @@ export default class FormatCache extends JObject {
     }
 
     if (Log.PROTOCOL_CACHING.isDebugEnabled()) {
-      Log.PROTOCOL_CACHING.debug("Cache '" + name + "' cached format as #" + id + ': ' + format);
+      Log.PROTOCOL_CACHING.debug("Cache '" + this.name + "' cached format as #" + id + ': ' + format);
     }
 
     return id;
@@ -113,7 +113,7 @@ export default class FormatCache extends JObject {
       format.setId(id);
     }
 
-    this.reverse.set(format, id);
+    //this.reverse.set(format, id);
     this.cache.set(id, format);
 
     return format;
@@ -125,55 +125,58 @@ export default class FormatCache extends JObject {
     }
 
     if (this.addImpl(format, id) == null && Log.PROTOCOL_CACHING.isDebugEnabled()) {
-      Log.PROTOCOL_CACHING.debug("Cache '" + name + "' cached format as #" + id + ': ' + format);
+      Log.PROTOCOL_CACHING.debug("Cache '" + this.name + "' cached format as #" + id + ': ' + format);
     }
   }
 
-  public getSync(id: number): TableFormat | null {
-    const result: TableFormat | null = this.cache.get(id) ? (this.cache.get(id) as TableFormat) : null;
-    return result;
+  public get(id: number): TableFormat | null {
+    return this.cache.get(id) ?? null;
   }
 
-  public async get(id: number): Promise<TableFormat> {
-    let result: TableFormat | null = this.cache.get(id) ? (this.cache.get(id) as TableFormat) : null;
+  public hasFormat(id: number): boolean {
+    return this.cache.has(id);
+  }
 
-    if (result == null) {
-      if (this.controller != null) {
-        try {
-          if (Log.PROTOCOL_CACHING.isDebugEnabled()) {
-            Log.PROTOCOL_CACHING.debug('Requesting remote format #' + id);
-          }
+  public async getFormatFromServer(id: number): Promise<TableFormat> {
+    let result = this.get(id);
 
-          let output: DataTable;
+    if (result) return result;
 
-          const cm: ContextManager<any> | null = this.controller.getContextManager();
-
-          const rootContext: AbstractContext<any, any> | null = cm != null ? cm.get(Contexts.CTX_ROOT, cm.getCallerController()) : null;
-          const utilitiesContext: AbstractContext<any, any> | null = cm != null ? cm.get(Contexts.CTX_UTILITIES, cm.getCallerController()) : null;
-
-          if (rootContext != null && rootContext.getFunctionDefinition(RootContextConstants.F_GET_FORMAT) != null) {
-            output = await rootContext.callFunction(RootContextConstants.F_GET_FORMAT, [id]);
-          } else if (utilitiesContext != null && utilitiesContext.getFunctionDefinition(RootContextConstants.F_GET_FORMAT) != null) {
-            output = await utilitiesContext.callFunction(RootContextConstants.F_GET_FORMAT, [id]);
-          } else {
-            const input: DataTable = DataRecord.createAndFill(CommonServerFormats.FIFT_GET_FORMAT, id).wrap();
-            output = await this.controller.callRemoteFunction(Contexts.CTX_UTILITIES, RootContextConstants.F_GET_FORMAT, CommonServerFormats.FOFT_GET_FORMAT, input, null);
-          }
-
-          const formatData: string = output.rec().getString(RootContextConstants.FOF_GET_FORMAT_DATA);
-          result = TableFormat.createWithFormatAndSettings(formatData, new ClassicEncodingSettings(false));
-
-          if (Log.PROTOCOL_CACHING.isDebugEnabled()) {
-            Log.PROTOCOL_CACHING.debug('Received explicitely requested remote format #' + id + ': ' + result);
-          }
-
-          this.addImpl(result, id);
-        } catch (ex) {
-          throw new Error('Error obtaining format #' + id + ': ' + ex.message);
+    if (this.controller != null) {
+      try {
+        if (Log.PROTOCOL_CACHING.isDebugEnabled()) {
+          Log.PROTOCOL_CACHING.debug('Requesting remote format #' + id);
         }
-      } else {
-        throw new Error('Format requesting is disabled');
+
+        let output: DataTable;
+
+        const cm: ContextManager<any> | null = this.controller.getContextManager();
+
+        const rootContext: AbstractContext<any, any> | null = cm != null ? cm.get(Contexts.CTX_ROOT, cm.getCallerController()) : null;
+        const utilitiesContext: AbstractContext<any, any> | null = cm != null ? cm.get(Contexts.CTX_UTILITIES, cm.getCallerController()) : null;
+
+        if (rootContext != null && rootContext.getFunctionDefinition(RootContextConstants.F_GET_FORMAT) != null) {
+          output = await rootContext.callFunction(RootContextConstants.F_GET_FORMAT, [id]);
+        } else if (utilitiesContext != null && utilitiesContext.getFunctionDefinition(RootContextConstants.F_GET_FORMAT) != null) {
+          output = await utilitiesContext.callFunction(RootContextConstants.F_GET_FORMAT, [id]);
+        } else {
+          const input: DataTable = DataRecord.createAndFill(CommonServerFormats.FIFT_GET_FORMAT, id).wrap();
+          output = await this.controller.callRemoteFunction(Contexts.CTX_UTILITIES, RootContextConstants.F_GET_FORMAT, CommonServerFormats.FOFT_GET_FORMAT, input, null);
+        }
+
+        const formatData: string = output.rec().getString(RootContextConstants.FOF_GET_FORMAT_DATA);
+        result = TableFormat.createWithFormatAndSettings(formatData, new ClassicEncodingSettings(false));
+
+        if (Log.PROTOCOL_CACHING.isDebugEnabled()) {
+          Log.PROTOCOL_CACHING.debug('Received explicitely requested remote format #' + id + ': ' + result);
+        }
+
+        this.addImpl(result, id);
+      } catch (ex) {
+        throw new Error('Error obtaining format #' + id + ': ' + ex.message);
       }
+    } else {
+      throw new Error('Format requesting is disabled');
     }
 
     return result;

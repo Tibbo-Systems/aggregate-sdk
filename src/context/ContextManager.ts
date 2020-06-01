@@ -51,7 +51,7 @@ export default interface ContextManager<T extends Context<any, any>> {
    * Context full name
    * @return {*} Requested context or null if this context not exist or not available with current permissions
    */
-  get(contextName: string, caller: CallerController | null): T | null;
+  get(contextName: string, caller?: CallerController): T | null;
 
   /**
    * Adds event listener to specified event to every context satisfying context mask.
@@ -136,7 +136,7 @@ export default interface ContextManager<T extends Context<any, any>> {
    * @param {com.tibbo.aggregate.common.data.Event} ev
    * @param {com.tibbo.aggregate.common.event.FireEventRequestController} request
    */
-  queue(ed: EventData, ev: Event, request: FireEventRequestController | null): void;
+  queue(ed: EventData, ev: Event, request?: FireEventRequestController): void;
 
   /**
    * Returns caller controller used by context manager for internal operations. This controller is unsafe since it doesn't perform any permission checking.

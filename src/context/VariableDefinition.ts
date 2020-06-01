@@ -36,9 +36,9 @@ export default class VariableDefinition extends AbstractEntityDefinition impleme
 
   private helpId: string | null = null;
 
-  private getter: ((con: Context<any, any>, def: VariableDefinition, caller: CallerController | null, request: RequestController | null) => DataTable) | null = null;
+  private getter: ((con: Context<any, any>, def: VariableDefinition, caller?: CallerController, request?: RequestController) => DataTable) | null = null;
 
-  private setter: ((con: Context<any, any>, def: VariableDefinition, caller: CallerController | null, request: RequestController | null, value: DataTable) => boolean) | null = null;
+  private setter: ((con: Context<any, any>, def: VariableDefinition, value: DataTable, caller?: CallerController, request?: RequestController) => boolean) | null = null;
 
   private allowUpdateEvents = false;
 
@@ -108,11 +108,11 @@ export default class VariableDefinition extends AbstractEntityDefinition impleme
     this.writePermissions = writePermissions;
   }
 
-  public setSetter(setter: (con: Context<any, any>, def: VariableDefinition, caller: CallerController | null, request: RequestController | null, value: DataTable) => boolean) {
+  public setSetter(setter: (con: Context<any, any>, def: VariableDefinition, value: DataTable, caller?: CallerController, request?: RequestController) => boolean) {
     this.setter = setter;
   }
 
-  public setGetter(getter: (con: Context<any, any>, def: VariableDefinition, caller: CallerController | null, request: RequestController | null) => DataTable): void {
+  public setGetter(getter: (con: Context<any, any>, def: VariableDefinition, caller?: CallerController, request?: RequestController) => DataTable): void {
     this.getter = getter;
   }
 
@@ -140,11 +140,11 @@ export default class VariableDefinition extends AbstractEntityDefinition impleme
     return this.writePermissions;
   }
 
-  public getSetter(): ((con: Context<any, any>, def: VariableDefinition, caller: CallerController | null, request: RequestController | null, value: DataTable) => boolean) | null {
+  public getSetter(): ((con: Context<any, any>, def: VariableDefinition, value: DataTable, caller?: CallerController, request?: RequestController) => boolean) | null {
     return this.setter;
   }
 
-  public getGetter(): ((con: Context<any, any>, def: VariableDefinition, caller: CallerController | null, request: RequestController | null) => DataTable) | null {
+  public getGetter(): ((con: Context<any, any>, def: VariableDefinition, caller?: CallerController, request?: RequestController) => DataTable) | null {
     return this.getter;
   }
 

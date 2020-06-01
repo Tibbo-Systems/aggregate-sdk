@@ -33,5 +33,5 @@ export default class DataTableUtils extends JObject {
     static getEditorSelectionValues(): Map<any, string>;
     static inlineData(tgtVal: DataTable, contextManager: ContextManager<any> | null, caller: CallerController): void;
     static isEncodedTable(str: string): boolean;
-    static processBindings(table: DataTable, evaluator: Evaluator, errorCollector?: ErrorCollector | null, split?: boolean): DataTable;
+    static processBindings(table: DataTable, evaluator: Evaluator, errorCollector: ErrorCollector | null): DataTable;
 }

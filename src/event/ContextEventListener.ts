@@ -13,13 +13,13 @@ export default interface ContextEventListener {
    */
   handle(event: Event): void;
 
-  getCallerController(): CallerController | null;
+  getCallerController(): CallerController | undefined;
 
-  getListenerCode(): number | null;
+  getListenerCode(): number | undefined;
 
-  getFilter(): Expression | null;
+  getFilter(): Expression | undefined;
 
-  getFingerprint(): string | null;
+  getFingerprint(): string | undefined;
 
   isAsync(): boolean;
 }

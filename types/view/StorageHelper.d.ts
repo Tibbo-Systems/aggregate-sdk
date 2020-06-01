@@ -128,7 +128,6 @@ export default class StorageHelper {
     static readonly FIELD_SORTING_COLUMN: string;
     static readonly FIELD_SORTING_ORDER: string;
     static readonly FIFT_STORAGE_OPEN: TableFormat;
-    protected constructor();
     static __static_initializer_0(): void;
     static readonly FOFT_STORAGE_OPEN: TableFormat;
     static __static_initializer_1(): void;

@@ -7,7 +7,7 @@ export default class EventDispatcher {
     private readonly undispatchedEvents;
     private concurrentDispatcherCount;
     constructor(queueLength: number, concurrentDispatcherCount: number | null);
-    queue(ev: QueuedEvent, request: FireEventRequestController | null): void;
+    queue(ev: QueuedEvent, request?: FireEventRequestController): void;
     private queueInternal;
     private run;
     getQueueLength(): number;

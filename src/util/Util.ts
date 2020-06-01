@@ -241,7 +241,7 @@ export default class Util {
   public static determineDateFormat(dateString: string): string | null {
     const dates = Array.from(this.DATE_FORMAT_REGEXPS.entries());
     if (dates) {
-      const findResult = dates.find(entry => {
+      const findResult = dates.find((entry) => {
         dateString.toLowerCase().match(entry[0]);
       });
       return findResult ? findResult[1] : null;

@@ -5,18 +5,18 @@ import Expression from '../expression/Expression';
 import Event from '../data/Event';
 import ContextManager from './ContextManager';
 export default abstract class DefaultContextEventListener extends JObject implements ContextEventListener {
-    private callerController;
-    private contextManager;
-    private listenerCode;
-    private filter;
+    private callerController?;
+    private contextManager?;
+    private listenerCode?;
+    private filter?;
     private acceptEventsWithoutListenerCode;
     private evaluator;
-    private fingerprint;
-    constructor(callerController?: CallerController | null, contextManager?: ContextManager<any> | null, listenerCode?: number | null, filter?: Expression | null, fingerprint?: string | null);
-    getCallerController(): CallerController | null;
-    getFilter(): Expression | null;
-    getFingerprint(): string | null;
-    getListenerCode(): number | null;
+    private fingerprint?;
+    constructor(callerController?: CallerController, contextManager?: ContextManager<any>, listenerCode?: number, filter?: Expression, fingerprint?: string);
+    getCallerController(): CallerController | undefined;
+    getFilter(): Expression | undefined;
+    getFingerprint(): string | undefined;
+    getListenerCode(): number | undefined;
     isAsync(): boolean;
     abstract handle(event: Event): void;
     shouldHandle(ev: Event): boolean;
@@ -25,7 +25,7 @@ export default abstract class DefaultContextEventListener extends JObject implem
      */
     private cleanEvaluator;
     private prepareEvaluator;
-    getLocalContextManager(): ContextManager<any> | null;
+    getLocalContextManager(): ContextManager<any> | undefined;
     setCallerController(callerController: CallerController): void;
     setAcceptEventsWithoutListenerCode(acceptEventsWithoutListenerCode: boolean): void;
     setFilter(filter: Expression): void;

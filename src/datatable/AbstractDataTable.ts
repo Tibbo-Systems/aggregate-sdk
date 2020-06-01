@@ -148,7 +148,7 @@ export default abstract class AbstractDataTable extends DataTable {
     return this.getEncodedDataFromEncodingSettings(new ClassicEncodingSettings(false));
   }
 
-  validate(context: Context<any, any>, contextManager: ContextManager<any> | null, caller: CallerController | null): void {
+  validate(context: Context<any, any>, contextManager: ContextManager<any> | null, caller?: CallerController): void {
     if (this.isInvalid()) {
       throw new Error(this.invalidationMessage || '');
     }
@@ -369,7 +369,7 @@ export default abstract class AbstractDataTable extends DataTable {
       const defaultResolver: DefaultReferenceResolver = new DefaultReferenceResolver();
       defaultResolver.setDefaultTable(this);
 
-      this.namingEvaluator = Evaluator.createWithResolver(defaultResolver);
+      this.namingEvaluator = new Evaluator(null, null, this);
 
       const dataAsStringFunction: Function = this.dataAsString.bind(this);
       const referenceResolver = new (class DataTableReferenceResolver extends AbstractReferenceResolver {
@@ -553,7 +553,7 @@ export default abstract class AbstractDataTable extends DataTable {
 
   public validateRecord(record: DataRecord): void {
     const recordValidators = this.getFormat().getRecordValidators();
-    recordValidators.forEach(rv => {
+    recordValidators.forEach((rv) => {
       rv.validate(this, record);
     });
   }
@@ -601,7 +601,7 @@ export default abstract class AbstractDataTable extends DataTable {
             continue;
           }
 
-          const format = formatCache.getSync(formatId);
+          const format = formatCache.get(formatId);
 
           if (format == null) {
             throw new Error('Format with specified ID not found in the cache: ' + formatId);
@@ -654,6 +654,14 @@ export default abstract class AbstractDataTable extends DataTable {
           this.decodeAdvancedElement(el);
         }
       }
+    }
+  }
+
+  toString(): string {
+    if (this.getNamingExpression() != null && this.getNamingExpression()?.getText().length !== 0) {
+      return this.getDescription() ?? '';
+    } else {
+      return this.toDefaultString();
     }
   }
 

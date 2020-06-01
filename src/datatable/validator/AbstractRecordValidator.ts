@@ -1,10 +1,9 @@
-import RecordValidator from './RecordValidator';
 import DataTable from '../DataTable';
 import DataRecord from '../DataRecord';
 import JObject from '../../util/java/JObject';
 import Util from '../../util/Util';
 
-export default abstract class AbstractRecordValidator extends JObject implements RecordValidator {
+export default abstract class AbstractRecordValidator extends JObject {
   abstract encode(): string;
 
   abstract getType(): string;
@@ -20,7 +19,7 @@ export default abstract class AbstractRecordValidator extends JObject implements
       return false;
     }
 
-    const other: RecordValidator = obj as RecordValidator;
+    const other: AbstractRecordValidator = obj as AbstractRecordValidator;
 
     if (!Util.equals(this.getType(), other.getType())) {
       return false;
@@ -33,11 +32,7 @@ export default abstract class AbstractRecordValidator extends JObject implements
     return true;
   }
 
-  public clone(): JObject {
-    try {
-      return super.clone();
-    } catch (ex) {
-      throw new Error(ex);
-    }
+  public clone(): AbstractRecordValidator {
+    return super.clone() as AbstractRecordValidator;
   }
 }

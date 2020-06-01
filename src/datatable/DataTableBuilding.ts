@@ -243,10 +243,7 @@ export default class DataTableBuilding {
     const bindings: DataTable = DataTableFactory.of(DataTableBuilding.BINDINGS_FORMAT);
     for (const binding of tf.getBindings()) {
       try {
-        bindings
-          .addRecord()
-          .addString(binding.getTarget().getImage())
-          .addString(binding.getExpression().getText());
+        bindings.addRecord().addString(binding.getTarget().getImage()).addString(binding.getExpression().getText());
       } catch (e) {
         Log.DATATABLE.warn(e);
       }

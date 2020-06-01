@@ -174,10 +174,6 @@ export default class StorageHelper {
 
   public static readonly FIFT_STORAGE_OPEN: TableFormat = new TableFormat(1, 1);
 
-  protected constructor() {
-    StorageHelper.initialize();
-  }
-
   static __static_initializer_0() {
     StorageHelper.FIFT_STORAGE_OPEN.addField('<' + StorageHelper.FIF_STORAGE_OPEN_ID + '><L><F=N><D=' + Cres.get().getString('id') + '>');
     StorageHelper.FIFT_STORAGE_OPEN.addField('<' + StorageHelper.FIF_STORAGE_OPEN_VIEW + '><S><F=N><D=' + Cres.get().getString('view') + '>');
@@ -389,11 +385,7 @@ export default class StorageHelper {
     StorageHelper.FORMAT_COLUMNS.getField(StorageHelper.FIELD_COLUMNS_GROUP).setReadonly(true);
 
     StorageHelper.FORMAT_COLUMNS.addField(FieldFormatFactory.createWith(StorageHelper.FIELD_COLUMNS_IS_CALCULATED_FIELD, FieldConstants.BOOLEAN_FIELD, Cres.get().getString('isCalculatedField')).setDefault(false));
-    StorageHelper.FORMAT_COLUMNS.addField(
-      FieldFormatFactory.createWith(StorageHelper.FIELD_COLUMNS_FIELD_DATATABLE, FieldConstants.DATATABLE_FIELD, Cres.get().getString('fieldColumnDataTable'))
-        .setNullable(true)
-        .setDefault(null)
-    );
+    StorageHelper.FORMAT_COLUMNS.addField(FieldFormatFactory.createWith(StorageHelper.FIELD_COLUMNS_FIELD_DATATABLE, FieldConstants.DATATABLE_FIELD, Cres.get().getString('fieldColumnDataTable')).setNullable(true).setDefault(null));
 
     StorageHelper.FORMAT_COLUMNS.setNamingExpression(Functions.PRINT + '({}, "{' + StorageHelper.FIELD_COLUMNS_VISIBILITY + '} ? {' + StorageHelper.FIELD_COLUMNS_NAME + '} : null", ", ")');
     StorageHelper.FORMAT_COLUMNS.addBinding(StorageHelper.FIELD_COLUMNS_FIELD_DATATABLE + '#' + DataTableBindingProvider.PROPERTY_ENABLED, '{' + StorageHelper.FIELD_COLUMNS_IS_CALCULATED_FIELD + '}');
@@ -415,13 +407,8 @@ export default class StorageHelper {
   }
 
   private static getTableForCalculatedField(): string {
-    const cloneFormat: TableFormat = DataTableBuilding.FIELDS_FORMAT.clone()
-      .setMaxRecords(1)
-      .setMinRecords(1);
-    cloneFormat
-      .getField(StorageHelper.FIELD_COLUMNS_NAME)
-      .setHidden(true)
-      .setValidators([]);
+    const cloneFormat: TableFormat = DataTableBuilding.FIELDS_FORMAT.clone().setMaxRecords(1).setMinRecords(1);
+    cloneFormat.getField(StorageHelper.FIELD_COLUMNS_NAME).setHidden(true).setValidators([]);
     const replaceFirst = cloneFormat.encodeUseSeparator(true).replace('\\\\', '\\\\\\\\');
     return replaceFirst.replace('"', '\\\\"');
   }
@@ -617,16 +604,8 @@ export default class StorageHelper {
   public static readonly EFT_CLASS_INSTANCE_COMMENT: TableFormat = new TableFormat(1, 1);
 
   static __static_initializer_51() {
-    StorageHelper.EFT_CLASS_INSTANCE_COMMENT.addField(
-      FieldFormatFactory.createType(StorageHelper.FIELD_EVENT_INSTANCE_ID, FieldConstants.STRING_FIELD)
-        .setNullable(true)
-        .setHidden(true)
-    );
-    StorageHelper.EFT_CLASS_INSTANCE_COMMENT.addField(
-      FieldFormatFactory.createType(StorageHelper.FIELD_EVENT_AUTHOR, FieldConstants.STRING_FIELD)
-        .setNullable(true)
-        .setHidden(true)
-    );
+    StorageHelper.EFT_CLASS_INSTANCE_COMMENT.addField(FieldFormatFactory.createType(StorageHelper.FIELD_EVENT_INSTANCE_ID, FieldConstants.STRING_FIELD).setNullable(true).setHidden(true));
+    StorageHelper.EFT_CLASS_INSTANCE_COMMENT.addField(FieldFormatFactory.createType(StorageHelper.FIELD_EVENT_AUTHOR, FieldConstants.STRING_FIELD).setNullable(true).setHidden(true));
     StorageHelper.EFT_CLASS_INSTANCE_COMMENT.addField(FieldFormatFactory.createType(StorageHelper.FIELD_EVENT_COMMENT, FieldConstants.STRING_FIELD));
     StorageHelper.EFT_CLASS_INSTANCE_COMMENT.addBinding(StorageHelper.FIELD_EVENT_INSTANCE_ID, this.makeExpression(StorageHelper.FIELD_EVENT_INSTANCE_ID));
     StorageHelper.EFT_CLASS_INSTANCE_COMMENT.addBinding(StorageHelper.FIELD_EVENT_AUTHOR, this.makeExpression(StorageHelper.FIELD_EVENT_AUTHOR));
@@ -647,7 +626,7 @@ export default class StorageHelper {
     inputFields.setValue(StorageHelper.FIF_STORAGE_COLUMNS_TABLE, storageTable);
 
     try {
-      columns = await storageContext.callFunction(StorageHelper.F_STORAGE_COLUMNS, inputFields.wrap(), caller, null);
+      columns = await storageContext.callFunction(StorageHelper.F_STORAGE_COLUMNS, inputFields.wrap(), caller);
     } catch (ex) {
       return null;
     }
@@ -722,3 +701,5 @@ export default class StorageHelper {
     StorageHelper._init = true;
   }
 }
+
+StorageHelper.initialize();

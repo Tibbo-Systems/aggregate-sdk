@@ -21,7 +21,7 @@ export default interface PermissionChecker {
   /**
    * Returns true if {@code caller} is allowed to access an entity those permissions are {@code requiredPermissions}.
    */
-  has(caller: CallerController | null, requiredPermissions: Permissions | null, accessedContext: Context<any, any>, accessedEntityDefinition: EntityDefinition | null): boolean;
+  has(requiredPermissions: Permissions | null, accessedContext: Context<any, any>, accessedEntityDefinition: EntityDefinition | null, caller?: CallerController): boolean;
 
   /**
    * Returns the effective permission level of the calling party (those permissions are identified by {@code permissions}) for the entity.

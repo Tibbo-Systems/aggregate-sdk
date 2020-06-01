@@ -11,10 +11,7 @@ import FieldFormatFactory from '../../src/datatable/FieldFormatFactory';
 
 describe('TestDataRecord', () => {
   it('testDataRecord', () => {
-    let tableFormat = TableFormat.createWithFormatAndSettings(
-      '<<str><S>> <<int><I>> <<bool><B>> <<long><L>>',
-      new ClassicEncodingSettings(true)
-    );
+    let tableFormat = TableFormat.createWithFormatAndSettings('<<str><S>> <<int><I>> <<bool><B>> <<long><L>>', new ClassicEncodingSettings(true));
     let rec: DataRecord = new DataRecord(tableFormat);
 
     expect(rec.getString('str')).toBe('');
@@ -26,7 +23,8 @@ describe('TestDataRecord', () => {
       rec.addString('ok');
       rec.addString('failure');
       expect(false).toBeTruthy();
-    } catch (ex) {//ignored
+    } catch (ex) {
+      //ignored
     }
 
     try {
@@ -40,37 +38,25 @@ describe('TestDataRecord', () => {
     expect(rec.getInt('long')).toBe(80);
     expect(rec.getValue('int')).toBe(0);
 
-    tableFormat = TableFormat.createWithFormatAndSettings(
-      '<<str><S><F=N>> <<int><I><F=N>> <<bool><B><F=N>> <<long><L><F=N>>',
-      new ClassicEncodingSettings(true)
-    );
+    tableFormat = TableFormat.createWithFormatAndSettings('<<str><S><F=N>> <<int><I><F=N>> <<bool><B><F=N>> <<long><L><F=N>>', new ClassicEncodingSettings(true));
     rec = new DataRecord(tableFormat);
     expect(null).toBe(rec.getString('str'));
     expect(null).toBe(rec.getValue('int'));
     expect(null).toBe(rec.getValue('bool'));
     expect(null).toBe(rec.getValue('long'));
 
-    tableFormat = TableFormat.createWithFormatAndSettings(
-      '<<str><S><F=N><A=duck>> <<int><I><F=N><A=11>> <<bool><B><F=N><A=1>> <<long><L><F=N><A=123>>',
-      new ClassicEncodingSettings(true)
-    );
+    tableFormat = TableFormat.createWithFormatAndSettings('<<str><S><F=N><A=duck>> <<int><I><F=N><A=11>> <<bool><B><F=N><A=1>> <<long><L><F=N><A=123>>', new ClassicEncodingSettings(true));
     rec = new DataRecord(tableFormat);
     expect('duck').toBe(rec.getString('str'));
     expect(11).toBe(rec.getValue('int'));
     expect(true).toBe(rec.getValue('bool'));
     expect(123).toBe(rec.getValue('long'));
 
-    tableFormat = TableFormat.createWithFormatAndSettings(
-      '<<str><S><F=N><A=duck>> <<int><I><F=N><A=11>> <<bool><B><F=N><A=1>> <<long><L><F=N><A=123>>',
-      new ClassicEncodingSettings(true)
-    );
+    tableFormat = TableFormat.createWithFormatAndSettings('<<str><S><F=N><A=duck>> <<int><I><F=N><A=11>> <<bool><B><F=N><A=1>> <<long><L><F=N><A=123>>', new ClassicEncodingSettings(true));
     let rec2 = new DataRecord(tableFormat);
     expect(rec).toEqual(rec2);
 
-    tableFormat = TableFormat.createWithFormatAndSettings(
-      '<<str><S><F=N><A=duck>> <<int><I><F=N><A=11>> <<bool><B><F=N><A=1>>',
-      new ClassicEncodingSettings(true)
-    );
+    tableFormat = TableFormat.createWithFormatAndSettings('<<str><S><F=N><A=duck>> <<int><I><F=N><A=11>> <<bool><B><F=N><A=1>>', new ClassicEncodingSettings(true));
     rec2 = new DataRecord(tableFormat);
     expect(rec.equals(rec2)).toBeFalsy();
 
@@ -79,10 +65,7 @@ describe('TestDataRecord', () => {
     rec = new DataRecord(rf1);
     rec.addInt(0);
 
-    rf1 = TableFormat.createWithFormatAndSettings(
-      '<<str><S><F=N><A=duck>> <<st2><S><F=N>> <<int><I><F=N><A=11>> <<bool><B><F=N><A=1>>',
-      new ClassicEncodingSettings(true)
-    );
+    rf1 = TableFormat.createWithFormatAndSettings('<<str><S><F=N><A=duck>> <<st2><S><F=N>> <<int><I><F=N><A=11>> <<bool><B><F=N><A=1>>', new ClassicEncodingSettings(true));
     rec = DataRecord.createAndFill(rf1, 'xx1', null, 4, true);
 
     expect('xx1').toBe(rec.getString('str'));
@@ -90,10 +73,7 @@ describe('TestDataRecord', () => {
     expect(4).toBe(rec.getValue('int'));
     expect(true).toBe(rec.getBoolean('bool'));
 
-    const rf3: TableFormat = TableFormat.createWithFormatAndSettings(
-      '<<str><S><F=N><A=duck>> <<int><I><F=N><A=11>> <<bool><B><F=N><A=1>>',
-      new ClassicEncodingSettings(true)
-    );
+    const rf3: TableFormat = TableFormat.createWithFormatAndSettings('<<str><S><F=N><A=duck>> <<int><I><F=N><A=11>> <<bool><B><F=N><A=1>>', new ClassicEncodingSettings(true));
     rec = new DataRecord(rf3);
 
     rec.setValue('int', null);
@@ -102,10 +82,7 @@ describe('TestDataRecord', () => {
     rec.setValue('bool', true);
     expect(true).toBe(rec.getValue('bool'));
 
-    tableFormat = TableFormat.createWithFormatAndSettings(
-      '<<str><S><F=N><A=duck>> <<int><I><F=N><A=11>> <<bool><B><F=N><A=1>>',
-      new ClassicEncodingSettings(true)
-    );
+    tableFormat = TableFormat.createWithFormatAndSettings('<<str><S><F=N><A=duck>> <<int><I><F=N><A=11>> <<bool><B><F=N><A=1>>', new ClassicEncodingSettings(true));
     rec = new DataRecord(tableFormat);
     rec.setValue('bool', true);
     expect(true).toBe(rec.getBoolean('bool'));
@@ -140,26 +117,10 @@ describe('TestDataRecord', () => {
     rf.addField('<val><S>');
     const dataTable: DataTable = new SimpleDataTable(rf);
 
-    dataTable
-      .addRecord()
-      .addString('line1')
-      .addInt(1)
-      .addValue('test1');
-    dataTable
-      .addRecord()
-      .addString('line2')
-      .addInt(2)
-      .addValue('test2');
-    dataTable
-      .addRecord()
-      .addString('line3')
-      .addInt(3)
-      .addValue('test3');
-    dataTable
-      .addRecord()
-      .addString('line3')
-      .addInt(4)
-      .addValue('test4');
+    dataTable.addRecord().addString('line1').addInt(1).addValue('test1');
+    dataTable.addRecord().addString('line2').addInt(2).addValue('test2');
+    dataTable.addRecord().addString('line3').addInt(3).addValue('test3');
+    dataTable.addRecord().addString('line3').addInt(4).addValue('test4');
 
     let dataRecord = dataTable.select('str', 'line2');
     expect('test2').toBe(dataRecord !== null ? dataRecord.getString('val') : null);
@@ -197,20 +158,14 @@ describe('TestDataRecord', () => {
     format1.addField('<val><I>');
 
     const table1: DataTable = new SimpleDataTable(format1);
-    table1
-      .addRecord()
-      .addString('line1')
-      .addInt(11);
+    table1.addRecord().addString('line1').addInt(11);
 
     const format2: TableFormat = new TableFormat();
     format2.addField('<st><S><F=K>');
     format2.addField('<val><I>');
 
     const table2: DataTable = new SimpleDataTable(format2);
-    table2
-      .addRecord()
-      .addString('line1')
-      .addInt(11);
+    table2.addRecord().addString('line1').addInt(11);
 
     expect(true).toBe(table1.getRecord(0).equals(table2.getRecord(0)));
   });

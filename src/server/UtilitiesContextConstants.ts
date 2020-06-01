@@ -19,6 +19,10 @@ export default class UtilitiesContextConstants {
 
   public static readonly V_THREAD_DUMP_PREFIX: string = 'thread_dump_';
 
+  public static readonly F_EXECUTE_BINDINGS = 'executeBindings';
+
+  public static readonly FIF_EXECUTE_BINDINGS_DATATABLE = 'datatable';
+
   public static readonly V_HEAP_DUMP_PREFIX: string = 'heap_dump_';
 
   public static readonly V_HEAP_DUMP_EXTENSION: string = 'hprof';
@@ -332,6 +336,12 @@ export default class UtilitiesContextConstants {
   public static readonly FIF_SUMMARY_SERIES_NAME: string = 'seriesName';
 
   public static readonly FIF_SUMMARY_SERIES_DESCRIPTION: string = 'seriesDescription';
+
+  public static readonly FOF_EXECUTE_BINDINGS_DATATABLE = 'datatable';
+
+  public static readonly FOF_EXECUTE_BINDINGS_ERRORS = 'errors';
+
+  public static readonly FOF_EXECUTE_BINDINGS_RECORD_FORMATS = 'recordFormats';
 
   public static readonly FIF_SUMMARY_START_DATE: string = 'startDate';
 

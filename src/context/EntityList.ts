@@ -58,10 +58,7 @@ export default class EntityList extends JObject implements Iterable<EntityRefere
     const tab: DataTable = new SimpleDataTable(EntityList.FORMAT);
 
     for (const ref of this.entities) {
-      tab
-        .addRecord()
-        .addString(ref.getContext())
-        .addString(ref.getEntity());
+      tab.addRecord().addString(ref.getContext()).addString(ref.getEntity());
     }
 
     return tab;

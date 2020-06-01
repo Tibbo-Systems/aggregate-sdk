@@ -7,7 +7,6 @@ import StringBuilder from '../util/java/StringBuilder';
 import Binding from '../binding/Binding';
 import Expression from '../expression/Expression';
 import CloneUtils from '../util/CloneUtils';
-import RecordValidator from './validator/RecordValidator';
 import TableValidator from './validator/TableValidator';
 import ElementList from '../util/ElementList';
 import StringUtils from '../util/StringUtils';
@@ -19,6 +18,7 @@ import DataTable from './DataTable';
 import FieldFormat from './FieldFormat';
 import Util from '../util/Util';
 import FieldFormatFactory from './FieldFormatFactory';
+import AbstractRecordValidator from './validator/AbstractRecordValidator';
 
 export default class TableFormat extends JObject implements StringEncodable, Iterable<FieldFormat<any>> {
   public static readonly EMPTY_FORMAT: TableFormat = new TableFormat(0, 0);
@@ -55,7 +55,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
   private maxRecords = TableFormat.DEFAULT_MAX_RECORDS;
 
   private fieldLookup: Map<string, number | null> = new Map<string, number | null>();
-  private recordValidators: Array<RecordValidator> = new Array<RecordValidator>();
+  private recordValidators: Array<AbstractRecordValidator> = new Array<AbstractRecordValidator>();
   private tableValidators: Array<TableValidator> = new Array<TableValidator>();
   private bindings: Array<Binding> = new Array<Binding>();
   private namingExpression: Expression | null = null;
@@ -231,7 +231,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
   /**
    * Returns modifiable list of record validators.
    */
-  public getRecordValidators(): Array<RecordValidator> {
+  public getRecordValidators(): Array<AbstractRecordValidator> {
     return this.immutable ? [...this.recordValidators] : this.recordValidators;
   }
 
@@ -331,7 +331,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
     // TODO not implemented yet
     // this.immutabilizerIdentityHashCode = System.identityHashCode(immutabilizer);
 
-    this.fields.forEach(ff => {
+    this.fields.forEach((ff) => {
       const fieldFormat = ff as FieldFormat<any>;
       fieldFormat.makeImmutable();
     });
@@ -370,7 +370,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
   /**
    * Adds new record validator to the format.
    */
-  public addRecordValidator(rv: RecordValidator) {
+  public addRecordValidator(rv: AbstractRecordValidator) {
     if (this.immutable) {
       throw new Error('Immutable');
     }
@@ -621,7 +621,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
   public getKeyFields(): Array<string> {
     const keyFields: Array<string> = new Array<string>();
 
-    this.fields.forEach(ff => {
+    this.fields.forEach((ff) => {
       if (ff.isKeyField()) {
         keyFields.push(ff.getName());
       }
@@ -799,7 +799,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
     }
 
     const validatorsData: ElementList = StringUtils.elements(source, settings.isUseVisibleSeparators());
-    validatorsData.getElements().forEach(el => {
+    validatorsData.getElements().forEach((el) => {
       if (Util.isString(el.getName()) && Util.isString(el.getValue())) {
         const elementName: string = el.getName() as string;
         const elementValue: string = el.getValue() as string;
@@ -823,7 +823,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
     }
 
     const validatorsData: ElementList = StringUtils.elements(source, settings.isUseVisibleSeparators());
-    validatorsData.getElements().forEach(el => {
+    validatorsData.getElements().forEach((el) => {
       if (Util.isString(el.getName()) && Util.isString(el.getValue())) {
         const elementName: string = el.getName() as string;
         const elementValue: string = el.getValue() as string;
@@ -844,7 +844,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
     }
 
     const bindingsData: ElementList = StringUtils.elements(source, settings.isUseVisibleSeparators());
-    bindingsData.getElements().forEach(el => {
+    bindingsData.getElements().forEach((el) => {
       const elementName: string | null = el.getName();
       const elementValue: string | null = el.getValue();
       if (Util.isString(elementName) && Util.isString(elementValue)) {
@@ -864,12 +864,11 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
   public clone(): TableFormat {
     const cl = super.clone() as TableFormat;
 
-    cl.fields = CloneUtils.deepClone<FieldFormat<any>[]>(this.fields) as FieldFormat<any>[];
-    cl.fieldLookup = CloneUtils.deepClone<Map<string, number | null>>(this.fieldLookup) as Map<string, number | null>;
-    cl.recordValidators = CloneUtils.deepClone<RecordValidator[]>(this.recordValidators) as RecordValidator[];
+    cl.fields = this.fields.map((f) => f.clone());
+    cl.fieldLookup = new Map<string, number | null>(this.fieldLookup);
+    cl.recordValidators = this.recordValidators.map((f) => f.clone());
     cl.tableValidators = CloneUtils.deepClone<TableValidator[]>(this.tableValidators) as TableValidator[];
-    cl.bindings = CloneUtils.deepClone<Array<Binding>>(this.bindings) as Array<Binding>;
-
+    cl.bindings = this.bindings.map((f) => f.clone());
     cl.id = null; // Need to clear ID to avoid conflicts in format cache
     cl.immutable = false;
     return cl;
@@ -905,7 +904,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
       return false;
     } else {
       for (const field of this.fields) {
-        if (!other.fields.find(otherField => Util.equals(field, otherField))) {
+        if (!other.fields.find((otherField) => Util.equals(field, otherField))) {
           return false;
         }
       }
@@ -925,7 +924,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
       }
     } else {
       for (const validator of this.recordValidators) {
-        if (!other.recordValidators.find(otherValidator => Util.equals(validator, otherValidator))) {
+        if (!other.recordValidators.find((otherValidator) => Util.equals(validator, otherValidator))) {
           return false;
         }
       }
@@ -937,7 +936,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
       }
     } else {
       for (const validator of this.tableValidators) {
-        if (!other.tableValidators.find(otherValidator => Util.equals(validator, otherValidator))) {
+        if (!other.tableValidators.find((otherValidator) => Util.equals(validator, otherValidator))) {
           return false;
         }
       }
@@ -959,7 +958,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
       }
     } else {
       for (const binding of this.bindings) {
-        if (!other.bindings.find(otherBinding => Util.equals(binding, otherBinding))) {
+        if (!other.bindings.find((otherBinding) => Util.equals(binding, otherBinding))) {
           return false;
         }
       }

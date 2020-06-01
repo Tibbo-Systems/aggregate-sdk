@@ -17,6 +17,7 @@ export default abstract class AbstractEntityDefinition extends JObject implement
     getName(): string;
     getOwner(): any;
     toDetailedString(): string | null;
+    toString(): string;
     setName(name: string): void;
     setDescription(description: string): void;
     setHelp(help: string): void;

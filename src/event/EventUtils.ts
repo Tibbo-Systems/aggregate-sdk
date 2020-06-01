@@ -40,17 +40,17 @@ export default class EventUtils {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  static getEvents(context: Context<any, any>, eventsMask: string, callerController: CallerController | null): Array<EventDefinition> {
+  static getEvents(context: Context<any, any>, eventsMask: string, callerController?: CallerController): Array<EventDefinition> {
     const events: Array<EventDefinition> = new Array<EventDefinition>();
 
     if (eventsMask === ContextUtilsConstants.ENTITY_GROUP_MASK) {
-      for (const ed of context.getEventDefinitions(callerController, false)) {
+      for (const ed of context.getEventDefinitions(false, callerController)) {
         if (ed.getGroup() != null && ContextUtilsConstants.GROUP_SYSTEM !== ed.getGroup()) {
           events.push(ed);
         }
       }
     } else {
-      const ed = context.getEventDefinition(eventsMask, null);
+      const ed = context.getEventDefinition(eventsMask);
       if (ed != null) {
         events.push(ed);
       }

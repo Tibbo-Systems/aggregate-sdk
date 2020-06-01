@@ -29,9 +29,7 @@ export default class StaticTestUtils {
   public static readonly TEST_TABLE_FORMAT: TableFormat = new TableFormat(1, 100);
 
   private static initializeStaticTestUtils0() {
-    const strFF: FieldFormat<any> = FieldFormatFactory.create(
-      '<' + StaticTestUtils.STRING_FIELD + '><' + FieldConstants.STRING_FIELD + '><F=N>'
-    );
+    const strFF: FieldFormat<any> = FieldFormatFactory.create('<' + StaticTestUtils.STRING_FIELD + '><' + FieldConstants.STRING_FIELD + '><F=N>');
     strFF.setDefault('zzz');
     strFF.setKeyField(true);
     strFF.setDescription('Description for this field');
@@ -49,9 +47,7 @@ export default class StaticTestUtils {
     floatFF.setInlineData(true);
     const dataTableFF: FieldFormat<any> = FieldFormatFactory.create('<table><' + FieldConstants.DATATABLE_FIELD + '>');
     dataTableFF.addValidator(new NonNullValidator());
-    const booleanFF: FieldFormat<any> = FieldFormatFactory.create(
-      '<booleanField><' + FieldConstants.BOOLEAN_FIELD + '>'
-    );
+    const booleanFF: FieldFormat<any> = FieldFormatFactory.create('<booleanField><' + FieldConstants.BOOLEAN_FIELD + '>');
     const bValues: Map<boolean, string> = new Map<boolean, string>();
     bValues.set(true, StaticTestUtils.BOOLEAN_TRUE_DESCRIPTION);
     bValues.set(false, StaticTestUtils.BOOLEAN_FALSE_DESCRIPTION);
@@ -83,9 +79,7 @@ export default class StaticTestUtils {
     StaticTestUtils.TEST_TABLE_FORMAT.addField(dataFF);
 
     StaticTestUtils.TEST_TABLE_FORMAT.addTableValidator(new TableKeyFieldsValidator());
-    StaticTestUtils.TEST_TABLE_FORMAT.addTableValidator(
-      new TableExpressionValidator("2 >= 1 ? null : 'Validation failed'")
-    );
+    StaticTestUtils.TEST_TABLE_FORMAT.addTableValidator(new TableExpressionValidator("2 >= 1 ? null : 'Validation failed'"));
   }
 
   public static createTestDataTable(defaultStringValue: boolean, recordCount: number): DataTable {

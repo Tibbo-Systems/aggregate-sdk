@@ -1,12 +1,12 @@
 // Generated from src/expression/grammar/AggregateExpression.g4 by ANTLR 4.7.2
 // jshint ignore: start
-const antlr4 = require('antlr4/index');
-const AggregateExpressionVisitor = require('./AggregateExpressionVisitor').AggregateExpressionVisitor;
+var antlr4 = require('antlr4/index');
+var AggregateExpressionVisitor = require('./AggregateExpressionVisitor').AggregateExpressionVisitor;
 
-const grammarFileName = "AggregateExpression.g4";
+var grammarFileName = "AggregateExpression.g4";
 
 
-const serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
+var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u00033\u00e5\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004\t",
     "\u0004\u0004\u0005\t\u0005\u0004\u0006\t\u0006\u0004\u0007\t\u0007\u0004",
     "\b\t\b\u0004\t\t\t\u0004\n\t\n\u0004\u000b\t\u000b\u0004\f\t\f\u0004",
@@ -163,20 +163,20 @@ const serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u00d3\u00d6\u00e2"].join("");
 
 
-const atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
+var atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
 
-const decisionsToDFA = atn.decisionToState.map( function(ds, index) { return new antlr4.dfa.DFA(ds, index); });
+var decisionsToDFA = atn.decisionToState.map( function(ds, index) { return new antlr4.dfa.DFA(ds, index); });
 
-const sharedContextCache = new antlr4.PredictionContextCache();
+var sharedContextCache = new antlr4.PredictionContextCache();
 
-const literalNames = [ null, null, null, null, null, "'('", "')'", "'{'", 
+var literalNames = [ null, null, null, null, null, "'('", "')'", "'{'", 
                      "'}'", "'['", "']'", "','", "'.'", "'@'", "'#'", "'$'", 
                      "'+'", "'-'", "'*'", "'/'", "'%'", "'?'", "':'", "'=='", 
                      "'!='", "'~='", "'<'", "'>'", "'<='", "'>='", "'>>'", 
                      "'>>>'", "'<<'", "'||'", "'&&'", "'!'", "'|'", "'^'", 
                      "'&'", "'~'", null, null, null, "'/*'", "'*/'" ];
 
-const symbolicNames = [ null, "INTEGER_LITERAL", "FLOATING_POINT_LITERAL", 
+var symbolicNames = [ null, "INTEGER_LITERAL", "FLOATING_POINT_LITERAL", 
                       "STRING_LITERAL", "UNCLOSED_STRING_LITERAL", "LPAREN", 
                       "RPAREN", "LBRACE", "RBRACE", "LBRACKET", "RBRACKET", 
                       "COMMA", "DOT", "AT", "HASH", "DOLLAR", "PLUS", "MINUS", 
@@ -188,7 +188,7 @@ const symbolicNames = [ null, "INTEGER_LITERAL", "FLOATING_POINT_LITERAL",
                       "COMMENT_MULTILINE", "COMMENT_LINE", "IDENTIFIER", 
                       "UNMATCHED" ];
 
-const ruleNames =  [ "compilationUnit", "expression", "functionExpression", 
+var ruleNames =  [ "compilationUnit", "expression", "functionExpression", 
                    "functionReferenceExpression", "actionReferenceExpression", 
                    "eventReferenceExpression", "referenceSchema", "referenceServer", 
                    "referenceContextMask", "referenceEntity", "referenceRow", 
@@ -321,9 +321,9 @@ AggregateExpressionParser.CompilationUnitContext = CompilationUnitContext;
 
 AggregateExpressionParser.prototype.compilationUnit = function() {
 
-    const localctx = new CompilationUnitContext(this, this._ctx, this.state);
+    var localctx = new CompilationUnitContext(this, this._ctx, this.state);
     this.enterRule(localctx, 0, AggregateExpressionParser.RULE_compilationUnit);
-    let _la = 0; // Token type
+    var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 33;
@@ -1285,11 +1285,11 @@ AggregateExpressionParser.prototype.expression = function(_p) {
 	if(_p===undefined) {
 	    _p = 0;
 	}
-    const _parentctx = this._ctx;
-    const _parentState = this.state;
-    let localctx = new ExpressionContext(this, this._ctx, _parentState);
-    let _prevctx = localctx;
-    const _startState = 2;
+    var _parentctx = this._ctx;
+    var _parentState = this.state;
+    var localctx = new ExpressionContext(this, this._ctx, _parentState);
+    var _prevctx = localctx;
+    var _startState = 2;
     this.enterRecursionRule(localctx, 2, AggregateExpressionParser.RULE_expression, _p);
     try {
         this.enterOuterAlt(localctx, 1);
@@ -1371,7 +1371,7 @@ AggregateExpressionParser.prototype.expression = function(_p) {
         this._ctx.stop = this._input.LT(-1);
         this.state = 124;
         this._errHandler.sync(this);
-        let _alt = this._interp.adaptivePredict(this._input,3,this._ctx)
+        var _alt = this._interp.adaptivePredict(this._input,3,this._ctx)
         while(_alt!=2 && _alt!=antlr4.atn.ATN.INVALID_ALT_NUMBER) {
             if(_alt===1) {
                 if(this._parseListeners!==null) {
@@ -1380,7 +1380,7 @@ AggregateExpressionParser.prototype.expression = function(_p) {
                 _prevctx = localctx;
                 this.state = 122;
                 this._errHandler.sync(this);
-                const la_ = this._interp.adaptivePredict(this._input,2,this._ctx);
+                var la_ = this._interp.adaptivePredict(this._input,2,this._ctx);
                 switch(la_) {
                 case 1:
                     localctx = new MulNodeContext(this, new ExpressionContext(this, _parentctx, _parentState));
@@ -1720,7 +1720,7 @@ AggregateExpressionParser.FunctionExpressionContext = FunctionExpressionContext;
 
 AggregateExpressionParser.prototype.functionExpression = function() {
 
-    const localctx = new FunctionExpressionContext(this, this._ctx, this.state);
+    var localctx = new FunctionExpressionContext(this, this._ctx, this.state);
     this.enterRule(localctx, 4, AggregateExpressionParser.RULE_functionExpression);
     try {
         this.enterOuterAlt(localctx, 1);
@@ -1782,7 +1782,7 @@ AggregateExpressionParser.FunctionReferenceExpressionContext = FunctionReference
 
 AggregateExpressionParser.prototype.functionReferenceExpression = function() {
 
-    const localctx = new FunctionReferenceExpressionContext(this, this._ctx, this.state);
+    var localctx = new FunctionReferenceExpressionContext(this, this._ctx, this.state);
     this.enterRule(localctx, 6, AggregateExpressionParser.RULE_functionReferenceExpression);
     try {
         this.enterOuterAlt(localctx, 1);
@@ -1848,9 +1848,9 @@ AggregateExpressionParser.ActionReferenceExpressionContext = ActionReferenceExpr
 
 AggregateExpressionParser.prototype.actionReferenceExpression = function() {
 
-    const localctx = new ActionReferenceExpressionContext(this, this._ctx, this.state);
+    var localctx = new ActionReferenceExpressionContext(this, this._ctx, this.state);
     this.enterRule(localctx, 8, AggregateExpressionParser.RULE_actionReferenceExpression);
-    let _la = 0; // Token type
+    var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 133;
@@ -1919,7 +1919,7 @@ AggregateExpressionParser.EventReferenceExpressionContext = EventReferenceExpres
 
 AggregateExpressionParser.prototype.eventReferenceExpression = function() {
 
-    const localctx = new EventReferenceExpressionContext(this, this._ctx, this.state);
+    var localctx = new EventReferenceExpressionContext(this, this._ctx, this.state);
     this.enterRule(localctx, 10, AggregateExpressionParser.RULE_eventReferenceExpression);
     try {
         this.enterOuterAlt(localctx, 1);
@@ -1981,7 +1981,7 @@ AggregateExpressionParser.ReferenceSchemaContext = ReferenceSchemaContext;
 
 AggregateExpressionParser.prototype.referenceSchema = function() {
 
-    const localctx = new ReferenceSchemaContext(this, this._ctx, this.state);
+    var localctx = new ReferenceSchemaContext(this, this._ctx, this.state);
     this.enterRule(localctx, 12, AggregateExpressionParser.RULE_referenceSchema);
     try {
         this.enterOuterAlt(localctx, 1);
@@ -2047,9 +2047,9 @@ AggregateExpressionParser.ReferenceServerContext = ReferenceServerContext;
 
 AggregateExpressionParser.prototype.referenceServer = function() {
 
-    const localctx = new ReferenceServerContext(this, this._ctx, this.state);
+    var localctx = new ReferenceServerContext(this, this._ctx, this.state);
     this.enterRule(localctx, 14, AggregateExpressionParser.RULE_referenceServer);
-    let _la = 0; // Token type
+    var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 148;
@@ -2164,13 +2164,13 @@ AggregateExpressionParser.ReferenceContextMaskContext = ReferenceContextMaskCont
 
 AggregateExpressionParser.prototype.referenceContextMask = function() {
 
-    const localctx = new ReferenceContextMaskContext(this, this._ctx, this.state);
+    var localctx = new ReferenceContextMaskContext(this, this._ctx, this.state);
     this.enterRule(localctx, 16, AggregateExpressionParser.RULE_referenceContextMask);
-    let _la = 0; // Token type
+    var _la = 0; // Token type
     try {
         this.state = 162;
         this._errHandler.sync(this);
-        const la_ = this._interp.adaptivePredict(this._input,8,this._ctx);
+        var la_ = this._interp.adaptivePredict(this._input,8,this._ctx);
         switch(la_) {
         case 1:
             this.enterOuterAlt(localctx, 1);
@@ -2279,12 +2279,12 @@ AggregateExpressionParser.ReferenceEntityContext = ReferenceEntityContext;
 
 AggregateExpressionParser.prototype.referenceEntity = function() {
 
-    const localctx = new ReferenceEntityContext(this, this._ctx, this.state);
+    var localctx = new ReferenceEntityContext(this, this._ctx, this.state);
     this.enterRule(localctx, 18, AggregateExpressionParser.RULE_referenceEntity);
     try {
         this.state = 168;
         this._errHandler.sync(this);
-        const la_ = this._interp.adaptivePredict(this._input,9,this._ctx);
+        var la_ = this._interp.adaptivePredict(this._input,9,this._ctx);
         switch(la_) {
         case 1:
             this.enterOuterAlt(localctx, 1);
@@ -2369,7 +2369,7 @@ AggregateExpressionParser.ReferenceRowContext = ReferenceRowContext;
 
 AggregateExpressionParser.prototype.referenceRow = function() {
 
-    const localctx = new ReferenceRowContext(this, this._ctx, this.state);
+    var localctx = new ReferenceRowContext(this, this._ctx, this.state);
     this.enterRule(localctx, 20, AggregateExpressionParser.RULE_referenceRow);
     try {
         this.enterOuterAlt(localctx, 1);
@@ -2433,7 +2433,7 @@ AggregateExpressionParser.ReferencePropertyContext = ReferencePropertyContext;
 
 AggregateExpressionParser.prototype.referenceProperty = function() {
 
-    const localctx = new ReferencePropertyContext(this, this._ctx, this.state);
+    var localctx = new ReferencePropertyContext(this, this._ctx, this.state);
     this.enterRule(localctx, 22, AggregateExpressionParser.RULE_referenceProperty);
     try {
         this.enterOuterAlt(localctx, 1);
@@ -2523,9 +2523,9 @@ AggregateExpressionParser.ValueReferenceContext = ValueReferenceContext;
 
 AggregateExpressionParser.prototype.valueReference = function() {
 
-    const localctx = new ValueReferenceContext(this, this._ctx, this.state);
+    var localctx = new ValueReferenceContext(this, this._ctx, this.state);
     this.enterRule(localctx, 24, AggregateExpressionParser.RULE_valueReference);
-    let _la = 0; // Token type
+    var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 178;
@@ -2678,9 +2678,9 @@ AggregateExpressionParser.ArgumentsContext = ArgumentsContext;
 
 AggregateExpressionParser.prototype.arguments = function() {
 
-    const localctx = new ArgumentsContext(this, this._ctx, this.state);
+    var localctx = new ArgumentsContext(this, this._ctx, this.state);
     this.enterRule(localctx, 26, AggregateExpressionParser.RULE_arguments);
-    let _la = 0; // Token type
+    var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 203;
@@ -2773,9 +2773,9 @@ AggregateExpressionParser.AgIdentifierContext = AgIdentifierContext;
 
 AggregateExpressionParser.prototype.agIdentifier = function() {
 
-    const localctx = new AgIdentifierContext(this, this._ctx, this.state);
+    var localctx = new AgIdentifierContext(this, this._ctx, this.state);
     this.enterRule(localctx, 28, AggregateExpressionParser.RULE_agIdentifier);
-    let _la = 0; // Token type
+    var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 216;
@@ -2968,7 +2968,7 @@ AggregateExpressionParser.LiteralContext = LiteralContext;
 
 AggregateExpressionParser.prototype.literal = function() {
 
-    let localctx = new LiteralContext(this, this._ctx, this.state);
+    var localctx = new LiteralContext(this, this._ctx, this.state);
     this.enterRule(localctx, 30, AggregateExpressionParser.RULE_literal);
     try {
         this.state = 224;

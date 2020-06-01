@@ -43,9 +43,7 @@ export default class ActivateDashboard extends GenericActionCommand {
 
     ActivateDashboard.CFT_ACTIVATE_DASHBOARD.addField('<' + ActivateDashboard.CF_KEY + '><S><F=NH><D=' + Cres.get().getString('key') + '>');
 
-    ff = FieldFormatFactory.createType(ActivateDashboard.CF_ACTION_PARAMETERS, FieldConstants.DATATABLE_FIELD)
-      .setNullable(true)
-      .setHidden(true);
+    ff = FieldFormatFactory.createType(ActivateDashboard.CF_ACTION_PARAMETERS, FieldConstants.DATATABLE_FIELD).setNullable(true).setHidden(true);
     ActivateDashboard.CFT_ACTIVATE_DASHBOARD.addField(ff);
 
     ff = FieldFormatFactory.create('<' + ActivateDashboard.CF_DASHBOARDS_HIERARCHY_INFO + '><T><F=N>');
@@ -88,7 +86,7 @@ export default class ActivateDashboard extends GenericActionCommand {
   protected constructParameters(): DataTable {
     return SimpleDataTable.createSimpleDataTable(
       ActivateDashboard.CFT_ACTIVATE_DASHBOARD,
-      name,
+      this.name,
       this.path,
       this.location != null ? this.location.toDataTable() : null,
       this.dashboard != null ? this.dashboard.toDataTable() : null,

@@ -29,13 +29,12 @@ import RequestController from '../context/RequestController';
 import DataTableFactory from '../datatable/DataTableFactory';
 import Cres from '../Cres';
 import MessageFormat from '../util/java/MessageFormat';
-import ProtocolVersion from './ProtocolVersion';
 import FireEventRequestController from '../event/FireEventRequestController';
 import Permissions from '../security/Permissions';
 import Contexts from '../context/Contexts';
 import Util from '../util/Util';
 import AggreGateDevice from './AggreGateDevice';
-import RemoteContextManager from './RemoteContextManager';
+import LevelAdapter from '../util/logger/LevelAdapter';
 
 export default class ProxyContext<C extends Context<C, M>, M extends ContextManager<any>> extends AbstractContext<C, M> {
   private static readonly DEFERRED_TASKS: Map<string, Array<Runnable>> = new Map<string, Array<Runnable>>();
@@ -74,6 +73,10 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
 
   private initializedEvents = false;
 
+  private initializingContext = false;
+
+  private initializedContext = false;
+
   private initializingActions = false;
 
   private initializedActions = false;
@@ -99,6 +102,8 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
   private mapped = false;
 
   private variableCache: Map<string, CachedVariableValue> = new Map<string, CachedVariableValue>();
+
+  private loadingContext: Promise<Context<any, any>> | null = null;
 
   private static initProxyContext = false;
   private static AUTO_LISTENED_EVENTS: Array<string> = new Array<string>();
@@ -131,12 +136,22 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
   }
 
   async loadContext(): Promise<Context<any, any>> {
-    //TODO  Promise.all should be used
+    if (this.initializedContext) return this;
 
+    let resolver: any;
+    if (!this.loadingContext) {
+      this.loadingContext = new Promise<Context<any, any>>((resolve) => {
+        resolver = resolve;
+      });
+    }
+    if (this.initializingContext) {
+      return this.loadingContext;
+    }
+
+    this.initializingContext = true;
+    //TODO  Promise.all should be used
     await this.initVariablesLoggingErrors();
     // await Promise.all([this.initActionsLoggingErrors(),this.initFunctionsLoggingErrors(),this.initEventsLoggingErrors()]);
-
-    //  await this.initVariablesLoggingErrors();
     await this.initActionsLoggingErrors();
     await this.initFunctionsLoggingErrors();
     await this.initEventsLoggingErrors();
@@ -145,7 +160,9 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     await this.initStatusLoggingErrors();
     await this.initVisibleChildren();
     await this.initInfo();
-
+    this.initializingContext = false;
+    this.initializedContext = true;
+    resolver(this);
     return this;
   }
 
@@ -166,10 +183,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
           if (!_this.initializedChildren) {
             return;
           }
-          const child = event
-            .getData()
-            .rec()
-            .getString(ProxyContext.EF_CHILD_ADDED_CHILD);
+          const child = event.getData().rec().getString(ProxyContext.EF_CHILD_ADDED_CHILD);
           if (_this.getChild(child) == null) {
             const childProxy = _this.createChildContextProxy(child);
             _this.addChild(childProxy);
@@ -186,10 +200,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
           if (!_this.initializedChildren) {
             return;
           }
-          const child = event
-            .getData()
-            ?.rec()
-            .getString(ProxyContext.EF_CHILD_REMOVED_CHILD);
+          const child = event.getData()?.rec().getString(ProxyContext.EF_CHILD_REMOVED_CHILD);
           if (child != null) {
             _this.removeChild(child);
           }
@@ -347,6 +358,13 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     this.addFunctionDefinition(new FunctionDefinition(ProxyContext.F_LOCAL_REINITIALIZE, TableFormat.EMPTY_FORMAT, TableFormat.EMPTY_FORMAT));
   }
 
+  private isDigitCode(char: string): boolean {
+    const code = char.charCodeAt(0);
+    const charCodeZero = '0'.charCodeAt(0);
+    const charCodeNine = '9'.charCodeAt(0);
+    return code >= charCodeZero && code <= charCodeNine;
+  }
+
   protected decodeFormat(source: string, caller: CallerController | null): TableFormat | null {
     if (source == null) {
       return null;
@@ -356,8 +374,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     let i;
     for (i = 0; i < source.length; i++) {
       const c = source.charAt(i);
-
-      if (c >= '0' && c <= '9') {
+      if (this.isDigitCode(c)) {
         idSourceBuilder.append(c);
       } else {
         break;
@@ -370,15 +387,13 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
 
     const formatId = idSource.length > 0 ? Number.parseInt(idSource) : null;
 
-    TableFormat.createWithFormatAndSettings(source, new ClassicEncodingSettings(false));
-
     const format = source.length > 0 ? TableFormat.createWithFormatAndSettings(source, new ClassicEncodingSettings(false)) : null;
 
     if (formatId == null) {
       return format;
     } else {
       if (format == null) {
-        const cached = this.controller.getFormatCache().getSync(formatId);
+        const cached = this.controller.getFormatCache().get(formatId);
 
         if (cached == null) {
           throw new Error('Unknown format ID: ' + formatId);
@@ -468,10 +483,6 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
       const value = await this.getRemoteVariable(ProxyContext.VFT_CHILDREN, ProxyContext.V_CHILDREN, ProxyContext.METADATA_READ_TIMEOUT);
       this.initChildrenImpl(value);
 
-      for (const child of this.getChildren()) {
-        await (child as ProxyContext<any, any>).initChildren();
-      }
-
       this.initializedChildren = true;
     } finally {
       this.initializingChildren = false;
@@ -495,7 +506,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     try {
       const value = await this.getRemoteVariable(ProxyContext.VARIABLE_DEFINITION_FORMAT, ProxyContext.V_VARIABLES, ProxyContext.METADATA_READ_TIMEOUT);
 
-      this.initVariablesImpl(value);
+      await this.initVariablesImpl(value);
       this.initializedVariables = true;
     } finally {
       this.initializingVariables = false;
@@ -519,7 +530,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     try {
       const value = await this.getRemoteVariable(ProxyContext.FUNCTION_DEFINITION_FORMAT, ProxyContext.V_FUNCTIONS, ProxyContext.METADATA_READ_TIMEOUT);
 
-      this.initFunctionsImpl(value);
+      await this.initFunctionsImpl(value);
       this.initializedFunctions = true;
     } finally {
       this.initializingFunctions = false;
@@ -544,7 +555,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     try {
       const value = await this.getRemoteVariable(ProxyContext.EVENT_DEFINITION_FORMAT, ProxyContext.V_EVENTS, ProxyContext.METADATA_READ_TIMEOUT);
 
-      this.initEventsImpl(value);
+      await this.initEventsImpl(value);
       this.initializedEvents = true;
     } finally {
       this.initializingEvents = false;
@@ -686,10 +697,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
       ServerContextConstants.E_VISIBLE_CHILD_ADDED,
       new (class extends DefaultContextEventListener {
         public handle(event: Event): void {
-          const path = event
-            .getData()
-            .rec()
-            .getString(ServerContextConstants.EF_VISIBLE_CHILD_ADDED_PATH);
+          const path = event.getData().rec().getString(ServerContextConstants.EF_VISIBLE_CHILD_ADDED_PATH);
           if (_this.visibleChildren != null) {
             _this.addVisibleChild(path);
           }
@@ -701,10 +709,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
       ServerContextConstants.E_VISIBLE_CHILD_REMOVED,
       new (class extends DefaultContextEventListener {
         public handle(event: Event): void {
-          const path = event
-            .getData()
-            .rec()
-            .getString(ServerContextConstants.EF_VISIBLE_CHILD_REMOVED_PATH);
+          const path = event.getData().rec().getString(ServerContextConstants.EF_VISIBLE_CHILD_REMOVED_PATH);
           if (_this.visibleChildren != null) {
             _this.removeVisibleChild(path);
           }
@@ -728,7 +733,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     return proxy;
   }
 
-  private initVariablesImpl(variables: DataTable): void {
+  private async initVariablesImpl(variables: DataTable): Promise<void> {
     for (const def of this.getVariableDefinitions()) {
       if (variables.select(ProxyContext.FIELD_VD_NAME, def.getName()) == null) {
         this.removeVariableDefinition(def.getName());
@@ -736,6 +741,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     }
 
     for (const rec of variables) {
+      await this.loadFormatToCacheIfNeeded(rec.getString(AbstractContext.FIELD_VD_FORMAT));
       const def = this.varDefFromDataRecord(rec);
       const existing = this.getVariableDefinition(def.getName());
       if (existing == null || !existing.equals(def)) {
@@ -747,7 +753,23 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     }
   }
 
-  private initFunctionsImpl(functions: DataTable): void {
+  private async loadFormatToCacheIfNeeded(source: string | null): Promise<void> {
+    if (source == null) {
+      return;
+    }
+    for (let i = 0; i < source.length; i++) {
+      const c = source.charAt(i);
+      if (!this.isDigitCode(c)) {
+        return;
+      }
+    }
+    const id = Number.parseInt(source);
+    if (Number.isInteger(id) && !this.controller.getFormatCache().hasFormat(id)) {
+      await this.controller.getFormatCache().getFormatFromServer(id);
+    }
+  }
+
+  private async initFunctionsImpl(functions: DataTable): Promise<void> {
     for (const def of this.getFunctionDefinitions()) {
       if (functions.select(ProxyContext.FIELD_FD_NAME, def.getName()) == null) {
         this.removeFunctionDefinition(def.getName());
@@ -757,6 +779,8 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     this.addLocalFunctionDefinitions();
 
     for (const rec of functions) {
+      await this.loadFormatToCacheIfNeeded(rec.getString(AbstractContext.FIELD_FD_INPUTFORMAT));
+      await this.loadFormatToCacheIfNeeded(rec.getString(AbstractContext.FIELD_FD_OUTPUTFORMAT));
       const def = this.funcDefFromDataRecord(rec);
       def.setConcurrent(true); // Concurrency is controlled by the server
 
@@ -770,7 +794,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     }
   }
 
-  private initEventsImpl(events: DataTable): void {
+  private async initEventsImpl(events: DataTable): Promise<void> {
     for (const def of this.getEventDefinitions()) {
       if (events.select(ProxyContext.FIELD_ED_NAME, def.getName()) == null) {
         this.removeEventDefinition(def.getName());
@@ -778,6 +802,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     }
 
     for (const rec of events) {
+      await this.loadFormatToCacheIfNeeded(rec.getString(AbstractContext.FIELD_ED_FORMAT));
       const def = this.evtDefFromDataRecord(rec);
       const existing = this.getEventDefinition(def.getName());
       if (existing == null || !existing.equals(def)) {
@@ -871,7 +896,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     return this.mapped;
   }
 
-  get(contextPath: string, caller: CallerController | null = null): Context<C, M> | null {
+  get(contextPath: string, caller?: CallerController): Context<C, M> | null {
     if (contextPath == null) {
       return null;
     }
@@ -893,14 +918,14 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     return super.getIconId();
   }
 
-  getChild(name: string, caller: CallerController | null = null): C | null {
+  getChild(name: string, caller?: CallerController): C | null {
     if (super.getChild(name, caller) == null) {
       if (!this.initializedChildren && this.localInitComplete && !this.initializingChildren) Log.CONTEXT_CHILDREN.warn('Error initializing children of remote context');
     }
     return super.getChild(name, caller);
   }
 
-  getVariableDefinition(name: string, caller: CallerController | null = null): VariableDefinition | null {
+  getVariableDefinition(name: string, caller?: CallerController): VariableDefinition | null {
     const sup = super.getVariableDefinition(name);
     if (sup == null && this.isSetupComplete()) {
       //Promise
@@ -911,7 +936,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     }
   }
 
-  getFunctionDefinition(name: string, caller: CallerController | null = null): FunctionDefinition | null {
+  getFunctionDefinition(name: string, caller?: CallerController): FunctionDefinition | null {
     const sup = super.getFunctionDefinition(name);
     if (sup == null && this.isSetupComplete()) {
       //TODO promise
@@ -939,28 +964,28 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     return super.getActionDefinition(name, caller);
   }
 
-  getVariableDefinitions(caller: CallerController | null = null, includeHidden = false): Array<VariableDefinition> {
+  getVariableDefinitions(includeHidden = false, caller?: CallerController): Array<VariableDefinition> {
     //TODO Promise
     // this.initVariablesLoggingErrors();
-    return super.getVariableDefinitions(caller, includeHidden);
+    return super.getVariableDefinitions(includeHidden, caller);
   }
 
-  getFunctionDefinitions(caller: CallerController | null = null, includeHidden = false): Array<FunctionDefinition> {
+  getFunctionDefinitions(includeHidden = false, caller?: CallerController): Array<FunctionDefinition> {
     //TODO promise
     // this.initFunctionsLoggingErrors();
-    return super.getFunctionDefinitions(caller, includeHidden);
+    return super.getFunctionDefinitions(includeHidden, caller);
   }
 
-  getEventDefinitions(caller: CallerController | null = null, includeHidden = false): Array<EventDefinition> {
+  getEventDefinitions(includeHidden = false, caller?: CallerController): Array<EventDefinition> {
     //TODO promise
     //this.initEventsLoggingErrors();
-    return super.getEventDefinitions(caller, includeHidden);
+    return super.getEventDefinitions(includeHidden, caller);
   }
 
-  getActionDefinitions(caller: CallerController | null = null, includeHidden = false): Array<ActionDefinition> {
+  getActionDefinitions(includeHidden = false, caller?: CallerController): Array<ActionDefinition> {
     //TODO promise
     //this.initActionsLoggingErrors();
-    return super.getActionDefinitions(caller, includeHidden);
+    return super.getActionDefinitions(includeHidden, caller);
   }
 
   getStatus(): ContextStatus | null {
@@ -1046,7 +1071,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     super.setupVariables();
   }
 
-  protected async getVariableImpl(def: VariableDefinition, caller: CallerController | null, request: RequestController | null): Promise<DataTable | null> {
+  protected async getVariableImpl(def: VariableDefinition, caller?: CallerController, request?: RequestController): Promise<DataTable | null> {
     //TODO promise
     return await this.getRemoteVariableByDef(def);
   }
@@ -1087,15 +1112,15 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
       return value;
     } catch (ex) {
       Log.CONTEXT_VARIABLES.debug("Error getting variable '" + def.getName() + "' from context '" + this.getPathDescription() + "'", ex);
-      throw new Error(ex.message);
+      throw ex;
     }
   }
 
-  protected setVariableImpl(def: VariableDefinition, caller: CallerController | null, request: RequestController | null, value: DataTable): boolean {
+  protected async setVariableImpl(def: VariableDefinition, value: DataTable, caller?: CallerController, request?: RequestController): Promise<boolean> {
     try {
       const encoded = value.getEncodedDataFromEncodingSettings(this.controller.createClassicEncodingSettings(true));
       const operation: OutgoingAggreGateCommand = this.controller.getCommandBuilder().setVariableOperation(this.getPeerPath(), def.getName(), encoded, request != null ? request.getQueue() : null);
-      this.controller.sendCommandAndCheckReplyCode(operation);
+      await this.controller.sendCommandAndCheckReplyCode(operation);
       return true;
     } catch (ex) {
       Log.CONTEXT_VARIABLES.debug("Error setting variable '" + def.getName() + "' of context '" + this.getPathDescription() + "'", ex);
@@ -1109,7 +1134,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     super.setupFunctions();
   }
 
-  protected async callFunctionImpl(def: FunctionDefinition, caller: CallerController | null, request: RequestController | null, parameters: DataTable): Promise<DataTable | null> {
+  protected async callFunctionImpl(def: FunctionDefinition, parameters: DataTable, caller?: CallerController, request?: RequestController): Promise<DataTable | null> {
     if (def.getName() === ProxyContext.F_LOCAL_REINITIALIZE) {
       this.reinitialize();
       return DataTableFactory.of(def.getOutputFormat(), true);
@@ -1122,7 +1147,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
       return await this.controller.callRemoteFunction(this.getPeerPath(), name, outputFormat, parameters, queueName, isReplyRequired);
     } catch (ex) {
       Log.CONTEXT_FUNCTIONS.debug("Error calling function '" + name + "' of context '" + this.getPathDescription() + "'", ex);
-      throw new Error(ex.message);
+      throw ex;
     }
   }
 
@@ -1136,8 +1161,8 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
       //this.initEvents();
 
       const ed = this.getEventData(name);
-
       if (ed == null) {
+        Log.CONTEXT_EVENTS.debug('Context: ' + this.getPath() + 'is loaded events - ' + this.initializedEvents + ' is loading events ' + this.initializingEvents);
         throw new Error(Cres.get().getString('conEvtNotAvail') + name);
       }
 
@@ -1207,12 +1232,12 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     }
   }
 
-  getChildren(caller: CallerController | null = null): Array<Context<C, M>> {
+  getChildren(caller?: CallerController): Array<Context<C, M>> {
     if (!this.initializedChildren && this.localInitComplete && !this.initializingChildren) Log.CONTEXT_CHILDREN.warn('Error initializing children of remote context');
     return super.getChildren(caller);
   }
 
-  getVisibleChildren(caller: CallerController | null = null): Array<Context<C, M>> {
+  getVisibleChildren(caller?: CallerController): Array<Context<C, M>> {
     if (!this.visibleChildren) {
       Log.CONTEXT_CHILDREN.warn('Error initializing visible children of remote context');
       return new Array<Context<C, M>>();
@@ -1228,6 +1253,10 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     }
 
     return res;
+  }
+
+  getVisibleChildrenPaths(): Array<string> {
+    return this.visibleChildren ?? [];
   }
 
   public addVisibleChild(localVisiblePath: string): void {
@@ -1270,21 +1299,15 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     id: number | null,
     creationtime: Date | null,
     listener: number | null,
-    caller: CallerController | null,
-    request: FireEventRequestController | null,
-    permissions: Permissions | null
+    caller?: CallerController,
+    request?: FireEventRequestController,
+    permissions?: Permissions
   ): Event | null {
     const event = super._fireEvent(ed, data, level, id, creationtime, listener, caller, request, permissions);
     if (ed.getName() === AbstractContext.E_UPDATED && this.isInitializedVariables() && event != null) {
-      const variable = event
-        .getData()
-        .rec()
-        .getString(AbstractContext.EF_UPDATED_VARIABLE);
+      const variable = event.getData().rec().getString(AbstractContext.EF_UPDATED_VARIABLE);
 
-      const value = event
-        .getData()
-        .rec()
-        .getDataTable(AbstractContext.EF_UPDATED_VALUE);
+      const value = event.getData().rec().getDataTable(AbstractContext.EF_UPDATED_VALUE);
 
       const vd = this.getVariableDefinition(variable);
 

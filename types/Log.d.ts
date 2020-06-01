@@ -18,4 +18,5 @@ export default class Log {
     static readonly CONVERTER: LoggerAdapter;
     static readonly CLIENTS: LoggerAdapter;
     static readonly PROTOCOL: LoggerAdapter;
+    static createLogger(category: string): LoggerAdapter;
 }

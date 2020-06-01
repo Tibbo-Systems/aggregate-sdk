@@ -30,11 +30,7 @@ export default class ContextMaskConverter extends AbstractEditorOptionsConverter
   private static readonly FORMAT: TableFormat = new TableFormat(1, 1);
 
   static __static_initializer_2() {
-    ContextMaskConverter.FORMAT.addField(
-      FieldFormatFactory.createWith(ContextMaskConverter.FIELD_ROOT_CONTEXT, FieldConstants.STRING_FIELD, Cres.get().getString('wRoot'))
-        .setEditor(FieldConstants.EDITOR_CONTEXT)
-        .setNullable(true)
-    );
+    ContextMaskConverter.FORMAT.addField(FieldFormatFactory.createWith(ContextMaskConverter.FIELD_ROOT_CONTEXT, FieldConstants.STRING_FIELD, Cres.get().getString('wRoot')).setEditor(FieldConstants.EDITOR_CONTEXT).setNullable(true));
     ContextMaskConverter.FORMAT.addField(
       FieldFormatFactory.createWith(ContextMaskConverter.FIELD_CONTEXT_TYPES, FieldConstants.DATATABLE_FIELD, Cres.get().getString('conContextTypes')).setDefault(DataTableFactory.of(ContextMaskConverter.TYPE_FORMAT))
     );

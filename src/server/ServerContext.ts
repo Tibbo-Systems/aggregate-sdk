@@ -27,7 +27,7 @@ export default interface ServerContext extends Context<any, ServerContextManager
    */
   removeVisibleChild(path: string): void;
 
-  get(path: string | null, caller: CallerController | null): ServerContext | null;
+  get(path: string | null, caller?: CallerController): ServerContext | null;
 
   /**
    * Returns true if the context has a visible child with specified path.

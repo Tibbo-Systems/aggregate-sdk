@@ -79,7 +79,7 @@ export default abstract class ActionUtils {
   }
 
   public static initActionCreate(context: Context<any, any>, actionName: string, initialParameters: ServerActionInput, inputData: DataTable, mode: ActionExecutionMode, callerController: CallerController): Promise<ActionIdentifier> {
-    return ActionUtils.initAction(context, actionName, initialParameters, inputData, null, mode, callerController, null);
+    return ActionUtils.initAction(context, actionName, initialParameters, inputData, null, mode, callerController);
   }
 
   public static initAction(
@@ -89,16 +89,16 @@ export default abstract class ActionUtils {
     inputData: DataTable | null,
     environment: Map<string, any> | null,
     mode: ActionExecutionMode,
-    callerController: CallerController | null,
-    collector: ErrorCollector | null
+    callerController?: CallerController,
+    collector?: ErrorCollector
   ): Promise<ActionIdentifier> {
     return ActionUtils.ACTION_INITIALIZER.initAction(context, actionName, initialParameters, inputData, environment, mode, callerController, collector);
   }
 
-  public static async stepAction(context: Context<any, any>, actionId: ActionIdentifier, actionResponse: GenericActionResponse | null, callerController: CallerController | null): Promise<GenericActionCommand | null> {
+  public static async stepAction(context: Context<any, any>, actionId: ActionIdentifier, actionResponse: GenericActionResponse | null, callerController?: CallerController): Promise<GenericActionCommand | null> {
     const startTime: number = Date.now();
 
-    const res: DataTable = await context.callFunction(ServerContextConstants.F_STEP_ACTION, [actionId.toString(), ProtocolHandler.actionResponseToDataTable(actionResponse)], callerController, null);
+    const res: DataTable = await context.callFunction(ServerContextConstants.F_STEP_ACTION, [actionId.toString(), ProtocolHandler.actionResponseToDataTable(actionResponse)], callerController);
     const rc = ProtocolHandler.actionCommandFromDataTable(res.rec().getDataTable(ServerContextConstants.FOF_STEP_ACTION_ACTION_COMMAND));
 
     if (Log.CONTEXT_ACTIONS.isDebugEnabled()) {

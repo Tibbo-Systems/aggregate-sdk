@@ -1,4 +1,5 @@
 import Cres from '../Cres';
+import LevelAdapter from '../util/logger/LevelAdapter';
 
 export default class EventLevel {
   private static readonly LEVELS = new Map<number, string>();
@@ -47,6 +48,23 @@ export default class EventLevel {
 
   public static getSelectionValues(): Map<number, string> {
     return new Map(EventLevel.SELECTION_VALUES);
+  }
+
+  public static eventLevelToLogLevel(eventLevel: number): LevelAdapter {
+    switch (eventLevel) {
+      case EventLevel.ERROR:
+        return LevelAdapter.ERROR;
+      case EventLevel.INFO:
+        return LevelAdapter.INFO;
+      case EventLevel.WARNING:
+        return LevelAdapter.WARN;
+      case EventLevel.NOTICE:
+        return LevelAdapter.DEBUG;
+      case EventLevel.FATAL:
+        return LevelAdapter.FATAL;
+      default:
+        return LevelAdapter.INFO;
+    }
   }
 }
 

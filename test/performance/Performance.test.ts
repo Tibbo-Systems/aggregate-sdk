@@ -1,26 +1,24 @@
-import ProxyContext from '../../src/protocol/ProxyContext';
-import RootContextConstants from '../../src/server/RootContextConstants';
 import Log from '../../src/Log';
 import AbstractContext from '../../src/context/AbstractContext';
 import DefaultContextEventListener from '../../src/context/DefaultContextEventListener';
 import Event from '../../src/data/Event';
 import TestServer from '../tests/TestServer';
-import VirtualDeviceConstants from "../../src/server/VirtualDeviceConstants";
+import VirtualDeviceConstants from '../../src/server/VirtualDeviceConstants';
 
 describe('Performance', () => {
   const server = new TestServer();
 
-  beforeEach(async done => {
+  beforeEach(async (done) => {
     await server.beforeEach();
     done();
   });
 
-  afterEach(async done => {
+  afterEach(async (done) => {
     await server.afterEach();
     done();
   });
 
-  it('testGetVersion', async done => {
+  it('testGetVersion', async (done) => {
     let count = 0;
     let iteration = 0;
 
@@ -38,7 +36,7 @@ describe('Performance', () => {
     const virtualDevicesContext = server.getVirtualDevice();
 
     while (true) {
-      const strValue = await virtualDevicesContext.getVariable(VirtualDeviceConstants.V_NORMAL, null, null);
+      const strValue = await virtualDevicesContext.getVariable(VirtualDeviceConstants.V_NORMAL);
       expect(strValue.rec().getValue(VirtualDeviceConstants.V_STRING)).toBe('test');
       count++;
       if (iteration == countIteration) break;
@@ -46,7 +44,7 @@ describe('Performance', () => {
     done();
   }, 21000);
 
-  it('addEventListener', async done => {
+  it('addEventListener', async (done) => {
     const virtualDevicesContext = server.getVirtualDevice();
 
     let count = 0;
@@ -58,7 +56,7 @@ describe('Performance', () => {
     })();
 
     setInterval(() => {
-      Log.CORE.info(count);
+      Log.CORE.info(count.toString());
       count = 0;
     }, 1000);
 

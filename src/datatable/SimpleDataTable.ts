@@ -107,7 +107,7 @@ export default class SimpleDataTable extends AbstractDataTable implements Compar
       throw new Error('Record is not from this table');
     }
 
-    const indexOf: number = this.records.findIndex(element => element.equals(record));
+    const indexOf: number = this.records.findIndex((element) => element.equals(record));
 
     if (indexOf !== -1) {
       this.records.splice(indexOf, 1);

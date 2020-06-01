@@ -20,27 +20,24 @@ export default class EventDispatcher {
     }
   }
 
-  public queue(ev: QueuedEvent, request: FireEventRequestController | null) {
+  public queue(ev: QueuedEvent, request?: FireEventRequestController) {
     this.queueInternal(ev, request);
   }
 
-  private queueInternal(ev: QueuedEvent, request: FireEventRequestController | null): void {
+  private queueInternal(ev: QueuedEvent, request?: FireEventRequestController): void {
     this.undispatchedEvents.unshift(ev);
 
     new Promise((resolve, reject) => {
       this.run();
       resolve();
-    }).catch(ex => {
+    }).catch((ex) => {
       Log.CONTEXT_EVENTS.fatal('Unexpected critical error in event dispatcher', ex);
     });
   }
 
   private run(): void {
     const ev: QueuedEvent = this.undispatchedEvents.pop() as QueuedEvent;
-    const concurrency = ev
-      .getEventData()
-      .getDefinition()
-      .getConcurrency();
+    const concurrency = ev.getEventData().getDefinition().getConcurrency();
 
     if (concurrency == EventDefinition.CONCURRENCY_SEQUENTIAL) {
       ev.dispatch();
