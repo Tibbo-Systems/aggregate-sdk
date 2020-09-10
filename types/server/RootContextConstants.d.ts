@@ -121,6 +121,7 @@ export default class RootContextConstants {
     static readonly VF_CONNECTIONS_ADDRESS: string;
     static readonly VF_CONNECTIONS_EVENTS_QUEUED: string;
     static readonly VF_CONNECTIONS_EVENTS_DISCARDED: string;
+    static readonly VF_CONNECTIONS_CONTEXT_LOCKS: string;
     static readonly VF_THREADS_ID: string;
     static readonly VF_THREADS_NAME: string;
     static readonly VF_THREADS_GROUP: string;

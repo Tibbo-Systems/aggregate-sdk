@@ -79,11 +79,9 @@ export default abstract class Command extends JObject {
       }
       buff.flip();
 
-      let sent = 0;
+      const sent = 0;
 
-      do {
-        sent += byteChannel.write(buff);
-      } while (sent < size);
+      byteChannel.write(buff);
     } catch (error) {
       Log.COMMANDS.error(error);
       throw new Error(Cres.get().getString('disconnected'));

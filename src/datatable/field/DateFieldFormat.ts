@@ -1,17 +1,44 @@
 import FieldFormat from '../FieldFormat';
-import moment from 'moment';
 import ClassicEncodingSettings from '../encoding/ClassicEncodingSettings';
 import Util from '../../util/Util';
 import FieldConstants from './FieldConstants';
-import Data from '../../data/Data';
 
 export default class DateFieldFormat extends FieldFormat<Date> {
-  private static DEFAULT_DATE: Date = moment('2000-02-01T12:00:00').toDate();
-  private static DATATABLE_DATE_PATTERN = 'YYYY-MM-DD HH:mm:ss.SSS'; // "yyyy-MM-dd HH:mm:ss.SSS"; Watch for the difference between ISO and JAVA
-  private static UTC_TIME_ZONE = '+00:00';
-
   constructor(name: string) {
     super(name);
+  }
+  private static DEFAULT_DATE: Date;
+
+  public getType(): string {
+    return FieldConstants.DATE_FIELD;
+  }
+
+  public getNotNullDefault(): Date {
+    if (DateFieldFormat.DEFAULT_DATE) {
+      return DateFieldFormat.DEFAULT_DATE;
+    }
+    DateFieldFormat.DEFAULT_DATE = new Date();
+    DateFieldFormat.DEFAULT_DATE.setFullYear(2000);
+    DateFieldFormat.DEFAULT_DATE.setMonth(1);
+    DateFieldFormat.DEFAULT_DATE.setDate(1);
+    DateFieldFormat.DEFAULT_DATE.setHours(12);
+    DateFieldFormat.DEFAULT_DATE.setMinutes(0);
+    DateFieldFormat.DEFAULT_DATE.setSeconds(0);
+    DateFieldFormat.DEFAULT_DATE.setMilliseconds(0);
+
+    return DateFieldFormat.DEFAULT_DATE;
+  }
+
+  valueFromString(value: string, settings: ClassicEncodingSettings, validate: boolean): Date | null {
+    try {
+      return DateFieldFormat.dateFromString(value);
+    } catch {
+      try {
+        return Util.convertToDate(value, true, true);
+      } catch (ex) {
+        throw new Error(`Error parsing date from string '${value}': ${ex.message}`);
+      }
+    }
   }
 
   public valueToString(value: Date): string | null {
@@ -25,43 +52,102 @@ export default class DateFieldFormat extends FieldFormat<Date> {
     }
   }
 
-  public getType(): string {
-    return FieldConstants.DATE_FIELD;
-  }
+  public static dateFromString(value: string): Date {
+    const gc = new Date();
 
-  public getNotNullDefault(): Date {
-    return DateFieldFormat.DEFAULT_DATE;
+    gc.setFullYear(Number(value.substring(0, 4)));
+    gc.setMonth(Number(value.substring(5, 7)) - 1);
+    gc.setDate(Number(value.substring(8, 10)));
+    gc.setHours(Number(value.substring(11, 13)));
+    gc.setMinutes(Number(value.substring(14, 16)));
+    gc.setSeconds(Number(value.substring(17, 19)));
+    gc.setMilliseconds(Number(value.substring(20, 23)));
+
+    return gc;
   }
 
   public static dateToString(value: Date): string {
-    return moment(value).format(DateFieldFormat.DATATABLE_DATE_PATTERN);
-  }
+    const gc = new Date(value);
 
-  valueFromString(value: string | null, settings: ClassicEncodingSettings | null, validate: boolean): Date | null {
-    try {
-      if (value !== null) {
-        return DateFieldFormat.dateFromString(value);
-      } else {
-        throw new Error();
-      }
-    } catch {
-      try {
-        return Util.convertToDate(value, true, true);
-      } catch (ex) {
-        throw new Error(`Error parsing date from string '${value}': ${ex.message}`);
-      }
+    const year = gc.getFullYear();
+    let sb = '';
+    if (year < 1000) {
+      sb += '0';
     }
-  }
+    if (year < 100) {
+      sb += '0';
+    }
+    if (year < 10) {
+      sb += '0';
+    }
 
-  public static dateFromString(value: string): Date {
-    return moment(value as string, `${DateFieldFormat.DATATABLE_DATE_PATTERN}${DateFieldFormat.UTC_TIME_ZONE}`).toDate();
+    sb += year;
+
+    sb += '-';
+
+    const month = gc.getMonth() + 1;
+
+    if (month < 10) {
+      sb += '0';
+    }
+    sb += month;
+
+    sb += '-';
+
+    const day = gc.getDate();
+
+    if (day < 10) {
+      sb += '0';
+    }
+    sb += day;
+
+    sb += ' ';
+
+    const hour = gc.getHours();
+
+    if (hour < 10) {
+      sb += '0';
+    }
+    sb += hour;
+
+    sb += ':';
+
+    const minute = gc.getMinutes();
+
+    if (minute < 10) {
+      sb += '0';
+    }
+    sb += minute;
+
+    sb += ':';
+
+    const second = gc.getSeconds();
+
+    if (second < 10) {
+      sb += '0';
+    }
+    sb += second;
+
+    sb += '.';
+
+    const millisecond = gc.getMilliseconds();
+
+    if (millisecond < 100) {
+      sb += '0';
+    }
+    if (millisecond < 10) {
+      sb += '0';
+    }
+    sb += millisecond;
+
+    return sb;
   }
 
   public getSuitableEditors(): Array<string> {
     return [FieldConstants.EDITOR_LIST, FieldConstants.EDITOR_DATE, FieldConstants.EDITOR_TIME];
   }
 
-  public isAssignableFrom(value: any): boolean {
+  public isAssignableFrom(value: Date): boolean {
     return value instanceof Date;
   }
 }

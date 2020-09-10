@@ -115,6 +115,7 @@ export default abstract class FieldFormat<T> extends JObject {
      */
     setHelp(help: string): FieldFormat<T>;
     createSelectionValues(source: string | null, settings: ClassicEncodingSettings): void;
+    convertKeyForSelectionValuesMap(value: any): any;
     /**
      * Sets field selection values.
      */
@@ -192,7 +193,7 @@ export default abstract class FieldFormat<T> extends JObject {
     /**
      * Returns true if field has specified selection value.
      */
-    hasSelectionValue(value: T): boolean;
+    hasSelectionValue(value: T | null): boolean;
     /**
      * Returns true if field has selection values.
      */

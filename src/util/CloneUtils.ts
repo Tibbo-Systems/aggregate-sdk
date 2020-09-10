@@ -1,5 +1,6 @@
 import Util from './Util';
 import JObject from './java/JObject';
+import JSBI from 'jsbi';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const cloneDeep = require('lodash.clonedeep');
@@ -17,6 +18,7 @@ export default class CloneUtils {
     if (null == object) return null;
 
     if (object instanceof JObject) return (object.clone() as unknown) as T;
+    if (object instanceof JSBI) return (JSBI.BigInt(object.toString()) as unknown) as T;
 
     return cloneDeep(object);
   }

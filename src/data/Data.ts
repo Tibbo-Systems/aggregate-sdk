@@ -1,3 +1,4 @@
+import JSBI from 'jsbi';
 import StringEncodable from '../util/StringEncodable';
 import StringBuilder from '../util/java/StringBuilder';
 import ClassicEncodingSettings from '../datatable/encoding/ClassicEncodingSettings';
@@ -20,7 +21,7 @@ export default class Data extends JObject implements StringEncodable {
 
   private static readonly SEPARATOR: string = '/';
 
-  private id: number | null = null;
+  private id: JSBI | null = null;
   private name: string | null = null;
   private preview: ByteBuffer | null = null;
   private data: ByteBuffer | null;
@@ -44,7 +45,7 @@ export default class Data extends JObject implements StringEncodable {
     // parts.get(0) will return transcoder version, currently ignored
 
     if (parts[1] !== DataTableUtils.DATA_TABLE_NULL) {
-      res.setId(Number(parts[1]));
+      res.setId(JSBI.BigInt(parts[1]));
     }
 
     if (parts[2] !== DataTableUtils.DATA_TABLE_NULL) {
@@ -69,7 +70,7 @@ export default class Data extends JObject implements StringEncodable {
     this.preview = preview;
   }
 
-  public setId(id: number): void {
+  public setId(id: JSBI): void {
     this.id = id;
   }
 
@@ -93,7 +94,7 @@ export default class Data extends JObject implements StringEncodable {
     return this.name;
   }
 
-  public getId(): number | null {
+  public getId(): JSBI | null {
     return this.id;
   }
 
@@ -136,7 +137,9 @@ export default class Data extends JObject implements StringEncodable {
 
     const context = cm.get(Contexts.CTX_UTILITIES, cc);
     if (!context) throw new Error(Contexts.CTX_UTILITIES + ' not found');
-    const dt = await context.callFunction(UtilitiesContextConstants.F_GET_DATA, new Array(this.getId()), cc);
+    const parameters = new Array<JSBI | null>();
+    parameters.push(this.getId());
+    const dt = await context.callFunction(UtilitiesContextConstants.F_GET_DATA, parameters, cc);
 
     const data = dt.rec().getData(UtilitiesContextConstants.FOF_GET_DATA_DATA);
     const receivedData = data ? (data as Data).getData() : null;
@@ -203,7 +206,9 @@ export default class Data extends JObject implements StringEncodable {
     if (obj instanceof Data) {
       const od = obj as Data;
 
-      return this.id === od.id && this.name === od.name && Util.byteBufferEquals(od.preview, this.preview) && Util.byteBufferEquals(this.data, od.data);
+      return (
+        ((this.id === null && od.id === null) || (this.id !== null && od.id !== null && JSBI.equal(this.id, od.id))) && this.name === od.name && Util.byteBufferEquals(od.preview, this.preview) && Util.byteBufferEquals(this.data, od.data)
+      );
     }
     return false;
   }

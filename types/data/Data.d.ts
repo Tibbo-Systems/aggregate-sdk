@@ -1,3 +1,4 @@
+import JSBI from 'jsbi';
 import StringEncodable from '../util/StringEncodable';
 import StringBuilder from '../util/java/StringBuilder';
 import ClassicEncodingSettings from '../datatable/encoding/ClassicEncodingSettings';
@@ -19,13 +20,13 @@ export default class Data extends JObject implements StringEncodable {
     constructor(data?: ByteBuffer | null);
     static fromString(value: string): Data;
     setPreview(preview: ByteBuffer): void;
-    setId(id: number): void;
+    setId(id: JSBI): void;
     setData(data: ByteBuffer | null): void;
     setBlob(blob: ByteBuffer): void;
     setName(name: string): void;
     getPreview(): ByteBuffer | null;
     getName(): string | null;
-    getId(): number | null;
+    getId(): JSBI | null;
     getData(): ByteBuffer | null;
     getBlob(): ByteBuffer | null;
     getAttachments(): Map<string, JObject>;

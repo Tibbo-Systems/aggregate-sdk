@@ -72,9 +72,9 @@ export default class Permission extends JObject {
     }
   }
 
-  public static createWithContextAndLevel(context: string, level: string): Permission {
+  public static createWithContextAndLevel(context: string | null, level: string): Permission {
     const permission = new Permission(null, null);
-    permission.setContext(context);
+    if (context !== null) permission.setContext(context);
     permission.setLevel(level);
     return permission;
   }

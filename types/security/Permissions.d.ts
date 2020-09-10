@@ -5,7 +5,7 @@ export default class Permissions extends JObject implements Iterable<Permission>
     static readonly PERMISSIONS_SEPARATOR: string;
     private permissions;
     constructor(data?: string, checker?: PermissionChecker | null);
-    static createWithContext(context: string, type: string): Permissions;
+    static createWithContext(context: string | null, type: string): Permissions;
     encode(): string;
     toString(): string;
     size(): number;

@@ -42,5 +42,6 @@ export default class ServerActionCommandProcessor {
     editCode(title: string, code: string, mode: string): string | null;
     showSystemTree(title: string, roots: Context<Context<any, any>, ContextManager<any>> | Array<string>): void;
     activateDashboard(nameString: string, parameters: DataTable): void;
-    editDashboard(parameters: DataTable): void;
+    editDashboard(contextPath: string, defaultContext: string): void;
+    openDashboard(contextPath: string, defaultContext: string): void;
 }

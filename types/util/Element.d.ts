@@ -9,7 +9,7 @@ export default class Element extends JObject implements StringEncodable {
     private encodable;
     private fieldFormat;
     private fieldValue;
-    constructor(name?: string | null, value?: string | null, encodable?: StringEncodable | null, fieldFormat?: FieldFormat<any> | null, fieldValue?: object | null);
+    constructor(name?: string | null, value?: string | null, encodable?: StringEncodable | null, fieldFormat?: FieldFormat<any> | null, fieldValue?: any);
     static createFromStringEncodable(name: string, encodable: StringEncodable): Element;
     static createFromFieldFormat(name: string | null, ff: FieldFormat<any>, fieldValue: JObject | null): Element;
     getName(): string | null;

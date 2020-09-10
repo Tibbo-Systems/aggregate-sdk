@@ -35,7 +35,8 @@ import ElementList from '../util/ElementList';
 import Event from '../data/Event';
 import LoggerAdapter from '../util/logger/LoggerAdapter';
 
-export default abstract class AbstractAggreGateDeviceController<D extends AggreGateDevice, C extends ContextManager<any>> extends AbstractDeviceController<IncomingAggreGateCommand, OutgoingAggreGateCommand>
+export default abstract class AbstractAggreGateDeviceController<D extends AggreGateDevice, C extends ContextManager<any>>
+  extends AbstractDeviceController<IncomingAggreGateCommand, OutgoingAggreGateCommand>
   implements AggreGateDeviceController<IncomingAggreGateCommand, OutgoingAggreGateCommand> {
   public static readonly FLAG_NO_REPLY: string = 'N';
 

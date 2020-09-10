@@ -3,9 +3,15 @@ import LevelAdapter from './LevelAdapter';
 
 export default class LoggerAdapter {
   private logger: Logger;
+  private readonly category: string;
 
-  constructor(logger: Logger) {
+  constructor(logger: Logger, category: string) {
     this.logger = logger;
+    this.category = category;
+  }
+
+  public getCategory(): string {
+    return this.category;
   }
 
   public isDebugEnabled(): boolean {
@@ -21,33 +27,33 @@ export default class LoggerAdapter {
   }
 
   public info(message: string, error?: Error): void {
-    if (error != null) this.logger.info(error, message);
-    else this.logger.info(message);
+    if (error != null) this.logger.info(error, new Date().toLocaleTimeString(), this.category, message);
+    else this.logger.info(new Date().toLocaleTimeString(), this.category, message);
   }
 
   public debug(message: string, error?: Error): void {
-    if (error != null) this.logger.debug(error, message);
-    else this.logger.debug(message);
+    if (error != null) this.logger.debug(error, new Date().toLocaleTimeString(), this.category, message);
+    else this.logger.debug(new Date().toLocaleTimeString(), this.category, message);
   }
 
   public error(message: string, error?: Error): void {
-    if (error != null) this.logger.error(error, message);
-    else this.logger.error(message);
+    if (error != null) this.logger.error(error, new Date().toLocaleTimeString(), this.category, message);
+    else this.logger.error(new Date().toLocaleTimeString(), this.category, message);
   }
 
   public warn(message: string, error?: Error): void {
-    if (error != null) this.logger.warn(error, message);
-    else this.logger.warn(message);
+    if (error != null) this.logger.warn(error, new Date().toLocaleTimeString(), this.category, message);
+    else this.logger.warn(new Date().toLocaleTimeString(), this.category, message);
   }
 
   public trace(message: string, error?: Error): void {
-    if (error != null) this.logger.trace(error, message);
-    else this.logger.trace(message);
+    if (error != null) this.logger.trace(error, new Date().toLocaleTimeString(), this.category, message);
+    else this.logger.trace(new Date().toLocaleTimeString(), this.category, message);
   }
 
   public fatal(message: string, error?: Error): void {
-    if (error != null) this.logger.fatal(error, message);
-    else this.logger.fatal(message);
+    if (error != null) this.logger.fatal(error, new Date().toLocaleTimeString(), this.category, message);
+    else this.logger.fatal(new Date().toLocaleTimeString(), this.category, message);
   }
 
   public setLevel(level: LevelAdapter): void {

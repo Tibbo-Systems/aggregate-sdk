@@ -11,9 +11,9 @@ export default class Element extends JObject implements StringEncodable {
   private value: string | null;
   private encodable: StringEncodable | null;
   private fieldFormat: FieldFormat<any> | null;
-  private fieldValue: object | null = null;
+  private fieldValue: any = null;
 
-  constructor(name: string | null = null, value: string | null = null, encodable: StringEncodable | null = null, fieldFormat: FieldFormat<any> | null = null, fieldValue: object | null = null) {
+  constructor(name: string | null = null, value: string | null = null, encodable: StringEncodable | null = null, fieldFormat: FieldFormat<any> | null = null, fieldValue: any = null) {
     super();
     this.name = name;
     this.value = value;

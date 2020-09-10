@@ -57,6 +57,10 @@ import FieldConstants from '../datatable/field/FieldConstants';
 import FieldFormatFactory from '../datatable/FieldFormatFactory';
 import DefaultContextEventListener from './DefaultContextEventListener';
 import LevelAdapter from '../util/logger/LevelAdapter';
+import PropertiesLock from './PropertiesLock';
+import FunctionImplementation from './FunctionImplementation';
+import ServerPermissionChecker from '../security/ServerPermissionChecker';
+import AbstractCallerController from './AbstractCallerController';
 
 export default abstract class AbstractContext<C extends Context<C, M>, M extends ContextManager<any>> extends Context<C, M> {
   static readonly IMPLEMENTATION_METHOD_PREFIX: string = 'callF';
@@ -88,6 +92,14 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
   public static readonly F_COPY_TO_CHILDREN: string = 'copyToChildren';
 
   public static readonly F_UPDATE_VARIABLE: string = 'updateVariable';
+
+  public static readonly F_LOCKED_BY: string = 'lockedBy';
+
+  public static readonly F_LOCK: string = 'lock';
+
+  public static readonly F_UNLOCK: string = 'unlock';
+
+  public static readonly F_BREAK_LOCK: string = 'breakLock';
 
   public static readonly E_INFO: string = 'info';
 
@@ -172,6 +184,16 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
   public static readonly FIF_REPLICATE_FIELDS_REPLICATE: string = 'replicate';
 
   public static readonly FIF_COPY_DATA_RECIPIENTS_RECIPIENT: string = 'recipient';
+
+  public static readonly FIF_LOCK_PROPERTIES_EDITOR_UUID: string = 'propertiesEditorUUID';
+
+  public static readonly FIF_UNLOCK_PROPERTIES_EDITOR_UUID: string = 'propertiesEditorUUID';
+
+  public static readonly FOF_LOCKED_BY_OWNER_NAME: string = 'lockOwnerName';
+
+  public static readonly FOF_LOCK_OWNER_NAME: string = 'lockOwnerName';
+
+  public static readonly FOF_UNLOCK_UNLOCKED: string = 'unlocked';
 
   public static readonly EF_INFO_INFO: string = 'info';
 
@@ -422,9 +444,39 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     AbstractContext.FIFT_UPDATE_VARIABLE.addField(FieldFormatFactory.createWith(AbstractContext.V_UPDATE_VARIABLE_EXPRESSION, FieldConstants.STRING_FIELD, Cres.get().getString('expression')));
   }
 
-  public static EF_UPDATED: TableFormat = new TableFormat(1, 1);
+  public static readonly FIFT_LOCK: TableFormat = new TableFormat(1, 1);
 
   private static __static_initializer_14() {
+    AbstractContext.FIFT_LOCK.addField(FieldFormatFactory.createType(AbstractContext.FIF_LOCK_PROPERTIES_EDITOR_UUID, FieldConstants.STRING_FIELD));
+  }
+
+  public static readonly FIFT_UNLOCK: TableFormat = new TableFormat(1, 1);
+
+  private static __static_initializer_15() {
+    AbstractContext.FIFT_UNLOCK.addField(FieldFormatFactory.createType(AbstractContext.FIF_UNLOCK_PROPERTIES_EDITOR_UUID, FieldConstants.STRING_FIELD));
+  }
+
+  public static readonly FOFT_LOCKED_BY: TableFormat = new TableFormat(1, 1);
+
+  private static __static_initializer_16() {
+    AbstractContext.FOFT_LOCKED_BY.addField(FieldFormatFactory.createWith(AbstractContext.FOF_LOCKED_BY_OWNER_NAME, FieldConstants.STRING_FIELD, Cres.get().getString('conPropLockOwnerName')).setNullable(true));
+  }
+
+  public static readonly FOFT_LOCK: TableFormat = new TableFormat(1, 1);
+
+  private static __static_initializer_17() {
+    AbstractContext.FOFT_LOCK.addField(FieldFormatFactory.createWith(AbstractContext.FOF_LOCK_OWNER_NAME, FieldConstants.STRING_FIELD, Cres.get().getString('conPropLockOwnerName')).setNullable(true));
+  }
+
+  public static readonly FOFT_UNLOCK: TableFormat = new TableFormat(1, 1);
+
+  private static __static_initializer_18() {
+    AbstractContext.FOFT_UNLOCK.addField(FieldFormatFactory.createType(AbstractContext.FOF_UNLOCK_UNLOCKED, FieldConstants.BOOLEAN_FIELD));
+  }
+
+  public static EF_UPDATED: TableFormat = new TableFormat(1, 1);
+
+  private static __static_initializer_19() {
     AbstractContext.EF_UPDATED.addField('<' + AbstractContext.EF_UPDATED_VARIABLE + '><S>');
     AbstractContext.EF_UPDATED.addField('<' + AbstractContext.EF_UPDATED_VALUE + '><T>');
     AbstractContext.EF_UPDATED.addField('<' + AbstractContext.EF_UPDATED_USER + '><S><F=N>');
@@ -432,7 +484,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public static EF_CHANGE: TableFormat = new TableFormat(1, 1);
 
-  private static __static_initializer_15() {
+  private static __static_initializer_20() {
     AbstractContext.EF_CHANGE.addField('<' + AbstractContext.EF_CHANGE_VARIABLE + '><S>');
     AbstractContext.EF_CHANGE.addField('<' + AbstractContext.EF_CHANGE_VALUE + '><T><F=N>');
     AbstractContext.EF_CHANGE.addField('<' + AbstractContext.EF_CHANGE_DATA + '><S><F=N>');
@@ -448,7 +500,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public static VD_INFO: VariableDefinition;
 
-  private static __static_initializer_16() {
+  private static __static_initializer_21() {
     AbstractContext.VD_INFO = new VariableDefinition(AbstractContext.V_INFO, AbstractContext.INFO_DEFINITION_FORMAT, true, false, Cres.get().getString('conContextProps'), ContextUtilsConstants.GROUP_SYSTEM);
     AbstractContext.VD_INFO.setHidden(true);
     AbstractContext.VD_INFO.setReadPermissions(DefaultPermissionChecker.getNullPermissions());
@@ -456,7 +508,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public static VD_VARIABLES: VariableDefinition;
 
-  private static __static_initializer_17() {
+  private static __static_initializer_22() {
     AbstractContext.VD_VARIABLES = new VariableDefinition(AbstractContext.V_VARIABLES, AbstractContext.VARIABLE_DEFINITION_FORMAT, true, false, Cres.get().getString('conVarList'));
     AbstractContext.VD_VARIABLES.setHidden(true);
     AbstractContext.VD_VARIABLES.setReadPermissions(DefaultPermissionChecker.getNullPermissions());
@@ -464,7 +516,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public static VD_FUNCTIONS: VariableDefinition;
 
-  private static __static_initializer_18() {
+  private static __static_initializer_23() {
     AbstractContext.VD_FUNCTIONS = new VariableDefinition(AbstractContext.V_FUNCTIONS, AbstractContext.FUNCTION_DEFINITION_FORMAT, true, false, Cres.get().getString('conFuncList'));
 
     AbstractContext.VD_FUNCTIONS.setHidden(true);
@@ -473,7 +525,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public static VD_EVENTS: VariableDefinition;
 
-  private static __static_initializer_19() {
+  private static __static_initializer_24() {
     AbstractContext.VD_EVENTS = new VariableDefinition(AbstractContext.V_EVENTS, AbstractContext.EVENT_DEFINITION_FORMAT, true, false, Cres.get().getString('conEvtList'));
     AbstractContext.VD_EVENTS.setHidden(true);
     AbstractContext.VD_EVENTS.setReadPermissions(DefaultPermissionChecker.getNullPermissions());
@@ -481,7 +533,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public static VD_ACTIONS: VariableDefinition;
 
-  private static __static_initializer_20() {
+  private static __static_initializer_25() {
     AbstractContext.VD_ACTIONS = new VariableDefinition(AbstractContext.V_ACTIONS, AbstractContext.ACTION_DEF_FORMAT, true, false, Cres.get().getString('conActionList'));
     AbstractContext.VD_ACTIONS.setHidden(true);
     AbstractContext.VD_ACTIONS.setReadPermissions(DefaultPermissionChecker.getNullPermissions());
@@ -489,7 +541,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public static VD_CHILDREN: VariableDefinition;
 
-  private static __static_initializer_21() {
+  private static __static_initializer_26() {
     AbstractContext.VD_CHILDREN = new VariableDefinition(AbstractContext.V_CHILDREN, AbstractContext.VFT_CHILDREN, true, false, Cres.get().getString('conChildList'));
     AbstractContext.VD_CHILDREN.setHidden(true);
     AbstractContext.VD_CHILDREN.setReadPermissions(DefaultPermissionChecker.getNullPermissions());
@@ -497,35 +549,35 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   static FD_GET_COPY_DATA: FunctionDefinition;
 
-  private static __static_initializer_22() {
+  private static __static_initializer_27() {
     AbstractContext.FD_GET_COPY_DATA = new FunctionDefinition(AbstractContext.F_GET_COPY_DATA, AbstractContext.FIFT_GET_COPY_DATA, AbstractContext.REPLICATE_INPUT_FORMAT);
     AbstractContext.FD_GET_COPY_DATA.setHidden(true);
   }
 
   static FD_COPY: FunctionDefinition;
 
-  private static __static_initializer_23() {
+  private static __static_initializer_28() {
     AbstractContext.FD_COPY = new FunctionDefinition(AbstractContext.F_COPY, AbstractContext.REPLICATE_INPUT_FORMAT, AbstractContext.REPLICATE_OUTPUT_FORMAT, Cres.get().getString('conCopyProperties'));
     AbstractContext.FD_COPY.setHidden(true);
   }
 
   static FD_COPY_TO_CHILDREN: FunctionDefinition;
 
-  private static __static_initializer_24() {
+  private static __static_initializer_29() {
     AbstractContext.FD_COPY_TO_CHILDREN = new FunctionDefinition(AbstractContext.F_COPY_TO_CHILDREN, AbstractContext.REPLICATE_INPUT_FORMAT, AbstractContext.REPLICATE_TO_CHILDREN_OUTPUT_FORMAT, Cres.get().getString('conCopyToChildren'));
     AbstractContext.FD_COPY_TO_CHILDREN.setHidden(true);
   }
 
   static FD_UPDATE_VARIABLE: FunctionDefinition;
 
-  private static __static_initializer_25() {
+  private static __static_initializer_30() {
     AbstractContext.FD_UPDATE_VARIABLE = new FunctionDefinition(AbstractContext.F_UPDATE_VARIABLE, AbstractContext.FIFT_UPDATE_VARIABLE, null, Cres.get().getString('updateVariable'), ContextUtilsConstants.GROUP_SYSTEM);
     AbstractContext.FD_UPDATE_VARIABLE.setConcurrent(true);
   }
 
   public static ED_INFO: EventDefinition;
 
-  private static __static_initializer_26() {
+  private static __static_initializer_31() {
     AbstractContext.ED_INFO = new EventDefinition(AbstractContext.E_INFO, AbstractContext.EFT_INFO, Cres.get().getString('info'), ContextUtilsConstants.GROUP_DEFAULT);
     AbstractContext.ED_INFO.setLevel(EventLevel.INFO);
     AbstractContext.ED_INFO.setIconId(Icons.EVT_INFO);
@@ -534,7 +586,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public static ED_CHILD_ADDED: EventDefinition;
 
-  private static __static_initializer_27() {
+  private static __static_initializer_32() {
     AbstractContext.ED_CHILD_ADDED = new EventDefinition(AbstractContext.E_CHILD_ADDED, AbstractContext.EFT_CHILD_ADDED, Cres.get().getString('conChildAdded'), ContextUtilsConstants.GROUP_SYSTEM);
     AbstractContext.ED_CHILD_ADDED.setConcurrency(EventDefinition.CONCURRENCY_SYNCHRONOUS);
     AbstractContext.ED_CHILD_ADDED.setHidden(true);
@@ -543,7 +595,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public static ED_CHILD_REMOVED: EventDefinition;
 
-  private static __static_initializer_28() {
+  private static __static_initializer_33() {
     AbstractContext.ED_CHILD_REMOVED = new EventDefinition(AbstractContext.E_CHILD_REMOVED, AbstractContext.EFT_CHILD_REMOVED, Cres.get().getString('conChildRemoved'), ContextUtilsConstants.GROUP_SYSTEM);
     AbstractContext.ED_CHILD_REMOVED.setConcurrency(EventDefinition.CONCURRENCY_SYNCHRONOUS);
     AbstractContext.ED_CHILD_REMOVED.setHidden(true);
@@ -552,7 +604,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public static ED_VARIABLE_ADDED: EventDefinition;
 
-  private static __static_initializer_29() {
+  private static __static_initializer_34() {
     AbstractContext.ED_VARIABLE_ADDED = new EventDefinition(AbstractContext.E_VARIABLE_ADDED, AbstractContext.EF_VARIABLE_ADDED, Cres.get().getString('conVarAdded'), ContextUtilsConstants.GROUP_SYSTEM);
     AbstractContext.ED_VARIABLE_ADDED.setHidden(true);
     AbstractContext.ED_VARIABLE_ADDED.setPermissions(DefaultPermissionChecker.getNullPermissions());
@@ -560,7 +612,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public static ED_VARIABLE_REMOVED: EventDefinition;
 
-  private static __static_initializer_30() {
+  private static __static_initializer_35() {
     AbstractContext.ED_VARIABLE_REMOVED = new EventDefinition(AbstractContext.E_VARIABLE_REMOVED, AbstractContext.EFT_VARIABLE_REMOVED, Cres.get().getString('conVarRemoved'), ContextUtilsConstants.GROUP_SYSTEM);
     AbstractContext.ED_VARIABLE_REMOVED.setHidden(true);
     AbstractContext.ED_VARIABLE_REMOVED.setPermissions(DefaultPermissionChecker.getNullPermissions());
@@ -568,7 +620,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public static ED_FUNCTION_ADDED: EventDefinition;
 
-  private static __static_initializer_31() {
+  private static __static_initializer_36() {
     AbstractContext.ED_FUNCTION_ADDED = new EventDefinition(AbstractContext.E_FUNCTION_ADDED, AbstractContext.EF_FUNCTION_ADDED, Cres.get().getString('conFuncAdded'), ContextUtilsConstants.GROUP_SYSTEM);
     AbstractContext.ED_FUNCTION_ADDED.setHidden(true);
     AbstractContext.ED_FUNCTION_ADDED.setPermissions(DefaultPermissionChecker.getNullPermissions());
@@ -576,7 +628,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public static ED_FUNCTION_REMOVED: EventDefinition;
 
-  private static __static_initializer_32() {
+  private static __static_initializer_37() {
     AbstractContext.ED_FUNCTION_REMOVED = new EventDefinition(AbstractContext.E_FUNCTION_REMOVED, AbstractContext.EFT_FUNCTION_REMOVED, Cres.get().getString('conFuncRemoved'), ContextUtilsConstants.GROUP_SYSTEM);
     AbstractContext.ED_FUNCTION_REMOVED.setHidden(true);
     AbstractContext.ED_FUNCTION_REMOVED.setPermissions(DefaultPermissionChecker.getNullPermissions());
@@ -584,7 +636,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public static ED_EVENT_ADDED: EventDefinition;
 
-  private static __static_initializer_33() {
+  private static __static_initializer_38() {
     AbstractContext.ED_EVENT_ADDED = new EventDefinition(AbstractContext.E_EVENT_ADDED, AbstractContext.EF_EVENT_ADDED, Cres.get().getString('conEvtAdded'), ContextUtilsConstants.GROUP_SYSTEM);
     AbstractContext.ED_EVENT_ADDED.setHidden(true);
     AbstractContext.ED_EVENT_ADDED.setPermissions(DefaultPermissionChecker.getNullPermissions());
@@ -592,7 +644,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public static ED_EVENT_REMOVED: EventDefinition;
 
-  private static __static_initializer_34() {
+  private static __static_initializer_39() {
     AbstractContext.ED_EVENT_REMOVED = new EventDefinition(AbstractContext.E_EVENT_REMOVED, AbstractContext.EFT_EVENT_REMOVED, Cres.get().getString('conEvtRemoved'), ContextUtilsConstants.GROUP_SYSTEM);
     AbstractContext.ED_EVENT_REMOVED.setHidden(true);
     AbstractContext.ED_EVENT_REMOVED.setPermissions(DefaultPermissionChecker.getNullPermissions());
@@ -600,7 +652,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public static ED_ACTION_ADDED: EventDefinition;
 
-  private static __static_initializer_35() {
+  private static __static_initializer_40() {
     AbstractContext.ED_ACTION_ADDED = new EventDefinition(AbstractContext.E_ACTION_ADDED, AbstractContext.ACTION_DEF_FORMAT.clone().setMinRecords(1).setMaxRecords(1), Cres.get().getString('conActionAdded'));
     AbstractContext.ED_ACTION_ADDED.setHidden(true);
     AbstractContext.ED_ACTION_ADDED.setPermissions(DefaultPermissionChecker.getNullPermissions());
@@ -608,7 +660,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public static ED_ACTION_REMOVED: EventDefinition;
 
-  private static __static_initializer_36() {
+  private static __static_initializer_41() {
     AbstractContext.ED_ACTION_REMOVED = new EventDefinition(AbstractContext.E_ACTION_REMOVED, AbstractContext.EFT_ACTION_REMOVED, Cres.get().getString('conActionRemoved'));
 
     AbstractContext.ED_ACTION_REMOVED.setHidden(true);
@@ -617,7 +669,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public static ED_ACTION_STATE_CHANGED: EventDefinition;
 
-  private static __static_initializer_37() {
+  private static __static_initializer_42() {
     AbstractContext.ED_ACTION_STATE_CHANGED = new EventDefinition(AbstractContext.E_ACTION_STATE_CHANGED, AbstractContext.ACTION_DEF_FORMAT, Cres.get().getString('conActionStateChanged'));
 
     AbstractContext.ED_ACTION_STATE_CHANGED.setHidden(true);
@@ -626,7 +678,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public static ED_INFO_CHANGED: EventDefinition;
 
-  private static __static_initializer_38() {
+  private static __static_initializer_43() {
     AbstractContext.ED_INFO_CHANGED = new EventDefinition(AbstractContext.E_INFO_CHANGED, AbstractContext.INFO_DEFINITION_FORMAT, Cres.get().getString('conInfoChanged'), ContextUtilsConstants.GROUP_SYSTEM);
 
     AbstractContext.ED_INFO_CHANGED.setHidden(true);
@@ -635,7 +687,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public static ED_UPDATED: EventDefinition;
 
-  private static __static_initializer_39() {
+  private static __static_initializer_44() {
     AbstractContext.ED_UPDATED = new EventDefinition(AbstractContext.E_UPDATED, AbstractContext.EF_UPDATED, Cres.get().getString('conUpdated'), ContextUtilsConstants.GROUP_SYSTEM);
 
     AbstractContext.ED_UPDATED.setHidden(true);
@@ -645,7 +697,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public static ED_CHANGE: EventDefinition;
 
-  private static __static_initializer_40() {
+  private static __static_initializer_45() {
     AbstractContext.ED_CHANGE = new EventDefinition(AbstractContext.E_CHANGE, AbstractContext.EF_CHANGE, Cres.get().getString('change'), ContextUtilsConstants.GROUP_SYSTEM);
     AbstractContext.ED_CHANGE.setHidden(true);
     AbstractContext.ED_CHANGE.getPersistenceOptions().setDedicatedTablePreferred(true);
@@ -653,7 +705,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   public static ED_DESTROYED: EventDefinition;
 
-  private static __static_initializer_41() {
+  private static __static_initializer_46() {
     AbstractContext.ED_DESTROYED = new EventDefinition(AbstractContext.E_DESTROYED, TableFormat.EMPTY_FORMAT, Cres.get().getString('conDestroyedPermanently'), ContextUtilsConstants.GROUP_SYSTEM);
     AbstractContext.ED_DESTROYED.setConcurrency(EventDefinition.CONCURRENCY_SYNCHRONOUS);
     AbstractContext.ED_DESTROYED.setHidden(true);
@@ -662,7 +714,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
   static VFT_VARIABLE_STATUSES: TableFormat = new TableFormat();
 
-  private static __static_initializer_42() {
+  private static __static_initializer_47() {
     AbstractContext.VFT_VARIABLE_STATUSES.addField('<' + AbstractContext.VF_VARIABLE_STATUSES_NAME + '><S>');
     AbstractContext.VFT_VARIABLE_STATUSES.addField('<' + AbstractContext.VF_VARIABLE_STATUSES_STATUS + '><S><F=N>');
     AbstractContext.VFT_VARIABLE_STATUSES.addField('<' + AbstractContext.VF_VARIABLE_STATUSES_COMMENT + '><S><F=N>');
@@ -714,6 +766,11 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     AbstractContext.__static_initializer_40();
     AbstractContext.__static_initializer_41();
     AbstractContext.__static_initializer_42();
+    AbstractContext.__static_initializer_43();
+    AbstractContext.__static_initializer_44();
+    AbstractContext.__static_initializer_45();
+    AbstractContext.__static_initializer_46();
+    AbstractContext.__static_initializer_47();
     AbstractContext._init = true;
   }
 
@@ -782,6 +839,8 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
   private eventData: Map<string, EventData> = new Map();
 
   private actionDefinitions: Array<ActionDefinition> = [];
+
+  private readonly propertiesLock = new PropertiesLock(this);
 
   private name = '';
   private description: string | null = null;
@@ -872,6 +931,8 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
 
     this.addFunctionDefinition(AbstractContext.FD_UPDATE_VARIABLE);
 
+    this.addPropertiesLockFunctionDefinitions();
+
     this.addEventDefinition(AbstractContext.ED_INFO);
 
     this.addEventDefinition(AbstractContext.ED_CHILD_ADDED);
@@ -903,6 +964,55 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     this.addEventDefinition(this.getChangeEventDefinition());
 
     this.addEventDefinition(AbstractContext.ED_DESTROYED);
+  }
+
+  private addPropertiesLockFunctionDefinitions(): void {
+    let fd = new FunctionDefinition(AbstractContext.F_LOCK, AbstractContext.FIFT_LOCK, AbstractContext.FOFT_LOCK, Cres.get().getString('conPropLockLock'));
+    fd.setHidden(true);
+
+    const _this = this;
+    const lockImpl = new (class implements FunctionImplementation {
+      execute(con: Context<any, any>, def: FunctionDefinition, parameters: DataTable, caller?: CallerController, request?: RequestController): DataTable {
+        return DataTableFactory.createWithFirstRecord(AbstractContext.FOFT_LOCK, _this.propertiesLock.lock(caller as AbstractCallerController, parameters.rec().getString(AbstractContext.FIF_LOCK_PROPERTIES_EDITOR_UUID)));
+      }
+    })();
+
+    fd.setImplementation(lockImpl);
+    this.addFunctionDefinition(fd);
+
+    fd = new FunctionDefinition(AbstractContext.F_UNLOCK, AbstractContext.FIFT_UNLOCK, AbstractContext.FOFT_UNLOCK, Cres.get().getString('conPropLockUnlock'));
+    fd.setHidden(true);
+    const unlockImpl = new (class implements FunctionImplementation {
+      execute(con: Context<any, any>, def: FunctionDefinition, parameters: DataTable, caller?: CallerController, request?: RequestController): DataTable | null {
+        const result = new SimpleDataTable(AbstractContext.FOFT_UNLOCK);
+        const record = result.addRecord();
+        record.addBoolean(_this.propertiesLock.unlock(caller as AbstractCallerController, parameters.rec().getString(AbstractContext.FIF_UNLOCK_PROPERTIES_EDITOR_UUID)));
+        return result;
+      }
+    })();
+    fd.setImplementation(unlockImpl);
+    this.addFunctionDefinition(fd);
+
+    fd = new FunctionDefinition(AbstractContext.F_BREAK_LOCK, null, null, Cres.get().getString('conPropLockBreakLock'), ContextUtilsConstants.GROUP_DEFAULT);
+    fd.setPermissions(ServerPermissionChecker.getAdminPermissions());
+    const breakLockImpl = new (class implements FunctionImplementation {
+      execute(con: Context<any, any>, def: FunctionDefinition, parameters: DataTable, caller?: CallerController, request?: RequestController): DataTable | null {
+        _this.propertiesLock.breakLock();
+        return null;
+      }
+    })();
+    fd.setImplementation(breakLockImpl);
+    this.addFunctionDefinition(fd);
+
+    fd = new FunctionDefinition(AbstractContext.F_LOCKED_BY, null, AbstractContext.FOFT_LOCKED_BY, Cres.get().getString('conPropLockLockedBy'), ContextUtilsConstants.GROUP_DEFAULT);
+    fd.setPermissions(ServerPermissionChecker.getAdminPermissions());
+    const lockedByImpl = new (class implements FunctionImplementation {
+      execute(con: Context<any, any>, def: FunctionDefinition, parameters: DataTable, caller?: CallerController, request?: RequestController): DataTable | null {
+        return DataTableFactory.createWithFirstRecord(AbstractContext.FOFT_LOCKED_BY, _this.propertiesLock.lockedBy());
+      }
+    })();
+    fd.setImplementation(lockedByImpl);
+    this.addFunctionDefinition(fd);
   }
 
   public setupChildren(): void {}
@@ -2324,7 +2434,7 @@ export default abstract class AbstractContext<C extends Context<C, M>, M extends
     const def: FunctionDefinition = data.getDefinition();
     const impl = def.getImplementation();
     if (impl != null) {
-      result = impl(this, def, parameters, caller, request);
+      result = impl.execute(this, def, parameters, caller, request);
 
       if (result != null) {
         return result;

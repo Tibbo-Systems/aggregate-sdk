@@ -1054,7 +1054,6 @@ declare const resources: {
     monthNovember: string;
     monthOctober: string;
     monthSeptember: string;
-    multiSelect: string;
     na: string;
     name: string;
     namingExpression: string;

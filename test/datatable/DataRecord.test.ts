@@ -8,6 +8,7 @@ import SimpleDataTable from '../../src/datatable/SimpleDataTable';
 import DataTableQuery from '../../src/datatable/DataTableQuery';
 import QueryCondition from '../../src/datatable/QueryCondition';
 import FieldFormatFactory from '../../src/datatable/FieldFormatFactory';
+import JSBI from 'jsbi';
 
 describe('TestDataRecord', () => {
   it('testDataRecord', () => {
@@ -17,7 +18,7 @@ describe('TestDataRecord', () => {
     expect(rec.getString('str')).toBe('');
     expect(rec.getInt('int')).toBe(0);
     expect(rec.getBoolean('bool')).toBe(false);
-    expect(rec.getInt('long')).toBe(0);
+    expect(JSBI.equal(rec.getLong('long'), JSBI.BigInt(0))).toBeTruthy();
 
     try {
       rec.addString('ok');
@@ -34,8 +35,8 @@ describe('TestDataRecord', () => {
       //ignored
     }
 
-    rec.setValue('long', 80);
-    expect(rec.getInt('long')).toBe(80);
+    rec.setValue('long', '900719925474099152');
+    expect(JSBI.equal(rec.getLong('long'), JSBI.BigInt('900719925474099152'))).toBeTruthy();
     expect(rec.getValue('int')).toBe(0);
 
     tableFormat = TableFormat.createWithFormatAndSettings('<<str><S><F=N>> <<int><I><F=N>> <<bool><B><F=N>> <<long><L><F=N>>', new ClassicEncodingSettings(true));
@@ -45,14 +46,14 @@ describe('TestDataRecord', () => {
     expect(null).toBe(rec.getValue('bool'));
     expect(null).toBe(rec.getValue('long'));
 
-    tableFormat = TableFormat.createWithFormatAndSettings('<<str><S><F=N><A=duck>> <<int><I><F=N><A=11>> <<bool><B><F=N><A=1>> <<long><L><F=N><A=123>>', new ClassicEncodingSettings(true));
+    tableFormat = TableFormat.createWithFormatAndSettings('<<str><S><F=N><A=duck>> <<int><I><F=N><A=11>> <<bool><B><F=N><A=1>> <<long><L><F=N><A=90071992547409915213141>>', new ClassicEncodingSettings(true));
     rec = new DataRecord(tableFormat);
     expect('duck').toBe(rec.getString('str'));
     expect(11).toBe(rec.getValue('int'));
     expect(true).toBe(rec.getValue('bool'));
-    expect(123).toBe(rec.getValue('long'));
+    expect(JSBI.equal(rec.getLong('long'), JSBI.BigInt('90071992547409915213141'))).toBeTruthy();
 
-    tableFormat = TableFormat.createWithFormatAndSettings('<<str><S><F=N><A=duck>> <<int><I><F=N><A=11>> <<bool><B><F=N><A=1>> <<long><L><F=N><A=123>>', new ClassicEncodingSettings(true));
+    tableFormat = TableFormat.createWithFormatAndSettings('<<str><S><F=N><A=duck>> <<int><I><F=N><A=11>> <<bool><B><F=N><A=1>> <<long><L><F=N><A=90071992547409915213141>>', new ClassicEncodingSettings(true));
     let rec2 = new DataRecord(tableFormat);
     expect(rec).toEqual(rec2);
 

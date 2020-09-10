@@ -4,12 +4,20 @@ import Context from './Context';
 import PermissionCache from '../security/PermissionCache';
 import JObject from '../util/java/JObject';
 import Permissions from '../security/Permissions';
+import DataTable from '../datatable/DataTable';
 export default abstract class AbstractCallerController extends JObject implements CallerController {
     private static readonly CACHE_EXPIRATION_PERIOD;
     private static sessionIDCounter;
     private sessionID;
     private static readonly CONTROLLERS;
+    private static readonly FIELD_LOCKED_CONTEXTS_CONTEXT_PATH;
+    private static readonly FIELD_LOCKED_CONTEXTS_CONTEXT_DESCRIPTION;
+    private static readonly FORMAT_LOCKED_CONTEXTS;
+    private static _init;
+    private static __static_initializer_0;
+    static initialize(): void;
     private username;
+    private inheritedUsername;
     private readonly callerData;
     private loggedIn;
     private type;
@@ -18,6 +26,7 @@ export default abstract class AbstractCallerController extends JObject implement
     private readonly properties;
     private lastCacheOperationTime;
     private _cache;
+    private readonly lockedContexts;
     constructor(callerData: CallerData | null);
     toString(): string;
     getPermissions(): Permissions | null;
@@ -31,6 +40,7 @@ export default abstract class AbstractCallerController extends JObject implement
     getUsername(): string | null;
     setUsername(username: string): void;
     getInheritedUsername(): string | null;
+    setInheritedUsername(inheritedUsername: string): void;
     getEffectiveUsername(): string | null;
     getType(): string | null;
     setType(type: string): void;
@@ -45,4 +55,8 @@ export default abstract class AbstractCallerController extends JObject implement
     cache(path: string, context: Context<any, any>): void;
     private resetCacheBy;
     abstract isHeadless(): boolean;
+    addLockedContext(context: Context<any, any>): void;
+    removeLockedContext(context: Context<any, any>): void;
+    unlockAllContexts(): void;
+    createLockedContextsTable(): DataTable;
 }

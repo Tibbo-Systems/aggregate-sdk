@@ -17,6 +17,7 @@ import ElementList from '../util/ElementList';
 import CloneUtils from '../util/CloneUtils';
 import FieldConstants from './field/FieldConstants';
 import DataTableFactory from './DataTableFactory';
+import JSBI from 'jsbi';
 
 export default class DataRecord extends JObject implements StringEncodable {
   private static readonly ELEMENT_ID: string = 'I';
@@ -427,13 +428,13 @@ export default class DataRecord extends JObject implements StringEncodable {
   /**
    * Returns value of Long field with specified index.
    */
-  public getLong(valueBy: number | string): number {
+  public getLong(valueBy: number | string): JSBI {
     if (Util.isNumber(valueBy)) {
       const index = valueBy as number;
-      return this.getValue(index) as number;
+      return this.getValue(index) as JSBI;
     } else {
       const recordName: string = valueBy as string;
-      return this.getValue(this.findIndex(recordName)) as number;
+      return this.getValue(this.findIndex(recordName)) as JSBI;
     }
     throw new Error('Error in DataRecord, getLong function. Incorrect type of search value.');
   }

@@ -180,6 +180,7 @@ import RootContextConstants from './server/RootContextConstants';
 import ServerContextConstants from './server/ServerContextConstants';
 import UtilitiesContextConstants from './server/UtilitiesContextConstants';
 import VirtualDeviceConstants from './server/VirtualDeviceConstants';
+import WebContextPluginConstants from './server/WebContextPluginConstants';
 import BlockingChannel from './util/BlockingChannel';
 import CloneUtils from './util/CloneUtils';
 import DashboardProperties from './util/DashboardProperties';
@@ -286,6 +287,10 @@ import InvokeActionsOperation from './action/client/InvokeActionsOperation';
 import Quality from './util/Quality';
 import ViewFilterElement from './view/ViewFilterElement';
 import EvaluationOptions from './binding/EvaluationOptions';
+import AlertConstants from './server/AlertConstants';
+import AlertContextConstants from './server/AlertContextConstants';
+import JOptionPane from './server/JOptionPane';
+import AlertsContextConstants from './server/AlertsContextConstants';
 const AggregateExpressionLexer = require('./expression/parser/AggregateExpressionLexer.js');
 const AggregateExpressionParser = require('./expression/parser/AggregateExpressionParser.js');
 const AggregateExpressionVisitor = require('./expression/parser/AggregateExpressionVisitor.js');
@@ -299,6 +304,10 @@ export {
   AbstractOperation,
   ActionExecutor,
   ActionWorker,
+  AlertConstants,
+  AlertContextConstants,
+  JOptionPane,
+  AlertsContextConstants,
   ExecutionHelper,
   InvokeActionOperation,
   InvokeActionsOperation,
@@ -553,6 +562,7 @@ export {
   ServerContextConstants,
   UtilitiesContextConstants,
   VirtualDeviceConstants,
+  WebContextPluginConstants,
   BlockingChannel,
   CloneUtils,
   DashboardProperties,

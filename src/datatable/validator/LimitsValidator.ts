@@ -9,31 +9,38 @@ import Cres from '../../Cres';
 import MessageFormat from '../../util/java/MessageFormat';
 import Util from '../../util/Util';
 import FieldConstants from '../field/FieldConstants';
+import JSBI from 'jsbi';
 
 export default class LimitsValidator extends AbstractFieldValidator<any> {
   private static readonly MIN_MAX_SEPARATOR: string = ' ';
 
-  private min: number | null = null;
-  private max: number | null = null;
+  private min: JSBI | number | null = null;
+  private max: JSBI | number | null = null;
 
-  constructor(min: number | null, max: number | null) {
+  constructor(min: JSBI | number | null, max: JSBI | number | null) {
     super();
     this.setLimits(min, max);
   }
 
-  protected setLimits(min: number | null, max: number | null): void {
+  protected setLimits(min: JSBI | number | null, max: JSBI | number | null): void {
     this.min = min;
     this.max = max;
   }
 
-  public static createFromMinMax(min: number, max: number): LimitsValidator {
+  public static createFromMinMax(min: JSBI | number, max: JSBI | number): LimitsValidator {
     return new LimitsValidator(min, max);
   }
 
   public static createFromFieldFormatAndSource(fieldFormat: FieldFormat<any>, source: string): LimitsValidator {
     const minMax: Array<string> = StringUtils.split(source, LimitsValidator.MIN_MAX_SEPARATOR);
 
-    if (fieldFormat.getType() == FieldConstants.DATA_FIELD || fieldFormat.getType() == FieldConstants.STRING_FIELD) {
+    if (fieldFormat.getType() == FieldConstants.LONG_FIELD) {
+      if (minMax.length > 1) {
+        return new LimitsValidator(JSBI.BigInt(minMax[0]), JSBI.BigInt(minMax[1]));
+      } else {
+        return new LimitsValidator(null, JSBI.BigInt(minMax[1]));
+      }
+    } else if (fieldFormat.getType() == FieldConstants.DATA_FIELD || fieldFormat.getType() == FieldConstants.STRING_FIELD) {
       if (minMax.length > 1) {
         return new LimitsValidator(Number(minMax[0]), Number(minMax[1]));
       } else {
@@ -48,11 +55,11 @@ export default class LimitsValidator extends AbstractFieldValidator<any> {
     }
   }
 
-  public getMin(): number | null {
+  public getMin(): JSBI | number | null {
     return this.min;
   }
 
-  public getMax(): number | null {
+  public getMax(): JSBI | number | null {
     return this.max;
   }
 
@@ -64,12 +71,14 @@ export default class LimitsValidator extends AbstractFieldValidator<any> {
     return FieldConstants.VALIDATOR_LIMITS;
   }
 
-  public validate(context: Context<any, any>, contextManager: ContextManager<Context<any, any>>, caller: CallerController, value: any): any {
+  public validate(context: Context<any, any> | null, contextManager: ContextManager<Context<any, any>> | null, caller: CallerController | null, value: any): any {
     if (value == null) {
       return value;
     }
 
-    if (value instanceof Data) {
+    if (Util.isBigInt(value)) {
+      this.compare(value, null, null);
+    } else if (value instanceof Data) {
       const data: Data = value as Data;
       const dataBuffer = data.getData();
 
@@ -87,7 +96,7 @@ export default class LimitsValidator extends AbstractFieldValidator<any> {
     return value;
   }
 
-  private compare(cv: number, smallMessage: string | null, bigMessage: string | null): void {
+  private compare(cv: JSBI | number, smallMessage: string | null, bigMessage: string | null): void {
     if (this.min != null) {
       if (Util.compare(cv, this.min) < 0) {
         throw new Error(MessageFormat.format(smallMessage != null ? smallMessage : Cres.get().getString('dtValueTooSmall'), cv, this.min));
@@ -120,14 +129,22 @@ export default class LimitsValidator extends AbstractFieldValidator<any> {
       if (other.max != null) {
         return false;
       }
-    } else if (this.max !== other.max) {
+    } else if (other.max == null) {
+      if (this.max != null) {
+        return false;
+      }
+    } else if (Util.compare(this.max, other.max) !== 0) {
       return false;
     }
     if (this.min == null) {
       if (other.min != null) {
         return false;
       }
-    } else if (this.min !== other.min) {
+    } else if (other.min == null) {
+      if (this.min != null) {
+        return false;
+      }
+    } else if (Util.compare(this.min, other.min) !== 0) {
       return false;
     }
     return true;

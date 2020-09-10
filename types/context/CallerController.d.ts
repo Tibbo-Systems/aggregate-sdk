@@ -2,6 +2,7 @@ import Context from './Context';
 import PermissionCache from '../security/PermissionCache';
 import CallerData from './CallerData';
 import Permissions from '../security/Permissions';
+import DataTable from '../datatable/DataTable';
 export default interface CallerController {
     getUsername(): string | null;
     getInheritedUsername(): string | null;
@@ -22,4 +23,8 @@ export default interface CallerController {
     getSessionID(): number;
     lookup(path: string): Context<any, any> | null;
     cache(path: string, context: Context<any, any>): void;
+    addLockedContext(context: Context<any, any>): void;
+    removeLockedContext(context: Context<any, any>): void;
+    unlockAllContexts(): void;
+    createLockedContextsTable(): DataTable;
 }

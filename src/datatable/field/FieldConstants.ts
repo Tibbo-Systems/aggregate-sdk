@@ -1,5 +1,6 @@
 export default class FieldConstants {
   public static readonly EDITOR_LIST: string = 'list';
+  public static readonly EDITOR_BOX: string = 'box';
   public static readonly EDITOR_DATE: string = 'date';
   public static readonly EDITOR_TIME: string = 'time';
   public static readonly EDITOR_BAR: string = 'bar';

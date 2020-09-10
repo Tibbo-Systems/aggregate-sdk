@@ -1,13 +1,16 @@
+import JSBI from 'jsbi';
 import FieldFormat from '../FieldFormat';
 import ClassicEncodingSettings from '../encoding/ClassicEncodingSettings';
-export default class LongFieldFormat extends FieldFormat<number> {
+export default class LongFieldFormat extends FieldFormat<JSBI> {
     constructor(name: string);
-    valueToString(value: number): string | null;
+    valueToString(value: JSBI): string | null;
     getType(): string;
-    getNotNullDefault(): number;
-    valueFromString(value: string | null, settings: ClassicEncodingSettings | null, validate: boolean): number | null;
+    getNotNullDefault(): JSBI;
+    valueFromString(value: string | null, settings: ClassicEncodingSettings | null, validate: boolean): JSBI | null;
     static encodePeriodEditorOptions(minUnit: number, maxUnit: number): string;
-    protected convertValue(value: any): any;
+    convertKeyForSelectionValuesMap(value: any): any;
+    protected convertValue(value: any): JSBI | null;
     getSuitableEditors(): Array<string>;
     isAssignableFrom(value: any): boolean;
+    hasSelectionValue(value: any): boolean;
 }

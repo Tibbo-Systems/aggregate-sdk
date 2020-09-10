@@ -1,3 +1,3 @@
 export default interface Tracer {
-  trace(value: object, message: string): void;
+  trace(value: any, message: string): void;
 }

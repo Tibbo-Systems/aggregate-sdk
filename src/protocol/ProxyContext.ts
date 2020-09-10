@@ -35,6 +35,7 @@ import Contexts from '../context/Contexts';
 import Util from '../util/Util';
 import AggreGateDevice from './AggreGateDevice';
 import LevelAdapter from '../util/logger/LevelAdapter';
+import JSBI from 'jsbi';
 
 export default class ProxyContext<C extends Context<C, M>, M extends ContextManager<any>> extends AbstractContext<C, M> {
   private static readonly DEFERRED_TASKS: Map<string, Array<Runnable>> = new Map<string, Array<Runnable>>();
@@ -1085,7 +1086,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
         if (ref) {
           const cachedValue: CachedVariableValue = ref;
           if (cachedValue != null) {
-            if (Date.now() - cachedValue.getTimestamp().getTime() < def.getRemoteCacheTime()) {
+            if (JSBI.lessThan(JSBI.BigInt(Date.now() - cachedValue.getTimestamp().getTime()), def.getRemoteCacheTime())) {
               return cachedValue.getValue();
             } else {
               cleanup = true;
@@ -1118,7 +1119,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
 
   protected async setVariableImpl(def: VariableDefinition, value: DataTable, caller?: CallerController, request?: RequestController): Promise<boolean> {
     try {
-      const encoded = value.getEncodedDataFromEncodingSettings(this.controller.createClassicEncodingSettings(true));
+      const encoded = value.encodeWithSettings(this.controller.createClassicEncodingSettings(true));
       const operation: OutgoingAggreGateCommand = this.controller.getCommandBuilder().setVariableOperation(this.getPeerPath(), def.getName(), encoded, request != null ? request.getQueue() : null);
       await this.controller.sendCommandAndCheckReplyCode(operation);
       return true;
@@ -1265,7 +1266,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
 
   public removeVisibleChild(localVisiblePath: string): void {
     const index = this.visibleChildren?.indexOf(localVisiblePath);
-    if (index && index != -1) this.visibleChildren?.splice(index, 1);
+    if (index !== undefined && index != -1) this.visibleChildren?.splice(index, 1);
   }
 
   public hasVisibleChild(path: string): boolean {

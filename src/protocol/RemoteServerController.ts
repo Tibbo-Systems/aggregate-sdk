@@ -60,7 +60,8 @@ export default class RemoteServerController extends AbstractAggreGateDeviceContr
         if (this.dataChannel == null && device.getAddress() != null) {
           Log.PROTOCOL.debug('Connecting to remote server (' + this.getDevice() + ')');
           const wsProtocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-          const ws = new WebSocket(wsProtocol + device.getAddress() + ':' + device.getPort() + '/web/ws/client');
+          const requestAddress = device.getRequestAddress();
+          const ws = new WebSocket(wsProtocol + device.getAddress() + ':' + device.getPort() + requestAddress);
           ws.binaryType = 'arraybuffer';
           ws.onopen = () => {
             Log.PROTOCOL.debug('Connection with remote server established');

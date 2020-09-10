@@ -4,6 +4,7 @@ import Data from '../../../src/data/Data';
 import ByteBuffer from 'bytebuffer';
 import ClassicEncodingSettings from '../../../src/datatable/encoding/ClassicEncodingSettings';
 import StringBuilder from '../../../src/util/java/StringBuilder';
+import JSBI from 'jsbi';
 
 describe('TestDataFieldFormat', () => {
   it('testValueToAndFromString', () => {
@@ -27,7 +28,7 @@ describe('TestDataFieldFormat', () => {
       originalData += i + '';
     }
 
-    data.setId(123);
+    data.setId(JSBI.BigInt(123));
     data.setName('name');
     data.setPreview(ByteBuffer.fromUTF8(preview));
     data.setData(ByteBuffer.fromUTF8(originalData));
@@ -35,7 +36,8 @@ describe('TestDataFieldFormat', () => {
     const encodedString = ff.valueToEncodedString(data, new ClassicEncodingSettings(false)) as StringBuilder;
     nd = ff.valueFromEncodedString(encodedString.toString(), new ClassicEncodingSettings(false));
 
-    expect(123 === nd.getId()).toBeTruthy();
+    const id = nd.getId();
+    expect(id !== null && JSBI.equal(JSBI.BigInt(123), id)).toBeTruthy();
     expect('name' === nd.getName()).toBeTruthy();
     let ndData = nd.getPreview() as ByteBuffer;
     expect(preview === ndData.toUTF8()).toBeTruthy();

@@ -294,14 +294,13 @@ export default abstract class AbstractDataTable extends DataTable {
     return finalSB;
   }
 
-  public encodeDataTable(useVisibleSeparators?: boolean, settings?: ClassicEncodingSettings): string | null {
-    if (!settings) {
-      if (useVisibleSeparators === null || useVisibleSeparators === undefined) useVisibleSeparators = false;
-      settings = new ClassicEncodingSettings(useVisibleSeparators);
-    }
-    const encodableString: StringBuilder | null = this.encode(new StringBuilder(), settings, false, 0);
-    if (encodableString != null) return encodableString.toString();
-    else return null;
+  public encodeWithSettings(settings: ClassicEncodingSettings): string {
+    const encodeString = this.encode(new StringBuilder(), settings, false, 0);
+    return encodeString.toString();
+  }
+
+  public encodeWithSeparators(useVisibleSeparators: boolean): string {
+    return this.encodeWithSettings(new ClassicEncodingSettings(useVisibleSeparators));
   }
 
   public getEncodedData(finalSB: StringBuilder, settings: ClassicEncodingSettings, isTransferEncode: boolean, encodeLevel: number): StringBuilder {
@@ -340,24 +339,25 @@ export default abstract class AbstractDataTable extends DataTable {
   }
 
   public getDescription(): string | null {
-    const namingExpression: Expression | null = this.getNamingExpression();
-
-    if (namingExpression == null) {
-      return this.toDefaultString();
-    }
-
-    const evaluator: Evaluator = this.ensureEvaluator();
-
-    let name: any = null;
-
-    try {
-      name = evaluator.evaluate(namingExpression);
-    } catch (ex) {
-      Log.CORE.info("Error evaluating naming expression of table '" + this.toDefaultString() + "'", ex);
-      return this.toDefaultString();
-    }
-
-    return name == null ? null : name.toString();
+    return this.toDefaultString(); //TODO: FIX AGG-9961
+    // const namingExpression: Expression | null = this.getNamingExpression();
+    //
+    // if (namingExpression == null) {
+    //   return this.toDefaultString();
+    // }
+    //
+    // const evaluator: Evaluator = this.ensureEvaluator();
+    //
+    // let name: any = null;
+    //
+    // try {
+    //   name = evaluator.evaluate(namingExpression);
+    // } catch (ex) {
+    //   Log.CORE.info("Error evaluating naming expression of table '" + this.toDefaultString() + "'", ex);
+    //   return this.toDefaultString();
+    // }
+    //
+    // return name == null ? null : name.toString();
   }
 
   private getNamingExpression(): Expression | null {
@@ -371,7 +371,7 @@ export default abstract class AbstractDataTable extends DataTable {
 
       this.namingEvaluator = new Evaluator(null, null, this);
 
-      const dataAsStringFunction: Function = this.dataAsString.bind(this);
+      const dataAsStringFunction = this.dataAsString.bind(this);
       const referenceResolver = new (class DataTableReferenceResolver extends AbstractReferenceResolver {
         resolveReference(ref: Reference, environment: EvaluationEnvironment): any {
           if (DataTableUtils.NAMING_ENVIRONMENT_SHORT_DATA === ref.getField()) {

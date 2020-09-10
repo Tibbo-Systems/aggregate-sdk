@@ -8,6 +8,7 @@ import CompatibilityConverter from './CompatibilityConverter';
 import Comparable from '../util/java/Comparable';
 import JObject from '../util/java/JObject';
 import Permissions from '../security/Permissions';
+import JSBI from 'jsbi';
 export default class VariableDefinition extends AbstractEntityDefinition implements Comparable<VariableDefinition> {
     static readonly HISTORY_RATE_CHANGES: number;
     static readonly HISTORY_RATE_ALL: number;
@@ -64,8 +65,8 @@ export default class VariableDefinition extends AbstractEntityDefinition impleme
     isLocalCachingEnabled(): boolean;
     getLocalCachingMode(): number;
     setLocalCachingMode(value: number): void;
-    getRemoteCacheTime(): number;
-    setRemoteCacheTime(remoteCacheTime: number): void;
+    getRemoteCacheTime(): JSBI;
+    setRemoteCacheTime(remoteCacheTime: JSBI): void;
     getDefaultValue(): DataTable | null;
     setDefaultValue(defaultValue: DataTable): void;
     isPersistent(): boolean;

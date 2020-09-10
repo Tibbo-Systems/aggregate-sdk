@@ -25,7 +25,7 @@ export default class PrintFunction extends AbstractFunction {
 
     const sb = new StringBuilder();
 
-    const localEvaluator = new Evaluator();
+    const localEvaluator = new Evaluator(evaluator.getDefaultResolver().getContextManager());
 
     localEvaluator.init(new DefaultReferenceResolver());
 

@@ -23,6 +23,12 @@ export default class UtilitiesContextConstants {
 
   public static readonly FIF_EXECUTE_BINDINGS_DATATABLE = 'datatable';
 
+  public static readonly FIF_FILE_FROM_TABLE_FOR_DOWNLOADING_DATATABLE = 'datatable';
+
+  public static readonly FIF_FILE_FROM_TABLE_FOR_DOWNLOADING_FILE_NAME = 'fileName';
+
+  public static readonly FIF_FILE_FROM_TABLE_FOR_DOWNLOADING_FILE_FORMAT = 'fileFormat';
+
   public static readonly V_HEAP_DUMP_PREFIX: string = 'heap_dump_';
 
   public static readonly V_HEAP_DUMP_EXTENSION: string = 'hprof';
@@ -116,6 +122,8 @@ export default class UtilitiesContextConstants {
   public static readonly F_EDITORS: string = 'editors';
 
   public static readonly F_EDITOR_OPTIONS: string = 'editorOptions';
+
+  public static readonly F_FILE_FROM_TABLE_FOR_DOWNLOADING: string = 'fileFromTableForDownloading';
 
   public static readonly F_EXPRESSION: string = 'expression';
 
@@ -340,6 +348,8 @@ export default class UtilitiesContextConstants {
   public static readonly FOF_EXECUTE_BINDINGS_DATATABLE = 'datatable';
 
   public static readonly FOF_EXECUTE_BINDINGS_ERRORS = 'errors';
+
+  public static readonly FOF_FILE_FROM_TABLE_FOR_DOWNLOADING_URL = 'url';
 
   public static readonly FOF_EXECUTE_BINDINGS_RECORD_FORMATS = 'recordFormats';
 

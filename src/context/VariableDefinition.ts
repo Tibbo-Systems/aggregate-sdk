@@ -10,6 +10,7 @@ import Util from '../util/Util';
 import JObject from '../util/java/JObject';
 import Permissions from '../security/Permissions';
 import ContextUtilsConstants from './ContextUtilsConstants';
+import JSBI from 'jsbi';
 
 export default class VariableDefinition extends AbstractEntityDefinition implements Comparable<VariableDefinition> {
   public static readonly HISTORY_RATE_CHANGES: number = -1;
@@ -46,7 +47,7 @@ export default class VariableDefinition extends AbstractEntityDefinition impleme
 
   private localCachingMode: number = VariableDefinition.CACHING_HARD;
 
-  private remoteCacheTime = 0;
+  private remoteCacheTime = JSBI.BigInt(0);
 
   private valueClass: any;
 
@@ -188,11 +189,11 @@ export default class VariableDefinition extends AbstractEntityDefinition impleme
     this.localCachingMode = value;
   }
 
-  public getRemoteCacheTime(): number {
+  public getRemoteCacheTime(): JSBI {
     return this.remoteCacheTime;
   }
 
-  public setRemoteCacheTime(remoteCacheTime: number) {
+  public setRemoteCacheTime(remoteCacheTime: JSBI) {
     this.remoteCacheTime = remoteCacheTime;
   }
 

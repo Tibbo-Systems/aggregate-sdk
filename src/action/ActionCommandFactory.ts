@@ -24,7 +24,6 @@ import DataRecord from '../datatable/DataRecord';
 import EditGridDashboard from './command/EditGridDashboard';
 import ShowHtmlSnippet from './command/ShowHtmlSnippet';
 import ShowDiff from './command/ShowDiff';
-import ActionUtils from './ActionUtils';
 import ActionUtilsConstants from './ActionUtilsConstants';
 
 export default class ActionCommandFactory {
@@ -73,9 +72,9 @@ export default class ActionCommandFactory {
       case ActionUtilsConstants.CMD_CLOSE_DASHBOARD:
         return CloseDashboard.createCloseDashboardWithDataTable(title, parameters);
       case ActionUtilsConstants.CMD_OPEN_GRID_DASHBOARD:
-        return new OpenGridDashboard(new DataRecord(null).wrap());
+        return new OpenGridDashboard();
       case ActionUtilsConstants.CMD_EDIT_GRID_DASHBOARD:
-        return new EditGridDashboard(new DataRecord(null).wrap());
+        return new EditGridDashboard();
       case ActionUtilsConstants.CMD_SHOW_HTML_SNIPPET:
         return ShowHtmlSnippet.createShowHtmlSnippetWithDataTable(title, parameters);
       case ActionUtilsConstants.CMD_SHOW_DIFF:

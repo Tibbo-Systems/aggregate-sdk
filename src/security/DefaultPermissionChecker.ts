@@ -4,9 +4,12 @@ import EntityDefinition from '../context/EntityDefinition';
 import Context from '../context/Context';
 import CallerController from '../context/CallerController';
 import Permissions from './Permissions';
+import PermissionType from './PermissionType';
 
 export default class DefaultPermissionChecker implements PermissionChecker {
   public static readonly NULL_PERMISSIONS: string = '';
+
+  private permissionTypes = new Array<PermissionType>();
 
   canActivate(has: Permissions, need: Permissions, cm: ContextManager<any>): string {
     return '';
@@ -22,6 +25,10 @@ export default class DefaultPermissionChecker implements PermissionChecker {
 
   getPermissionLevels(): Map<string, string> {
     return new Map();
+  }
+
+  protected setPermissionTypes(perms: Array<PermissionType>): void {
+    this.permissionTypes = perms;
   }
 
   has(requiredPermissions: Permissions, accessedContext: Context<any, any>, accessedEntityDefinition: EntityDefinition, caller?: CallerController): boolean {

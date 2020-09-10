@@ -243,6 +243,8 @@ export default class RootContextConstants {
 
   public static readonly VF_CONNECTIONS_EVENTS_DISCARDED: string = 'eventsDiscarded';
 
+  public static readonly VF_CONNECTIONS_CONTEXT_LOCKS: string = 'contextLocks';
+
   public static readonly VF_THREADS_ID: string = 'id';
 
   public static readonly VF_THREADS_NAME: string = 'name';

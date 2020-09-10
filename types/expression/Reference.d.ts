@@ -58,7 +58,7 @@ export default class Reference extends JObject {
     setField(field: string): void;
     setProperty(property: string): void;
     setSchema(schema: string): void;
-    setRow(row: number): void;
+    setRow(row: number | null): void;
     setServer(server: string): void;
     clone(): Reference;
     equals(obj: JObject | null): boolean;

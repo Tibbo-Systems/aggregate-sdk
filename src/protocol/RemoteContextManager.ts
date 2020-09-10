@@ -46,10 +46,11 @@ export default class RemoteContextManager extends DefaultContextManager<ProxyCon
   }
 
   private sendAddListener(context: string, event: string, listener: DefaultContextEventListener): void {
-    const protocolVersion = this.getController().getProtocolVersion();
-    if (protocolVersion == null || protocolVersion < ProtocolVersion.V3) {
-      return;
-    }
+    // TODO: check why did we create protocol version handling
+    // const protocolVersion = this.getController().getProtocolVersion();
+    // if (protocolVersion == null || protocolVersion < ProtocolVersion.V3) {
+    //   return;
+    // }
 
     try {
       const expr = listener.getFilter();
@@ -63,10 +64,11 @@ export default class RemoteContextManager extends DefaultContextManager<ProxyCon
   }
 
   private sendRemoveListener(context: string, event: string, listener: DefaultContextEventListener): void {
-    const protocolVersion = this.getController().getProtocolVersion();
-    if (protocolVersion == null || protocolVersion < ProtocolVersion.V3) {
-      return;
-    }
+    // TODO: check why did we create protocol version handling
+    // const protocolVersion = this.getController().getProtocolVersion();
+    // if (protocolVersion == null || protocolVersion < ProtocolVersion.V3) {
+    //   return;
+    // }
 
     try {
       const expr = listener.getFilter();

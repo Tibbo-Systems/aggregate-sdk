@@ -2,7 +2,9 @@ import { Logger } from 'pino';
 import LevelAdapter from './LevelAdapter';
 export default class LoggerAdapter {
     private logger;
-    constructor(logger: Logger);
+    private readonly category;
+    constructor(logger: Logger, category: string);
+    getCategory(): string;
     isDebugEnabled(): boolean;
     isTraceEnabled(): boolean;
     isInfoEnabled(): boolean;

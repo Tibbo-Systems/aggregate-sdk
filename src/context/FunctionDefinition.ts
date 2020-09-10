@@ -9,6 +9,7 @@ import Util from '../util/Util';
 import JObject from '../util/java/JObject';
 import Permissions from '../security/Permissions';
 import ContextUtilsConstants from './ContextUtilsConstants';
+import FunctionImplementation from './FunctionImplementation';
 
 export default class FunctionDefinition extends AbstractEntityDefinition implements Comparable<FunctionDefinition> {
   private inputFormat: TableFormat | null = null;
@@ -18,7 +19,7 @@ export default class FunctionDefinition extends AbstractEntityDefinition impleme
 
   private concurrent = false;
 
-  private implementation: ((con: Context<any, any>, def: FunctionDefinition, parameters: DataTable, caller?: CallerController, request?: RequestController) => DataTable) | null = null;
+  private implementation: FunctionImplementation | null = null;
 
   constructor(name: string, inputFormat: TableFormat | null, outputFormat: TableFormat | null, description?: string, group?: string) {
     super();
@@ -51,7 +52,7 @@ export default class FunctionDefinition extends AbstractEntityDefinition impleme
     return this.permissions;
   }
 
-  public getImplementation(): ((con: Context<any, any>, def: FunctionDefinition, parameters: DataTable, caller?: CallerController, request?: RequestController) => DataTable) | null {
+  public getImplementation(): FunctionImplementation | null {
     return this.implementation;
   }
 
@@ -85,7 +86,7 @@ export default class FunctionDefinition extends AbstractEntityDefinition impleme
     this.concurrent = concurrent;
   }
 
-  public setImplementation(implementation: (con: Context<any, any>, def: FunctionDefinition, parameters: DataTable, caller?: CallerController, request?: RequestController) => DataTable) {
+  public setImplementation(implementation: FunctionImplementation) {
     this.implementation = implementation;
   }
 

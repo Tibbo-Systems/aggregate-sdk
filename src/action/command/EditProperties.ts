@@ -36,7 +36,7 @@ export default class EditProperties extends GenericActionCommand {
   public static readonly FIELD_PROPERTIES_PROPERTY: string = 'property';
   public static readonly CF_SLAVES_CONTEXT: string = 'context';
 
-  public static readonly CFT_SLAVES: TableFormat = FieldFormatFactory.create('"<" + CF_SLAVES_CONTEXT + "><S>"').wrap();
+  public static readonly CFT_SLAVES: TableFormat = FieldFormatFactory.create('<' + EditProperties.CF_SLAVES_CONTEXT + '><S>').wrap();
 
   public static readonly FT_PROPERTIES: TableFormat = FieldFormatFactory.create('<' + EditProperties.FIELD_PROPERTIES_PROPERTY + '><S><D=' + Cres.get().getString('property') + '>').wrap();
 

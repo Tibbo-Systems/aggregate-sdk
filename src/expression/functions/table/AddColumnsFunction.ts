@@ -48,8 +48,14 @@ export default class AddColumnsFunction extends AbstractFunction {
       for (let j = 0; j < table.getRecordCount(); j++) {
         const rec = table.getRecord(j);
         localEvaluator.getDefaultResolver().setDefaultRow(j);
+
+        // AGG-11208 Data Table binding expression is always evaluated for first record
+        // it is scary to make changes to the general order of working with strings, so the changes were made only to this function
+        const eClone = environment.clone();
+        eClone.getCause()?.setRow(null);
+
         try {
-          const value = localEvaluator.evaluate(v, environment);
+          const value = localEvaluator.evaluate(v, eClone);
           rec.setValue(k.getName(), value);
         } catch (ex) {
           throw new Error(ex);

@@ -20,7 +20,7 @@ export default class IntersectFunction extends AbstractFunction {
     const sampleTable = this.convertToDataTable(2, parameters[2]);
     const fieldInSampleTable = this.convertToString(3, parameters[3]);
 
-    var filterType = false;
+    let filterType = false;
     if (parameters.length > 4) {
       filterType = this.convertToBoolean(4, parameters[4]);
     }

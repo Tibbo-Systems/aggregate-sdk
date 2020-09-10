@@ -11,9 +11,11 @@ import CallerController from '../context/CallerController';
 export default abstract class ActionUtils {
     static readonly FORMAT_DND_ACTION: TableFormat;
     static readonly FORMAT_NORMAL_ACTION: TableFormat;
+    static readonly FORMAT_PROPAGATED_ACTION: TableFormat;
     private static ACTION_INITIALIZER;
     static readonly DESCRIPTIONS: Map<string, string>;
     static __static_initializer_0(): void;
+    static __static_initializer_1(): void;
     private static _init;
     static initialize(): void;
     static readonly FIELD_ACTION_EXECUTION_PARAMETERS: string;

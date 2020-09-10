@@ -108,10 +108,10 @@ import DistinctFunction from './functions/table/DistinctFunction';
 
 const AggregateExpressionVisitor = require('./parser/AggregateExpressionVisitor.js').AggregateExpressionVisitor;
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const unescapeJs = require('unescape-js');
 
 export default abstract class AbstractEvaluatingVisitor extends ExpressionVisitorFacade {
+  // eslint-disable-next-line @typescript-eslint/ban-types
   public static DEFAULT_FUNCTIONS = new Map<string, Function>();
 
   private static __static_init = false;
@@ -243,6 +243,7 @@ export default abstract class AbstractEvaluatingVisitor extends ExpressionVisito
     AbstractEvaluatingVisitor.__static_init = true;
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-types
   private static registerDefaultFunction(name: string, impl: Function): void {
     if (AbstractEvaluatingVisitor.DEFAULT_FUNCTIONS.has(name)) {
       throw new Error('Function already registered:' + name);

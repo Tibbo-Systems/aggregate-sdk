@@ -2,7 +2,6 @@ module.exports = {
   verbose: true,
   moduleFileExtensions: ['ts', 'tsx', 'js'],
 
-  testPathIgnorePatterns: ['./performance/', './integration/'],
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest',
   },

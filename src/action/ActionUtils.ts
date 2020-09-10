@@ -21,6 +21,7 @@ import ActionUtilsConstants from './ActionUtilsConstants';
 export default abstract class ActionUtils {
   public static readonly FORMAT_DND_ACTION: TableFormat = new TableFormat(1, 1);
   public static readonly FORMAT_NORMAL_ACTION: TableFormat = new TableFormat(1, 1);
+  public static readonly FORMAT_PROPAGATED_ACTION: TableFormat = new TableFormat(1, 1);
 
   private static ACTION_INITIALIZER: ActionInitializer = new DefaultActionInitializer();
 
@@ -46,11 +47,16 @@ export default abstract class ActionUtils {
     ActionUtils.DESCRIPTIONS.set(ActionUtilsConstants.CMD_SHOW_DIFF, Cres.get().getString('acUiProcShowDiff'));
   }
 
+  static __static_initializer_1() {
+    ActionUtils.FORMAT_PROPAGATED_ACTION.addField('<' + ActionUtils.FIELD_ACTION_TARGET_CONTEXT + '><S>');
+  }
+
   private static _init = false;
 
   public static initialize() {
     if (ActionUtils._init) return;
     ActionUtils.__static_initializer_0();
+    ActionUtils.__static_initializer_1();
     ActionUtils._init = true;
   }
 

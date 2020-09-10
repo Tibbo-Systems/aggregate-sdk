@@ -1,6 +1,5 @@
 import TableFormat from '../datatable/TableFormat';
 import RootContextConstants from './RootContextConstants';
-import StringFieldFormat from '../datatable/field/StringFieldFormat';
 import FieldConstants from '../datatable/field/FieldConstants';
 
 export default class CommonServerFormats {

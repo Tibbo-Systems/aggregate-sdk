@@ -1058,7 +1058,6 @@ const resources = {
   monthNovember: 'November',
   monthOctober: 'October',
   monthSeptember: 'September',
-  multiSelect: 'Multiple Select',
   na: 'N/A',
   name: 'Name',
   namingExpression: 'Naming Expression',

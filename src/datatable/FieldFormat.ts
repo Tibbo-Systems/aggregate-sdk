@@ -393,7 +393,7 @@ export default abstract class FieldFormat<T> extends JObject {
     // TODO continue then type Class will be added
     value = this.convertValue(value);
 
-    if (value != null && !this.isExtendableSelectionValues() && this.selectionValues != null && !this.selectionValues.has(value)) {
+    if (value != null && !this.isExtendableSelectionValues() && this.selectionValues != null && !this.hasSelectionValue(value)) {
       if (validate) {
         // TODO uncomment then type Class will be added
         // throw new Error(Cres.get().getString("dtValueNotInSelVals") + value + " (" + value.getClass().getName() + ")");
@@ -497,6 +497,10 @@ export default abstract class FieldFormat<T> extends JObject {
     this.setSelectionValues(values.size > 0 ? values : null);
   }
 
+  public convertKeyForSelectionValuesMap(value: any): any {
+    return value;
+  }
+
   /**
    * Sets field selection values.
    */
@@ -510,11 +514,17 @@ export default abstract class FieldFormat<T> extends JObject {
       return this;
     }
 
-    this.selectionValues = new Map(selectionValues);
+    const sv: Map<any, string | null> = new Map<any, string | null>();
+
+    selectionValues.forEach((value: string | null, key: T | string | number | null) => {
+      sv.set(this.convertKeyForSelectionValuesMap(key), value);
+    });
+
+    this.selectionValues = sv;
 
     // If current default value doesn't match to new selection values, we change it to the first selection value from the list
 
-    if (!selectionValues.has(this.getDefaultValue()) && !this.extendableSelectionValues) {
+    if (!this.hasSelectionValue(this.getDefaultValue()) && !this.extendableSelectionValues) {
       this.setDefault(selectionValues.keys().next().value);
     }
 
@@ -529,7 +539,7 @@ export default abstract class FieldFormat<T> extends JObject {
       throw new Error('Immutable');
     }
     if (editor != null && !this.getSuitableEditors().find((el) => el === editor)) {
-      throw new Error(MessageFormat.format(Cres.get().getString('dtEditorNotSuitable'), toString()) + editor);
+      throw new Error(MessageFormat.format(Cres.get().getString('dtEditorNotSuitable'), this.toString()) + editor);
     }
 
     this.editor = editor;
@@ -834,7 +844,7 @@ export default abstract class FieldFormat<T> extends JObject {
   /**
    * Returns true if field has specified selection value.
    */
-  public hasSelectionValue(value: T): boolean {
+  public hasSelectionValue(value: T | null): boolean {
     return this.selectionValues != null && this.selectionValues.has(value);
   }
 

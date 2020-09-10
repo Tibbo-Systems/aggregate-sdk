@@ -4,6 +4,7 @@ import JObject from './java/JObject';
 export default class WebSocketBlockingChannel extends JObject implements BlockingChannel {
     private webSocket;
     private usesCompression;
+    private static readonly BUFFER_SIZE;
     private inputBuffer;
     constructor(webSocket: WebSocket);
     setListener(listener: () => void): void;

@@ -23,10 +23,10 @@ export default class DataTableFieldFormat extends FieldFormat<DataTable> {
   constructor(name: string) {
     super(name);
 
-    const getDefaultValue: Function = this.getDefaultValue.bind(this);
+    const getDefaultValue = this.getDefaultValue.bind(this);
     const validator = new (class DataTableFieldValidator extends AbstractFieldValidator<any> {
       validate(context: Context<any, any> | null, contextManager: ContextManager<Context<any, any>> | null, caller: CallerController | null, value: DataTable): DataTable | null {
-        const def: DataTable = getDefaultValue();
+        const def = getDefaultValue();
 
         if (def == null || def.getFieldCount() == 0) {
           return value;

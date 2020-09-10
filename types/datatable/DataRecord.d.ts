@@ -7,6 +7,7 @@ import DataTable from './DataTable';
 import QueryCondition from './QueryCondition';
 import Data from '../data/Data';
 import TableFormat from './TableFormat';
+import JSBI from 'jsbi';
 export default class DataRecord extends JObject implements StringEncodable {
     private static readonly ELEMENT_ID;
     private data;
@@ -92,7 +93,7 @@ export default class DataRecord extends JObject implements StringEncodable {
     /**
      * Returns value of Long field with specified index.
      */
-    getLong(valueBy: number | string): number;
+    getLong(valueBy: number | string): JSBI;
     /**
      * Returns value of Boolean field with specified name or index.
      */

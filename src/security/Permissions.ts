@@ -32,7 +32,7 @@ export default class Permissions extends JObject implements Iterable<Permission>
     }
   }
 
-  public static createWithContext(context: string, type: string) {
+  public static createWithContext(context: string | null, type: string) {
     const perm: Permissions = new Permissions();
     perm.permissions.push(Permission.createWithContextAndLevel(context, type));
     return perm;

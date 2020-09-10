@@ -10,6 +10,6 @@ export default class ContextExpressionTracer implements Tracer {
     private traceEventGroup;
     constructor(context: Context<any, any>, traceEventGroup: string);
     install(): void;
-    trace(value: object, message: string): void;
+    trace(value: any, message: string): void;
     protected getContext(): Context<any, any>;
 }

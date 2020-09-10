@@ -179,7 +179,7 @@ export default class ContextUtils {
   }
 
   static pluginIdToContextName(pluginId: string): string {
-    return pluginId.replace('.', '_').replace('-', '');
+    return pluginId.replace(/\./g, '_').replace(/\-/g, '');
   }
 
   static matchesToMask(mask: string, context: string, contextMayExtendMask = false, maskMayExtendContext = false): boolean {

@@ -7,6 +7,10 @@ import DataTableFactory from '../../src/datatable/DataTableFactory';
 import EventDefinition from '../../src/context/EventDefinition';
 import FunctionDefinition from '../../src/context/FunctionDefinition';
 import ContextUtilsConstants from '../../src/context/ContextUtilsConstants';
+import FunctionImplementation from "../../src/context/FunctionImplementation";
+import DataTable from "../../src/datatable/DataTable";
+import RequestController from "../../src/context/RequestController";
+import CallerController from "../../src/context/CallerController";
 
 export default class StubContext extends AbstractContext<Context<any, any>, ContextManager<any>> {
   public static readonly V_TEST: string = 'test';
@@ -77,10 +81,13 @@ export default class StubContext extends AbstractContext<Context<any, any>, Cont
     this.addEventDefinition(new EventDefinition(StubContext.E_TEST, StubContext.EFT_TEST, 'Test Event', ContextUtilsConstants.GROUP_DEFAULT));
 
     const fd = new FunctionDefinition(StubContext.F_FUNCTION, StubContext.FIFT_FUNCTION, StubContext.FOFT_FUNCTION);
-    fd.setImplementation((con, def, parameters, caller, request) => {
-      _this.count = parameters.rec().getInt(0);
-      return DataTableFactory.createWithFirstRecord(StubContext.FOFT_FUNCTION, parameters.rec().getString(StubContext.FIF_PARAMETER));
-    });
+    fd.setImplementation(new (class implements FunctionImplementation{
+      execute(con: Context<any, any>, def: FunctionDefinition, parameters: DataTable, caller?: CallerController, request?: RequestController): DataTable | null {
+        _this.count = parameters.rec().getInt(0);
+        return DataTableFactory.createWithFirstRecord(StubContext.FOFT_FUNCTION, parameters.rec().getString(StubContext.FIF_PARAMETER));
+      }
+
+    })());
     this.addFunctionDefinition(fd);
 
     const emptyFd = new FunctionDefinition(StubContext.F_TEST, TableFormat.EMPTY_FORMAT, TableFormat.EMPTY_FORMAT, 'Test Function', ContextUtilsConstants.GROUP_DEFAULT);

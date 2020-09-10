@@ -6,6 +6,7 @@ import StringBuilder from './java/StringBuilder';
 import Comparable from './java/Comparable';
 import DataTable from '../datatable/DataTable';
 import ContextUtils from '../context/ContextUtils';
+import JSBI from 'jsbi';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const isEqual = require('lodash.isequal');
@@ -83,7 +84,20 @@ export default class Util {
     return value instanceof Boolean || typeof value === 'boolean';
   }
 
+  public static isBigInt(value: any): value is JSBI {
+    return value instanceof JSBI;
+  }
+
+  public static convertToLong(value: any, validate: boolean, allowNull: boolean): JSBI | null {
+    const result = Util.convertTo(value, validate, allowNull, true);
+    return result != null ? JSBI.BigInt(result) : null;
+  }
+
   public static convertToNumber(value: any, validate: boolean, allowNull: boolean): number | null {
+    return Util.convertTo(value, validate, allowNull, false);
+  }
+
+  private static convertTo(value: any, validate: boolean, allowNull: boolean, isBigInt: boolean): number | null {
     if (value == null) {
       if (allowNull) {
         return null;
@@ -104,20 +118,24 @@ export default class Util {
         return 0;
       }
 
-      return this.convertToNumber(table.get(), validate, allowNull);
+      return this.convertTo(table.get(), validate, allowNull, isBigInt);
     }
 
     // TODO not implemented yet
     /*
-        if (value instanceof ExtendedNumber)
-        {
-            Number number = ((ExtendedNumber) value).getNumber();
-            return convertToNumber(number, validate, allowNull);
-        }
-         */
+            if (value instanceof ExtendedNumber)
+            {
+                Number number = ((ExtendedNumber) value).getNumber();
+                return convertToNumber(number, validate, allowNull);
+            }
+             */
 
     if (this.isNumber(value)) {
       return value;
+    }
+
+    if (Util.isBigInt(value)) {
+      return JSBI.toNumber(value);
     }
 
     if (value instanceof Date) {
@@ -130,7 +148,8 @@ export default class Util {
 
     let parseResult = parseInt(value.toString());
     if (!isNaN(parseResult)) {
-      return parseResult;
+      if (isBigInt) return value;
+      else return parseResult;
     }
 
     parseResult = parseFloat(value.toString());
@@ -250,7 +269,10 @@ export default class Util {
     }
   }
 
-  public static compare(x: number, y: number): number {
+  public static compare(x: JSBI | number, y: JSBI | number): number {
+    if (Util.isBigInt(x) || Util.isBigInt(y)) {
+      return JSBI.lessThan(JSBI.BigInt(x.toString()), JSBI.BigInt(y.toString())) ? -1 : JSBI.equal(JSBI.BigInt(x.toString()), JSBI.BigInt(y.toString())) ? 0 : 1;
+    }
     return x < y ? -1 : x === y ? 0 : 1;
   }
 

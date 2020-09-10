@@ -147,7 +147,9 @@ export default abstract class DataTable extends AttributedObject implements Stri
 
   abstract encode(sb: StringBuilder, settings: ClassicEncodingSettings, isTransferEncode: boolean, encodeLevel: number): StringBuilder;
 
-  abstract encodeDataTable(useVisibleSeparators?: boolean, settings?: ClassicEncodingSettings): string | null;
+  abstract encodeWithSettings(settings: ClassicEncodingSettings): string;
+
+  abstract encodeWithSeparators(useVisibleSeparators: boolean): string;
 
   ///
 

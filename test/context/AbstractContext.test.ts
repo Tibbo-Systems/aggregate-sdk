@@ -104,7 +104,7 @@ describe('TestAbstractContext', () => {
   });
 
   it('testGetFunctionDefinitions', () => {
-    expect(root.getFunctionDefinitions().length).toBe(3);
+    expect(root.getFunctionDefinitions().length).toBe(5);
   });
 
   it('testGetFunctionDefinitionsFromDefaultGroup', () => {
@@ -112,7 +112,7 @@ describe('TestAbstractContext', () => {
   });
 
   it('testGetFunctionDefinitionsIncludeHidden', () => {
-    expect(root.getFunctionDefinitions(true).length).toBe(6);
+    expect(root.getFunctionDefinitions(true).length).toBe(10);
   });
 
   it('testGetActionDefinitions', () => {

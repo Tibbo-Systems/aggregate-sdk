@@ -336,7 +336,7 @@ export default class Reference extends JObject {
     this.image = null;
   }
 
-  public setRow(row: number) {
+  public setRow(row: number | null) {
     this.row = row;
     this.image = null;
   }

@@ -40,6 +40,7 @@ import ShowSystemTree from './command/ShowSystemTree';
 import ActivateDashboard from './command/ActivateDashboard';
 import EditGridDashboard from './command/EditGridDashboard';
 import ActionUtilsConstants from './ActionUtilsConstants';
+import OpenGridDashboard from './command/OpenGridDashboard';
 
 export default class ServerActionCommandProcessor {
   private action: ServerAction | null = null;
@@ -391,7 +392,11 @@ export default class ServerActionCommandProcessor {
     this.send(ActivateDashboard.createActivateDashboardWithDataTable(nameString, parameters));
   }
 
-  public editDashboard(parameters: DataTable): void {
-    this.send(new EditGridDashboard(parameters));
+  public editDashboard(contextPath: string, defaultContext: string): void {
+    this.send(new EditGridDashboard(contextPath, defaultContext));
+  }
+
+  public openDashboard(contextPath: string, defaultContext: string): void {
+    this.send(new OpenGridDashboard(contextPath, defaultContext));
   }
 }

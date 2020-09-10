@@ -7,4 +7,5 @@ export default class ColorFieldFormat extends FieldFormat<string> {
     isAssignableFrom(value: any): boolean;
     valueFromString(value: string | null, settings?: ClassicEncodingSettings | null, validate?: boolean): string | null;
     valueToString(value: string | null, settings?: ClassicEncodingSettings): string | null;
+    getSuitableEditors(): Array<string>;
 }

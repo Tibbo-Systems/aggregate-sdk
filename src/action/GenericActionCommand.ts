@@ -93,7 +93,7 @@ export default class GenericActionCommand extends JObject implements ActionComma
   }
 
   isBatchEntry(): boolean {
-    return false;
+    return this.batchEntry;
   }
 
   isInteractive(): boolean {
@@ -104,7 +104,9 @@ export default class GenericActionCommand extends JObject implements ActionComma
     return false;
   }
 
-  setBatchEntry(batchEntry: boolean): void {}
+  setBatchEntry(batchEntry: boolean): void {
+    this.batchEntry = batchEntry;
+  }
 
   setParameters(parameters: DataTable | null) {
     this.parameters = parameters;

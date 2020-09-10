@@ -42,7 +42,7 @@ export default class ContextExpressionTracer implements Tracer {
     target.addEventDefinition(ed);
   }
 
-  trace(value: object, message: string): void {
+  trace(value: any, message: string): void {
     this.install();
 
     const target = this.getContext();

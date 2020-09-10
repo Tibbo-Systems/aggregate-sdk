@@ -107,7 +107,7 @@ export default class StringFieldFormat extends FieldFormat<string> {
 
     op.addValue(defaultTableDescription);
 
-    return op.wrap().encodeDataTable(false);
+    return op.wrap().encodeWithSeparators(false);
   }
 
   public static encodeMaskEditorOptionsFromStrings(contextType: string, containerName: string): string {

@@ -8,7 +8,7 @@ export default class Permission extends JObject {
     private entityType;
     private entity;
     constructor(data: string | null, checker: PermissionChecker | null);
-    static createWithContextAndLevel(context: string, level: string): Permission;
+    static createWithContextAndLevel(context: string | null, level: string): Permission;
     static createWithParams(context: string, entityType: number, entity: string, level: string): Permission;
     encode(): string;
     clone(): Permission;

@@ -70,7 +70,8 @@ export default abstract class AbstractDataTable extends DataTable {
     setInvalidationMessage(invalidationMessage: string | null): void;
     getInvalidationMessage(): string;
     encode(finalSB: StringBuilder | undefined, settings: ClassicEncodingSettings, isTransferEncode: boolean | undefined, encodeLevel: number): StringBuilder;
-    encodeDataTable(useVisibleSeparators?: boolean, settings?: ClassicEncodingSettings): string | null;
+    encodeWithSettings(settings: ClassicEncodingSettings): string;
+    encodeWithSeparators(useVisibleSeparators: boolean): string;
     getEncodedData(finalSB: StringBuilder, settings: ClassicEncodingSettings, isTransferEncode: boolean, encodeLevel: number): StringBuilder;
     getEncodedDataFromEncodingSettings(settings: ClassicEncodingSettings): string;
     rec(): DataRecord;

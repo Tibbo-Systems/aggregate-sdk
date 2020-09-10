@@ -1,4 +1,5 @@
 import ContextUtils from '../../src/context/ContextUtils';
+import WebContextPluginConstants from '../../src/server/WebContextPluginConstants';
 
 describe('TestContextUtils', () => {
   it('testMatchesToMask', () => {
@@ -13,5 +14,8 @@ describe('TestContextUtils', () => {
   it('testDefaultDeviceContextName', () => {
     const username = 'someUserName';
     expect('users.' + username + '.devices').toEqual(ContextUtils.devicesContextPath(username));
+  });
+  it('testPluginGlobalConfigContextPath', () => {
+    expect('plugins.com_tibbo_linkserver_plugin_context_web').toEqual(ContextUtils.pluginGlobalConfigContextPath(WebContextPluginConstants.ID));
   });
 });

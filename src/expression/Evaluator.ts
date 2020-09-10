@@ -28,6 +28,7 @@ export default class Evaluator extends JObject {
   private readonly resolvers: Map<string | null, ReferenceResolver | null> = new Map<string | null, ReferenceResolver | null>();
   private keepPreviousResult = false;
 
+  // eslint-disable-next-line @typescript-eslint/ban-types
   private readonly customFunctions = new Map<string, Function>();
 
   private tracer: Tracer | null = null;
@@ -175,6 +176,7 @@ export default class Evaluator extends JObject {
     return Util.convertToBoolean(result, true, true);
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-types
   getCustomFunction(functionName: string): Function | undefined {
     return this.customFunctions.get(functionName);
   }
@@ -192,6 +194,7 @@ export default class Evaluator extends JObject {
     this.previousResult = previousResult;
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-types
   registerCustomFunction(name: string, impl: Function) {
     if (AbstractEvaluatingVisitor.DEFAULT_FUNCTIONS.has(name) || this.customFunctions.has(name)) {
       throw new Error('Function already registered:' + name);

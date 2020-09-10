@@ -53,8 +53,8 @@ export default class ActionCommandRegistry {
     ActionCommandRegistry.register(new ShowHtmlSnippet());
     ActionCommandRegistry.register(new ShowSystemTree());
     ActionCommandRegistry.register(new CloseDashboard());
-    ActionCommandRegistry.register(new OpenGridDashboard(new DataRecord(null).wrap()));
-    ActionCommandRegistry.register(new EditGridDashboard(new DataRecord(null).wrap()));
+    ActionCommandRegistry.register(new OpenGridDashboard());
+    ActionCommandRegistry.register(new EditGridDashboard());
   }
 
   public static getCommand(type: string): GenericActionCommand | null {

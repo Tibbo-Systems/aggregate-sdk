@@ -26,4 +26,8 @@ export default class ColorFieldFormat extends FieldFormat<string> {
   valueToString(value: string | null, settings?: ClassicEncodingSettings): string | null {
     return value;
   }
+
+  getSuitableEditors(): Array<string> {
+    return [FieldConstants.EDITOR_LIST, FieldConstants.EDITOR_BOX];
+  }
 }

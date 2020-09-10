@@ -4,6 +4,14 @@ import Context from './Context';
 import PermissionCache from '../security/PermissionCache';
 import JObject from '../util/java/JObject';
 import Permissions from '../security/Permissions';
+import FieldFormatFactory from '../datatable/FieldFormatFactory';
+import Cres from '../Cres';
+import FieldConstants from '../datatable/field/FieldConstants';
+import AbstractContext from './AbstractContext';
+import SimpleDataTable from '../datatable/SimpleDataTable';
+import DataTable from '../datatable/DataTable';
+import Log from '../Log';
+import TableFormat from '../datatable/TableFormat';
 
 export default abstract class AbstractCallerController extends JObject implements CallerController {
   private static readonly CACHE_EXPIRATION_PERIOD = 1000;
@@ -14,7 +22,30 @@ export default abstract class AbstractCallerController extends JObject implement
 
   private static readonly CONTROLLERS: WeakSet<CallerController> = new WeakSet();
 
+  private static readonly FIELD_LOCKED_CONTEXTS_CONTEXT_PATH: string = 'contextPath';
+  private static readonly FIELD_LOCKED_CONTEXTS_CONTEXT_DESCRIPTION: string = 'contextDescription';
+  private static readonly FORMAT_LOCKED_CONTEXTS = new TableFormat();
+
+  private static _init = false;
+
+  private static __static_initializer_0() {
+    AbstractCallerController.FORMAT_LOCKED_CONTEXTS.addField(FieldFormatFactory.createWith(AbstractCallerController.FIELD_LOCKED_CONTEXTS_CONTEXT_PATH, FieldConstants.STRING_FIELD, Cres.get().getString('conContextPath')));
+
+    AbstractCallerController.FORMAT_LOCKED_CONTEXTS.addField(
+      FieldFormatFactory.createWith(AbstractCallerController.FIELD_LOCKED_CONTEXTS_CONTEXT_DESCRIPTION, FieldConstants.STRING_FIELD, Cres.get().getString('description')).setNullable(true)
+    );
+  }
+
+  public static initialize() {
+    if (AbstractCallerController._init) return;
+
+    AbstractCallerController.__static_initializer_0();
+    AbstractCallerController._init = true;
+  }
+
   private username: string | null = null;
+
+  private inheritedUsername: string | null = null;
 
   private readonly callerData: CallerData | null;
 
@@ -31,6 +62,8 @@ export default abstract class AbstractCallerController extends JObject implement
   private lastCacheOperationTime: number | null = null;
 
   private _cache: Map<string, Context<any, any>> = new Map<string, Context<any, any>>();
+
+  private readonly lockedContexts: Set<Context<any, any>> = new Set<Context<any, any>>();
 
   constructor(callerData: CallerData | null) {
     super();
@@ -84,7 +117,11 @@ export default abstract class AbstractCallerController extends JObject implement
   }
 
   getInheritedUsername(): string | null {
-    return null;
+    return this.inheritedUsername;
+  }
+
+  public setInheritedUsername(inheritedUsername: string) {
+    this.inheritedUsername = inheritedUsername;
   }
 
   getEffectiveUsername(): string | null {
@@ -193,4 +230,37 @@ export default abstract class AbstractCallerController extends JObject implement
   }
 
   abstract isHeadless(): boolean;
+
+  addLockedContext(context: Context<any, any>): void {
+    this.lockedContexts.add(context);
+  }
+
+  removeLockedContext(context: Context<any, any>): void {
+    this.lockedContexts.delete(context);
+  }
+
+  unlockAllContexts(): void {
+    const clone: Set<Context<any, any>> = new Set<Context<any, any>>(this.lockedContexts);
+
+    for (const context of clone.values()) {
+      try {
+        context.callFunction(AbstractContext.F_BREAK_LOCK, [this]);
+      } catch (e) {
+        Log.CONTEXT.warn("An error occurred when trying to unlock context '" + context + "' locked by caller '" + this + "'");
+      }
+    }
+  }
+
+  createLockedContextsTable(): DataTable {
+    const result = new SimpleDataTable(AbstractCallerController.FORMAT_LOCKED_CONTEXTS);
+    const clone: Set<Context<any, any>> = new Set<Context<any, any>>(this.lockedContexts);
+
+    for (const context of clone.values()) {
+      result.addRecordWith(context.getPath(), context.getDescription());
+    }
+
+    result.sortWithParams(AbstractCallerController.FIELD_LOCKED_CONTEXTS_CONTEXT_PATH, true);
+
+    return result;
+  }
 }

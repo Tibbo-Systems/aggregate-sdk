@@ -23,7 +23,7 @@ describe('TestEncoding', () => {
 
     const st: DataTable = DataTableFactory.createWithFirstRecord(new TableFormat(1, 1, FieldFormatFactory.createType('f', FieldConstants.STRING_FIELD)), s);
 
-    const enc: string = st.encodeDataTable(false, new ClassicEncodingSettings(false)) as string;
+    const enc: string = st.encodeWithSeparators(false);
 
     const dt: DataTable = DataTableFactory.createAndDecode(enc);
 
@@ -43,7 +43,7 @@ describe('TestEncoding', () => {
 
     const st: DataTable = DataTableFactory.createWithFirstRecord(new TableFormat(1, 1, FieldFormatFactory.createType('f', FieldConstants.STRING_FIELD)), s);
 
-    const enc: string = st.encodeDataTable(false, new ClassicEncodingSettings(false)) as string;
+    const enc: string = st.encodeWithSeparators(false);
 
     const dt: DataTable = DataTableFactory.createAndDecode(enc);
 
@@ -79,7 +79,7 @@ describe('TestEncoding', () => {
       wrapped = DataTableFactory.createWithFirstRecord(wtf, wrapped);
     }
 
-    const encoded: string = wrapped.encodeDataTable(false, new ClassicEncodingSettings(false)) as string;
+    const encoded: string = wrapped.encodeWithSeparators(false);
 
     const restored: DataTable = DataTableFactory.createAndDecode(encoded);
 
@@ -109,7 +109,7 @@ describe('TestEncoding', () => {
       wrapped = DataTableFactory.createWithFirstRecord(wtf, wrapped);
     }
 
-    const encoded: string = wrapped.encodeDataTable(false, new ClassicEncodingSettings(false)) as string;
+    const encoded: string = wrapped.encodeWithSeparators(false);
 
     const restored: DataTable = DataTableFactory.createAndDecode(encoded);
 
@@ -120,7 +120,7 @@ describe('TestEncoding', () => {
     const tf: TableFormat = TableFormat.createWithFormatAndSettings('<<int><I>><<string><S>>', new ClassicEncodingSettings(true));
     const table: DataTable = new DataRecord(tf).wrap();
 
-    const encode: string = table.encodeDataTable(true) as string;
+    const encode: string = table.encodeWithSeparators(true);
     expect(encode).toBe('<F=<<int><I><A=0>><<string><S><A=>>><R=<0><>>');
   });
 
@@ -130,7 +130,7 @@ describe('TestEncoding', () => {
     const expectedTable: DataTable = editData.getParameters() as DataTable;
 
     const settings: ClassicEncodingSettings = new ClassicEncodingSettings(true);
-    const encode: string = expectedTable.encodeDataTable(true, settings) as string;
+    const encode: string = expectedTable.encodeWithSettings(settings);
     const decodedTable: DataTable = DataTableFactory.createAndDecode(encode, settings, false);
 
     expect(expectedTable.equals(decodedTable)).toBeTruthy();
@@ -145,7 +145,7 @@ describe('TestEncoding', () => {
 
     const settings: ClassicEncodingSettings = new ClassicEncodingSettings(true);
     settings.setEncodeFormat(false);
-    const encodedTable: string = table.encodeDataTable(true, settings) as string;
+    const encodedTable: string = table.encodeWithSettings(settings);
 
     expect('<R=<<F=<<int><I><A=777><D=Int>>><R=<777>>>>' === encodedTable).toBeTruthy();
   });
@@ -163,7 +163,7 @@ describe('TestEncoding', () => {
 
     const table: DataTable = DataTableFactory.createWithFirstRecord(AbstractContext.EF_UPDATED.clone(), 'test', nested, null);
 
-    const encodedTable: string = table.encodeDataTable(true, ces) as string;
+    const encodedTable: string = table.encodeWithSettings(ces);
     const expected: string = '<F=<<variable><S><A=>><<value><T><A=<F=>>><<user><S><F=N><A=<NULL>>>' + '<M=1><X=1>><D=0><R=<test>' + '<<F=<<value><F><A=0.0>>' + '<<quality><I><A=0>><M=1><X=1>><D=1>' + '<R=<12345.67><123>>><<NULL>>>';
 
     expect(encodedTable === expected).toBeTruthy();
@@ -183,8 +183,8 @@ describe('TestEncoding', () => {
 
     const table: DataTable = DataTableFactory.createWithFirstRecord(AbstractContext.EF_UPDATED, 'test', nested, null);
 
-    table.encodeDataTable(ces.isUseVisibleSeparators(), ces);
-    const encodedTable: string = table.encodeDataTable(ces.isUseVisibleSeparators(), ces) as string;
+    table.encodeWithSettings(ces);
+    const encodedTable: string = table.encodeWithSettings(ces);
     const expected = '<D=0><R=<test><<D=1><R=<12345.67><123>>><<NULL>>>';
     expect(encodedTable === expected).toBeTruthy();
   });
@@ -201,8 +201,8 @@ describe('TestEncoding', () => {
     const ces: ClassicEncodingSettings = new ClassicEncodingSettings(true);
     ces.setEncodeFormat(false);
 
-    nested.encodeDataTable(ces.isUseVisibleSeparators(), ces);
-    const encodedTable: string = nested.encodeDataTable(ces.isUseVisibleSeparators(), ces) as string;
+    nested.encodeWithSettings(ces);
+    const encodedTable: string = nested.encodeWithSettings(ces);
     const expected = '<R=<12345.67>><Q=198><T=2000-01-31 21:00:00.000>';
     expect(expected === encodedTable).toBeTruthy();
   });

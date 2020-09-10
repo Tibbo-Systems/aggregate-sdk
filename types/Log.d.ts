@@ -1,6 +1,7 @@
 import LoggerAdapter from './util/logger/LoggerAdapter';
 export default class Log {
     static readonly ROOT: string;
+    private static readonly LOGGERS_CATEGORY;
     static readonly BINDINGS: LoggerAdapter;
     static readonly COMMANDS_CLIENT: LoggerAdapter;
     static readonly COMMANDS: LoggerAdapter;
@@ -18,5 +19,6 @@ export default class Log {
     static readonly CONVERTER: LoggerAdapter;
     static readonly CLIENTS: LoggerAdapter;
     static readonly PROTOCOL: LoggerAdapter;
-    static createLogger(category: string): LoggerAdapter;
+    static registerLogger(category: string): LoggerAdapter;
+    static getLoggers(): Array<LoggerAdapter>;
 }

@@ -36,7 +36,7 @@ describe('TestDataTable', () => {
 
     let t1: DataTable = DataTableFactory.createFromDataRecord(rec);
 
-    t1 = DataTableFactory.createAndDecode(t1.encodeDataTable(false, new ClassicEncodingSettings(false)) as string);
+    t1 = DataTableFactory.createAndDecode(t1.encodeWithSeparators(false));
 
     t1 = t1.rec().getDataTable('tbl');
 
@@ -132,7 +132,7 @@ describe('TestDataTable', () => {
     const table3: DataTable = table.clone();
     table2.getRecord(0).setValue(0, table3);
 
-    const e: string = table.encodeDataTable(false, new ClassicEncodingSettings(false)) as string;
+    const e: string = table.encodeWithSeparators(false);
     const r: DataTable = DataTableFactory.createAndDecode(e);
 
     expect(table.equals(r)).toBeTruthy();
@@ -208,7 +208,7 @@ describe('TestDataTable', () => {
 
     table2.getRecord(0).setValue(4, table3);
 
-    const e: string = table.encodeDataTable(false, new ClassicEncodingSettings(false)) as string;
+    const e: string = table.encodeWithSeparators(false);
 
     const r: DataTable = DataTableFactory.createAndDecode(e);
 
@@ -237,7 +237,7 @@ describe('TestDataTable', () => {
     const record2: DataRecord = mainTable.addRecord();
     record2.addDataTable(nestedTable2);
 
-    const encoded: string = mainTable.encodeDataTable(false, new ClassicEncodingSettings(false)) as string;
+    const encoded: string = mainTable.encodeWithSeparators(false);
 
     const decoded: DataTable = DataTableFactory.createAndDecode(encoded, new ClassicEncodingSettings(ExpressionUtils.useVisibleSeparators(encoded)), true);
 
@@ -269,7 +269,7 @@ describe('TestDataTable', () => {
     const record1: DataRecord = mainTable.addRecord();
     record1.addDataTable(nestedTable2);
 
-    const encoded: string = mainTable.encodeDataTable(false, new ClassicEncodingSettings(false)) as string;
+    const encoded: string = mainTable.encodeWithSeparators(false);
 
     const decoded: DataTable = DataTableFactory.createAndDecode(encoded, new ClassicEncodingSettings(ExpressionUtils.useVisibleSeparators(encoded)), true);
 

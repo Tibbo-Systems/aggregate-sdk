@@ -1,12 +1,9 @@
 import AbstractEntityDefinition from './AbstractEntityDefinition';
 import TableFormat from '../datatable/TableFormat';
 import Comparable from '../util/java/Comparable';
-import Context from './Context';
-import CallerController from './CallerController';
-import RequestController from './RequestController';
-import DataTable from '../datatable/DataTable';
 import JObject from '../util/java/JObject';
 import Permissions from '../security/Permissions';
+import FunctionImplementation from './FunctionImplementation';
 export default class FunctionDefinition extends AbstractEntityDefinition implements Comparable<FunctionDefinition> {
     private inputFormat;
     private outputFormat;
@@ -20,14 +17,14 @@ export default class FunctionDefinition extends AbstractEntityDefinition impleme
     getOutputFormat(): TableFormat | null;
     isHidden(): boolean;
     getPermissions(): Permissions | null;
-    getImplementation(): ((con: Context<any, any>, def: FunctionDefinition, parameters: DataTable, caller?: CallerController, request?: RequestController) => DataTable) | null;
+    getImplementation(): FunctionImplementation | null;
     setInputFormat(inputFormat: TableFormat | null): void;
     setOutputFormat(outputFormat: TableFormat | null): void;
     setHidden(hidden: boolean): void;
     setPermissions(permissions: Permissions): void;
     isConcurrent(): boolean;
     setConcurrent(concurrent: boolean): void;
-    setImplementation(implementation: (con: Context<any, any>, def: FunctionDefinition, parameters: DataTable, caller?: CallerController, request?: RequestController) => DataTable): void;
+    setImplementation(implementation: FunctionImplementation): void;
     compareTo(d: FunctionDefinition): number;
     equals(obj: JObject | null): boolean;
     getEntityType(): number;

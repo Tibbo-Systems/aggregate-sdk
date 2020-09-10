@@ -6,6 +6,8 @@ export default class WebSocketBlockingChannel extends JObject implements Blockin
   private webSocket: WebSocket;
   private usesCompression = false;
 
+  private static readonly BUFFER_SIZE: number = 32 * 1024 - 1;
+
   private inputBuffer: ByteBuffer = new ByteBuffer(32);
 
   constructor(webSocket: WebSocket) {
@@ -57,7 +59,13 @@ export default class WebSocketBlockingChannel extends JObject implements Blockin
   }
 
   write(src: ByteBuffer): number {
-    this.webSocket.send(src.toBuffer());
+    const buffer = src.toBuffer();
+    let start = 0;
+    do {
+      const slice = buffer.slice(start, start + WebSocketBlockingChannel.BUFFER_SIZE);
+      this.webSocket.send(slice);
+      start += WebSocketBlockingChannel.BUFFER_SIZE;
+    } while (start < buffer.byteLength);
     return src.limit;
   }
 }
