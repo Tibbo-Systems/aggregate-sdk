@@ -18,6 +18,7 @@ import Context from '../context/Context';
 import EventDefinition from '../context/EventDefinition';
 import Event from '../data/Event';
 import LoggerAdapter from '../util/logger/LoggerAdapter';
+import AbstractAggreGateDeviceControllerDisconnectListener from './AbstractAggreGateDeviceControllerDisconnectListener';
 export default abstract class AbstractAggreGateDeviceController<D extends AggreGateDevice, C extends ContextManager<any>> extends AbstractDeviceController<IncomingAggreGateCommand, OutgoingAggreGateCommand> implements AggreGateDeviceController<IncomingAggreGateCommand, OutgoingAggreGateCommand> {
     static readonly FLAG_NO_REPLY: string;
     private device;
@@ -26,12 +27,12 @@ export default abstract class AbstractAggreGateDeviceController<D extends AggreG
     private readonly userSettings;
     private avoidSendingFormats;
     private readonly formatCache;
-    private readonly maxEventQueueLength;
     private usesCompression;
     protected readonly commandWriter: CompressedCommandWriter<OutgoingAggreGateCommand>;
     private protocolVersion;
     private rejectedEvents;
     private readonly commandBuilder;
+    private readonly disconnectListeners;
     constructor(device: D, logger: LoggerAdapter, maxEventQueueLength: number, json?: boolean);
     getContextManager(): ContextManager<Context<any, any>>;
     setContextManager(contextManager: C): void;
@@ -47,12 +48,13 @@ export default abstract class AbstractAggreGateDeviceController<D extends AggreG
     protected connectImpl(): Promise<boolean>;
     abstract start(): void;
     destroy(): void;
+    addDisconnectListener(disconnectListener: AbstractAggreGateDeviceControllerDisconnectListener): void;
     disconnectImpl(): void;
-    protected getProxyContexts(path: string): Array<ProxyContext<any, any>>;
+    protected getProxyContexts(path: string): Promise<Array<ProxyContext<any, any>>>;
     sendCommandAndCheckReplyCode(cmd: OutgoingAggreGateCommand): Promise<IncomingAggreGateCommand | null>;
     processAsyncCommand(cmd: IncomingAggreGateCommand): void;
     private processEvent;
-    protected confirmEvent(con: Context<any, any>, def: EventDefinition, event: Event | null): void;
+    protected confirmEvent(con: Context<any, any>, def: EventDefinition, event: Promise<Event | null>): void;
     toString(): string;
     callRemoteFunction(context: string, name: string, outputFormat: TableFormat | null, parameters: DataTable, queueName: string | null, isReplyRequired?: boolean): Promise<DataTable>;
     private releaseShallowData;

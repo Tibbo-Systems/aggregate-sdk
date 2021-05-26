@@ -16,6 +16,8 @@ import EditProperties from '../../src/action/command/EditProperties';
 import FormatCache from '../../src/datatable/encoding/FormatCache';
 import KnownFormatCollector from '../../src/datatable/encoding/KnownFormatCollector';
 import AbstractContext from '../../src/context/AbstractContext';
+import ProtocolVersion from '../../src/protocol/ProtocolVersion';
+import Expression from '../../src/expression/Expression';
 
 describe('TestEncoding', () => {
   it('testUtfEncoding', () => {

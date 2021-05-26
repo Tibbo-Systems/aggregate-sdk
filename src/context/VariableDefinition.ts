@@ -130,7 +130,7 @@ export default class VariableDefinition extends AbstractEntityDefinition impleme
   }
 
   isHidden(): boolean {
-    return false;
+    return this.hidden;
   }
 
   public getReadPermissions(): Permissions | null {

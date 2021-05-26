@@ -5,14 +5,16 @@ import DefaultAttributedObject from './DefaultAttributedObject';
 
 import Expression from './Expression';
 import Cres from '../Cres';
-import { ErrorListener } from 'antlr4/error';
-import { Recognizer, Token } from 'antlr4';
+import { CommonTokenStream, InputStream, Recognizer, Token } from 'antlr4';
 
-const AggregateExpressionLexer = require('../../src/expression/parser/AggregateExpressionLexer.js');
-const AggregateExpressionParser = require('../../src/expression/parser/AggregateExpressionParser.js');
+import AggregateExpressionLexer from './parser/AggregateExpressionLexer';
+import AggregateExpressionParser from './parser/AggregateExpressionParser';
+import Reference from './Reference';
+import ReferencesFinderVisitor from './util/ReferencesFinderVisitor';
+import DumpingVisitor from './util/DumpingVisitor';
 const antlr4 = require('antlr4');
 
-class ExpressionErrorListener extends ErrorListener {
+class ExpressionErrorListener extends antlr4.error.ErrorListener {
   syntaxError(recognizer: Recognizer, offendingSymbol: Token, line: number, column: number, msg: string, e: any): void {
     throw new Error('Error on line: ' + line + ' column: ' + column + ' message: ' + msg);
   }
@@ -77,13 +79,25 @@ export default class ExpressionUtils {
     }
   }
 
+  public static validateSyntax(expression: Expression, showExpressionInErrorText: boolean) {
+    ExpressionUtils.parse(expression, showExpressionInErrorText);
+  }
+
+  public static dump(expression: string) {
+    const rootNode = ExpressionUtils.parse(new Expression(expression), true);
+    const visitor = new DumpingVisitor();
+    visitor.visitCompilationUnit(rootNode);
+  }
+
   public static parse(expression: Expression, showExpressionInErrorText: boolean): any {
     try {
-      const chars = new antlr4.InputStream(expression.getText());
-      const lexer = new AggregateExpressionLexer.AggregateExpressionLexer(chars);
-      lexer.strictMode = false;
-      const tokens = new antlr4.CommonTokenStream(lexer);
-      const parser = new AggregateExpressionParser.AggregateExpressionParser(tokens);
+      const chars = new InputStream(expression.getText());
+      const lexer = new AggregateExpressionLexer(chars);
+      const tokens = new CommonTokenStream(lexer);
+      const parser = new AggregateExpressionParser(tokens);
+      //TODO SMELL CODE
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
       parser.addErrorListener(new ExpressionErrorListener());
       return parser.compilationUnit();
     } catch (e) {
@@ -91,7 +105,30 @@ export default class ExpressionUtils {
     }
   }
 
+  public static deduplicateExpressionsReferences(expressions: Array<string>): Set<Reference> {
+    const depdupeIdentifiers = new Set<Reference>();
+    for (const expressionText of expressions) {
+      if (expressionText == null) continue;
+      const expression = new Expression(expressionText);
+      const references = ExpressionUtils.findReferences(expression);
+      for (const ref of references) depdupeIdentifiers.add(ref);
+    }
+    return depdupeIdentifiers;
+  }
+
+  public static findReferences(expression: Expression): Array<Reference> {
+    const rootNode = ExpressionUtils.parse(expression, true);
+    const visitor = new ReferencesFinderVisitor();
+    visitor.visitCompilationUnit(rootNode);
+    return visitor.getReferences();
+  }
+
   public static generateBindingId() {
     return Math.round(Math.random() * Number.MAX_VALUE);
+  }
+
+  public static copyAttributes(source: AttributedObject, destination: AttributedObject): void {
+    destination.setTimestamp(source.getTimestamp());
+    destination.setQuality(source.getQuality());
   }
 }

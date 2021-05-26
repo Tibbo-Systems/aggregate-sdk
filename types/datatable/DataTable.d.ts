@@ -123,7 +123,7 @@ export default abstract class DataTable extends AttributedObject implements Stri
      * Returns human-readable description of the table.
      * @return {string}
      */
-    abstract getDescription(): string | null;
+    abstract getDescription(): Promise<string | null>;
     abstract toDefaultString(): string;
     abstract fixRecords(): void;
     abstract dataAsString(showFieldNames?: boolean, showHiddenFields?: boolean, showPasswords?: boolean): string;

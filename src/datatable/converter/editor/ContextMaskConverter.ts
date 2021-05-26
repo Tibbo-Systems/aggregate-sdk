@@ -59,7 +59,7 @@ export default class ContextMaskConverter extends AbstractEditorOptionsConverter
     this.types.push(FieldConstants.STRING_FIELD);
   }
 
-  convertToString(options: DataTable): string | null {
+  convertToString(options: DataTable): string {
     return options.encodeToString();
   }
 

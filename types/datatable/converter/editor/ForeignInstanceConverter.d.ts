@@ -21,6 +21,6 @@ export default class ForeignInstanceConverter extends AbstractEditorOptionsConve
     private static _init;
     static initialize(): void;
     constructor();
-    convertToString(options: DataTable): string | null;
+    convertToString(options: DataTable): string;
     getFormat(): TableFormat;
 }

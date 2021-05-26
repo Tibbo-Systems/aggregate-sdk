@@ -89,7 +89,7 @@ export default class EventEnvironmentResolver extends AbstractReferenceResolver 
     this.resolver.setContextManager(contextManager);
   }
 
-  public setDefaultRow(defaultRow: number) {
+  public setDefaultRow(defaultRow: number): void {
     this.resolver.setDefaultRow(defaultRow);
   }
 

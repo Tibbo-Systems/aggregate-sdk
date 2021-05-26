@@ -188,7 +188,7 @@ export default abstract class Context<C extends Context<any, any>, M extends Con
   /**
    * Returns context status or null if status is not enabled;
    */
-  abstract getStatus(): ContextStatus | null;
+  abstract getStatus(): Promise<ContextStatus | null>;
 
   /**
    * Returns context manager those context tree contains this context.
@@ -198,12 +198,12 @@ export default abstract class Context<C extends Context<any, any>, M extends Con
   /**
    * Returns list of children contexts that are accessible by the specified <code>CallerController</code>.
    */
-  abstract getChildren(caller?: CallerController): Array<Context<C, M>>;
+  abstract getChildren(caller?: CallerController): Promise<Array<Context<C, M>>>;
 
   /**
    * Returns list of visible children contexts.
    */
-  abstract getVisibleChildren(caller?: CallerController): Array<Context<C, M>>;
+  abstract getVisibleChildren(caller?: CallerController): Promise<Array<Context<C, M>>>;
 
   /**
    * Returns true if context's visible children are mapped (e.g. for group and aggregation contexts).
@@ -213,7 +213,7 @@ export default abstract class Context<C extends Context<any, any>, M extends Con
   /**
    * Returns list of mapped children contexts.
    */
-  abstract getMappedChildren(caller?: CallerController): Array<Context<C, M>>;
+  abstract getMappedChildren(caller?: CallerController): Promise<Array<Context<C, M>>>;
 
   /**
    * Returns root context of the context tree containing this context.
@@ -227,7 +227,7 @@ export default abstract class Context<C extends Context<any, any>, M extends Con
    *
    * Note: if this Context is a part of distributed context tree and path argument is not relative, the method will return local context matching its remote "peer" with given path. To get the local
    */
-  abstract get(path: string | null, caller?: CallerController): Context<C, M> | null;
+  abstract get(path: string | null, caller?: CallerController): Promise<Context<C, M> | null>;
 
   /**
    * Returns child of this context with the specified name.
@@ -239,7 +239,7 @@ export default abstract class Context<C extends Context<any, any>, M extends Con
    *
    * This method uses provided <code>CallerController</code> for permission checking.
    */
-  abstract getChild(name: string, caller?: CallerController): Context<C, M> | null;
+  abstract getChild(name: string, caller?: CallerController): Promise<Context<C, M> | null>;
 
   /**
    * Adds new child to the current context.
@@ -393,7 +393,7 @@ export default abstract class Context<C extends Context<any, any>, M extends Con
    */
   abstract setVariable(name: string, value: DataTable, caller?: CallerController | null, request?: RequestController | null): Promise<void>;
 
-  abstract loadContext(): Promise<Context<C, M>>;
+  abstract init(): Promise<Context<C, M>>;
 
   /**
    * Gets variable, updates field value in the specified record, and sets variable.
@@ -410,7 +410,7 @@ export default abstract class Context<C extends Context<any, any>, M extends Con
    *
    * @return Event object or null if event was suppressed by context.
    */
-  abstract fireEvent(name: string, data: DataTable | null, level: number, id: number | null, creationtime: Date | null, listener: number | null, caller?: CallerController, request?: FireEventRequestController): Event | null;
+  abstract fireEvent(name: string, data: DataTable | null, level: number, id: number | null, creationtime: Date | null, listener: number | null, caller?: CallerController, request?: FireEventRequestController): Promise<Event | null>;
 
   /**
    * Add a new action definition to the context.

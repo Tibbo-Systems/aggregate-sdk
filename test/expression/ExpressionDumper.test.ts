@@ -1,24 +1,20 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-import DumperVisitor from '../../src/expression/DumperVisitor';
+import DumpingVisitor from '../../src/expression/util/DumpingVisitor';
+import AggregateExpressionParser from '../../src/expression/parser/AggregateExpressionParser';
+import AggregateExpressionLexer from '../../src/expression/parser/AggregateExpressionLexer';
+import { CommonTokenStream, InputStream } from 'antlr4';
 describe('ExpressionVisitor', () => {
   it('testVisitor', () => {
-    const antlr4 = require('antlr4');
-    const AggregateExpressionLexer = require('../../src/expression/parser/AggregateExpressionLexer.js');
-    const AggregateExpressionParser = require('../../src/expression/parser/AggregateExpressionParser.js');
-
     const input = '1+1 == 5 && 2+2 == 4?  "xxx" :"yyy"';
 
-    const chars = new antlr4.InputStream(input);
-    const lexer = new AggregateExpressionLexer.AggregateExpressionLexer(chars);
+    const chars = new InputStream(input);
+    const lexer = new AggregateExpressionLexer(chars);
 
-    lexer.strictMode = false;
-
-    const tokens = new antlr4.CommonTokenStream(lexer);
-    const parser = new AggregateExpressionParser.AggregateExpressionParser(tokens);
+    const tokens = new CommonTokenStream(lexer);
+    const parser = new AggregateExpressionParser(tokens);
     const tree = parser.compilationUnit();
-    const visitor = new DumperVisitor();
+    const visitor = new DumpingVisitor();
     visitor.visitCompilationUnit(tree);
     console.log(visitor.getResult());
-    console.log(tree.toStringTree(parser.ruleNames));
+    console.log(tree.toStringTree(parser.ruleNames, null));
   });
 });

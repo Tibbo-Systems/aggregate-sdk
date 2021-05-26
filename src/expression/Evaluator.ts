@@ -16,10 +16,11 @@ import MessageFormat from '../util/java/MessageFormat';
 import AttributedObject from './AttributedObject';
 import DefaultEvaluatingVisitor from './DefaultEvaluatingVisitor';
 
-import Function from './functions/Function';
+import Function from './function/Function';
 import AbstractEvaluatingVisitor from './AbstractEvaluatingVisitor';
 import Tracer from './util/Tracer';
 import ErrorCollector from '../util/ErrorCollector';
+import DataTableConversion from '../datatable/DataTableConversion';
 
 export default class Evaluator extends JObject {
   private static readonly ENVIRONMENT_PREVIOUS: string = 'previous';
@@ -35,26 +36,6 @@ export default class Evaluator extends JObject {
 
   private previousResult: any;
   private count = 0;
-
-  private setKeepPreviousResult(keepPreviousResult: boolean): void {
-    this.keepPreviousResult = keepPreviousResult;
-  }
-
-  private getKeepPreviousResult(): boolean {
-    return this.keepPreviousResult;
-  }
-
-  private getCount(): number {
-    return this.count;
-  }
-
-  public getPreviousResult(): any {
-    return this.previousResult;
-  }
-
-  public restorePreviousResult(previousResult: any): void {
-    this.previousResult = previousResult;
-  }
 
   private readonly environmentResolver: EnvironmentReferenceResolver = new (class LocalEnvironmentResolver extends EnvironmentReferenceResolver {
     private parentClass: Evaluator;
@@ -92,12 +73,6 @@ export default class Evaluator extends JObject {
     this.init(resolver);
   }
 
-  evaluateToString(expression: Expression | null): string {
-    const result: any = this.evaluate(expression);
-
-    return result != null ? result.toString() : '';
-  }
-
   public init(defaultResolver: ReferenceResolver): void {
     defaultResolver.setEvaluator(this);
 
@@ -106,11 +81,7 @@ export default class Evaluator extends JObject {
     this.setResolver(Reference.SCHEMA_ENVIRONMENT, this.environmentResolver);
   }
 
-  public setResolver(schema: string, resolver: ReferenceResolver | null) {
-    this.resolvers.set(schema, resolver);
-  }
-
-  public evaluate(expression: Expression | null, environment: EvaluationEnvironment = new EvaluationEnvironment(), attributed = false): any {
+  public evaluate(expression: Expression | null, environment: EvaluationEnvironment = new EvaluationEnvironment(), attributed = false): Promise<any> | any {
     try {
       if (expression == null || expression.getText().length == 0) {
         return null;
@@ -118,16 +89,22 @@ export default class Evaluator extends JObject {
 
       let root = expression.getRootNode();
 
-      if (root == null) {
+      if (!root) {
         root = ExpressionUtils.parse(expression, true);
         expression.setRootNode(root);
       }
 
       const visitor: DefaultEvaluatingVisitor = new DefaultEvaluatingVisitor(this, environment);
 
-      let result: any = visitor.visitCompilationUnit(root);
+      let result = visitor.visitCompilationUnit(root);
       if (!attributed && result instanceof AttributedObject) {
         result = (result as AttributedObject).getValue();
+      }
+
+      if (!attributed && result instanceof Promise) {
+        result = result.then((res) => {
+          return res.getValue();
+        });
       }
 
       if (this.keepPreviousResult) {
@@ -142,17 +119,94 @@ export default class Evaluator extends JObject {
     }
   }
 
-  evaluateToBoolean(prefilter: Expression): boolean {
-    return false;
+  public evaluateAttributed(expression: Expression, environment: EvaluationEnvironment = new EvaluationEnvironment()): Promise<AttributedObject> | AttributedObject {
+    const result = this.evaluate(expression, environment, true);
+    if (result instanceof Promise) {
+      return result.then((res) => {
+        return ExpressionUtils.toAttributed(res);
+      });
+    }
+    return ExpressionUtils.toAttributed(result);
+  }
+
+  public evaluateToString(expression: Expression | null): Promise<string> | string {
+    const result = this.evaluate(expression);
+    if (result instanceof Promise) {
+      return result.then((res) => {
+        return res != null ? res.toString() : '';
+      });
+    }
+    return result != null ? result.toString() : '';
+  }
+
+  public evaluateToBooleanOrNull(expression: Expression): Promise<boolean | null> | boolean | null {
+    const result = this.evaluate(expression);
+    if (result instanceof Promise) {
+      return result.then((res) => {
+        return Util.convertToBoolean(res, true, true);
+      });
+    }
+    return Util.convertToBoolean(result, true, true);
+  }
+
+  public evaluateToBoolean(expression: Expression): Promise<boolean> | boolean {
+    const result = this.evaluate(expression);
+    if (result instanceof Promise) {
+      return result.then((res) => {
+        return Util.convertToBoolean(res, true, false) as boolean;
+      });
+    }
+    return Util.convertToBoolean(result, true, false) as boolean;
+  }
+
+  evaluateToDataTable(expression: Expression): Promise<DataTable> | DataTable {
+    const result = this.evaluateAttributed(expression);
+    if (result instanceof Promise) {
+      return result.then((value) => {
+        return this.wrapAttributedObject(value);
+      });
+    } else {
+      return this.wrapAttributedObject(result);
+    }
+  }
+
+  private wrapAttributedObject(result: any): DataTable {
+    if (result.getValue() != null && result.getValue() instanceof DataTable) {
+      return result.getValue();
+    }
+    const values = new Array<any>();
+    values.push(result.getValue());
+    const data = DataTableConversion.wrapToTable(values);
+    ExpressionUtils.copyAttributes(result, data);
+    return data;
+  }
+
+  private setKeepPreviousResult(keepPreviousResult: boolean): void {
+    this.keepPreviousResult = keepPreviousResult;
+  }
+
+  private getKeepPreviousResult(): boolean {
+    return this.keepPreviousResult;
+  }
+
+  private getCount(): number {
+    return this.count;
+  }
+
+  public getPreviousResult(): any {
+    return this.previousResult;
+  }
+
+  public restorePreviousResult(previousResult: any): void {
+    this.previousResult = previousResult;
+  }
+
+  public setResolver(schema: string, resolver: ReferenceResolver | null) {
+    this.resolvers.set(schema, resolver);
   }
 
   public getEnvironmentResolver(): EnvironmentReferenceResolver {
     return this.environmentResolver;
-  }
-
-  evaluateToDataTable(expression: Expression): DataTable {
-    const SimpleDataTable = require('../datatable/SimpleDataTable').default;
-    return new SimpleDataTable();
   }
 
   setDefaultTable(data: DataTable | null): void {
@@ -169,11 +223,6 @@ export default class Evaluator extends JObject {
 
   getResolvers(): Map<string | null, ReferenceResolver | null> {
     return this.resolvers;
-  }
-
-  public evaluateToBooleanOrNull(expression: Expression): boolean | null {
-    const result: any = this.evaluate(expression);
-    return Util.convertToBoolean(result, true, true);
   }
 
   // eslint-disable-next-line @typescript-eslint/ban-types
@@ -226,11 +275,5 @@ export default class Evaluator extends JObject {
 
   getResolver(schema: string | null): ReferenceResolver | null {
     return this.resolvers.get(schema) ?? null;
-  }
-
-  evaluateAttributed(expression: Expression, environment: EvaluationEnvironment = new EvaluationEnvironment()) {
-    const result = this.evaluate(expression, environment, true);
-
-    return ExpressionUtils.toAttributed(result);
   }
 }

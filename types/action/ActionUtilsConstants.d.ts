@@ -25,6 +25,7 @@ export default class ActionUtilsConstants {
     static readonly CMD_CLOSE_DASHBOARD: string;
     static readonly CMD_OPEN_GRID_DASHBOARD: string;
     static readonly CMD_EDIT_GRID_DASHBOARD: string;
+    static readonly CMD_EDIT_EXPRESSION: string;
     static readonly RESPONSE_OK: string;
     static readonly RESPONSE_SAVED: string;
     static readonly RESPONSE_CLOSED: string;

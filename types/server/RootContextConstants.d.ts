@@ -57,6 +57,7 @@ export default class RootContextConstants {
     static readonly F_GET_FORMAT: string;
     static readonly F_SESSION_GET: string;
     static readonly F_SESSION_SET: string;
+    static readonly F_TERMINATE_CLIENT_CONNECTION: string;
     static readonly F_GET_LICENSE: string;
     static readonly E_FEEDBACK: string;
     static readonly E_CONTEXT_ADDED: string;
@@ -94,6 +95,7 @@ export default class RootContextConstants {
     static readonly A_GENERATE_HEAP_DUMP: string;
     static readonly A_CONNECT_TO_STORE: string;
     static readonly A_DELETE_MODULES: string;
+    static readonly A_TERMINATE_CLIENT_CONNECTION: string;
     static readonly VF_VERSION_VERSION: string;
     static readonly VF_VERSION_TIME: string;
     static readonly VF_STATUS_NAME: string;
@@ -172,6 +174,7 @@ export default class RootContextConstants {
     static readonly FIF_REGISTER_ADMIN_PERMISSIONS: string;
     static readonly FIF_REGISTER_GLOBAL_PERMISSIONS: string;
     static readonly FIF_LOGIN_USERNAME: string;
+    static readonly FIF_LOGIN_LOGIN: string;
     static readonly FIF_LOGIN_PASSWORD: string;
     static readonly FIF_LOGIN_CODE: string;
     static readonly FIF_LOGIN_STATE: string;

@@ -16,7 +16,7 @@ export default class ServerActionHelper {
     static __static_initializer_0(): void;
     private static _init;
     static initialize(): void;
-    static fillRequestCache(actionContext: ActionContext, initialParameters: DataTable | null, inputData: DataTable | null, environment: Map<string, any> | null, caller: CallerController, cm: ContextManager<any> | null, con: Context<any, any>, collector: ErrorCollector | null): void;
+    static fillRequestCache(actionContext: ActionContext, initialParameters: DataTable | null, inputData: DataTable | null, environment: Map<string, any> | null, caller: CallerController, cm: ContextManager<any> | null, con: Context<any, any>, collector?: ErrorCollector): void;
     static executeNonInteractively(context: Context<any, any>, action: string, initialParameters: DataTable, inputData: DataTable, environment: Map<string, any>, mode: ActionExecutionMode, caller: CallerController): Promise<Map<string, string | null>>;
     private static buildResponse;
     static initActions(caller: CallerController, actions: Array<ActionHolder>, con: ServerContext): ActionIdentifier | null;

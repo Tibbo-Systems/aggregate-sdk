@@ -1,13 +1,13 @@
-// Generated from src/expression/grammar/AggregateExpression.g4 by ANTLR 4.7.2
+// Generated from src/expression/grammar/AggregateExpression.g4 by ANTLR 4.9.2
 // jshint ignore: start
-var antlr4 = require('antlr4/index');
+import antlr4 from 'antlr4';
 
 
 
-var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
-    "\u00023\u01a8\b\u0001\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004",
-    "\u0004\t\u0004\u0004\u0005\t\u0005\u0004\u0006\t\u0006\u0004\u0007\t",
-    "\u0007\u0004\b\t\b\u0004\t\t\t\u0004\n\t\n\u0004\u000b\t\u000b\u0004",
+const serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786",
+    "\u5964\u00023\u01a8\b\u0001\u0004\u0002\t\u0002\u0004\u0003\t\u0003",
+    "\u0004\u0004\t\u0004\u0004\u0005\t\u0005\u0004\u0006\t\u0006\u0004\u0007",
+    "\t\u0007\u0004\b\t\b\u0004\t\t\t\u0004\n\t\n\u0004\u000b\t\u000b\u0004",
     "\f\t\f\u0004\r\t\r\u0004\u000e\t\u000e\u0004\u000f\t\u000f\u0004\u0010",
     "\t\u0010\u0004\u0011\t\u0011\u0004\u0012\t\u0012\u0004\u0013\t\u0013",
     "\u0004\u0014\t\u0014\u0004\u0015\t\u0015\u0004\u0016\t\u0016\u0004\u0017",
@@ -287,24 +287,56 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0002"].join("");
 
 
-var atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
+const atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
 
-var decisionsToDFA = atn.decisionToState.map( function(ds, index) { return new antlr4.dfa.DFA(ds, index); });
+const decisionsToDFA = atn.decisionToState.map( (ds, index) => new antlr4.dfa.DFA(ds, index) );
 
-function AggregateExpressionLexer(input) {
-	antlr4.Lexer.call(this, input);
-    this._interp = new antlr4.atn.LexerATNSimulator(this, atn, decisionsToDFA, new antlr4.PredictionContextCache());
-    return this;
+export default class AggregateExpressionLexer extends antlr4.Lexer {
+
+    static grammarFileName = "AggregateExpression.g4";
+    static channelNames = [ "DEFAULT_TOKEN_CHANNEL", "HIDDEN" ];
+	static modeNames = [ "DEFAULT_MODE" ];
+	static literalNames = [ null, null, null, null, null, "'('", "')'", "'{'", 
+                         "'}'", "'['", "']'", "','", "'.'", "'@'", "'#'", 
+                         "'$'", "'+'", "'-'", "'*'", "'/'", "'%'", "'?'", 
+                         "':'", "'=='", "'!='", "'~='", "'<'", "'>'", "'<='", 
+                         "'>='", "'>>'", "'>>>'", "'<<'", "'||'", "'&&'", 
+                         "'!'", "'|'", "'^'", "'&'", "'~'", null, null, 
+                         null, "'/*'", "'*/'" ];
+	static symbolicNames = [ null, "INTEGER_LITERAL", "FLOATING_POINT_LITERAL", 
+                          "STRING_LITERAL", "UNCLOSED_STRING_LITERAL", "LPAREN", 
+                          "RPAREN", "LBRACE", "RBRACE", "LBRACKET", "RBRACKET", 
+                          "COMMA", "DOT", "AT", "HASH", "DOLLAR", "PLUS", 
+                          "MINUS", "MUL", "DIV", "MOD", "QUESTION", "COLON", 
+                          "EQ", "NE", "MATCH", "LT", "GT", "LTE", "GTE", 
+                          "RIGHT_SHIFT", "URIGHT_SHIFT", "LEFT_SHIFT", "OR", 
+                          "AND", "NOT", "BITWISE_OR", "BITWISE_XOR", "BITWISE_AND", 
+                          "BITWISE_NOT", "TRUE", "FALSE", "NULL", "MLC_START", 
+                          "MLC_END", "WHITESPACE", "COMMENT_MULTILINE", 
+                          "COMMENT_LINE", "IDENTIFIER", "UNMATCHED" ];
+	static ruleNames = [ "INTEGER_LITERAL", "FLOATING_POINT_LITERAL", "STRING_LITERAL", 
+                      "UNCLOSED_STRING_LITERAL", "LPAREN", "RPAREN", "LBRACE", 
+                      "RBRACE", "LBRACKET", "RBRACKET", "COMMA", "DOT", 
+                      "AT", "HASH", "DOLLAR", "PLUS", "MINUS", "MUL", "DIV", 
+                      "MOD", "QUESTION", "COLON", "EQ", "NE", "MATCH", "LT", 
+                      "GT", "LTE", "GTE", "RIGHT_SHIFT", "URIGHT_SHIFT", 
+                      "LEFT_SHIFT", "OR", "AND", "NOT", "BITWISE_OR", "BITWISE_XOR", 
+                      "BITWISE_AND", "BITWISE_NOT", "TRUE", "FALSE", "NULL", 
+                      "MLC_START", "MLC_END", "WHITESPACE", "COMMENT_MULTILINE", 
+                      "COMMENT_LINE", "IDENTIFIER", "UNMATCHED", "DIGIT", 
+                      "HEX_DIGIT", "LETTER", "LETTER_OR_DIGIT", "ESCAPE_SEQUENCE", 
+                      "DECIMAL_LITERAL", "HEX_LITERAL", "OCTAL_LITERAL", 
+                      "BINARY_LITERAL", "EXPONENT" ];
+
+    constructor(input) {
+        super(input)
+        this._interp = new antlr4.atn.LexerATNSimulator(this, atn, decisionsToDFA, new antlr4.PredictionContextCache());
+    }
+
+    get atn() {
+        return atn;
+    }
 }
-
-AggregateExpressionLexer.prototype = Object.create(antlr4.Lexer.prototype);
-AggregateExpressionLexer.prototype.constructor = AggregateExpressionLexer;
-
-Object.defineProperty(AggregateExpressionLexer.prototype, "atn", {
-        get : function() {
-                return atn;
-        }
-});
 
 AggregateExpressionLexer.EOF = antlr4.Token.EOF;
 AggregateExpressionLexer.INTEGER_LITERAL = 1;
@@ -357,75 +389,5 @@ AggregateExpressionLexer.COMMENT_LINE = 47;
 AggregateExpressionLexer.IDENTIFIER = 48;
 AggregateExpressionLexer.UNMATCHED = 49;
 
-AggregateExpressionLexer.prototype.channelNames = [ "DEFAULT_TOKEN_CHANNEL", "HIDDEN" ];
 
-AggregateExpressionLexer.prototype.modeNames = [ "DEFAULT_MODE" ];
-
-AggregateExpressionLexer.prototype.literalNames = [ null, null, null, null, 
-                                                    null, "'('", "')'", 
-                                                    "'{'", "'}'", "'['", 
-                                                    "']'", "','", "'.'", 
-                                                    "'@'", "'#'", "'$'", 
-                                                    "'+'", "'-'", "'*'", 
-                                                    "'/'", "'%'", "'?'", 
-                                                    "':'", "'=='", "'!='", 
-                                                    "'~='", "'<'", "'>'", 
-                                                    "'<='", "'>='", "'>>'", 
-                                                    "'>>>'", "'<<'", "'||'", 
-                                                    "'&&'", "'!'", "'|'", 
-                                                    "'^'", "'&'", "'~'", 
-                                                    null, null, null, "'/*'", 
-                                                    "'*/'" ];
-
-AggregateExpressionLexer.prototype.symbolicNames = [ null, "INTEGER_LITERAL", 
-                                                     "FLOATING_POINT_LITERAL", 
-                                                     "STRING_LITERAL", "UNCLOSED_STRING_LITERAL", 
-                                                     "LPAREN", "RPAREN", 
-                                                     "LBRACE", "RBRACE", 
-                                                     "LBRACKET", "RBRACKET", 
-                                                     "COMMA", "DOT", "AT", 
-                                                     "HASH", "DOLLAR", "PLUS", 
-                                                     "MINUS", "MUL", "DIV", 
-                                                     "MOD", "QUESTION", 
-                                                     "COLON", "EQ", "NE", 
-                                                     "MATCH", "LT", "GT", 
-                                                     "LTE", "GTE", "RIGHT_SHIFT", 
-                                                     "URIGHT_SHIFT", "LEFT_SHIFT", 
-                                                     "OR", "AND", "NOT", 
-                                                     "BITWISE_OR", "BITWISE_XOR", 
-                                                     "BITWISE_AND", "BITWISE_NOT", 
-                                                     "TRUE", "FALSE", "NULL", 
-                                                     "MLC_START", "MLC_END", 
-                                                     "WHITESPACE", "COMMENT_MULTILINE", 
-                                                     "COMMENT_LINE", "IDENTIFIER", 
-                                                     "UNMATCHED" ];
-
-AggregateExpressionLexer.prototype.ruleNames = [ "INTEGER_LITERAL", "FLOATING_POINT_LITERAL", 
-                                                 "STRING_LITERAL", "UNCLOSED_STRING_LITERAL", 
-                                                 "LPAREN", "RPAREN", "LBRACE", 
-                                                 "RBRACE", "LBRACKET", "RBRACKET", 
-                                                 "COMMA", "DOT", "AT", "HASH", 
-                                                 "DOLLAR", "PLUS", "MINUS", 
-                                                 "MUL", "DIV", "MOD", "QUESTION", 
-                                                 "COLON", "EQ", "NE", "MATCH", 
-                                                 "LT", "GT", "LTE", "GTE", 
-                                                 "RIGHT_SHIFT", "URIGHT_SHIFT", 
-                                                 "LEFT_SHIFT", "OR", "AND", 
-                                                 "NOT", "BITWISE_OR", "BITWISE_XOR", 
-                                                 "BITWISE_AND", "BITWISE_NOT", 
-                                                 "TRUE", "FALSE", "NULL", 
-                                                 "MLC_START", "MLC_END", 
-                                                 "WHITESPACE", "COMMENT_MULTILINE", 
-                                                 "COMMENT_LINE", "IDENTIFIER", 
-                                                 "UNMATCHED", "DIGIT", "HEX_DIGIT", 
-                                                 "LETTER", "LETTER_OR_DIGIT", 
-                                                 "ESCAPE_SEQUENCE", "DECIMAL_LITERAL", 
-                                                 "HEX_LITERAL", "OCTAL_LITERAL", 
-                                                 "BINARY_LITERAL", "EXPONENT" ];
-
-AggregateExpressionLexer.prototype.grammarFileName = "AggregateExpression.g4";
-
-
-
-exports.AggregateExpressionLexer = AggregateExpressionLexer;
 

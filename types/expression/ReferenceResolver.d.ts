@@ -17,6 +17,6 @@ export default interface ReferenceResolver {
     getCallerController(): CallerController | undefined;
     setEvaluator(evaluator: Evaluator): void;
     getEvaluator(): Evaluator | null;
-    setDefaultRow(defaultRow: number): void;
+    setDefaultRow(defaultRow: number | null): void;
     getDefaultRow(): number | null;
 }

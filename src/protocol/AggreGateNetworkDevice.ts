@@ -11,6 +11,10 @@ export default abstract class AggreGateNetworkDevice extends AggreGateDevice {
 
   private connectionTimeout: number = AggreGateNetworkDevice.DEFAULT_CONNECTION_TIMEOUT;
 
+  private reconnectionAttempts = 0;
+
+  private reconnectionDelay = 1000;
+
   constructor(id: string, type: string, address: string, port: number) {
     super(id, type);
     this.address = address;
@@ -39,6 +43,22 @@ export default abstract class AggreGateNetworkDevice extends AggreGateDevice {
 
   public setConnectionTimeout(connectionTimeout: number): void {
     this.connectionTimeout = connectionTimeout;
+  }
+
+  public getReconnectionAttempts(): number {
+    return this.reconnectionAttempts;
+  }
+
+  public setReconnectionAttempts(reconnectionAttempts: number): void {
+    this.reconnectionAttempts = reconnectionAttempts;
+  }
+
+  public setReconnectionDelay(reconnectionDelay: number): void {
+    this.reconnectionDelay = reconnectionDelay;
+  }
+
+  public getReconnectionDelay(): number {
+    return this.reconnectionDelay;
   }
 
   public getInfo(): string {

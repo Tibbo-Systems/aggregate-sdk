@@ -70,7 +70,7 @@ export default class ServerActionHelper {
     caller: CallerController,
     cm: ContextManager<any> | null,
     con: Context<any, any>,
-    collector: ErrorCollector | null
+    collector?: ErrorCollector
   ): void {
     if (inputData == null) {
       return;
@@ -157,7 +157,7 @@ export default class ServerActionHelper {
     caller: CallerController,
     cm: ContextManager<any> | null,
     con: Context<any, any>,
-    collector: ErrorCollector | null
+    collector?: ErrorCollector
   ): GenericActionResponse {
     const req: GenericActionResponse = new GenericActionResponse(responseData, false, new RequestIdentifier(requestId));
 
@@ -172,7 +172,8 @@ export default class ServerActionHelper {
 
       evaluator.getEnvironmentResolver().set(ServerActionHelper.ENV_VARIABLE_PARAMETERS, initialParameters);
 
-      responseData = DataTableUtils.processBindings(responseData, evaluator, collector);
+      //TODO promise
+      DataTableUtils.processBindings(responseData, evaluator, collector);
     }
 
     return req;
@@ -201,7 +202,7 @@ export default class ServerActionHelper {
       const hld = holder.getInitialParameters();
       const initialParameters: ServerActionInput | null = hld && new ServerActionInput(hld);
 
-      if (actionContext) ServerActionHelper.fillRequestCache(actionContext, holder.getInitialParameters(), holder.getInputData(), null, caller, con.getContextManager(), con, null);
+      if (actionContext) ServerActionHelper.fillRequestCache(actionContext, holder.getInitialParameters(), holder.getInputData(), null, caller, con.getContextManager(), con);
 
       if (caller.getCallerData()) caller?.getCallerData()?.addToActionHistory(ActionHistoryItem.create(new Date(), context && context.getPath(), actionName, holder.getInitialParameters()));
 

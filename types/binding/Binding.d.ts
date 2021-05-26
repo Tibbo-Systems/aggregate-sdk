@@ -15,4 +15,5 @@ export default class Binding extends JObject {
     setQueue(queue: string): void;
     equals(obj: JObject | null): boolean;
     clone(): Binding;
+    toString(): string;
 }

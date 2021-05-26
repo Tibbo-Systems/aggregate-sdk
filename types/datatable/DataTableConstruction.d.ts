@@ -3,7 +3,7 @@ import Evaluator from '../expression/Evaluator';
 import EvaluationEnvironment from '../expression/EvaluationEnvironment';
 import DataTable from './DataTable';
 export default class DataTableConstruction {
-    static constructTable(parameters: Array<any>, format: TableFormat | null, evaluator: Evaluator | null, environment: EvaluationEnvironment): DataTable;
+    static constructTable(parameters: Array<any>, format: TableFormat | null, evaluator: Evaluator | null, environment: EvaluationEnvironment): Promise<DataTable>;
     private static resolveParameters;
     private static fillDataTable;
 }

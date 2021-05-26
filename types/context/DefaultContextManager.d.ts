@@ -27,13 +27,13 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
     stop(): void;
     getRoot(): T | null;
     setRoot(newRoot: T): void;
-    get(contextName: string, caller?: CallerController): T | null;
+    get(contextName: string, caller?: CallerController): Promise<T | null>;
     private addEventListener;
     protected addListenerToContext(con: T, event: string, listener: DefaultContextEventListener, mask: boolean, weak: boolean): void;
     private removeEventListener;
     protected removeListenerFromContext(con: T, event: string, listener: DefaultContextEventListener, mask: boolean): void;
-    addMaskEventListener(mask: string, event: string, listener: DefaultContextEventListener, weak?: boolean): void;
-    removeMaskEventListener(mask: string, event: string, listener: DefaultContextEventListener): void;
+    addMaskEventListener(mask: string, event: string, listener: DefaultContextEventListener, weak?: boolean): Promise<void>;
+    removeMaskEventListener(mask: string, event: string, listener: DefaultContextEventListener): Promise<void>;
     protected getListeners(context: string, event: string): ContextEventListenerSet;
     private getContextListeners;
     private getMaskListeners;

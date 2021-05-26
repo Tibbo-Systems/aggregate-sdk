@@ -12,7 +12,7 @@ import DataTableBindingProvider from '../datatable/DataTableBindingProvider';
 import EventEnrichmentRule from './EventEnrichmentRule';
 import Contexts from '../context/Contexts';
 import UtilitiesContextConstants from '../server/UtilitiesContextConstants';
-import Functions from '../expression/functions/Functions';
+import Functions from '../expression/function/Functions';
 import DefaultFormatConverter from '../datatable/converter/DefaultFormatConverter';
 import JObject from '../util/java/JObject';
 import Binding from '../binding/Binding';

@@ -26,7 +26,7 @@ export default abstract class AbstractReferenceResolver extends JObject implemen
     return this.defaultTable;
   }
 
-  abstract async resolveReference(ref: Reference, environment: EvaluationEnvironment): Promise<any>;
+  abstract resolveReference(ref: Reference, environment: EvaluationEnvironment): Promise<any> | any;
 
   public setContextManager(contextManager: ContextManager<Context<any, any>> | null): void {
     this.contextManager = contextManager;
@@ -66,7 +66,7 @@ export default abstract class AbstractReferenceResolver extends JObject implemen
 
   public addContextManager(schema: string, cm: ContextManager<any>) {}
 
-  public setDefaultRow(defaultRow: number) {
+  public setDefaultRow(defaultRow: number): void {
     this.defaultRow = defaultRow;
   }
 }

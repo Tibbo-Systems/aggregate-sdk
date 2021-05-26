@@ -15,12 +15,13 @@ import Context from '../context/Context';
 import EditData from './command/EditData';
 import EntityList from '../context/EntityList';
 import ContextManager from '../context/ContextManager';
+import WebWindowLocation from '../util/WebWindowLocation';
 export default class ServerActionCommandProcessor {
     private action;
     constructor(action: ServerAction);
     static getExecutionParameter(input: DataTable, name: string): DataTable | null;
-    fetchDnDSourceContexts(title: string, actionDefinition: ActionDefinition, actionParams: ServerActionInput, callerController: CallerController, expandedContext?: string | null): Array<ServerContext>;
-    getDnDSourceContext(actionParams: ServerActionInput, callerController: CallerController): ServerContext | null;
+    fetchDnDSourceContexts(title: string, actionDefinition: ActionDefinition, actionParams: ServerActionInput, callerController: CallerController, expandedContext?: string | null): Promise<Array<ServerContext>>;
+    getDnDSourceContext(actionParams: ServerActionInput, callerController: CallerController): Promise<ServerContext | null>;
     send(cmd: GenericActionCommand): GenericActionResponse | null;
     editDataWithTitle(title: string, data: DataTable, iconId?: string | null, helpId?: string | null, help?: string | null): DataTable | null;
     editDataWithToolbar(id: RequestIdentifier | null, merger: EditDataMerger | null, group: boolean, title: string, data: DataTable, useDockableFrame?: boolean, readonly?: boolean, iconId?: string | null, helpId?: string | null, help?: string | null, defaultContext?: Context<any, any> | null, location?: WindowLocation | null, dashboard?: DashboardProperties | null, expression?: string | null, period?: number | null): DataTable | null;
@@ -43,5 +44,5 @@ export default class ServerActionCommandProcessor {
     showSystemTree(title: string, roots: Context<Context<any, any>, ContextManager<any>> | Array<string>): void;
     activateDashboard(nameString: string, parameters: DataTable): void;
     editDashboard(contextPath: string, defaultContext: string): void;
-    openDashboard(contextPath: string, defaultContext: string): void;
+    openDashboard(contextPath: string, defaultContext: string, location: WebWindowLocation): void;
 }

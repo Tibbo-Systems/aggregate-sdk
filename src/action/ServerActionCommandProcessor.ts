@@ -41,6 +41,7 @@ import ActivateDashboard from './command/ActivateDashboard';
 import EditGridDashboard from './command/EditGridDashboard';
 import ActionUtilsConstants from './ActionUtilsConstants';
 import OpenGridDashboard from './command/OpenGridDashboard';
+import WebWindowLocation from '../util/WebWindowLocation';
 
 export default class ServerActionCommandProcessor {
   private action: ServerAction | null = null;
@@ -67,8 +68,8 @@ export default class ServerActionCommandProcessor {
     return null;
   }
 
-  public fetchDnDSourceContexts(title: string, actionDefinition: ActionDefinition, actionParams: ServerActionInput, callerController: CallerController, expandedContext: string | null = null): Array<ServerContext> {
-    const result: ServerContext | null = this.getDnDSourceContext(actionParams, callerController);
+  public async fetchDnDSourceContexts(title: string, actionDefinition: ActionDefinition, actionParams: ServerActionInput, callerController: CallerController, expandedContext: string | null = null): Promise<Array<ServerContext>> {
+    const result: ServerContext | null = await this.getDnDSourceContext(actionParams, callerController);
 
     if (result != null) {
       return new Array(result);
@@ -95,7 +96,7 @@ export default class ServerActionCommandProcessor {
         const re = ref.getContext();
         re && paths.push(re);
         const definingContext: ServerContext | null = this.action && this.action.getDefiningContext();
-        const cur = definingContext && definingContext.get(ref.getContext(), callerController);
+        const cur = definingContext && (await definingContext.get(ref.getContext(), callerController));
         if (cur != null) {
           res.push(cur);
         }
@@ -111,7 +112,7 @@ export default class ServerActionCommandProcessor {
     }
   }
 
-  public getDnDSourceContext(actionParams: ServerActionInput, callerController: CallerController): ServerContext | null {
+  public async getDnDSourceContext(actionParams: ServerActionInput, callerController: CallerController): Promise<ServerContext | null> {
     if (actionParams.getData().getRecordCount() == 1) {
       let path: string | null = null;
 
@@ -121,7 +122,7 @@ export default class ServerActionCommandProcessor {
 
       if (path != null) {
         const definingContext = this.action && this.action.getDefiningContext();
-        return definingContext && definingContext.get(path, callerController);
+        return definingContext && (await definingContext.get(path, callerController));
       }
     }
 
@@ -396,7 +397,7 @@ export default class ServerActionCommandProcessor {
     this.send(new EditGridDashboard(contextPath, defaultContext));
   }
 
-  public openDashboard(contextPath: string, defaultContext: string): void {
-    this.send(new OpenGridDashboard(contextPath, defaultContext));
+  public openDashboard(contextPath: string, defaultContext: string, location: WebWindowLocation): void {
+    this.send(new OpenGridDashboard(contextPath, defaultContext, location));
   }
 }

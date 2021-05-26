@@ -80,8 +80,9 @@ referenceProperty:
     HASH agIdentifier
     ;
 
-valueReference
-    : referenceSchema? referenceServer? (referenceContextMask? COLON referenceEntity? (DOLLAR agIdentifier)? | agIdentifier) referenceRow? referenceProperty?
+valueReference:
+    (referenceSchema? referenceServer? (referenceContextMask? COLON referenceEntity? (DOLLAR agIdentifier)? | agIdentifier) referenceRow? referenceProperty?
+    | referenceProperty)?
     ;
 
 arguments:

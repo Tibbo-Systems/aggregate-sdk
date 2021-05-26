@@ -1,12 +1,21 @@
 import Evaluator from '../../src/expression/Evaluator';
 import Expression from '../../src/expression/Expression';
-import AbstractFunction from '../../src/expression/functions/AbstractFunction';
-import Functions from '../../src/expression/functions/Functions';
+import AbstractFunction from '../../src/expression/function/AbstractFunction';
+import Functions from '../../src/expression/function/Functions';
 import EvaluationEnvironment from '../../src/expression/EvaluationEnvironment';
 import Cres from '../../src/Cres';
+import JSBI from 'jsbi';
 
 describe('TestExpressions', () => {
   const ev: Evaluator = new Evaluator();
+
+  it('testGeExpressionEqualsConditionZero', () => {
+    expect(ev.evaluate(new Expression('0 < 0'))).toBeFalsy();
+  });
+
+  it('testGeExpressionEqualsConditionZeroTo', () => {
+    expect(ev.evaluate(new Expression('0 > 0'))).toBeFalsy();
+  });
 
   it('testGeExpressionEqualsCondition', () => {
     expect(ev.evaluate(new Expression('1 >= 1'))).toBeTruthy();
@@ -266,6 +275,31 @@ describe('TestExpressions', () => {
 
   it('testModExpression', () => {
     expect(ev.evaluate(new Expression('24.42 % 10'))).toBe(4);
+  });
+
+  it('testFloatExpression', () => {
+    expect(ev.evaluate(new Expression('3.4028235E38f'))).toBe(3.4028235e38);
+    expect(ev.evaluate(new Expression('3.4028235e38f'))).toBe(3.4028235e38);
+    expect(ev.evaluate(new Expression('3.4028235e38F'))).toBe(3.4028235e38);
+    expect(ev.evaluate(new Expression('3.4028235E38F'))).toBe(3.4028235e38);
+    expect(ev.evaluate(new Expression('3.4028235E38'))).toBe(3.4028235e38);
+    expect(ev.evaluate(new Expression('3.4028235e38'))).toBe(3.4028235e38);
+    expect(ev.evaluate(new Expression('3.4028235e38'))).toBe(3.4028235e38);
+    expect(ev.evaluate(new Expression('3.4028235E38'))).toBe(3.4028235e38);
+
+    expect(ev.evaluate(new Expression('1.17549435E-38f'))).toBe(1.17549435e-38);
+    expect(ev.evaluate(new Expression('1.17549435E-38F'))).toBe(1.17549435e-38);
+    expect(ev.evaluate(new Expression('1.17549435E-38f'))).toBe(1.17549435e-38);
+
+    //result does not match with java result
+    expect(ev.evaluate(new Expression('1.4028235E38f + 1.4028235E38f'))).toBe(2.805647e38);
+  });
+
+  it('testLongExpression', () => {
+    const actual = ev.evaluate(new Expression('5354135431843451853'));
+    const expected = JSBI.BigInt('5354135431843451853');
+
+    expect(JSBI.equal(actual, expected)).toBeTruthy();
   });
 
   it('testModExpression2', () => {

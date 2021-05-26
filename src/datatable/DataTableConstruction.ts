@@ -8,9 +8,9 @@ import StringUtils from '../util/StringUtils';
 import DataTableConversion from './DataTableConversion';
 
 export default class DataTableConstruction {
-  public static constructTable(parameters: Array<any>, format: TableFormat | null, evaluator: Evaluator | null, environment: EvaluationEnvironment): DataTable {
+  public static async constructTable(parameters: Array<any>, format: TableFormat | null, evaluator: Evaluator | null, environment: EvaluationEnvironment): Promise<DataTable> {
     try {
-      const params = DataTableConstruction.resolveParameters(parameters, evaluator, environment);
+      const params = await DataTableConstruction.resolveParameters(parameters, evaluator, environment);
 
       let res;
 
@@ -26,11 +26,11 @@ export default class DataTableConstruction {
 
       return res;
     } catch (ex) {
-      throw new Error('Error constructing data table' + (format != null ? ' of format ' + format.encodeUseSeparator(true) : '') + " from parameters '" + StringUtils.print(parameters) + "': " + ex.getMessage());
+      throw new Error('Error constructing data table' + (format != null ? ' of format ' + format.encodeUseSeparator(true) : '') + " from parameters '" + StringUtils.print(parameters) + "': " + ex.message);
     }
   }
 
-  private static resolveParameters(parameters: Array<any>, evaluator: Evaluator | null, environment: EvaluationEnvironment): Array<any> {
+  private static async resolveParameters(parameters: Array<any>, evaluator: Evaluator | null, environment: EvaluationEnvironment): Promise<Array<any>> {
     const params = new Array<any>();
     for (const param of parameters) {
       if (param instanceof Expression) {
@@ -38,7 +38,7 @@ export default class DataTableConstruction {
           throw new Error('Evaluator not defined');
         }
 
-        params.push(evaluator.evaluate(param, environment));
+        params.push(await evaluator.evaluate(param, environment));
       } else {
         params.push(param);
       }

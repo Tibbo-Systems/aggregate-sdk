@@ -40,6 +40,8 @@ export default class ServerContextConstants {
     static readonly VF_ACTIVE_ALERTS_MESSAGE: string;
     static readonly VF_ACTIVE_ALERTS_TRIGGER: string;
     static readonly VF_ACTIVE_ALERTS_DATA: string;
+    static readonly VF_ACTIVE_ALERTS_ACKNOWLEDGEMENTS: string;
+    static readonly VF_ACTIVE_ALERTS_ENRICHMENTS: string;
     static readonly FIF_INIT_ACTION_INPUT_DATA: string;
     static readonly FIF_INIT_ACTION_INITIAL_PARAMETERS: string;
     static readonly FIF_INIT_ACTION_ACTION_NAME: string;

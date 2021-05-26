@@ -50,4 +50,6 @@ export default interface CallerController {
   unlockAllContexts(): void;
 
   createLockedContextsTable(): DataTable;
+
+  isConnectionTerminatable(): boolean;
 }

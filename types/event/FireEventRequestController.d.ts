@@ -10,7 +10,7 @@ export default class FireEventRequestController extends DefaultRequestController
     setCustomExpirationPeriod(customExpirationPeriod: number): void;
     isIgnoreStorageErrors(): boolean;
     setIgnoreStorageErrors(ignoreStorageErrors: boolean): void;
-    process(event: Event): Event;
+    process(event: Event): Event | null;
     isSuppressIfNotEnoughMemory(): boolean;
     setSuppressIfNotEnoughMemory(value: boolean): void;
 }

@@ -7,6 +7,7 @@ import ContextManager from './ContextManager';
 import Evaluator from '../expression/Evaluator';
 import Reference from '../expression/Reference';
 import EventEnvironmentResolver from './EventEnvironmentResolver';
+import EventDefinition from './EventDefinition';
 
 export default abstract class DefaultContextEventListener extends JObject implements ContextEventListener {
   private callerController?: CallerController;
@@ -48,7 +49,7 @@ export default abstract class DefaultContextEventListener extends JObject implem
     return false;
   }
 
-  abstract handle(event: Event): void;
+  abstract handle(event: Event, ed: EventDefinition): void;
 
   shouldHandle(ev: Event): boolean {
     try {

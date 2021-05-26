@@ -79,8 +79,6 @@ export default abstract class Command extends JObject {
       }
       buff.flip();
 
-      const sent = 0;
-
       byteChannel.write(buff);
     } catch (error) {
       Log.COMMANDS.error(error);

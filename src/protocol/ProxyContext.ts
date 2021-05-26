@@ -34,8 +34,8 @@ import Permissions from '../security/Permissions';
 import Contexts from '../context/Contexts';
 import Util from '../util/Util';
 import AggreGateDevice from './AggreGateDevice';
-import LevelAdapter from '../util/logger/LevelAdapter';
 import JSBI from 'jsbi';
+import SimpleDataTable from '../datatable/SimpleDataTable';
 
 export default class ProxyContext<C extends Context<C, M>, M extends ContextManager<any>> extends AbstractContext<C, M> {
   private static readonly DEFERRED_TASKS: Map<string, Array<Runnable>> = new Map<string, Array<Runnable>>();
@@ -88,7 +88,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
 
   private initializingVisibleChildren = false;
 
-  private visibleChildren: Array<string> | null = null;
+  private visibleChildren: Set<string> | null = null;
 
   private localRoot: string | null = null;
 
@@ -105,6 +105,8 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
   private variableCache: Map<string, CachedVariableValue> = new Map<string, CachedVariableValue>();
 
   private loadingContext: Promise<Context<any, any>> | null = null;
+
+  private loadingChildren: Promise<void> | null = null;
 
   private static initProxyContext = false;
   private static AUTO_LISTENED_EVENTS: Array<string> = new Array<string>();
@@ -136,7 +138,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     this.clear();
   }
 
-  async loadContext(): Promise<Context<any, any>> {
+  async init(): Promise<Context<any, any>> {
     if (this.initializedContext) return this;
 
     let resolver: any;
@@ -150,17 +152,12 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     }
 
     this.initializingContext = true;
-    //TODO  Promise.all should be used
     await this.initVariablesLoggingErrors();
-    // await Promise.all([this.initActionsLoggingErrors(),this.initFunctionsLoggingErrors(),this.initEventsLoggingErrors()]);
     await this.initActionsLoggingErrors();
     await this.initFunctionsLoggingErrors();
     await this.initEventsLoggingErrors();
-
-    await this.initChildren();
-    await this.initStatusLoggingErrors();
-    await this.initVisibleChildren();
     await this.initInfo();
+    await this.initVisibleChildren();
     this.initializingContext = false;
     this.initializedContext = true;
     resolver(this);
@@ -175,107 +172,65 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     this.setChildrenSortingEnabled(false);
     this.addLocalFunctionDefinitions();
 
+    this.localInitComplete = true;
+  }
+
+  private addListenersOnInfo(): void {
     const _this = this;
-
     this.addEventListener(
-      ProxyContext.E_CHILD_ADDED,
+      ProxyContext.E_INFO_CHANGED,
       new (class extends DefaultContextEventListener {
         handle(event: Event): void {
-          if (!_this.initializedChildren) {
-            return;
-          }
-          const child = event.getData().rec().getString(ProxyContext.EF_CHILD_ADDED_CHILD);
-          if (_this.getChild(child) == null) {
-            const childProxy = _this.createChildContextProxy(child);
-            _this.addChild(childProxy);
-            _this.executeDeferredTasks(childProxy.getPath());
-          }
-        }
-      })()
-    );
-
-    this.addEventListener(
-      ProxyContext.E_CHILD_REMOVED,
-      new (class extends DefaultContextEventListener {
-        handle(event: Event): void {
-          if (!_this.initializedChildren) {
-            return;
-          }
-          const child = event.getData()?.rec().getString(ProxyContext.EF_CHILD_REMOVED_CHILD);
-          if (child != null) {
-            _this.removeChild(child);
-          }
-        }
-      })()
-    );
-
-    this.addEventListener(
-      ProxyContext.E_VARIABLE_ADDED,
-      new (class extends DefaultContextEventListener {
-        handle(event: Event): void {
-          if (!_this.initializedVariables) {
-            return;
-          }
-
-          const def = _this.varDefFromDataRecord(event.getData().rec(), null);
-          const vd = _this.getVariableDefinition(def.getName());
-          if (vd == null || !vd.equals(def)) {
-            _this.addVariableDefinition(def);
-          }
-        }
-      })()
-    );
-
-    this.addEventListener(
-      ProxyContext.E_VARIABLE_REMOVED,
-      new (class extends DefaultContextEventListener {
-        handle(event: Event): void {
-          if (!_this.initializedVariables) {
-            return;
-          }
           const data = event.getData();
-          _this.removeVariableDefinition(data.rec().getString(ProxyContext.EF_VARIABLE_REMOVED_NAME));
+          _this.initInfoImpl(data);
+        }
+      })()
+    );
+  }
+  private addListenersOnActions(): void {
+    const _this = this;
+    this.addEventListener(
+      ProxyContext.E_ACTION_ADDED,
+      new (class extends DefaultContextEventListener {
+        handle(event: Event): void {
+          const data = event.getData();
+          const def = _this.actDefFromDataRecord(data.rec());
+          const actionDef = _this.getActionDefinition(def.getName());
+          if (actionDef === null) _this.addActionDefinition(def);
+          else if (!(actionDef as BasicActionDefinition).equals(def)) _this.addActionDefinition(def);
         }
       })()
     );
 
     this.addEventListener(
-      ProxyContext.E_FUNCTION_ADDED,
+      ProxyContext.E_ACTION_REMOVED,
       new (class extends DefaultContextEventListener {
         handle(event: Event): void {
-          if (!_this.initializedFunctions) {
-            return;
-          }
           const data = event.getData();
-          const def = _this.funcDefFromDataRecord(data.rec(), null);
-          const funcDef = _this.getFunctionDefinition(def.getName());
-          if (funcDef == null || !funcDef.equals(def)) {
-            _this.addFunctionDefinition(def);
-          }
+          _this.removeActionDefinition(data.rec().getString(ProxyContext.EF_EVENT_REMOVED_NAME));
         }
       })()
     );
 
     this.addEventListener(
-      ProxyContext.E_FUNCTION_REMOVED,
+      ProxyContext.E_ACTION_STATE_CHANGED,
       new (class extends DefaultContextEventListener {
         handle(event: Event): void {
-          if (!_this.initializedFunctions) {
-            return;
-          }
           const data = event.getData();
-          _this.removeFunctionDefinition(data.rec().getString(ProxyContext.EF_FUNCTION_REMOVED_NAME));
+          const def = _this.actDefFromDataRecord(data.rec());
+          _this.removeActionDefinition(def.getName());
+          _this.addActionDefinition(def);
         }
       })()
     );
+  }
 
+  private addListenersOnEvents(): void {
+    const _this = this;
     this.addEventListener(
       ProxyContext.E_EVENT_ADDED,
       new (class extends DefaultContextEventListener {
         handle(event: Event): void {
-          if (!_this.initializedEvents) {
-            return;
-          }
           const data = event.getData();
           const def = _this.evtDefFromDataRecord(data.rec(), null);
           const eDef = _this.getEventDefinition(def.getName());
@@ -290,69 +245,93 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
       ProxyContext.E_EVENT_REMOVED,
       new (class extends DefaultContextEventListener {
         handle(event: Event): void {
-          if (!_this.initializedEvents) {
-            return;
-          }
           const data = event.getData();
           _this.removeEventDefinition(data.rec().getString(ProxyContext.EF_EVENT_REMOVED_NAME));
         }
       })()
     );
+  }
 
+  private addListenersOnFunctions(): void {
+    const _this = this;
     this.addEventListener(
-      ProxyContext.E_ACTION_ADDED,
+      ProxyContext.E_FUNCTION_ADDED,
       new (class extends DefaultContextEventListener {
         handle(event: Event): void {
-          if (!_this.initializedActions) {
-            return;
+          const data = event.getData();
+          const def = _this.funcDefFromDataRecord(data.rec(), null);
+          const funcDef = _this.getFunctionDefinition(def.getName());
+          if (funcDef == null || !funcDef.equals(def)) {
+            _this.addFunctionDefinition(def);
           }
-          const data = event.getData();
-          const def = _this.actDefFromDataRecord(data.rec());
-          const actionDef = _this.getActionDefinition(def.getName());
-          if (actionDef === null) _this.addActionDefinition(def);
-          else if (!(actionDef as BasicActionDefinition).equals(def)) _this.addActionDefinition(def);
         }
       })()
     );
 
     this.addEventListener(
-      ProxyContext.E_ACTION_REMOVED,
+      ProxyContext.E_FUNCTION_REMOVED,
       new (class extends DefaultContextEventListener {
         handle(event: Event): void {
-          if (!_this.initializedActions) {
-            return;
+          const data = event.getData();
+          _this.removeFunctionDefinition(data.rec().getString(ProxyContext.EF_FUNCTION_REMOVED_NAME));
+        }
+      })()
+    );
+  }
+
+  private addListenersOnVariables(): void {
+    const _this = this;
+    this.addEventListener(
+      ProxyContext.E_VARIABLE_ADDED,
+      new (class extends DefaultContextEventListener {
+        handle(event: Event): void {
+          const def = _this.varDefFromDataRecord(event.getData().rec(), null);
+          const vd = _this.getVariableDefinition(def.getName());
+          if (vd == null || !vd.equals(def)) {
+            _this.addVariableDefinition(def);
           }
-          const data = event.getData();
-          _this.removeActionDefinition(data.rec().getString(ProxyContext.EF_EVENT_REMOVED_NAME));
         }
       })()
     );
 
     this.addEventListener(
-      ProxyContext.E_ACTION_STATE_CHANGED,
+      ProxyContext.E_VARIABLE_REMOVED,
       new (class extends DefaultContextEventListener {
         handle(event: Event): void {
-          if (!_this.initializedActions) {
-            return;
+          const data = event.getData();
+          _this.removeVariableDefinition(data.rec().getString(ProxyContext.EF_VARIABLE_REMOVED_NAME));
+        }
+      })()
+    );
+  }
+
+  private addListenersOnChildren(): void {
+    const _this = this;
+    this.addEventListener(
+      ProxyContext.E_CHILD_ADDED,
+      new (class extends DefaultContextEventListener {
+        handle(event: Event): void {
+          const child = event.getData().rec().getString(ProxyContext.EF_CHILD_ADDED_CHILD);
+          if (_this.syncGetChild(child) === null) {
+            const childProxy = _this.createChildContextProxy(child);
+            _this.addChild(childProxy);
+            _this.executeDeferredTasks(childProxy.getPath());
           }
-          const data = event.getData();
-          const def = _this.actDefFromDataRecord(data.rec());
-          _this.removeActionDefinition(def.getName());
-          _this.addActionDefinition(def);
         }
       })()
     );
 
     this.addEventListener(
-      ProxyContext.E_INFO_CHANGED,
+      ProxyContext.E_CHILD_REMOVED,
       new (class extends DefaultContextEventListener {
         handle(event: Event): void {
-          const data = event.getData();
-          _this.initInfoImpl(data);
+          const child = event.getData()?.rec().getString(ProxyContext.EF_CHILD_REMOVED_CHILD);
+          if (child != null) {
+            _this.removeChild(child);
+          }
         }
       })()
     );
-    this.localInitComplete = true;
   }
 
   protected addLocalFunctionDefinitions(): void {
@@ -460,6 +439,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
       const value = await this.getRemoteVariable(ProxyContext.INFO_DEFINITION_FORMAT, ProxyContext.V_INFO, ProxyContext.METADATA_READ_TIMEOUT);
       this.initInfoImpl(value);
       this.initializedInfo = true;
+      this.addListenersOnInfo();
     } finally {
       this.initializingInfo = false;
     }
@@ -474,20 +454,33 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
       cm.initialize();
     }
 
-    if (!this.localInitComplete || this.initializingChildren) {
+    if (!this.localInitComplete) {
       return;
+    }
+
+    let resolver: any;
+    if (!this.loadingChildren) {
+      this.loadingChildren = new Promise<void>((resolve) => {
+        resolver = resolve;
+      });
+    }
+
+    if (this.initializingChildren) {
+      return this.loadingChildren;
     }
 
     this.initializingChildren = true;
 
     try {
       const value = await this.getRemoteVariable(ProxyContext.VFT_CHILDREN, ProxyContext.V_CHILDREN, ProxyContext.METADATA_READ_TIMEOUT);
-      this.initChildrenImpl(value);
+      await this.initChildrenImpl(value);
 
       this.initializedChildren = true;
+      this.addListenersOnChildren();
     } finally {
       this.initializingChildren = false;
     }
+    resolver();
   }
 
   private async initVariables(): Promise<void> {
@@ -509,6 +502,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
 
       await this.initVariablesImpl(value);
       this.initializedVariables = true;
+      this.addListenersOnVariables();
     } finally {
       this.initializingVariables = false;
     }
@@ -533,6 +527,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
 
       await this.initFunctionsImpl(value);
       this.initializedFunctions = true;
+      this.addListenersOnFunctions();
     } finally {
       this.initializingFunctions = false;
     }
@@ -558,6 +553,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
 
       await this.initEventsImpl(value);
       this.initializedEvents = true;
+      this.addListenersOnEvents();
     } finally {
       this.initializingEvents = false;
     }
@@ -582,6 +578,8 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
 
       this.initActionsImpl(value);
       this.initializedActions = true;
+
+      this.addListenersOnActions();
     } catch (e) {
       Log.CONTEXT_ACTIONS.error(e.message);
     } finally {
@@ -674,23 +672,23 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     return remoteDescription;
   }
 
-  private initChildrenImpl(children: DataTable): void {
-    for (const child of this.getChildren(this.getContextManager()?.getCallerController())) {
+  private async initChildrenImpl(children: DataTable): Promise<void> {
+    /*for (const child of await this.getChildren(this.getContextManager()?.getCallerController())) {
       if (children.select(ProxyContext.VF_CHILDREN_NAME, child.getName()) == null) {
         this.removeChild(child);
       }
-    }
+    }*/
 
     for (const rec of children) {
       const cn = rec.getString(ProxyContext.VF_CHILDREN_NAME);
-      if (this.getChild(cn) == null) {
-        this.addChild(this.createChildContextProxy(cn));
-      }
+      //  if ((await this.getChild(cn)) == null) {
+      this.addChild(this.createChildContextProxy(cn));
+      //  }
     }
   }
 
   private async initVisibleChildrenImpl(): Promise<void> {
-    this.visibleChildren = new Array<string>();
+    this.visibleChildren = new Set<string>();
 
     const _this = this;
 
@@ -723,7 +721,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     for (const rec of visibleChildrenData) {
       const localVisiblePath: string = this.getLocalVisiblePath(rec.getString(ServerContextConstants.VF_VISIBLE_CHILDREN_PATH));
       if (localVisiblePath != null) {
-        this.visibleChildren.push(localVisiblePath);
+        this.visibleChildren.add(localVisiblePath);
       }
     }
   }
@@ -835,8 +833,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
   }
 
   private async initStatusImpl(): Promise<void> {
-    //TODO unnecessary in loadContext
-    //await this.initVariables();
+    await this.initVariables();
 
     const statusVariable = this.getVariableDefinition(ServerContextConstants.V_CONTEXT_STATUS);
 
@@ -897,7 +894,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     return this.mapped;
   }
 
-  get(contextPath: string, caller?: CallerController): Context<C, M> | null {
+  async get(contextPath: string, caller?: CallerController): Promise<Context<C, M> | null> {
     if (contextPath == null) {
       return null;
     }
@@ -919,9 +916,16 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     return super.getIconId();
   }
 
-  getChild(name: string, caller?: CallerController): C | null {
-    if (super.getChild(name, caller) == null) {
-      if (!this.initializedChildren && this.localInitComplete && !this.initializingChildren) Log.CONTEXT_CHILDREN.warn('Error initializing children of remote context');
+  async getChild(name: string, caller?: CallerController): Promise<C | null> {
+    if ((await super.getChild(name, caller)) == null) {
+      try {
+        await this.initChildren();
+      } catch (e) {
+        if (!this.initializedChildren && this.localInitComplete && !this.initializingChildren) {
+          Log.CONTEXT_CHILDREN.warn('Error initializing children of remote context');
+          throw new Error();
+        }
+      }
     }
     return super.getChild(name, caller);
   }
@@ -989,9 +993,8 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     return super.getActionDefinitions(includeHidden, caller);
   }
 
-  getStatus(): ContextStatus | null {
-    //TODO promise
-    //this.initStatusLoggingErrors();
+  async getStatus(): Promise<ContextStatus | null> {
+    await this.initStatusLoggingErrors();
     return super.getStatus();
   }
 
@@ -1073,8 +1076,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
   }
 
   protected async getVariableImpl(def: VariableDefinition, caller?: CallerController, request?: RequestController): Promise<DataTable | null> {
-    //TODO promise
-    return await this.getRemoteVariableByDef(def);
+    return this.getRemoteVariableByDef(def);
   }
 
   private async getRemoteVariableByDef(def: VariableDefinition): Promise<DataTable> {
@@ -1102,7 +1104,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
       }
 
       const ans: IncomingAggreGateCommand | null = await this.sendGetVariable(def.getName(), null);
-      if (ans == null) throw new Error('NPE');
+      if (ans == null) return new SimpleDataTable();
 
       const value = this.controller.decodeRemoteDataTable(def.getFormat(), ans.getEncodedDataTableFromReply());
 
@@ -1195,7 +1197,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
       const ed = this.getEventData(name);
 
       if (sendRemoteCommand && this.getController().isConnected() && ed != null && ed.getListeners().size == 0) {
-        const protocolVersion = this.getController().getProtocolVersion();
+        //  const protocolVersion = this.getController().getProtocolVersion();
         if (!this.notManageRemoteListeners) {
           const hashCode = listener.getListenerCode();
 
@@ -1222,7 +1224,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
       return;
     }
 
-    const protocolVersion = this.getController().getProtocolVersion();
+    // const protocolVersion = this.getController().getProtocolVersion();
     if (!this.notManageRemoteListeners /*&& protocolVersion != null && protocolVersion >= ProtocolVersion.V3*/) {
       const f = contextEventListener.getFilter();
       const filterText = f != null ? f.getText() : null;
@@ -1233,44 +1235,51 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     }
   }
 
-  getChildren(caller?: CallerController): Array<Context<C, M>> {
-    if (!this.initializedChildren && this.localInitComplete && !this.initializingChildren) Log.CONTEXT_CHILDREN.warn('Error initializing children of remote context');
+  async getChildren(caller?: CallerController): Promise<Array<Context<C, M>>> {
+    try {
+      await this.initChildren();
+    } catch (e) {
+      Log.CONTEXT_CHILDREN.warn('Error initializing children of remote context', e);
+    }
     return super.getChildren(caller);
   }
 
-  getVisibleChildren(caller?: CallerController): Array<Context<C, M>> {
-    if (!this.visibleChildren) {
+  async getVisibleChildren(caller?: CallerController): Promise<Array<Context<C, M>>> {
+    try {
+      await this.initVisibleChildren();
+    } catch (e) {
       Log.CONTEXT_CHILDREN.warn('Error initializing visible children of remote context');
       return new Array<Context<C, M>>();
     }
 
     const res = new Array<Context<C, M>>();
 
-    for (const path of this.visibleChildren) {
-      const con = this.getRoot().get(path, caller);
-      if (con != null) {
-        res.push(con);
+    if (this.visibleChildren != null) {
+      for (const path of this.visibleChildren) {
+        const con = await this.getRoot().get(path, caller);
+        if (con != null) {
+          res.push(con);
+        }
       }
     }
 
     return res;
   }
 
-  getVisibleChildrenPaths(): Array<string> {
-    return this.visibleChildren ?? [];
+  getVisibleChildrenPaths(): Set<string> {
+    return this.visibleChildren ?? new Set();
   }
 
   public addVisibleChild(localVisiblePath: string): void {
-    this.visibleChildren?.push(localVisiblePath);
+    this.visibleChildren?.add(localVisiblePath);
   }
 
   public removeVisibleChild(localVisiblePath: string): void {
-    const index = this.visibleChildren?.indexOf(localVisiblePath);
-    if (index !== undefined && index != -1) this.visibleChildren?.splice(index, 1);
+    this.visibleChildren?.delete(localVisiblePath);
   }
 
   public hasVisibleChild(path: string): boolean {
-    return this.visibleChildren != null && this.visibleChildren.indexOf(path) != -1;
+    return this.visibleChildren != null && this.visibleChildren.has(path);
   }
 
   private restoreEventListeners(): void {
@@ -1293,7 +1302,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     this.restoreEventListeners();
   }
 
-  protected _fireEvent(
+  protected async _fireEvent(
     ed: EventDefinition,
     data: DataTable,
     level: number,
@@ -1303,8 +1312,8 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     caller?: CallerController,
     request?: FireEventRequestController,
     permissions?: Permissions
-  ): Event | null {
-    const event = super._fireEvent(ed, data, level, id, creationtime, listener, caller, request, permissions);
+  ): Promise<Event | null> {
+    const event = await super._fireEvent(ed, data, level, id, creationtime, listener, caller, request, permissions);
     if (ed.getName() === AbstractContext.E_UPDATED && this.isInitializedVariables() && event != null) {
       const variable = event.getData().rec().getString(AbstractContext.EF_UPDATED_VARIABLE);
 

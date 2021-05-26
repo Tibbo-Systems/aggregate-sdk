@@ -122,7 +122,7 @@ export default class Data extends JObject implements StringEncodable {
     return this.shallowCopy;
   }
 
-  public async fetchData(cm: ContextManager<Context<any, any>>, cc: CallerController): Promise<ByteBuffer | null> {
+  public async fetchData(cm: ContextManager<Context<any, any>> | null, cc: CallerController): Promise<ByteBuffer | null> {
     if (this.getData() != null) {
       return this.getData();
     }
@@ -135,7 +135,7 @@ export default class Data extends JObject implements StringEncodable {
       return null;
     }
 
-    const context = cm.get(Contexts.CTX_UTILITIES, cc);
+    const context = await cm.get(Contexts.CTX_UTILITIES, cc);
     if (!context) throw new Error(Contexts.CTX_UTILITIES + ' not found');
     const parameters = new Array<JSBI | null>();
     parameters.push(this.getId());

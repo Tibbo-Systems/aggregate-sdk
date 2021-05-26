@@ -41,7 +41,7 @@ export default class GenericActionCommand extends JObject implements ActionComma
         try {
           DataTableConversion.populateBeanFromRecord(this, parameters.rec(), format, true);
         } catch (ex) {
-          throw new Error(ex.getMessage());
+          throw new Error(ex.message);
         }
       }
     }
@@ -97,7 +97,7 @@ export default class GenericActionCommand extends JObject implements ActionComma
   }
 
   isInteractive(): boolean {
-    return false;
+    return this.interactive;
   }
 
   isResponseValid(actionRequest: ActionResponse): boolean {

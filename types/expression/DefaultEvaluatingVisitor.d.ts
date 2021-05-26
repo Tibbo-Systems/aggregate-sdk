@@ -5,5 +5,5 @@ import EvaluationEnvironment from './EvaluationEnvironment';
 import AttributedObject from './AttributedObject';
 export default class DefaultEvaluatingVisitor extends AbstractEvaluatingVisitor {
     constructor(evaluator: Evaluator, environment: EvaluationEnvironment);
-    visitValueReferenceNode(ctx: ParserRuleContext): AttributedObject;
+    visitValueReferenceNode(ctx: ParserRuleContext): Promise<AttributedObject>;
 }

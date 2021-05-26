@@ -379,14 +379,13 @@ export default class DataRecord extends JObject implements StringEncodable {
    * Returns value of String field with specified name or index.
    */
   public getString(valueBy: number | string): string {
-    if (Util.isNumber(valueBy)) {
-      const index = valueBy as number;
-      return this.getValue(index) as string;
-    } else {
-      const recordName: string = valueBy as string;
-      return this.getValue(this.findIndex(recordName)) as string;
-    }
-    throw new Error('Error in DataRecord, getString function. Incorrect type of search value.');
+    return this.getValue(valueBy) as string;
+  }
+
+  public getNullableString(valueBy: number | string): string | null {
+    const res = this.getValue(valueBy);
+    if (res) return res as string;
+    return null;
   }
 
   /**
@@ -415,41 +414,39 @@ export default class DataRecord extends JObject implements StringEncodable {
    * Returns value of Integer field with specified name or index.
    */
   public getInt(valueBy: number | string): number {
-    if (Util.isNumber(valueBy)) {
-      const index = valueBy as number;
-      return this.getValue(index) as number;
-    } else {
-      const recordName: string = valueBy as string;
-      return this.getValue(this.findIndex(recordName)) as number;
-    }
-    throw new Error('Error in DataRecord, getInt function. Incorrect type of search value.');
+    return this.getValue(valueBy) as number;
+  }
+
+  public getNullableInt(valueBy: number | string): number | null {
+    const res = this.getValue(valueBy);
+    if (res) return res as number;
+    return null;
   }
 
   /**
    * Returns value of Long field with specified index.
    */
   public getLong(valueBy: number | string): JSBI {
-    if (Util.isNumber(valueBy)) {
-      const index = valueBy as number;
-      return this.getValue(index) as JSBI;
-    } else {
-      const recordName: string = valueBy as string;
-      return this.getValue(this.findIndex(recordName)) as JSBI;
-    }
-    throw new Error('Error in DataRecord, getLong function. Incorrect type of search value.');
+    return this.getValue(valueBy) as JSBI;
+  }
+
+  public getNullableLong(valueBy: number | string): JSBI | null {
+    const res = this.getValue(valueBy);
+    if (res) return res as JSBI;
+    return null;
   }
 
   /**
    * Returns value of Boolean field with specified name or index.
    */
   public getBoolean(valueBy: number | string): boolean {
-    if (Util.isNumber(valueBy)) {
-      const index = valueBy as number;
-      return this.getValue(index) as boolean;
-    } else {
-      const recordName: string = valueBy as string;
-      return this.getValue(this.findIndex(recordName)) as boolean;
-    }
+    return this.getValue(valueBy) as boolean;
+  }
+
+  public getNullableBoolean(valueBy: number | string): boolean | null {
+    const res = this.getValue(valueBy);
+    if (res) return res as boolean;
+    return null;
   }
 
   public getId(): string | null {
@@ -458,14 +455,11 @@ export default class DataRecord extends JObject implements StringEncodable {
 
   public getValue(searchBy: number | string): any {
     if (Util.isNumber(searchBy)) {
-      const index = searchBy as number;
-      const ff: FieldFormat<any> = this.format.getField(index);
+      const ff: FieldFormat<any> = this.format.getField(searchBy);
       return this.getValueByFieldFormat(ff);
     } else if (Util.isString(searchBy)) {
-      const searchName: string = searchBy as string;
-      return this.getValue(this.findIndex(searchName));
+      return this.getValue(this.findIndex(searchBy));
     }
-
     return null;
   }
 
@@ -601,62 +595,65 @@ export default class DataRecord extends JObject implements StringEncodable {
    * Returns value of Data field with specified index or name.
    */
   public getData(valueBy: number | string): Data {
-    if (Util.isNumber(valueBy)) {
-      const index = valueBy as number;
-      return this.getValue(index) as Data;
-    } else {
-      const recordName: string = valueBy as string;
-      return this.getData(this.findIndex(recordName)) as Data;
-    }
-    throw new Error('Error in DataRecord, getData function. Incorrect type of search value.');
+    return this.getValue(valueBy) as Data;
+  }
+
+  public getNullableData(valueBy: number | string): Data | null {
+    const res = this.getValue(valueBy);
+    if (res) return res as Data;
+    return null;
   }
 
   /**
    * Returns value of DataTable field with specified index.
    */
-  public getDataTable(searchBy: number | string): DataTable {
-    if (Util.isNumber(searchBy)) {
-      return this.getValue(searchBy);
-    } else if (Util.isString(searchBy)) {
-      return this.getValue(this.findIndex(searchBy as string));
-    }
-    throw new Error('Error in DataRecord, getDataTable function. Incorrect type of search value.');
+  public getDataTable(valueBy: number | string): DataTable {
+    return this.getValue(valueBy) as DataTable;
+  }
+
+  public getNullableDataTable(valueBy: number | string): DataTable | null {
+    const res = this.getValue(valueBy);
+    if (res) return res as DataTable;
+    return null;
   }
 
   /**
    * Returns value of Date field with specified name.
    */
-  public getDate(searchBy: number | string): Date {
-    if (Util.isNumber(searchBy)) {
-      return this.getValue(searchBy);
-    } else if (Util.isString(searchBy)) {
-      return this.getValue(this.findIndex(searchBy as string));
-    }
-    throw new Error('Error in DataRecord, getDate function. Incorrect type of search value.');
+  public getDate(valueBy: number | string): Date {
+    return this.getValue(valueBy) as Date;
+  }
+
+  public getNullableDate(valueBy: number | string): Date | null {
+    const res = this.getValue(valueBy);
+    if (res) return res as Date;
+    return null;
   }
 
   /**
    * Returns value of Double field with specified index.
    */
-  public getDouble(searchBy: number | string): number {
-    if (Util.isNumber(searchBy)) {
-      return this.getValue(searchBy);
-    } else if (Util.isString(searchBy)) {
-      return this.getValue(this.findIndex(searchBy as string));
-    }
-    throw new Error('Error in DataRecord, getDouble function. Incorrect type of search value.');
+  public getDouble(valueBy: number | string): number {
+    return this.getValue(valueBy) as number;
+  }
+
+  public getNullableDouble(valueBy: number | string): number | null {
+    const res = this.getValue(valueBy);
+    if (res) return res as number;
+    return null;
   }
 
   /**
    * Returns value of Float field with specified index.
    */
-  public getFloat(searchBy: number | string): number {
-    if (Util.isNumber(searchBy)) {
-      return this.getValue(searchBy);
-    } else if (Util.isString(searchBy)) {
-      return this.getValue(this.findIndex(searchBy as string));
-    }
-    throw new Error('Error in DataRecord, getFloat function. Incorrect type of search value.');
+  public getFloat(valueBy: number | string): number {
+    return this.getValue(valueBy) as number;
+  }
+
+  public getNullableFloat(valueBy: number | string): number | null {
+    const res = this.getValue(valueBy);
+    if (res) return res as number;
+    return null;
   }
 
   /**

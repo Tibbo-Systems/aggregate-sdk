@@ -1,6 +1,5 @@
 import Command from '../communication/Command';
 import DataTableUtils from '../datatable/DataTableUtils';
-import ByteBuffer from 'bytebuffer';
 
 export default abstract class AggreGateCommand extends Command {
   public static readonly START_CHAR: number = 0x02;

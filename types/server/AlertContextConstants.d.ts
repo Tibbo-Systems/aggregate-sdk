@@ -68,6 +68,7 @@ export default class AlertContextConstants {
     static readonly VF_VARIABLE_TRIGGER_STATUS_DETAILS_TIME = "time";
     static readonly VF_VARIABLE_TRIGGER_STATUS_DETAILS_FLAPPING = "flapping";
     static readonly VF_NOTIFICATIONS_NOTIFY_OWNER = "notifyOwner";
+    static readonly VF_NOTIFICATIONS_NOTIFICATION_NECESSITY_EXPRESSION = "notificationNecessityExpression";
     static readonly VF_NOTIFICATIONS_ACK_REQUIRED = "ackRequired";
     static readonly VF_NOTIFICATIONS_LIFETIME = "lifetime";
     static readonly VF_NOTIFICATIONS_SOUND = "sound";

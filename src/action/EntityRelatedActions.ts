@@ -30,13 +30,13 @@ export default class EntityRelatedActions {
     EntityRelatedActions._init = true;
   }
 
-  public static getTargetContext(ad: EntityRelatedActionDescriptor, context: Context<any, any>, entity: string, entityType: number, caller: CallerController): Context<any, any> | null {
+  public static async getTargetContext(ad: EntityRelatedActionDescriptor, context: Context<any, any>, entity: string, entityType: number, caller?: CallerController): Promise<Context<any, any> | null> {
     const adGetMask = ad.getMask();
     if (adGetMask != null && !ContextUtils.matchesToMask(adGetMask, context.getPath())) {
       return null;
     }
 
-    const con: Context<any, any> | null = ad.getTarget() != null ? context.get(ad.getTarget(), caller) : context;
+    const con: Context<any, any> | null = ad.getTarget() != null ? await context.get(ad.getTarget(), caller) : context;
 
     if (con == null) {
       return null;

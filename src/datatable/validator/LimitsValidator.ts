@@ -12,7 +12,7 @@ import FieldConstants from '../field/FieldConstants';
 import JSBI from 'jsbi';
 
 export default class LimitsValidator extends AbstractFieldValidator<any> {
-  private static readonly MIN_MAX_SEPARATOR: string = ' ';
+  private static readonly MIN_MAX_SEPARATOR = ' ';
 
   private min: JSBI | number | null = null;
   private max: JSBI | number | null = null;
@@ -121,7 +121,7 @@ export default class LimitsValidator extends AbstractFieldValidator<any> {
     if (!super.equals(obj)) {
       return false;
     }
-    if (obj instanceof AbstractFieldValidator) {
+    if (!(obj instanceof LimitsValidator)) {
       return false;
     }
     const other: LimitsValidator = obj as LimitsValidator;

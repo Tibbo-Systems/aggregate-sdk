@@ -11,7 +11,7 @@ export default class EntityRelatedActions {
     static __static_initializer_0(): void;
     private static _init;
     static initialize(): void;
-    static getTargetContext(ad: EntityRelatedActionDescriptor, context: Context<any, any>, entity: string, entityType: number, caller: CallerController): Context<any, any> | null;
+    static getTargetContext(ad: EntityRelatedActionDescriptor, context: Context<any, any>, entity: string, entityType: number, caller?: CallerController): Promise<Context<any, any> | null>;
     protected static allowedContextOrNull(entity: string, entityType: number, allowedEntities: string | null, con: Context<any, any>): Context<any, any> | null;
     private static entityGroup;
 }

@@ -849,6 +849,8 @@ export default class Icons {
 
   public static readonly GD_COMPONENT_CHECKBOX: string = 'gd_component_checkbox';
 
+  public static readonly GD_COMPONENT_CHECKBOX_GROUP: string = 'gd_component_checkbox_group';
+
   public static readonly GD_COMPONENT_RADIOBUTTON: string = 'gd_component_radiobutton';
 
   public static readonly GD_COMPONENT_MAP: string = 'gd_component_map';

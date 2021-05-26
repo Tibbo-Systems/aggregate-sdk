@@ -33,7 +33,7 @@ export default class Data extends JObject implements StringEncodable {
     setAttachments(attachments: Map<string, JObject>): void;
     setShallowCopy(shallowCopy: boolean): void;
     isShallowCopy(): boolean;
-    fetchData(cm: ContextManager<Context<any, any>>, cc: CallerController): Promise<ByteBuffer | null>;
+    fetchData(cm: ContextManager<Context<any, any>> | null, cc: CallerController): Promise<ByteBuffer | null>;
     private checksum;
     toDetailedString(): string;
     toString(): string;

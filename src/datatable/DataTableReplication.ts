@@ -6,7 +6,6 @@ import Util from '../util/Util';
 import CloneUtils from '../util/CloneUtils';
 import Log from '../Log';
 import MessageFormat from '../util/java/MessageFormat';
-import JObject from '../util/java/JObject';
 import DataTableQuery from './DataTableQuery';
 import QueryCondition from './QueryCondition';
 import FieldConstants from './field/FieldConstants';

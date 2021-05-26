@@ -3,7 +3,6 @@ import ProxyContext from './ProxyContext';
 import AbstractAggreGateDeviceController from './AbstractAggreGateDeviceController';
 import Cres from '../Cres';
 import MessageFormat from '../util/java/MessageFormat';
-import ProtocolVersion from './ProtocolVersion';
 import DefaultContextEventListener from '../context/DefaultContextEventListener';
 import AggreGateDevice from './AggreGateDevice';
 import ContextManager from '../context/ContextManager';
@@ -28,7 +27,7 @@ export default class RemoteContextManager extends DefaultContextManager<ProxyCon
 
     try {
       //TODO check promise
-      this.deviceController.connect();
+      //  this.deviceController.connect();
     } finally {
       this.initializing = false;
     }
@@ -89,12 +88,12 @@ export default class RemoteContextManager extends DefaultContextManager<ProxyCon
     con.removeEventListenerToProxy(event, listener, !mask); // Don't sent remote command if adding as mask listener
   }
 
-  addMaskEventListener(mask: string, event: string, listener: DefaultContextEventListener, weak = false): void {
+  async addMaskEventListener(mask: string, event: string, listener: DefaultContextEventListener, weak = false): Promise<void> {
     super.addMaskEventListener(mask, event, listener);
     this.sendAddListener(mask, event, listener);
   }
 
-  removeMaskEventListener(mask: string, event: string, listener: DefaultContextEventListener): void {
+  async removeMaskEventListener(mask: string, event: string, listener: DefaultContextEventListener): Promise<void> {
     super.removeMaskEventListener(mask, event, listener);
 
     this.sendRemoveListener(mask, event, listener);

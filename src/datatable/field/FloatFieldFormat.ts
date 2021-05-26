@@ -10,7 +10,18 @@ export default class FloatFieldFormat extends FieldFormat<number> {
 
   public valueToString(value: number): string | null {
     if (value === 0) return '0.0';
-    return value == null ? null : value.toString();
+
+    if (value === null) return null;
+
+    const stringValue = value.toString();
+
+    if (stringValue.includes('e+')) {
+      return stringValue.replace('e+', 'E') + 'f';
+    } else if (stringValue.includes('e-')) {
+      return stringValue.replace('e-', 'E-') + 'f';
+    }
+
+    return stringValue;
   }
 
   public getType(): string {

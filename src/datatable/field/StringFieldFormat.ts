@@ -3,8 +3,6 @@ import ClassicEncodingSettings from '../encoding/ClassicEncodingSettings';
 import TableFormat from '../TableFormat';
 import Cres from '../../Cres';
 import Util from '../../util/Util';
-import Reference from '../../expression/Reference';
-import Context from '../../context/Context';
 import DataTable from '../DataTable';
 import DataRecord from '../DataRecord';
 import ContextMaskConverter, { Options } from '../converter/editor/ContextMaskConverter';
@@ -79,34 +77,19 @@ export default class StringFieldFormat extends FieldFormat<string> {
     return value;
   }
 
-  public static encodeExpressionEditorOptions(
-    defaultContext: Context<any, any> | null,
-    defaultTable: DataTable | null,
-    references: Map<Reference, string>,
-    expectedResult?: string | null,
-    defaultContextDescription?: string | null,
-    defaultTableDescription?: string | null
-  ): string | null {
+  public static encodeExpressionEditorOptions(defaultContext: string | null, defaultTable: DataTable | null, references: Map<string, string>): string {
     const op: DataRecord = new DataRecord(StringFieldFormat.EXPRESSION_BUILDER_OPTIONS_FORMAT);
-
-    op.addValue(defaultContext != null ? defaultContext.getPath() : null);
+    op.addValue(defaultContext);
 
     op.addValue(defaultTable);
 
     if (references != null) {
       const refs: DataTable = DataTableFactory.of(StringFieldFormat.ADDITIONAL_REFERENCES_FORMAT);
       for (const entry of references.entries()) {
-        (refs.addRecord() as DataRecord).addString(entry[0].getImage()).addString(entry[1] != null ? entry[1] : entry[0].getImage());
+        (refs.addRecord() as DataRecord).addString(entry[0]).addString(entry[1] != null ? entry[1] : entry[0]);
       }
       op.addValue(refs);
     }
-
-    op.addValue(expectedResult);
-
-    op.addValue(defaultContextDescription);
-
-    op.addValue(defaultTableDescription);
-
     return op.wrap().encodeWithSeparators(false);
   }
 

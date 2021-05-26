@@ -1,4 +1,3 @@
-import RegexValidator from '../../../src/datatable/validator/RegexValidator';
 import LimitsValidator from '../../../src/datatable/validator/LimitsValidator';
 import JSBI from 'jsbi';
 

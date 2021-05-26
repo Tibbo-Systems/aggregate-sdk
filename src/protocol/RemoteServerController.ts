@@ -12,20 +12,36 @@ import DataTableFactory from '../datatable/DataTableFactory';
 import CommonServerFormats from '../server/CommonServerFormats';
 import RootContextConstants from '../server/RootContextConstants';
 import WebSocketBlockingChannel from '../util/WebSocketBlockingChannel';
-import Cres from '../Cres';
-import MessageFormat from '../util/java/MessageFormat';
 import AggreGateCommandParser from './AggreGateCommandParser';
-import Context from '../context/Context';
 import LoggerAdapter from '../util/logger/LoggerAdapter';
+import WebsocketHandler from './WebsocketHandler';
+import MessageFormat from '../util/java/MessageFormat';
+import Cres from '../Cres';
+import Context from '../context/Context';
 
 export default class RemoteServerController extends AbstractAggreGateDeviceController<RemoteServer, RemoteContextManager> {
   private dataChannel: BlockingChannel | null = null;
 
-  constructor(device: RemoteServer, async: boolean, useContextManager = true, logger: LoggerAdapter = Log.COMMANDS_CLIENT, maxEventQueueLength: number = JConstants.INTEGER_MAX_VALUE, json = false) {
+  private websocketHandler: WebsocketHandler;
+
+  constructor(
+    device: RemoteServer,
+    async: boolean,
+    useContextManager = true,
+    logger: LoggerAdapter = Log.COMMANDS_CLIENT,
+    maxEventQueueLength: number = JConstants.INTEGER_MAX_VALUE,
+    json = false,
+    websocketHandler: WebsocketHandler = new WebsocketHandler()
+  ) {
     super(device, logger, maxEventQueueLength, json);
+    this.websocketHandler = websocketHandler;
     if (useContextManager) {
       this.setContextManager(new RemoteContextManager(this, async, maxEventQueueLength));
     }
+  }
+
+  public setWebsocketHandler(websocketHandler: WebsocketHandler): void {
+    this.websocketHandler = websocketHandler;
   }
 
   public async connectToServer(): Promise<RemoteServerController> {
@@ -35,7 +51,7 @@ export default class RemoteServerController extends AbstractAggreGateDeviceContr
     const cm = this.getContextManager();
     const rootContext = cm.getRoot() as Context<any, any>;
 
-    await rootContext.loadContext();
+    await rootContext.init();
 
     return this;
   }
@@ -49,34 +65,55 @@ export default class RemoteServerController extends AbstractAggreGateDeviceContr
       cm.setRoot(new ProxyContext(Contexts.CTX_ROOT, this));
       cm.restart();
     }
-
     return true;
   }
 
-  protected prepareDataChannel(): Promise<void> {
+  protected async prepareDataChannel(): Promise<void> {
+    Log.PROTOCOL.info('Connecting to remote server (' + this.getDevice() + ')');
+    const device = this.getDevice() as RemoteServer;
+
+    try {
+      await this.createConnection();
+    } catch (e) {
+      if (device.getReconnectionAttempts() > 0) {
+        for (let i = 0; i <= device.getReconnectionAttempts(); i++) {
+          try {
+            await new Promise((resolve) => setTimeout(resolve, device.getReconnectionDelay()));
+            this.websocketHandler.tryReconnect(i, device.getReconnectionAttempts());
+            await this.createConnection();
+            return;
+          } catch (ignored) {
+            // eslint-disable-next-line no-empty
+          }
+        }
+      }
+      this.websocketHandler.connectionRefused(device.getDescription(), device.getInfo());
+      throw new Error(MessageFormat.format(Cres.get().getString('devErrConnecting'), device.getDescription() + ' (' + device.getInfo() + ')'));
+    }
+  }
+
+  protected async createConnection(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       const device = this.getDevice() as RemoteServer;
-      try {
-        if (this.dataChannel == null && device.getAddress() != null) {
-          Log.PROTOCOL.debug('Connecting to remote server (' + this.getDevice() + ')');
-          const wsProtocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-          const requestAddress = device.getRequestAddress();
-          const ws = new WebSocket(wsProtocol + device.getAddress() + ':' + device.getPort() + requestAddress);
-          ws.binaryType = 'arraybuffer';
-          ws.onopen = () => {
-            Log.PROTOCOL.debug('Connection with remote server established');
-            resolve();
-          };
-          this.dataChannel = new WebSocketBlockingChannel(ws);
-        }
 
-        if (this.dataChannel != null) {
-          this.setCommandParser(new AggreGateCommandParser(this.dataChannel));
-        }
-      } catch (e) {
-        reject();
-        throw new Error(MessageFormat.format(Cres.get().getString('devErrConnecting'), device.getDescription() + ' (' + device.getInfo() + ')') + e.message);
-      }
+      const wsProtocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+      const requestAddress = device.getRequestAddress();
+      const ws = new WebSocket(wsProtocol + device.getAddress() + ':' + device.getPort() + requestAddress);
+      ws.binaryType = 'arraybuffer';
+      ws.onopen = (ev: Event) => {
+        this.websocketHandler.afterConnectionEstablished(ev);
+        this.dataChannel = new WebSocketBlockingChannel(ws);
+        this.setCommandParser(new AggreGateCommandParser(this.dataChannel));
+        resolve();
+      };
+      ws.onerror = (e: Event) => {
+        this.websocketHandler.handleTransportError(e);
+        reject(e);
+      };
+      ws.onclose = (ev: CloseEvent) => {
+        this.disconnect();
+        this.websocketHandler.afterConnectionClosed(ev);
+      };
     });
   }
 
@@ -87,7 +124,9 @@ export default class RemoteServerController extends AbstractAggreGateDeviceContr
     }
     const loginInput = DataTableFactory.createWithFirstRecord(CommonServerFormats.FIFT_LOGIN, this.getDevice()?.getUsername(), this.getDevice()?.getPassword());
 
-    await this.callRemoteFunction(Contexts.CTX_ROOT, RootContextConstants.F_LOGIN, null, loginInput, null);
+    const result = await this.callRemoteFunction(Contexts.CTX_ROOT, RootContextConstants.F_LOGIN, null, loginInput, null);
+
+    this.getDevice()?.setEffectiveUsername(result.rec().getString(RootContextConstants.FIF_LOGIN_USERNAME));
 
     if (cm != null) {
       (cm.getRoot() as ProxyContext<any, any>).reinitialize(); // Resets local cache, because root context was already initialized, but its visible entities changed after login

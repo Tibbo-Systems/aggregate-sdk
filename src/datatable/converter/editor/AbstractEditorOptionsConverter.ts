@@ -12,7 +12,7 @@ export default abstract class AbstractEditorOptionsConverter implements EditorOp
   /* (non-Javadoc)
    * @see com.tibbo.aggregate.common.datatable.converter.editor.EditorOptionsConverter#convertToString(com.tibbo.aggregate.common.datatable.DataTable)
    */
-  public abstract convertToString(options: DataTable): string | null;
+  public abstract convertToString(options: DataTable): string;
 
   /* (non-Javadoc)
    * @see com.tibbo.aggregate.common.datatable.converter.editor.EditorOptionsConverter#getFormat()

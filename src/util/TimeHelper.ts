@@ -1,5 +1,6 @@
 import JObject from './java/JObject';
-
+import TimeUnit from './TimeUnit';
+import Cres from '../Cres';
 export default class TimeHelper extends JObject {
   public static readonly SECOND_IN_MS: number = 1000;
   public static readonly MINUTE_IN_MS: number = TimeHelper.SECOND_IN_MS * 60;
@@ -46,4 +47,81 @@ export default class TimeHelper extends JObject {
   public static readonly NAME_MONTH: string = 'month';
   public static readonly NAME_YEAR: string = 'year';
   public static readonly NAME_Y: string = 'y';
+
+  public static readonly CALENDAR_YEAR: number = 1;
+  public static readonly CALENDAR_QUARTER: number = 37;
+  public static readonly CALENDAR_MONTH: number = 2;
+  public static readonly CALENDAR_WEEK_OF_YEAR: number = 3;
+  public static readonly CALENDAR_DATE: number = 5;
+  public static readonly CALENDAR_DAY_OF_YEAR: number = 6;
+  public static readonly CALENDAR_DAY_OF_WEEK: number = 7;
+  public static readonly CALENDAR_HOUR: number = 11;
+  public static readonly CALENDAR_MINUTE: number = 12;
+  public static readonly CALENDAR_SECOND: number = 13;
+  public static readonly CALENDAR_MILLISECOND: number = 14;
+
+  public static MILLISECOND_UNIT = new TimeUnit(TimeHelper.MILLISECOND, 1, Cres.get().getString('tuMilliseconds'), TimeHelper.CALENDAR_MILLISECOND, false);
+  public static SECOND_UNIT = new TimeUnit(TimeHelper.SECOND, TimeHelper.SECOND_IN_MS, Cres.get().getString('tuSeconds'), TimeHelper.CALENDAR_SECOND, false);
+  public static MINUTE_UNIT = new TimeUnit(TimeHelper.MINUTE, TimeHelper.MINUTE_IN_MS, Cres.get().getString('tuMinutes'), TimeHelper.CALENDAR_MINUTE, false);
+  public static HOUR_UNIT = new TimeUnit(TimeHelper.HOUR, TimeHelper.HOUR_IN_MS, Cres.get().getString('tuHours'), TimeHelper.CALENDAR_HOUR, false);
+  public static DAY_UNIT = new TimeUnit(TimeHelper.DAY, TimeHelper.DAY_IN_MS, Cres.get().getString('tuDays'), TimeHelper.CALENDAR_DATE, false);
+  public static WEEK_UNIT = new TimeUnit(TimeHelper.WEEK, TimeHelper.WEEK_IN_MS, Cres.get().getString('tuWeeks'), TimeHelper.CALENDAR_WEEK_OF_YEAR, true);
+  public static MONTH_UNIT = new TimeUnit(TimeHelper.MONTH, TimeHelper.MONTH_IN_MS, Cres.get().getString('tuMonths'), TimeHelper.CALENDAR_MONTH, false);
+  public static QUARTER_UNIT = new TimeUnit(TimeHelper.QUARTER, TimeHelper.QUARTER_IN_MS, Cres.get().getString('tuQuarters'), TimeHelper.CALENDAR_QUARTER, true);
+  public static YEAR_UNIT = new TimeUnit(TimeHelper.YEAR, TimeHelper.YEAR_IN_MS, Cres.get().getString('tuYears'), TimeHelper.CALENDAR_YEAR, false);
+
+  private static NAMED_UNITS = new Map<string, TimeUnit>();
+  private static UNITS = new Array<TimeUnit>();
+  private static REVERSED_UNITS: Array<TimeUnit>;
+
+  public static getTimeUnitByName(name: string): TimeUnit {
+    const unit = TimeHelper.NAMED_UNITS.get(name);
+    if (unit) return unit;
+    throw new Error(Cres.get().getString('clpUnknownOption') + name);
+  }
+  public static getUnits(): Array<TimeUnit> {
+    return TimeHelper.UNITS;
+  }
+
+  public static getReversedUnits(): Array<TimeUnit> {
+    return TimeHelper.REVERSED_UNITS;
+  }
+
+  public static initialize() {
+    TimeHelper.NAMED_UNITS.set(TimeHelper.NAME_MILLISECOND, TimeHelper.MILLISECOND_UNIT);
+    TimeHelper.NAMED_UNITS.set(TimeHelper.NAME_MS, TimeHelper.MILLISECOND_UNIT);
+    TimeHelper.NAMED_UNITS.set(TimeHelper.NAME_SECOND, TimeHelper.SECOND_UNIT);
+    TimeHelper.NAMED_UNITS.set(TimeHelper.NAME_SEC, TimeHelper.SECOND_UNIT);
+    TimeHelper.NAMED_UNITS.set(TimeHelper.NAME_S, TimeHelper.SECOND_UNIT);
+    TimeHelper.NAMED_UNITS.set(TimeHelper.NAME_MINUTE, TimeHelper.MINUTE_UNIT);
+    TimeHelper.NAMED_UNITS.set(TimeHelper.NAME_MIN, TimeHelper.MINUTE_UNIT);
+    TimeHelper.NAMED_UNITS.set(TimeHelper.NAME_M, TimeHelper.MINUTE_UNIT);
+    TimeHelper.NAMED_UNITS.set(TimeHelper.NAME_HOUR, TimeHelper.HOUR_UNIT);
+    TimeHelper.NAMED_UNITS.set(TimeHelper.NAME_HR, TimeHelper.HOUR_UNIT);
+    TimeHelper.NAMED_UNITS.set(TimeHelper.NAME_H, TimeHelper.HOUR_UNIT);
+    TimeHelper.NAMED_UNITS.set(TimeHelper.NAME_DAY, TimeHelper.DAY_UNIT);
+    TimeHelper.NAMED_UNITS.set(TimeHelper.NAME_D, TimeHelper.DAY_UNIT);
+    TimeHelper.NAMED_UNITS.set(TimeHelper.NAME_WEEK, TimeHelper.WEEK_UNIT);
+    TimeHelper.NAMED_UNITS.set(TimeHelper.NAME_MONTH, TimeHelper.MONTH_UNIT);
+    TimeHelper.NAMED_UNITS.set(TimeHelper.NAME_YEAR, TimeHelper.YEAR_UNIT);
+    TimeHelper.NAMED_UNITS.set(TimeHelper.NAME_Y, TimeHelper.YEAR_UNIT);
+
+    TimeHelper.UNITS.push(TimeHelper.MILLISECOND_UNIT);
+    TimeHelper.UNITS.push(TimeHelper.SECOND_UNIT);
+    TimeHelper.UNITS.push(TimeHelper.MINUTE_UNIT);
+    TimeHelper.UNITS.push(TimeHelper.HOUR_UNIT);
+    TimeHelper.UNITS.push(TimeHelper.DAY_UNIT);
+    TimeHelper.UNITS.push(TimeHelper.WEEK_UNIT);
+    TimeHelper.UNITS.push(TimeHelper.MONTH_UNIT);
+    TimeHelper.UNITS.push(TimeHelper.QUARTER_UNIT);
+    TimeHelper.UNITS.push(TimeHelper.YEAR_UNIT);
+
+    TimeHelper.REVERSED_UNITS = TimeHelper.UNITS.reverse();
+  }
+
+  public static setTimeZone(date: Date, timeZone: string): Date {
+    if (timeZone) return new Date(date.toLocaleString('en-US', { timeZone: timeZone }));
+    return date;
+  }
 }
+TimeHelper.initialize();

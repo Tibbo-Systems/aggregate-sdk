@@ -13,6 +13,6 @@ export default class InstanceConverter extends AbstractEditorOptionsConverter {
     private static _init;
     static initialize(): void;
     constructor();
-    convertToString(options: DataTable): string | null;
+    convertToString(options: DataTable): string;
     getFormat(): TableFormat;
 }

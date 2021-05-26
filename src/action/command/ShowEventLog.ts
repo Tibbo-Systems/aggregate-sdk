@@ -10,7 +10,7 @@ import DataTable from '../../datatable/DataTable';
 import DashboardsHierarchyInfo from '../../util/DashboardsHierarchyInfo';
 import WindowLocation from '../../util/WindowLocation';
 import DashboardProperties from '../../util/DashboardProperties';
-import Functions from '../../expression/functions/Functions';
+import Functions from '../../expression/function/Functions';
 import EventFilterContextConstants from '../../server/EventFilterContextConstants';
 import EntityList from '../../context/EntityList';
 import ActionUtilsConstants from '../ActionUtilsConstants';

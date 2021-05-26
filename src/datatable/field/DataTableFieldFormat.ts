@@ -17,15 +17,15 @@ import ExpressionUtils from '../../expression/ExpressionUtils';
 import ElementList from '../../util/ElementList';
 import StringUtils from '../../util/StringUtils';
 import TransferEncodingHelper from '../encoding/TransferEncodingHelper';
-import Data from '../../data/Data';
+import AbstractDataTable from '../AbstractDataTable';
 
 export default class DataTableFieldFormat extends FieldFormat<DataTable> {
   constructor(name: string) {
     super(name);
 
     const getDefaultValue = this.getDefaultValue.bind(this);
-    const validator = new (class DataTableFieldValidator extends AbstractFieldValidator<any> {
-      validate(context: Context<any, any> | null, contextManager: ContextManager<Context<any, any>> | null, caller: CallerController | null, value: DataTable): DataTable | null {
+    const validator = new (class DataTableFieldValidator extends AbstractFieldValidator<DataTable> {
+      validate(context: Context<any, any> | null, contextManager: ContextManager<Context<any, any>> | null, caller: CallerController | null, value: any): any {
         const def = getDefaultValue();
 
         if (def == null || def.getFieldCount() == 0) {
@@ -48,6 +48,7 @@ export default class DataTableFieldFormat extends FieldFormat<DataTable> {
         return value;
       }
     })();
+    this.addValidator(validator);
   }
 
   public valueToString(value: DataTable, settings: ClassicEncodingSettings): string | null {
@@ -166,6 +167,6 @@ export default class DataTableFieldFormat extends FieldFormat<DataTable> {
   }
 
   public isAssignableFrom(value: any): boolean {
-    return value instanceof require('../AbstractDataTable');
+    return value instanceof AbstractDataTable;
   }
 }

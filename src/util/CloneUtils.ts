@@ -17,8 +17,22 @@ export default class CloneUtils {
   public static deepClone<T>(object: T | null): T | null {
     if (null == object) return null;
 
-    if (object instanceof JObject) return (object.clone() as unknown) as T;
     if (object instanceof JSBI) return (JSBI.BigInt(object.toString()) as unknown) as T;
+
+    if (object instanceof Array) {
+      return (object.map((value) => {
+        return CloneUtils.deepClone(value);
+      }) as unknown) as T;
+    }
+
+    if (object instanceof Map) {
+      const newMap = new Map();
+      object.forEach((value, key) => {
+        newMap.set(key, CloneUtils.deepClone(value));
+      });
+      return (newMap as unknown) as T;
+    }
+    if (object instanceof JObject) return (object.clone() as unknown) as T;
 
     return cloneDeep(object);
   }
@@ -40,6 +54,9 @@ export default class CloneUtils {
             Color c = (Color) object;
             return new Color(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
         } */
+    if (Util.isBigInt(object)) {
+      return JSBI.BigInt(object.toString());
+    }
 
     if (object instanceof Array) {
       return [...object];

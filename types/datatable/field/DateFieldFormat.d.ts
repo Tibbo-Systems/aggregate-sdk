@@ -2,7 +2,6 @@ import FieldFormat from '../FieldFormat';
 import ClassicEncodingSettings from '../encoding/ClassicEncodingSettings';
 export default class DateFieldFormat extends FieldFormat<Date> {
     constructor(name: string);
-    private static DEFAULT_DATE;
     getType(): string;
     getNotNullDefault(): Date;
     valueFromString(value: string, settings: ClassicEncodingSettings, validate: boolean): Date | null;

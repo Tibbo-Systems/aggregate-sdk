@@ -4,7 +4,6 @@ import DataTable from '../datatable/DataTable';
 import SimpleDataTable from '../datatable/SimpleDataTable';
 import Util from '../util/Util';
 import JObject from '../util/java/JObject';
-import DataRecord from '../datatable/DataRecord';
 
 export default class EntityList extends JObject implements Iterable<EntityReference> {
   public static readonly FIELD_CONTEXT: string = 'context';
@@ -97,7 +96,7 @@ export default class EntityList extends JObject implements Iterable<EntityRefere
       }
       return clone;
     } catch (ex) {
-      throw new Error(ex.getMessage());
+      throw new Error(ex.message);
     }
   }
 

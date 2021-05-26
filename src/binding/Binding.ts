@@ -90,4 +90,8 @@ export default class Binding extends JObject {
     clone.id = this.id == null ? null : ExpressionUtils.generateBindingId();
     return clone;
   }
+
+  public toString(): string {
+    return this.target + ' = ' + this.expression;
+  }
 }

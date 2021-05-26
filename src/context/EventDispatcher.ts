@@ -10,14 +10,10 @@ export default class EventDispatcher {
   private eventsProcessed = 0;
 
   private readonly undispatchedEvents: Array<QueuedEvent>;
-  private concurrentDispatcherCount = 50;
 
   constructor(queueLength: number, concurrentDispatcherCount: number | null) {
     //TODO  size should be 0
     this.undispatchedEvents = new Array<QueuedEvent>(0);
-    if (concurrentDispatcherCount != null) {
-      this.concurrentDispatcherCount = concurrentDispatcherCount;
-    }
   }
 
   public queue(ev: QueuedEvent, request?: FireEventRequestController) {
@@ -27,7 +23,7 @@ export default class EventDispatcher {
   private queueInternal(ev: QueuedEvent, request?: FireEventRequestController): void {
     this.undispatchedEvents.unshift(ev);
 
-    new Promise((resolve, reject) => {
+    new Promise<void>((resolve, reject) => {
       this.run();
       resolve();
     }).catch((ex) => {
@@ -48,7 +44,7 @@ export default class EventDispatcher {
       if (!ev.getEventData().isDispatching()) {
         ev.getEventData().setDispatching(true);
 
-        new Promise((resolve, reject) => {
+        new Promise<void>((resolve, reject) => {
           ev.getEventData().dispatchAll(this);
           resolve();
         });

@@ -35,7 +35,7 @@ export default class FireEventRequestController extends DefaultRequestController
     this.ignoreStorageErrors = ignoreStorageErrors;
   }
 
-  public process(event: Event): Event {
+  public process(event: Event): Event | null {
     return event;
   }
 

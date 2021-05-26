@@ -12,25 +12,20 @@ import ContextUtils from '../../src/context/ContextUtils';
 import ContextUtilsConstants from '../../src/context/ContextUtilsConstants';
 import User from '../../src/data/User';
 import CallerController from '../../src/context/CallerController';
+import VirtualDeviceManager from '../tests/VirtualDeviceManager';
 
 const loadContext = async (contextManager: ContextManager<Context<any, any>>, contextName: string) => {
-  const accumulatorDefault: Array<string> = [];
-  const spliter = '.';
-  const preparedParentContextsName = contextName.split(spliter).reduce((acc, name) => [...acc, acc.length > 0 ? `${acc[acc.length - 1]}${spliter}${name}` : name], accumulatorDefault);
-  const lc = async (parentsContexts: Array<string>): Promise<Context<any, any> | null> => {
-    const context = contextManager.get(parentsContexts.shift() || '');
-    await context?.loadContext();
-    return parentsContexts.length > 0 ? lc(parentsContexts) : context;
-  };
-  return lc(preparedParentContextsName);
+  const c = await contextManager.get(contextName);
+  return c?.init();
 };
 
 const alertSubscriberImitation = async (contextManager: ContextManager<Context<any, any>>, alertsListener: DefaultContextEventListener, username: string) => {
   await loadContext(contextManager, ContextUtils.userContextPath(username));
 
-  const contextAlerts = await contextManager.get(ContextUtils.alertsContextPath(username))?.loadContext();
+  const contextAlerts = await contextManager.get(ContextUtils.alertsContextPath(username));
+  await contextAlerts?.init();
 
-  const childContextsArray = contextAlerts?.getChildren();
+  const childContextsArray = await contextAlerts?.getChildren();
 
   childContextsArray &&
     (await Promise.all(
@@ -51,9 +46,10 @@ const alertMaskSubscriber = async (alertsListener: DefaultContextEventListener, 
     popupMode = alertsConfig.rec().getInt(AlertConstants.VF_ALERTS_CONFIG_POPUP_MODE);
   }
 
-  const contextAlerts = await contextManager.get(ContextUtils.alertsContextPath(username))?.loadContext();
+  const contextAlerts = await contextManager.get(ContextUtils.alertsContextPath(username));
+  await contextAlerts?.init();
 
-  const childContextsArray = contextAlerts?.getChildren();
+  const childContextsArray = await contextAlerts?.getChildren();
 
   childContextsArray &&
     (await Promise.all(
@@ -89,7 +85,23 @@ describe('Events', () => {
     await server.afterEach();
   });
 
-  // eslint-disable-next-line jest/no-test-callback
+  it('addEventListenerChildAdded', async (done) => {
+    const manager = new VirtualDeviceManager(server.getRlc(), true, 'virtual1');
+
+    const listener = new (class extends DefaultContextEventListener {
+      handle(event: Event): void {
+        console.log('custom handler');
+        done();
+      }
+    })();
+
+    (await server.getRlc().getContextManager().get('users.admin.devices'))?.addEventListener(AbstractContext.E_CHILD_ADDED, listener, false);
+    await manager.start();
+
+    await manager.stop();
+  });
+
+  // eslint-disable-next-line jest/no-done-callback
   it('addEventListener', async (done) => {
     const virtualDevicesContext = server.getVirtualDevice();
 
@@ -105,9 +117,12 @@ describe('Events', () => {
     await virtualDevicesContext.setVariable(VirtualDeviceConstants.V_STRING, dtString);
   });
 
+  // eslint-disable-next-line jest/no-done-callback
   it('alertsEventSubscriber', async (done) => {
-    await server.getRlc().getContextManager().get('users.admin.alerts')?.loadContext();
-    const alert = await server.getRlc().getContextManager().get('users.admin.alerts.testAlert')?.loadContext();
+    const c = await server.getRlc().getContextManager().get('users.admin.alerts');
+    await c?.init();
+    const alert = await server.getRlc().getContextManager().get('users.admin.alerts.testAlert');
+    await alert?.init();
     const listener = new (class extends DefaultContextEventListener {
       handle(event: Event): void {
         done();
@@ -117,6 +132,7 @@ describe('Events', () => {
     console.log('added listener');
   }, 300000);
 
+  // eslint-disable-next-line jest/no-done-callback
   it('alertsSubscriber', async (done) => {
     const contextManager = server.getRlc().getContextManager();
     const listener = new (class extends DefaultContextEventListener {
@@ -130,6 +146,7 @@ describe('Events', () => {
     console.log('listener added');
   }, 300000);
 
+  // eslint-disable-next-line jest/no-done-callback
   it('alertsMaskSubscriber', async (done) => {
     const contextManager = server.getRlc().getContextManager();
     const controller = contextManager.getCallerController();

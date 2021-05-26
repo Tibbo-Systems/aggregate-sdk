@@ -78,6 +78,7 @@ export default class DataRecord extends JObject implements StringEncodable {
      * Returns value of String field with specified name or index.
      */
     getString(valueBy: number | string): string;
+    getNullableString(valueBy: number | string): string | null;
     /**
      * Adds new Integer to the record.
      */
@@ -90,14 +91,17 @@ export default class DataRecord extends JObject implements StringEncodable {
      * Returns value of Integer field with specified name or index.
      */
     getInt(valueBy: number | string): number;
+    getNullableInt(valueBy: number | string): number | null;
     /**
      * Returns value of Long field with specified index.
      */
     getLong(valueBy: number | string): JSBI;
+    getNullableLong(valueBy: number | string): JSBI | null;
     /**
      * Returns value of Boolean field with specified name or index.
      */
     getBoolean(valueBy: number | string): boolean;
+    getNullableBoolean(valueBy: number | string): boolean | null;
     getId(): string | null;
     getValue(searchBy: number | string): any;
     getValueAsString(searchBy: number | string): string | null;
@@ -126,22 +130,27 @@ export default class DataRecord extends JObject implements StringEncodable {
      * Returns value of Data field with specified index or name.
      */
     getData(valueBy: number | string): Data;
+    getNullableData(valueBy: number | string): Data | null;
     /**
      * Returns value of DataTable field with specified index.
      */
-    getDataTable(searchBy: number | string): DataTable;
+    getDataTable(valueBy: number | string): DataTable;
+    getNullableDataTable(valueBy: number | string): DataTable | null;
     /**
      * Returns value of Date field with specified name.
      */
-    getDate(searchBy: number | string): Date;
+    getDate(valueBy: number | string): Date;
+    getNullableDate(valueBy: number | string): Date | null;
     /**
      * Returns value of Double field with specified index.
      */
-    getDouble(searchBy: number | string): number;
+    getDouble(valueBy: number | string): number;
+    getNullableDouble(valueBy: number | string): number | null;
     /**
      * Returns value of Float field with specified index.
      */
-    getFloat(searchBy: number | string): number;
+    getFloat(valueBy: number | string): number;
+    getNullableFloat(valueBy: number | string): number | null;
     /**
      * Returns format of the record.
      */

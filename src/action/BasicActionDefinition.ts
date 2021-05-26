@@ -9,17 +9,17 @@ import StringIdentifier from './StringIdentifier';
 import ContextUtilsConstants from '../context/ContextUtilsConstants';
 
 export default class BasicActionDefinition extends AbstractEntityDefinition implements ActionDefinition, ActionCommandList {
-  private static readonly GROUP_ID_SEPARATOR = '/';
-  private static readonly PROPERTY_NAME = 'name';
-  private static readonly PROPERTY_DESCRIPTION = 'description';
-  private static readonly PROPERTY_DROP_SOURCES = 'dropSources';
-  private static readonly PROPERTY_HELP = 'help';
-  private static readonly PROPERTY_ACCELERATOR = 'accelerator';
-  private static readonly PROPERTY_HIDDEN = 'hidden';
-  private static readonly PROPERTY_ENABLED = 'enabled';
-  private static readonly PROPERTY_GROUP_ID = 'groupId';
-  private static readonly PROPERTY_ICON_ID = 'iconId';
-  private static readonly PROPERTY_DEFAULT = 'default';
+  protected static readonly GROUP_ID_SEPARATOR = '/';
+  protected static readonly PROPERTY_NAME = 'name';
+  protected static readonly PROPERTY_DESCRIPTION = 'description';
+  protected static readonly PROPERTY_DROP_SOURCES = 'dropSources';
+  protected static readonly PROPERTY_HELP = 'help';
+  protected static readonly PROPERTY_ACCELERATOR = 'accelerator';
+  protected static readonly PROPERTY_HIDDEN = 'hidden';
+  protected static readonly PROPERTY_ENABLED = 'enabled';
+  protected static readonly PROPERTY_GROUP_ID = 'groupId';
+  protected static readonly PROPERTY_ICON_ID = 'iconId';
+  protected static readonly PROPERTY_DEFAULT = 'default';
 
   private enabled = true;
   private default = false;

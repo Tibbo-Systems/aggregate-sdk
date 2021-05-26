@@ -2,41 +2,31 @@ import ProxyContext from '../../src/protocol/ProxyContext';
 import ContextUtils from '../../src/context/ContextUtils';
 import RemoteServerController from '../../src/protocol/RemoteServerController';
 import Log from '../../src/Log';
-import Contexts from '../../src/context/Contexts';
 
 export default class VirtualDeviceManager {
   private virtualDevice: ProxyContext<any, any> | null = null;
 
   private rlc: RemoteServerController;
   private createVirtualDevice: boolean;
+  private deviceName: string;
 
-  constructor(rlc: RemoteServerController, createVirtualDevice: boolean) {
+  constructor(rlc: RemoteServerController, createVirtualDevice: boolean, deviceName: string = 'virtual') {
     this.rlc = rlc;
     this.createVirtualDevice = createVirtualDevice;
+    this.deviceName = deviceName;
   }
 
   public async start(): Promise<void> {
     // Creating new device account
 
     // Getting user's devices container context
-    const users = this.rlc.getContextManager().get(Contexts.CTX_USERS);
-    await users?.loadContext();
-    const admin = this.rlc.getContextManager().get(ContextUtils.userContextPath('admin'));
-    await admin?.loadContext();
-    const devicesContextPath = ContextUtils.devicesContextPath('admin');
-    const adminDevicesContext = this.rlc.getContextManager().get(devicesContextPath);
-
-    await this.rlc.getContextManager().get('devices')?.loadContext();
-
-    await adminDevicesContext?.loadContext();
-
     if (!this.createVirtualDevice) return;
 
-    const device = adminDevicesContext?.getChild('virtual');
+    const device = await this.rlc.getContextManager().get('users.admin.devices.' + this.deviceName);
 
     if (device) {
-      await device.loadContext();
       this.virtualDevice = device as ProxyContext<any, any>;
+      await device.init();
       return;
     }
 
@@ -45,23 +35,26 @@ export default class VirtualDeviceManager {
     // This call will implicitly fill in function input data table
 
     try {
-      await adminDevicesContext?.callFunction('add', ['com.tibbo.linkserver.plugin.device.virtual', 'virtual', 'Virtual Device']);
+      const devicesContextPath = ContextUtils.devicesContextPath('admin');
+      const adminDevicesContext = await this.rlc.getContextManager().get(devicesContextPath);
+      await adminDevicesContext?.init();
+      await adminDevicesContext?.callFunction('add', ['com.tibbo.linkserver.plugin.device.virtual', this.deviceName, 'Virtual Device']);
     } catch (e) {
       Log.CONTEXT_ACTIONS.warn(e.message, e);
     }
 
     // Returning context of the newly created device
-    const deviceContextPath = ContextUtils.deviceContextPath('admin', 'virtual');
-    this.virtualDevice = this.rlc.getContextManager().get(deviceContextPath) as ProxyContext<any, any>;
+    const deviceContextPath = ContextUtils.deviceContextPath('admin', this.deviceName);
+    this.virtualDevice = (await this.rlc.getContextManager().get(deviceContextPath)) as ProxyContext<any, any>;
     await this.deviceSynchronization();
-    await this.virtualDevice.loadContext();
+    await this.virtualDevice.init();
   }
 
   private async deviceSynchronization(): Promise<void> {
     await new Promise((resolve) => {
       // this.signalAll = resolve;
       setTimeout(() => {
-        resolve();
+        resolve(null);
       }, 3000);
     });
   }

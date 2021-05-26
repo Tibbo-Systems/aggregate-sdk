@@ -4,6 +4,8 @@ export default class JObject {
   }
 
   public clone(): JObject {
-    return Object.create(this);
+    const clone = Object.create(this);
+    Object.assign(clone, this);
+    return clone;
   }
 }

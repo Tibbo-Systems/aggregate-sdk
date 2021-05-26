@@ -29,7 +29,7 @@ export default interface ReferenceResolver {
 
   getEvaluator(): Evaluator | null;
 
-  setDefaultRow(defaultRow: number): void;
+  setDefaultRow(defaultRow: number | null): void;
 
   getDefaultRow(): number | null;
 }

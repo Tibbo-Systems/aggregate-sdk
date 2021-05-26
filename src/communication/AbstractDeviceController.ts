@@ -46,7 +46,7 @@ export default abstract class AbstractDeviceController<I extends Command, O exte
   }
 
   protected async checkAndConnect(): Promise<void> {
-    this.connect();
+    return this.connect();
   }
 
   public async login(): Promise<void> {
@@ -121,9 +121,9 @@ export default abstract class AbstractDeviceController<I extends Command, O exte
     //this.processor.start();
   }
 
-  protected abstract async connectImpl(): Promise<boolean>;
+  protected abstract connectImpl(): Promise<boolean>;
 
-  protected abstract async loginImpl(): Promise<boolean>;
+  protected abstract loginImpl(): Promise<boolean>;
 
   public abstract disconnectImpl(): void;
 

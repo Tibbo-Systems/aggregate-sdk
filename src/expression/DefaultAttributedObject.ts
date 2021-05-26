@@ -24,11 +24,11 @@ export default class DefaultAttributedObject extends AttributedObject {
     return this.value;
   }
 
-  setQuality(quality: number): void {
+  setQuality(quality: number | null): void {
     this.quality = quality;
   }
 
-  setTimestamp(timestamp: Date): void {
+  setTimestamp(timestamp: Date | null): void {
     this.timestamp = timestamp;
   }
 

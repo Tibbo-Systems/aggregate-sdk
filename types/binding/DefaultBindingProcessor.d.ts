@@ -1,0 +1,36 @@
+import BindingProvider from './BindingProvider';
+import Evaluator from '../expression/Evaluator';
+import Reference from '../expression/Reference';
+import Binding from './Binding';
+import EvaluationOptions from './EvaluationOptions';
+import ChangeCache from './ChangeCache';
+import EvaluationEnvironment from '../expression/EvaluationEnvironment';
+import BindingProcessor from './BindingProcessor';
+import AsyncRunnable from '../util/java/AsyncRunnable';
+export default class DefaultBindingProcessor implements BindingProcessor {
+    private provider;
+    private evaluator;
+    private stopped;
+    private enabled;
+    private disableStartupConcurrency;
+    private executionService;
+    private timerExecutor;
+    constructor(provider: BindingProvider, evaluator: Evaluator, queueLength?: number, corePoolSize?: number, maximumPoolSize?: number);
+    start(): Promise<boolean>;
+    protected startImpl(): Promise<void>;
+    stop(): void;
+    evaluateBindingExpression(method: number, binding: Binding, options: EvaluationOptions, evaluationEnvironment?: EvaluationEnvironment, cause?: Reference, cache?: ChangeCache): Promise<void>;
+    private initBinding;
+    private initBindings;
+    private evaluateStartupBindings;
+    private evaluateStartupBinding;
+    private addReferenceListener;
+    writeReference(method: number, binding: Binding, value: any, cause?: Reference, cache?: ChangeCache): void;
+    protected checkCondition(options: EvaluationOptions, evaluator: Evaluator, evaluationEnvironment?: EvaluationEnvironment): Promise<boolean>;
+    isStopped(): boolean;
+    isEnabled(): boolean;
+    setEnabled(enabled: boolean): void;
+    isDisableStartupConcurrency(): boolean;
+    setDisableStartupConcurrency(value: boolean): void;
+    submit(task: AsyncRunnable, executeInThreadPool?: boolean): Promise<void>;
+}

@@ -1174,7 +1174,7 @@ export default abstract class FieldFormat<T> extends JObject {
       if (other.validators != null) {
         return false;
       }
-    } else if (!Util.equals(this.validators, other.validators)) {
+    } else if (!Util.arrayEquals(this.validators, other.validators)) {
       return false;
     }
 

@@ -16,6 +16,7 @@ export default abstract class ActionUtils {
     static readonly DESCRIPTIONS: Map<string, string>;
     static __static_initializer_0(): void;
     static __static_initializer_1(): void;
+    static __static_initializer_2(): void;
     private static _init;
     static initialize(): void;
     static readonly FIELD_ACTION_EXECUTION_PARAMETERS: string;

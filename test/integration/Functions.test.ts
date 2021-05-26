@@ -8,8 +8,8 @@ import DataTable from '../../src/datatable/DataTable';
 import ContextManager from '../../src/context/ContextManager';
 
 async function executeBindings(input: DataTable, dc: string, cm: ContextManager<any>): Promise<DataTable> {
-  const utilities = cm.get('utilities') as ProxyContext<any, any>;
-  await utilities.loadContext();
+  const utilities = (await cm.get('utilities')) as ProxyContext<any, any>;
+  await utilities.init();
 
   const fd = utilities.getFunctionDefinition('executeBindings');
   if (fd === null) throw new Error('function definition is not available');

@@ -10,7 +10,18 @@ export default class DoubleFieldFormat extends FieldFormat<number> {
 
   public valueToString(value: number | null): string | null {
     if (value === 0) return '0.0';
-    return value === null ? null : value.toString();
+
+    if (value === null) return null;
+
+    const stringValue = value.toString();
+
+    if (stringValue.includes('e+')) {
+      return stringValue.replace('e+', 'E');
+    } else if (stringValue.includes('e-')) {
+      return stringValue.replace('e-', 'E-');
+    }
+
+    return stringValue;
   }
 
   public getType(): string {
@@ -27,8 +38,8 @@ export default class DoubleFieldFormat extends FieldFormat<number> {
     } else if (value.length === 0) {
       return 0.0;
     } else {
-      const parseResult = parseInt(value);
-      return isNaN(parseResult) ? Util.convertToNumber(value, validate, false) : parseResult;
+      const resultToNumber = Number(value);
+      return isNaN(resultToNumber) ? Util.convertToNumber(value, validate, false) : resultToNumber;
     }
   }
 

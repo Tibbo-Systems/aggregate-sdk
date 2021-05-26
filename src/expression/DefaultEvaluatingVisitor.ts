@@ -13,7 +13,7 @@ export default class DefaultEvaluatingVisitor extends AbstractEvaluatingVisitor 
     super(evaluator, environment);
   }
 
-  visitValueReferenceNode(ctx: ParserRuleContext): AttributedObject {
+  visitValueReferenceNode(ctx: ParserRuleContext): Promise<AttributedObject> {
     const r = (ctx as any).reference;
     let ref;
     if (!r) {
@@ -29,8 +29,11 @@ export default class DefaultEvaluatingVisitor extends AbstractEvaluatingVisitor 
       if (resolver == null) {
         throw new Error(Cres.get().getString('exprNoResolverForSchema') + ref.getSchema());
       }
-
-      return ExpressionUtils.toAttributed(resolver.resolveReference(ref, this.environment));
+      const result = resolver.resolveReference(ref, this.environment);
+      if (this.isPromise(result)) {
+        return result.then((value) => ExpressionUtils.toAttributed(value));
+      }
+      return new Promise((resolve) => resolve(ExpressionUtils.toAttributed(result)));
     } catch (ex) {
       throw new Error(MessageFormat.format(Cres.get().getString('exprErrResolvingReference'), ref) + ex.message + ex.stackTrace);
     }

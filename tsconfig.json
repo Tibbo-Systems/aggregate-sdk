@@ -1,23 +1,19 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/",
-    "noImplicitAny": true,
     "noImplicitReturns": true,
-    "module": "commonjs",
-    "target": "es5",
-    "downlevelIteration": true,
+    "noUnusedLocals": true,
+    "strict": true,
+    "allowJs": true,
+  //  "checkJs": true,
     "noFallthroughCasesInSwitch": true,
-    "strictPropertyInitialization": true,
-    "noUnusedParameters": false,
-    "allowSyntheticDefaultImports": true,
+    "noUnusedParameters": false, // try to set true
+    "target": "es6",
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "noUnusedLocals": false,
-    "strict": true,
     "declaration": true,
     "declarationDir": "./types/",
     "sourceMap": true,
-    "strictNullChecks": true
+    "outDir": "./dist/"
   },
   "include": [
     "src/**/*"

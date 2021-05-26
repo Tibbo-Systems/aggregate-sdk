@@ -40,7 +40,7 @@ export default abstract class AbstractOperation implements Operation {
   }
 
   getGroup(): string {
-    return '';
+    return this.group;
   }
 
   getHelp(): string {
@@ -48,7 +48,7 @@ export default abstract class AbstractOperation implements Operation {
   }
 
   getIconId(): string {
-    return '';
+    return this.iconId;
   }
 
   getInvokerContext(): Context<any, any> {
@@ -56,7 +56,7 @@ export default abstract class AbstractOperation implements Operation {
   }
 
   getName(): string {
-    return this.getName();
+    return this.name;
   }
 
   interrupt(): void {}

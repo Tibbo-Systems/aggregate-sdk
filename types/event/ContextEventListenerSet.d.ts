@@ -8,7 +8,6 @@ import Event from '../data/Event';
 import Context from '../context/Context';
 export default class ContextEventListenerSet extends JObject {
     private readonly filterListeners;
-    private evaluator;
     private _fingerprintListeners;
     private contextManager;
     private context;
@@ -17,6 +16,7 @@ export default class ContextEventListenerSet extends JObject {
     static fromContext(value: Context<any, any>): ContextEventListenerSet;
     getListeners(): Set<DefaultContextEventListener>;
     dispatch(event: Event, eventDefinition: EventDefinition, eventData: EventData): void;
+    private fingerprint;
     private dispatchEventToListeners;
     private fingerprintListeners;
     private handleInListener;

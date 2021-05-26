@@ -102,10 +102,11 @@ export default class DataTableConversion {
     }
   }
 
+  //TODO not implemented yet
   public static fillFromRecord(rec: DataRecord, beanClass: any, format: TableFormat, setReadOnlyFields: boolean): any {
     try {
       let bean: any;
-      const fieldCount = rec.getFieldCount();
+      //const fieldCount = rec.getFieldCount();
 
       // for (let field of rec.getFiel)
 

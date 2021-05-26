@@ -7,8 +7,8 @@ import ActionExecutor from './ActionExecutor';
 import ActionWorker from './ActionWorker';
 import Context from '../../context/Context';
 import DefaultStepActionInterceptor from '../DefaultStepActionInterceptor';
-import Runnable from '../../util/java/Runnable';
 import CallerController from '../../context/CallerController';
+import Runnable from '../../util/java/Runnable';
 
 export default class InvokeActionOperation extends AbstractOperation {
   protected readonly actionName: string;
@@ -48,9 +48,40 @@ export default class InvokeActionOperation extends AbstractOperation {
     return this.defaultParameters;
   }
 
+  getExecutionGroup(): number {
+    return this.executionGroup;
+  }
+
   interrupt(): void {
     if (this.actionWorker != null) {
       this.actionWorker.interrupt();
+    }
+  }
+
+  getExecutor(): ActionExecutor | null {
+    return this.executor;
+  }
+
+  setExecutor(executor: ActionExecutor): void {
+    this.executor = executor;
+    const _this = this;
+    executor.addInterruptionListener(
+      new (class Listener extends Runnable {
+        run(): void {
+          _this.interrupt();
+        }
+      })()
+    );
+  }
+  public addInterruptionListener(listener: Runnable): void {
+    if (this.executor != null) {
+      this.executor.addInterruptionListener(listener);
+    }
+  }
+
+  public removeInterruptionListener(listener: Runnable): void {
+    if (this.executor != null) {
+      this.executor.removeInterruptionListener(listener);
     }
   }
 

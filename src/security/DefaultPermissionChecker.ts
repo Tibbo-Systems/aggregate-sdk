@@ -6,6 +6,7 @@ import CallerController from '../context/CallerController';
 import Permissions from './Permissions';
 import PermissionType from './PermissionType';
 
+//TODO not implemented yet
 export default class DefaultPermissionChecker implements PermissionChecker {
   public static readonly NULL_PERMISSIONS: string = '';
 
@@ -24,7 +25,9 @@ export default class DefaultPermissionChecker implements PermissionChecker {
   }
 
   getPermissionLevels(): Map<string, string> {
-    return new Map();
+    const pm = new Map<string, string>();
+    this.permissionTypes.forEach((p) => pm.set(p.name, p.description));
+    return pm;
   }
 
   protected setPermissionTypes(perms: Array<PermissionType>): void {

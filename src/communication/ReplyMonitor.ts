@@ -45,7 +45,7 @@ export default class ReplyMonitor<C extends Command, R extends Command> extends 
         return false;
       }
       this.timeoutReset = false;
-      await new Promise((resolve) => {
+      await new Promise<void>((resolve) => {
         this.signalAll = resolve;
         setTimeout(() => {
           resolve();

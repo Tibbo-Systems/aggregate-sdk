@@ -1,5 +1,3 @@
-import JObject from '../util/java/JObject';
-
 export default class QueryCondition {
   //Operators
   public static readonly EQ: number = 1; // =

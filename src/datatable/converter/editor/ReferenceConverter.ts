@@ -6,13 +6,22 @@ import FieldFormat from '../../FieldFormat';
 import Cres from '../../../Cres';
 import Reference from '../../../expression/Reference';
 import DataTableBindingProvider from '../../DataTableBindingProvider';
-import Functions from '../../../expression/functions/Functions';
+import Functions from '../../../expression/function/Functions';
 import Contexts from '../../../context/Contexts';
 import UtilitiesContextConstants from '../../../server/UtilitiesContextConstants';
 import SimpleDataTable from '../../SimpleDataTable';
 import StringBuilder from '../../../util/java/StringBuilder';
 import FieldFormatFactory from '../../FieldFormatFactory';
 import ContextUtilsConstants from '../../../context/ContextUtilsConstants';
+import ContextManager from '../../../context/ContextManager';
+import CallerController from '../../../context/CallerController';
+import Context from '../../../context/Context';
+import DataTableFactory from '../../DataTableFactory';
+import DataTableUtils from '../../DataTableUtils';
+import ClassicEncodingSettings from '../../encoding/ClassicEncodingSettings';
+import Evaluator from '../../../expression/Evaluator';
+import Expression from '../../../expression/Expression';
+import Log from '../../../Log';
 
 export default class ReferenceConverter extends AbstractEditorOptionsConverter {
   public static readonly FIELD_ENTITY_PARAMETERS_VALUE: string = 'value';
@@ -39,8 +48,6 @@ export default class ReferenceConverter extends AbstractEditorOptionsConverter {
   }
 
   private static __static_initializer_1() {
-    let exp: string, tableExp: string, valueExp: string, descriptionExp;
-
     let ff: FieldFormat<any> = FieldFormatFactory.createWith(ReferenceConverter.FIELD_APPEARANCE, FieldConstants.INTEGER_FIELD, Cres.get().getString('appearance'));
     ff.addSelectionValue(Reference.APPEARANCE_LINK, Cres.get().getString('link'));
     ff.addSelectionValue(Reference.APPEARANCE_BUTTON, Cres.get().getString('wButton'));
@@ -178,8 +185,64 @@ export default class ReferenceConverter extends AbstractEditorOptionsConverter {
     this.types.push(FieldConstants.STRING_FIELD);
   }
 
-  convertToString(options: DataTable): string | null {
+  convertToString(options: DataTable): string {
     return options.encodeToString();
+  }
+
+  static createReference(value: string | null, ff: FieldFormat<any>, cm: ContextManager<any>, cc: CallerController, defaultContext: Context<any, any>): Reference {
+    const editorOptions: string | null = ff.getEditorOptions();
+
+    if (editorOptions === null) {
+      if (value != null) return new Reference(value.toString());
+      return new Reference();
+    }
+
+    if (DataTableUtils.isEncodedTable(editorOptions)) {
+      try {
+        return ReferenceConverter.toReference(DataTableFactory.createAndDecode(editorOptions, new ClassicEncodingSettings(false), true), cm, cc, defaultContext);
+      } catch (ex) {
+        return new Reference();
+      }
+    } else return new Reference(editorOptions);
+  }
+
+  static toReference(options: DataTable, cm: ContextManager<any>, cc: CallerController, defaultContext: Context<any, any>): Reference {
+    const ref: Reference = new Reference();
+    for (const rec of options) {
+      ref.setSchema('class');
+
+      const evaluator: Evaluator = new Evaluator(cm, defaultContext, options, cc);
+      evaluator.setDefaultContext(defaultContext);
+
+      if (rec.getString(ReferenceConverter.FIELD_CONTEXT_TYPE).equalsIgnoreCase('static')) ref.setContext(rec.getString(ReferenceConverter.FIELD_CONTEXT));
+      else {
+        ref.setContext(ReferenceConverter.evaluate(rec.getString(ReferenceConverter.FIELD_CONTEXT_EXPRESSION), evaluator));
+      }
+
+      if (rec.getString(ReferenceConverter.FIELD_ENTITY_TYPE).equalsIgnoreCase('static')) ref.setEntity(rec.getString(ReferenceConverter.FIELD_ENTITY));
+      else {
+        ref.setEntity(ReferenceConverter.evaluate(rec.getString(ReferenceConverter.FIELD_ENTITY_EXPRESSION), evaluator));
+      }
+
+      ref.setEntityType(rec.getInt(ReferenceConverter.FIELD_REFERENCE_TYPE));
+
+      ref.setAppearance(rec.getInt(ReferenceConverter.FIELD_APPEARANCE));
+
+      if (rec.getDataTable(ReferenceConverter.FIELD_ENTITY_PARAMETERS) != null)
+        for (const rec2 of rec.getDataTable(ReferenceConverter.FIELD_ENTITY_PARAMETERS)) ref.addParameter(rec2.getString(ReferenceConverter.FIELD_ENTITY_PARAMETERS_VALUE));
+
+      if (rec.getString(ReferenceConverter.FIELD_ICON) != null) ref.setField(rec.getString(ReferenceConverter.FIELD_ICON));
+    }
+    return ref;
+  }
+
+  private static evaluate(expression: string, evaluator: Evaluator): string {
+    try {
+      return evaluator.evaluate(new Expression(expression));
+    } catch (ex) {
+      Log.CONVERTER.debug(ex.getMessage(), ex);
+      return expression;
+    }
   }
 
   getFormat(): TableFormat {

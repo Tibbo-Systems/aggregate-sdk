@@ -91,11 +91,11 @@ export default abstract class AggreGateDevice extends JObject {
     if (this.disabled != other.disabled) {
       return false;
     }
-    if (name == null) {
+    if (this.name == null) {
       if (other.name != null) {
         return false;
       }
-    } else if (name !== other.name) {
+    } else if (this.name !== other.name) {
       return false;
     }
     return true;

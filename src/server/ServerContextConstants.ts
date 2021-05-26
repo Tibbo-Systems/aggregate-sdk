@@ -81,6 +81,10 @@ export default class ServerContextConstants {
 
   public static readonly VF_ACTIVE_ALERTS_DATA: string = 'data';
 
+  public static readonly VF_ACTIVE_ALERTS_ACKNOWLEDGEMENTS: string = 'acknowledgements';
+
+  public static readonly VF_ACTIVE_ALERTS_ENRICHMENTS: string = 'enrichments';
+
   public static readonly FIF_INIT_ACTION_INPUT_DATA: string = 'inputData';
 
   public static readonly FIF_INIT_ACTION_INITIAL_PARAMETERS: string = 'initialParameters';

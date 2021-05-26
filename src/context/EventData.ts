@@ -1,7 +1,6 @@
 import Comparable from '../util/java/Comparable';
 import ContextEventListenerSet from '../event/ContextEventListenerSet';
 import EventDefinition from './EventDefinition';
-import ContextManager from './ContextManager';
 import ContextEventListener from '../event/ContextEventListener';
 import Event from '../data/Event';
 import QueuedEvent from './QueuedEvent';

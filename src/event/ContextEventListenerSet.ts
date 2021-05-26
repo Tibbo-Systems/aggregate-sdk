@@ -13,7 +13,6 @@ import Context from '../context/Context';
 export default class ContextEventListenerSet extends JObject {
   // Cannot use Collections.newSetFromMap(WeakHashMap) here since filterListeners order must be preserved!
   private readonly filterListeners = new Array<DefaultContextEventListener>();
-  private evaluator: Evaluator | null = null;
   private _fingerprintListeners = new Map<string, Array<DefaultContextEventListener>>();
 
   private contextManager: ContextManager<any> | null = null;
@@ -58,13 +57,27 @@ export default class ContextEventListenerSet extends JObject {
       const fingerprintListeners = this.fingerprintListeners(event, eventDefinition);
 
       if (fingerprintListeners != null) {
-        this.dispatchEventToListeners(event, eventDefinition, eventData, fingerprintListeners);
+        if (fingerprintListeners instanceof Promise) {
+          fingerprintListeners.then((fingerprint) => {
+            this.fingerprint(fingerprint, event, eventDefinition, eventData);
+          });
+        } else {
+          this.fingerprint(fingerprintListeners, event, eventDefinition, eventData);
+        }
+      } else {
+        this.dispatchEventToListeners(event, eventDefinition, eventData, this.filterListeners);
       }
-
-      this.dispatchEventToListeners(event, eventDefinition, eventData, this.filterListeners);
     } catch (ex) {
       Log.CONTEXT_EVENTS.error("Unexpected error occurred while dispatching event '" + event + "'", ex);
     }
+  }
+
+  private fingerprint(fingerprint: string, event: Event, eventDefinition: EventDefinition, eventData: EventData): void {
+    if (fingerprint) {
+      const res = this._fingerprintListeners.get(fingerprint);
+      if (res) this.dispatchEventToListeners(event, eventDefinition, eventData, res);
+    }
+    this.dispatchEventToListeners(event, eventDefinition, eventData, this.filterListeners);
   }
 
   private dispatchEventToListeners(event: Event, eventDefinition: EventDefinition, eventData: EventData, listeners: Array<DefaultContextEventListener>): void {
@@ -78,7 +91,7 @@ export default class ContextEventListenerSet extends JObject {
       const eventListener: DefaultContextEventListener = li.getListener();
       const contextManager: ContextManager<any> = this.getContextManager();
       if (eventListener.isAsync() && contextManager != null) {
-        new Promise((resolve, reject) => {
+        new Promise<void>((resolve, reject) => {
           this.handleInListener(event, eventDefinition, eventListener, eventData);
           resolve();
         });
@@ -88,23 +101,13 @@ export default class ContextEventListenerSet extends JObject {
     }
   }
 
-  private fingerprintListeners(event: Event, eventDefinition: EventDefinition): Array<DefaultContextEventListener> | null {
+  private fingerprintListeners(event: Event, eventDefinition: EventDefinition): Promise<string> | string | null {
     const fingerprintExpression = eventDefinition.getFingerprintExpression();
     if (fingerprintExpression != null) {
       const contextManager: ContextManager<any> = this.getContextManager();
       if (contextManager != null) {
-        if (this.evaluator == null) {
-          this.evaluator = new Evaluator(contextManager, null, null, contextManager.getCallerController());
-        }
-
-        this.evaluator.setDefaultTable(event.getData());
-        const fingerprint = this.evaluator.evaluateToString(new Expression(fingerprintExpression));
-        this.evaluator.setDefaultTable(null);
-
-        const res = this._fingerprintListeners.get(fingerprint);
-
-        if (!res) return null;
-        return res;
+        const evaluator = new Evaluator(contextManager, null, event.getData(), contextManager.getCallerController());
+        return evaluator.evaluateToString(new Expression(fingerprintExpression));
       } else {
         Log.CONTEXT_EVENTS.warn("Can't handle event with fingerprint because of no ContextManager: '" + event + "' ");
       }
@@ -140,7 +143,7 @@ export default class ContextEventListenerSet extends JObject {
         Log.CONTEXT_EVENTS.debug("Listener '" + eventListener + "' is going to handle event: " + event);
       }
 
-      eventListener.handle(event);
+      eventListener.handle(event, eventDefinition);
     } catch (e) {
       Log.CONTEXT_EVENTS.warn("Error handling event '" + event.toString() + "'", e);
     }

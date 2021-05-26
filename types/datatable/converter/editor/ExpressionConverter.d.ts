@@ -7,6 +7,6 @@ export default class ExpressionConverter extends AbstractEditorOptionsConverter 
     static FORMAT: TableFormat;
     static REFERENCES_FORMAT: TableFormat;
     constructor();
-    convertToString(options: DataTable): string | null;
+    convertToString(options: DataTable): string;
     getFormat(): TableFormat;
 }

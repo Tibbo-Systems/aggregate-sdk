@@ -16,7 +16,7 @@ export default abstract class AbstractReferenceResolver extends JObject implemen
     private defaultTable;
     setDefaultTable(defaultTable: DataTable | null): void;
     getDefaultTable(): DataTable | null;
-    abstract resolveReference(ref: Reference, environment: EvaluationEnvironment): Promise<any>;
+    abstract resolveReference(ref: Reference, environment: EvaluationEnvironment): Promise<any> | any;
     setContextManager(contextManager: ContextManager<Context<any, any>> | null): void;
     setCallerController(callerController?: CallerController): void;
     setDefaultContext(defaultContext: Context<any, any> | null): void;

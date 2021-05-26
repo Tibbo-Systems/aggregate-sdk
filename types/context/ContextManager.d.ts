@@ -44,7 +44,7 @@ export default interface ContextManager<T extends Context<any, any>> {
      * Context full name
      * @return {*} Requested context or null if this context not exist or not available with current permissions
      */
-    get(contextName: string, caller?: CallerController): T | null;
+    get(contextName: string, caller?: CallerController): Promise<T | null>;
     /**
      * Adds event listener to specified event to every context satisfying context mask.
      * @param {string} mask
@@ -52,14 +52,14 @@ export default interface ContextManager<T extends Context<any, any>> {
      * @param {*} listener
      * @param {boolean} weak
      */
-    addMaskEventListener(mask: string, event: string, listener: ContextEventListener, weak: boolean): void;
+    addMaskEventListener(mask: string, event: string, listener: ContextEventListener, weak: boolean): Promise<void>;
     /**
      * Removes event listener of event 'event' from every context satisfying event mask.
      * @param {string} mask
      * @param {string} event
      * @param {*} listener
      */
-    removeMaskEventListener(mask: string, event: string, listener: ContextEventListener): void;
+    removeMaskEventListener(mask: string, event: string, listener: ContextEventListener): Promise<void>;
     /**
      * Called when new context is added to the context manager
      * @param {*} con

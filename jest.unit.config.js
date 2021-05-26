@@ -4,7 +4,7 @@ module.exports = {
 
   testPathIgnorePatterns: ['./performance/', './integration/'],
   transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest',
+    '\\.[jt]sx?$': 'babel-jest',
   },
   reporters: [
     'default',
@@ -12,15 +12,15 @@ module.exports = {
       'jest-junit',
       {
         suiteName: 'TS API test suite',
-        outputDirectory: '../../../build/test/test-jest',
-        outputName: './TEST-JEST.xml',
+        outputDirectory: '../../../build/test/test-ts-api',
+        outputName: './TEST-TS-API.xml',
       },
     ],
     [
       'jest-html-reporter',
       {
         pageTitle: 'TS API test suite',
-        outputPath: '../../../build/reports/test-jest/index.html',
+        outputPath: '../../../build/reports/test-ts-api/index.html',
         includeFailureMsg: true,
       },
     ],

@@ -9,10 +9,6 @@ export default class TracerManager {
   }
 
   public static setDefaultTracer(tracer: Tracer) {
-    if (tracer == null) {
-      throw new Error('Default tracer cannot be NULL');
-    }
-
     TracerManager.DEFAULT_TRACER = tracer;
   }
 }

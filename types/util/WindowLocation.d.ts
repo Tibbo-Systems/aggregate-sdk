@@ -6,4 +6,6 @@ export default class WindowLocation extends AggreGateBean {
     private state;
     static readonly STATE_FLOATING: number;
     constructor(data?: DataRecord | number);
+    getState(): number;
+    setState(state: number): void;
 }

@@ -9,7 +9,7 @@ export default class AttributedObject extends JObject {
     throw new Error();
   }
 
-  setQuality(quality: number): void {
+  setQuality(quality: number | null): void {
     throw new Error();
   }
 
@@ -17,7 +17,7 @@ export default class AttributedObject extends JObject {
     throw new Error();
   }
 
-  setTimestamp(timestamp: Date): void {
+  setTimestamp(timestamp: Date | null): void {
     throw new Error();
   }
 }

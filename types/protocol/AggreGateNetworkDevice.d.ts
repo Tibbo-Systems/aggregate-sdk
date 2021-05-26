@@ -5,6 +5,8 @@ export default abstract class AggreGateNetworkDevice extends AggreGateDevice {
     private address;
     private port;
     private connectionTimeout;
+    private reconnectionAttempts;
+    private reconnectionDelay;
     constructor(id: string, type: string, address: string, port: number);
     getAddress(): string;
     getPort(): number;
@@ -12,5 +14,9 @@ export default abstract class AggreGateNetworkDevice extends AggreGateDevice {
     setAddress(address: string): void;
     getConnectionTimeout(): number;
     setConnectionTimeout(connectionTimeout: number): void;
+    getReconnectionAttempts(): number;
+    setReconnectionAttempts(reconnectionAttempts: number): void;
+    setReconnectionDelay(reconnectionDelay: number): void;
+    getReconnectionDelay(): number;
     getInfo(): string;
 }

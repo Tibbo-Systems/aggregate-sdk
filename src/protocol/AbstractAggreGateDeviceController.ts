@@ -22,7 +22,6 @@ import AggreGateCommand from './AggreGateCommand';
 import ProxyContext from './ProxyContext';
 import TransferEncodingHelper from '../datatable/encoding/TransferEncodingHelper';
 import Log from '../Log';
-import Runnable from '../util/java/Runnable';
 import FireEventRequestController from '../event/FireEventRequestController';
 import Context from '../context/Context';
 import EventDefinition from '../context/EventDefinition';
@@ -34,6 +33,8 @@ import StringUtils from '../util/StringUtils';
 import ElementList from '../util/ElementList';
 import Event from '../data/Event';
 import LoggerAdapter from '../util/logger/LoggerAdapter';
+import AbstractAggreGateDeviceControllerDisconnectListener from './AbstractAggreGateDeviceControllerDisconnectListener';
+import AsyncRunnable from '../util/java/AsyncRunnable';
 
 export default abstract class AbstractAggreGateDeviceController<D extends AggreGateDevice, C extends ContextManager<any>>
   extends AbstractDeviceController<IncomingAggreGateCommand, OutgoingAggreGateCommand>
@@ -52,8 +53,6 @@ export default abstract class AbstractAggreGateDeviceController<D extends AggreG
 
   private readonly formatCache: FormatCache;
 
-  private readonly maxEventQueueLength: number;
-
   private usesCompression = false;
 
   protected readonly commandWriter = new CompressedCommandWriter<OutgoingAggreGateCommand>();
@@ -64,13 +63,14 @@ export default abstract class AbstractAggreGateDeviceController<D extends AggreG
 
   private readonly commandBuilder: ProtocolCommandBuilder;
 
+  private readonly disconnectListeners = new Array<AbstractAggreGateDeviceControllerDisconnectListener>();
+
   constructor(device: D, logger: LoggerAdapter, maxEventQueueLength: number, json = false) {
     super(device.getCommandTimeout(), logger);
     this.formatCache = new FormatCache(device.toString(), this);
     this.commandBuilder = new ProtocolCommandBuilder(json);
 
     this.device = device;
-    this.maxEventQueueLength = maxEventQueueLength;
   }
 
   public getContextManager(): ContextManager<Context<any, any>> {
@@ -181,17 +181,25 @@ export default abstract class AbstractAggreGateDeviceController<D extends AggreG
 
   public destroy(): void {}
 
+  public addDisconnectListener(disconnectListener: AbstractAggreGateDeviceControllerDisconnectListener): void {
+    this.disconnectListeners.push(disconnectListener);
+  }
+
   disconnectImpl(): void {
     if (this._contextManager != null) {
       this._contextManager.stop();
     }
 
     this.formatCache.clear();
+
+    this.disconnectListeners.forEach((disconnectListener) => {
+      disconnectListener.disconnected();
+    });
   }
 
-  protected getProxyContexts(path: string): Array<ProxyContext<any, any>> {
+  protected async getProxyContexts(path: string): Promise<Array<ProxyContext<any, any>>> {
     // Distributed: internal distributed architecture call
-    const con = this.getContextManager().get(path) as ProxyContext<any, any>;
+    const con = (await this.getContextManager().get(path)) as ProxyContext<any, any>;
     return con != null ? new Array(con) : [];
   }
 
@@ -232,8 +240,8 @@ export default abstract class AbstractAggreGateDeviceController<D extends AggreG
 
   private processEvent(cmd: IncomingAggreGateCommand): void {
     const _this = this;
-    const task = new (class extends Runnable {
-      run(): void {
+    const task = new (class extends AsyncRunnable {
+      async run(): Promise<void> {
         if (!_this.isConnected()) {
           return;
         }
@@ -250,7 +258,7 @@ export default abstract class AbstractAggreGateDeviceController<D extends AggreG
           const listenerstr = cmd.getParameter(AggreGateCommand.INDEX_EVENT_LISTENER);
           const listener = listenerstr.length > 0 ? Number.parseInt(listenerstr) : null;
 
-          const contexts = _this.getProxyContexts(contextPath);
+          const contexts = await _this.getProxyContexts(contextPath);
 
           if (contexts.length == 0) {
             Log.CONTEXT_EVENTS.info("Error firing event '" + eventName + "': context '" + contextPath + "' not found");
@@ -286,16 +294,13 @@ export default abstract class AbstractAggreGateDeviceController<D extends AggreG
         }
       }
     })();
-    new Promise((resolve, reject) => {
-      task.run();
-      resolve();
-    }).catch((reason) => {
+    task.run().catch((reason) => {
       this.rejectedEvents++;
       this.getLogger().warn('Error processing asynchronous incoming command since the queue is full. Corresponding event rejected. Total rejected events: ' + this.rejectedEvents + '. Command: ' + cmd + 'reason' + reason);
     });
   }
 
-  protected confirmEvent(con: Context<any, any>, def: EventDefinition, event: Event | null): void {}
+  protected confirmEvent(con: Context<any, any>, def: EventDefinition, event: Promise<Event | null>): void {}
 
   toString(): string {
     return this.getDevice()?.toString() ?? 'device';

@@ -4,7 +4,7 @@ import FieldConstants from '../datatable/field/FieldConstants';
 import FieldFormatFactory from '../datatable/FieldFormatFactory';
 import ViewFilterElement from './ViewFilterElement';
 import Cres from '../Cres';
-import Functions from '../expression/functions/Functions';
+import Functions from '../expression/function/Functions';
 import DataTableBindingProvider from '../datatable/DataTableBindingProvider';
 import DataTableBuilding from '../datatable/DataTableBuilding';
 import DefaultReferenceResolver from '../expression/DefaultReferenceResolver';

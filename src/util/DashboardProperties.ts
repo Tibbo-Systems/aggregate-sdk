@@ -6,7 +6,6 @@ import Cres from '../Cres';
 import ValidatorHelper from '../datatable/validator/ValidatorHelper';
 import FieldConstants from '../datatable/field/FieldConstants';
 import DataRecord from '../datatable/DataRecord';
-import GenericActionCommand from '../action/GenericActionCommand';
 
 export default class DashboardProperties extends AggreGateBean {
   public static readonly FIELD_NAME: string = 'name';

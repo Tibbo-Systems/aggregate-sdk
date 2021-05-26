@@ -21,13 +21,13 @@ export default class DefaultReferenceResolver extends AbstractReferenceResolver 
     static readonly OPTIONS = "options";
     static readonly SELECTION_VALUE_DESCRIPTION = "svdesc";
     constructor(defaultTable?: DataTable);
-    resolveReference(ref: Reference, environment: EvaluationEnvironment): any;
+    resolveReference(ref: Reference, environment: EvaluationEnvironment): Promise<any>;
     private handleTable;
     protected getDefaultTableAggregate(table: DataTable): any;
     protected getRow(ref: Reference, environment: EvaluationEnvironment): number;
     private resolveEntityDescription;
-    getContexts(ref: Reference): Array<Context<any, any>>;
-    getContext(ref: Reference): Context<any, any> | null;
+    getContexts(ref: Reference): Promise<Array<Context<any, any>>>;
+    getContext(ref: Reference): Promise<Context<any, any> | null>;
     resolveEntity(ref: Reference, con: Context<any, any>, environment: EvaluationEnvironment): Promise<DataTable>;
     protected composeRequestController(evaluator: Evaluator | null): DefaultRequestController;
 }

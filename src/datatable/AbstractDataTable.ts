@@ -41,7 +41,7 @@ export default abstract class AbstractDataTable extends DataTable {
   static readonly ELEMENT_RECORD: string = 'R';
   static readonly ELEMENT_FIELD_NAME: string = 'N';
 
-  private static readonly DEFAULT_ESTIMATE_RECORD_COUNT: number = 100;
+  public static DEFAULT_FORMAT: TableFormat = new TableFormat();
 
   private quality: number | null = null;
   private timestamp: Date | null = null;
@@ -49,9 +49,6 @@ export default abstract class AbstractDataTable extends DataTable {
   protected immutable = false;
   protected id: number | null = null;
   protected namingEvaluator: Evaluator | null = null;
-
-  public static DEFAULT_FORMAT: TableFormat = new TableFormat();
-
   protected format: TableFormat = AbstractDataTable.DEFAULT_FORMAT;
 
   public isImmutable(): boolean {
@@ -145,7 +142,7 @@ export default abstract class AbstractDataTable extends DataTable {
   }
 
   public encodeToString(): string {
-    return this.getEncodedDataFromEncodingSettings(new ClassicEncodingSettings(false));
+    return this.encodeWithSettings(new ClassicEncodingSettings(false));
   }
 
   validate(context: Context<any, any>, contextManager: ContextManager<any> | null, caller?: CallerController): void {
@@ -327,7 +324,7 @@ export default abstract class AbstractDataTable extends DataTable {
   }
 
   public getEncodedDataFromEncodingSettings(settings: ClassicEncodingSettings): string {
-    return this.getEncodedData(new StringBuilder(), settings, false, 0).toString();
+    return this.getEncodedData(new StringBuilder(), settings, false, 1).toString();
   }
 
   rec(): DataRecord {
@@ -338,26 +335,25 @@ export default abstract class AbstractDataTable extends DataTable {
     return this;
   }
 
-  public getDescription(): string | null {
-    return this.toDefaultString(); //TODO: FIX AGG-9961
-    // const namingExpression: Expression | null = this.getNamingExpression();
-    //
-    // if (namingExpression == null) {
-    //   return this.toDefaultString();
-    // }
-    //
-    // const evaluator: Evaluator = this.ensureEvaluator();
-    //
-    // let name: any = null;
-    //
-    // try {
-    //   name = evaluator.evaluate(namingExpression);
-    // } catch (ex) {
-    //   Log.CORE.info("Error evaluating naming expression of table '" + this.toDefaultString() + "'", ex);
-    //   return this.toDefaultString();
-    // }
-    //
-    // return name == null ? null : name.toString();
+  public async getDescription(): Promise<string | null> {
+    const namingExpression: Expression | null = this.getNamingExpression();
+
+    if (namingExpression == null || this.getRecordCount() == 0) {
+      return this.toDefaultString();
+    }
+
+    const evaluator: Evaluator = this.ensureEvaluator();
+
+    let name = null;
+
+    try {
+      name = await evaluator.evaluate(namingExpression);
+    } catch (ex) {
+      // Log.CORE.info("Error evaluating naming expression of table '" + this.toDefaultString() + "'", ex); //TODO: FIX AGG-9961
+      return this.toDefaultString();
+    }
+
+    return name == null ? null : name.toString();
   }
 
   private getNamingExpression(): Expression | null {
@@ -658,11 +654,12 @@ export default abstract class AbstractDataTable extends DataTable {
   }
 
   toString(): string {
-    if (this.getNamingExpression() != null && this.getNamingExpression()?.getText().length !== 0) {
-      return this.getDescription() ?? '';
-    } else {
-      return this.toDefaultString();
-    }
+    //TODO promise
+    //if (this.getNamingExpression() != null && this.getNamingExpression()?.getText().length !== 0) {
+    //return this.getDescription() ?? '';
+    //} else {
+    return this.toDefaultString();
+    //}
   }
 
   decodeAdvancedElement(el: Element): void {

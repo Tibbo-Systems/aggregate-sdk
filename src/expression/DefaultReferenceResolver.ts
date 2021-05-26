@@ -10,6 +10,8 @@ import ContextManager from '../context/ContextManager';
 import DefaultRequestController from '../context/DefaultRequestController';
 import Evaluator from './Evaluator';
 import DefaultAttributedObject from './DefaultAttributedObject';
+import DataTableBindingProvider from '../datatable/DataTableBindingProvider';
+import Util from '../util/Util';
 
 export default class DefaultReferenceResolver extends AbstractReferenceResolver {
   // Various properties
@@ -41,14 +43,13 @@ export default class DefaultReferenceResolver extends AbstractReferenceResolver 
     if (defaultTable) this.setDefaultTable(defaultTable);
   }
 
-  resolveReference(ref: Reference, environment: EvaluationEnvironment): any {
+  async resolveReference(ref: Reference, environment: EvaluationEnvironment): Promise<any> {
     if (DefaultReferenceResolver.ROW === ref.getProperty()) {
       return this.getRow(ref, environment);
     }
-    const con = this.getContext(ref);
+    const con = await this.getContext(ref);
 
     let table: Promise<DataTable> | DataTable | null = this.getDefaultTable();
-
     const field = ref.getField();
     const entity = ref.getEntity();
     if (entity != null) {
@@ -59,7 +60,6 @@ export default class DefaultReferenceResolver extends AbstractReferenceResolver 
           }
           if (ref.getEntityType() == ContextUtils.ENTITY_VARIABLE) {
             const vd = con.getVariableDefinition(entity);
-
             if (vd == null) {
               throw new Error(MessageFormat.format(Cres.get().getString('conVarNotAvailExt'), ref.getEntity(), con.getPath()));
             }
@@ -71,7 +71,6 @@ export default class DefaultReferenceResolver extends AbstractReferenceResolver 
             if (DefaultReferenceResolver.WRITABLE === ref.getProperty()) {
               return vd.isWritable();
             }
-
             if (DefaultReferenceResolver.ICON === ref.getProperty()) {
               throw Error('not implemented yet');
             }
@@ -151,11 +150,11 @@ export default class DefaultReferenceResolver extends AbstractReferenceResolver 
     if (table instanceof DataTable) return this.handleTable(table, field, ref, environment);
 
     return table.then((value) => {
-      this.handleTable(value, field, ref, environment);
+      return this.handleTable(value, field, ref, environment);
     });
   }
 
-  private handleTable(table: DataTable, field: string | null, ref: Reference, environment: EvaluationEnvironment): any {
+  private async handleTable(table: DataTable, field: string | null, ref: Reference, environment: EvaluationEnvironment): Promise<any> {
     if (field == null && ref.getProperty() != null) {
       if (DefaultReferenceResolver.RECORDS === ref.getProperty()) {
         return table.getRecordCount();
@@ -203,9 +202,34 @@ export default class DefaultReferenceResolver extends AbstractReferenceResolver 
     const value = record.getValue(field);
 
     if (ref.getProperty() != null) {
-      if (DefaultReferenceResolver.SELECTION_VALUE_DESCRIPTION === ref.getProperty() && ff.hasSelectionValues()) {
-        const valueDesc = ff.getSelectionValues()?.get(value);
-        return valueDesc == null ? value : valueDesc;
+      if (DefaultReferenceResolver.SELECTION_VALUE_DESCRIPTION === ref.getProperty()) {
+        const bindings = table.getFormat().getBindings();
+        for (let i = bindings.length - 1; i >= 0; i--) {
+          const curBinding = bindings[i];
+          const field = ref.getField();
+
+          if (curBinding.getTarget() != null && field != null && field === curBinding.getTarget().getField() && DataTableBindingProvider.PROPERTY_CHOICES === curBinding.getTarget().getProperty()) {
+            const evaluator = this.getEvaluator();
+            if (evaluator === null) {
+              return value;
+            }
+            const curBindingExpressionResult = (await evaluator.evaluate(curBinding.getExpression(), environment)) as DataTable;
+
+            for (const rec of curBindingExpressionResult) {
+              if (Util.equals(value, ff.valueFromString(rec.getValueAsString(0)))) {
+                const valueDesc = rec.getValue(1);
+                return valueDesc == null ? value : valueDesc;
+              }
+            }
+
+            return value;
+          }
+        }
+
+        if (ff.hasSelectionValues()) {
+          const valueDesc = ff.getSelectionValues()?.get(value);
+          return valueDesc == null ? value : valueDesc;
+        }
       }
 
       const notNullDataTable = value != null && value instanceof DataTable;
@@ -268,38 +292,38 @@ export default class DefaultReferenceResolver extends AbstractReferenceResolver 
     }
   }
 
-  public getContexts(ref: Reference): Array<Context<any, any>> {
+  public async getContexts(ref: Reference): Promise<Array<Context<any, any>>> {
     const c = ref.getContext();
     if (c != null && ContextUtils.isMask(c)) {
       return ContextUtils.expandMaskToContexts(c, this.getContextManager() as ContextManager<any>, false, this.getCallerController());
     } else {
-      const con = this.getContext(ref);
+      const con = await this.getContext(ref);
       return con != null ? [con] : [];
     }
   }
 
-  public getContext(ref: Reference): Context<any, any> | null {
+  public async getContext(ref: Reference): Promise<Context<any, any> | null> {
     let con = this.getDefaultContext();
 
     const c = ref.getContext();
     if (c != null) {
       const cm = this.getContextManager();
       if (con != null) {
-        con = con.get(ref.getContext(), this.getCallerController());
+        con = await con.get(ref.getContext(), this.getCallerController());
       } else if (cm != null) {
-        con = cm.get(c, this.getCallerController());
+        con = await cm.get(c, this.getCallerController());
       } else {
         con = null;
       }
-
       if (con == null) {
         throw new Error(Cres.get().getString('conNotAvail') + ref.getContext());
       }
+      await con.init();
     }
     return con;
   }
 
-  resolveEntity(ref: Reference, con: Context<any, any>, environment: EvaluationEnvironment): Promise<DataTable> {
+  async resolveEntity(ref: Reference, con: Context<any, any>, environment: EvaluationEnvironment): Promise<DataTable> {
     const entity = ref.getEntity() as string;
     if (ref.getEntityType() == ContextUtils.ENTITY_VARIABLE) {
       const vd = con.getVariableDefinition(entity);
@@ -316,7 +340,7 @@ export default class DefaultReferenceResolver extends AbstractReferenceResolver 
         throw new Error(MessageFormat.format(Cres.get().getString('conFuncNotAvailExt'), ref.getEntity(), con.getPath()));
       }
       const DataTableConstruction = require('../datatable/DataTableConstruction').default;
-      const parameters = DataTableConstruction.constructTable(ref.getParameters(), fd.getInputFormat(), this.getEvaluator(), environment);
+      const parameters = await DataTableConstruction.constructTable(ref.getParameters(), fd.getInputFormat(), this.getEvaluator(), environment);
 
       return con.callFunction(entity, parameters, this.getCallerController(), this.composeRequestController(this.getEvaluator()));
     } else {

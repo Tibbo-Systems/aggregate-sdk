@@ -263,4 +263,8 @@ export default abstract class AbstractCallerController extends JObject implement
 
     return result;
   }
+
+  isConnectionTerminatable(): boolean {
+    return this.getUsername() != null && !this.isHeadless() && this.isLoggedIn();
+  }
 }

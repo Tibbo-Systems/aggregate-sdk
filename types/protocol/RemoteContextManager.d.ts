@@ -16,7 +16,7 @@ export default class RemoteContextManager extends DefaultContextManager<ProxyCon
     private sendRemoveListener;
     protected addListenerToContext(con: ProxyContext<any, any>, event: string, listener: DefaultContextEventListener, mask: boolean, weak: boolean): void;
     protected removeListenerFromContext(con: ProxyContext<any, any>, event: string, listener: DefaultContextEventListener, mask: boolean): void;
-    addMaskEventListener(mask: string, event: string, listener: DefaultContextEventListener, weak?: boolean): void;
-    removeMaskEventListener(mask: string, event: string, listener: DefaultContextEventListener): void;
+    addMaskEventListener(mask: string, event: string, listener: DefaultContextEventListener, weak?: boolean): Promise<void>;
+    removeMaskEventListener(mask: string, event: string, listener: DefaultContextEventListener): Promise<void>;
     contextRemoved(con: ProxyContext<any, any>): void;
 }

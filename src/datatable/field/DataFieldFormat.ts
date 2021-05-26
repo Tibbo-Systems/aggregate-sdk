@@ -8,7 +8,6 @@ import DataRecord from '../DataRecord';
 import StringBuilder from '../../util/java/StringBuilder';
 import DataTableFactory from '../DataTableFactory';
 import FieldFormatFactory from '../FieldFormatFactory';
-import Util from '../../util/Util';
 
 export default class DataFieldFormat extends FieldFormat<Data> {
   public static readonly EDITOR_REPORT: string = 'report';

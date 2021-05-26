@@ -2,7 +2,6 @@ import GenericActionCommand from '../GenericActionCommand';
 import TableFormat from '../../datatable/TableFormat';
 import DataTable from '../../datatable/DataTable';
 import SimpleDataTable from '../../datatable/SimpleDataTable';
-import ActionUtils from '../ActionUtils';
 import ActionUtilsConstants from '../ActionUtilsConstants';
 
 export default class EditReport extends GenericActionCommand {

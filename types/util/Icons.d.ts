@@ -424,6 +424,7 @@ export default class Icons {
     static readonly GD_COMPONENT_LABEL: string;
     static readonly GD_COMPONENT_BUTTON: string;
     static readonly GD_COMPONENT_CHECKBOX: string;
+    static readonly GD_COMPONENT_CHECKBOX_GROUP: string;
     static readonly GD_COMPONENT_RADIOBUTTON: string;
     static readonly GD_COMPONENT_MAP: string;
     static readonly GD_COMPONENT_TREE_SELECT: string;

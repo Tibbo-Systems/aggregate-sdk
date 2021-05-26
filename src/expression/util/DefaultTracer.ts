@@ -2,7 +2,7 @@ import Tracer from './Tracer';
 import Log from '../../Log';
 
 export default class DefaultTracer implements Tracer {
-  trace(value: any, message: string): void {
+  public trace(value: any, message: string): void {
     DefaultTracer.traceToLog(value, message);
   }
 

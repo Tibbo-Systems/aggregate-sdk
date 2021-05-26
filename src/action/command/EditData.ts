@@ -10,7 +10,7 @@ import FieldConstants from '../../datatable/field/FieldConstants';
 import FieldFormatFactory from '../../datatable/FieldFormatFactory';
 import SimpleDataTable from '../../datatable/SimpleDataTable';
 import StorageHelper from '../../view/StorageHelper';
-import Functions from '../../expression/functions/Functions';
+import Functions from '../../expression/function/Functions';
 import Contexts from '../../context/Contexts';
 import UtilitiesContextConstants from '../../server/UtilitiesContextConstants';
 import StringFieldFormat from '../../datatable/field/StringFieldFormat';

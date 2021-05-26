@@ -37,7 +37,11 @@ export default class TestServer {
     if (this.mode === SERVER_MODE.ONE_INSTANCE_PER_TEST) {
       this.rlc = this.createInstance();
       this.virtualDeviceManager = new VirtualDeviceManager(this.rlc, this.createVirtualDevice);
-      await this.rlc.connectToServer();
+      try {
+        await this.rlc.connectToServer();
+      } catch (e) {
+        console.log(e);
+      }
       await this.virtualDeviceManager.start();
     }
   }

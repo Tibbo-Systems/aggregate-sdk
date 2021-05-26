@@ -25,6 +25,7 @@ export default class ActionUtilsConstants {
   public static readonly CMD_CLOSE_DASHBOARD: string = 'closeDashboard';
   public static readonly CMD_OPEN_GRID_DASHBOARD: string = 'openGridDashboard';
   public static readonly CMD_EDIT_GRID_DASHBOARD: string = 'editGridDashboard';
+  public static readonly CMD_EDIT_EXPRESSION: string = 'editExpression';
 
   public static readonly RESPONSE_OK: string = 'ok';
   public static readonly RESPONSE_SAVED: string = 'saved';

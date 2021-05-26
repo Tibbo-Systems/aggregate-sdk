@@ -3,8 +3,10 @@ import DataTable from '../../datatable/DataTable';
 import UserSettings from '../../util/UserSettings';
 import StepActionInterceptor from '../StepActionInterceptor';
 import RemoteConnector from '../../util/RemoteConnector';
+import ActionExecutor from './ActionExecutor';
 import ActionWorker from './ActionWorker';
 import Context from '../../context/Context';
+import Runnable from '../../util/java/Runnable';
 export default class InvokeActionOperation extends AbstractOperation {
     protected readonly actionName: string;
     protected readonly userSettings: UserSettings | null;
@@ -20,7 +22,12 @@ export default class InvokeActionOperation extends AbstractOperation {
     getConnector(): RemoteConnector | null;
     setConnector(connector: RemoteConnector): void;
     getDefaultParameters(): DataTable | null;
+    getExecutionGroup(): number;
     interrupt(): void;
+    getExecutor(): ActionExecutor | null;
+    setExecutor(executor: ActionExecutor): void;
+    addInterruptionListener(listener: Runnable): void;
+    removeInterruptionListener(listener: Runnable): void;
     execute(params?: DataTable | null): Promise<void>;
     private getCallerController;
     isEnabled(): boolean;

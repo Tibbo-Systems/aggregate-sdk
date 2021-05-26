@@ -7,26 +7,13 @@ export default class DateFieldFormat extends FieldFormat<Date> {
   constructor(name: string) {
     super(name);
   }
-  private static DEFAULT_DATE: Date;
 
   public getType(): string {
     return FieldConstants.DATE_FIELD;
   }
 
   public getNotNullDefault(): Date {
-    if (DateFieldFormat.DEFAULT_DATE) {
-      return DateFieldFormat.DEFAULT_DATE;
-    }
-    DateFieldFormat.DEFAULT_DATE = new Date();
-    DateFieldFormat.DEFAULT_DATE.setFullYear(2000);
-    DateFieldFormat.DEFAULT_DATE.setMonth(1);
-    DateFieldFormat.DEFAULT_DATE.setDate(1);
-    DateFieldFormat.DEFAULT_DATE.setHours(12);
-    DateFieldFormat.DEFAULT_DATE.setMinutes(0);
-    DateFieldFormat.DEFAULT_DATE.setSeconds(0);
-    DateFieldFormat.DEFAULT_DATE.setMilliseconds(0);
-
-    return DateFieldFormat.DEFAULT_DATE;
+    return new Date(2000, 1, 1, 12, 0, 0, 0);
   }
 
   valueFromString(value: string, settings: ClassicEncodingSettings, validate: boolean): Date | null {
@@ -53,17 +40,15 @@ export default class DateFieldFormat extends FieldFormat<Date> {
   }
 
   public static dateFromString(value: string): Date {
-    const gc = new Date();
-
-    gc.setFullYear(Number(value.substring(0, 4)));
-    gc.setMonth(Number(value.substring(5, 7)) - 1);
-    gc.setDate(Number(value.substring(8, 10)));
-    gc.setHours(Number(value.substring(11, 13)));
-    gc.setMinutes(Number(value.substring(14, 16)));
-    gc.setSeconds(Number(value.substring(17, 19)));
-    gc.setMilliseconds(Number(value.substring(20, 23)));
-
-    return gc;
+    return new Date(
+      Number(value.substring(0, 4)),
+      Number(value.substring(5, 7)) - 1,
+      Number(value.substring(8, 10)),
+      Number(value.substring(11, 13)),
+      Number(value.substring(14, 16)),
+      Number(value.substring(17, 19)),
+      Number(value.substring(20, 23))
+    );
   }
 
   public static dateToString(value: Date): string {

@@ -27,4 +27,5 @@ export default interface CallerController {
     removeLockedContext(context: Context<any, any>): void;
     unlockAllContexts(): void;
     createLockedContextsTable(): DataTable;
+    isConnectionTerminatable(): boolean;
 }

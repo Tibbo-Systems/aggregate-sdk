@@ -89,14 +89,14 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
     this.contextAdded(newRoot);
   }
 
-  get(contextName: string, caller?: CallerController): T | null {
+  async get(contextName: string, caller?: CallerController): Promise<T | null> {
     const root: T | null = this.getRoot();
-    return root != null ? (root.get(contextName, caller) as T) : null;
+    return root != null ? ((await root.get(contextName, caller)) as T) : null;
   }
 
-  private addEventListener(context: string, event: string, listener: DefaultContextEventListener, mask: boolean, weak: boolean): void {
+  private async addEventListener(context: string, event: string, listener: DefaultContextEventListener, mask: boolean, weak: boolean): Promise<void> {
     // Distributed: ok, because remote events will be redirected to this server
-    const con = this.get(context, listener.getCallerController());
+    const con = await this.get(context, listener.getCallerController());
 
     if (con != null) {
       const events: Array<EventDefinition> = EventUtils.getEvents(con, event, listener.getCallerController());
@@ -122,8 +122,8 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
     }
   }
 
-  private removeEventListener(context: string, event: string, listener: DefaultContextEventListener, mask: boolean): void {
-    const con: T | null = this.get(context, listener.getCallerController());
+  private async removeEventListener(context: string, event: string, listener: DefaultContextEventListener, mask: boolean): Promise<void> {
+    const con: T | null = await this.get(context, listener.getCallerController());
 
     if (con != null) {
       if (con.getEventDefinition(event) != null) {
@@ -144,8 +144,8 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
     con.removeEventListener(event, listener);
   }
 
-  addMaskEventListener(mask: string, event: string, listener: DefaultContextEventListener, weak = false): void {
-    const contexts: Array<string> = ContextUtils.expandMaskToPaths(mask, this, false, listener.getCallerController());
+  async addMaskEventListener(mask: string, event: string, listener: DefaultContextEventListener, weak = false): Promise<void> {
+    const contexts: Array<string> = await ContextUtils.expandMaskToPaths(mask, this, false, listener.getCallerController());
 
     for (const con of contexts) {
       this.addEventListener(con, event, listener, true, weak);
@@ -156,8 +156,8 @@ export default class DefaultContextManager<T extends Context<any, any>> extends 
     listeners.addListener(listener, weak);
   }
 
-  removeMaskEventListener(mask: string, event: string, listener: DefaultContextEventListener): void {
-    const contexts: Array<Context<any, any>> = ContextUtils.expandMaskToContexts(mask, this, false, listener.getCallerController());
+  async removeMaskEventListener(mask: string, event: string, listener: DefaultContextEventListener): Promise<void> {
+    const contexts: Array<Context<any, any>> = await ContextUtils.expandMaskToContexts(mask, this, false, listener.getCallerController());
 
     for (const con of contexts) {
       if (!con.isInitializedEvents()) {

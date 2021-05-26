@@ -7,7 +7,7 @@ import Contexts from '../context/Contexts';
 import UtilitiesContextConstants from '../server/UtilitiesContextConstants';
 import LimitsValidator from './validator/LimitsValidator';
 import TableExpressionValidator from './validator/TableExpressionValidator';
-import Functions from '../expression/functions/Functions';
+import Functions from '../expression/function/Functions';
 import DataTableFactory from './DataTableFactory';
 import FieldConstants from './field/FieldConstants';
 import DataTable from './DataTable';

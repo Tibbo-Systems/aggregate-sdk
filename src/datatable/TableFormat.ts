@@ -97,6 +97,9 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
         if (!el.getName()) {
           const index: number = tableFormat.fields.length;
           const ff: FieldFormat<any> = FieldFormatFactory.create(el.getValue() as string, settings, validate);
+          if (!ff.isNullable() && ff.getValidators().length === 0) {
+            ff.setDefault(ff.getDefaultValue());
+          }
           tableFormat.fields.push(ff);
           tableFormat.getFieldLookup().set(ff.getName(), index);
           continue;
@@ -210,9 +213,8 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
 
       this.getFieldLookup().set(fn, previousIndex + 1);
     }
-
     this.fields.splice(index, 0, fieldFormat);
-
+    if (!fieldFormat.isNullable() && fieldFormat.getValidators().length === 0) fieldFormat.setDefault(fieldFormat.getDefaultValue());
     this.getFieldLookup().set(fieldFormat.getName(), index);
 
     return this;
@@ -263,7 +265,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
       throw new Error('Immutable');
     }
 
-    const index: number | null = this.getFieldLookup().get(fieldName) ? (this.getFieldLookup().get(fieldName) as number) : null;
+    const index: number | null = this.getFieldLookup().get(fieldName) !== undefined ? (this.getFieldLookup().get(fieldName) as number) : null;
 
     this.getFieldLookup().delete(fieldName);
 
@@ -810,7 +812,7 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
             this.addTableValidator(new TableKeyFieldsValidator(validatorParams));
             break;
           case TableFormat.TABLE_VALIDATOR_EXPRESSION:
-            this.addTableValidator(new TableExpressionValidator(validatorParams));
+            this.addTableValidator(TableExpressionValidator.valueOf(validatorParams));
             break;
         }
       }
@@ -902,12 +904,8 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
       }
     } else if (this.fields.length !== other.fields.length) {
       return false;
-    } else {
-      for (const field of this.fields) {
-        if (!other.fields.find((otherField) => Util.equals(field, otherField))) {
-          return false;
-        }
-      }
+    } else if (!Util.arrayEquals(this.fields, other.fields)) {
+      return false;
     }
 
     if (this.namingExpression === null) {
@@ -922,24 +920,16 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
       if (other.recordValidators != null) {
         return false;
       }
-    } else {
-      for (const validator of this.recordValidators) {
-        if (!other.recordValidators.find((otherValidator) => Util.equals(validator, otherValidator))) {
-          return false;
-        }
-      }
+    } else if (!Util.arrayEquals(this.recordValidators, other.recordValidators)) {
+      return false;
     }
 
     if (this.tableValidators === null) {
       if (other.tableValidators != null) {
         return false;
       }
-    } else {
-      for (const validator of this.tableValidators) {
-        if (!other.tableValidators.find((otherValidator) => Util.equals(validator, otherValidator))) {
-          return false;
-        }
-      }
+    } else if (!Util.arrayEquals(this.tableValidators, other.tableValidators)) {
+      return false;
     }
 
     if (this.reorderable !== other.reorderable) {
@@ -956,12 +946,8 @@ export default class TableFormat extends JObject implements StringEncodable, Ite
       if (other.bindings != null) {
         return false;
       }
-    } else {
-      for (const binding of this.bindings) {
-        if (!other.bindings.find((otherBinding) => Util.equals(binding, otherBinding))) {
-          return false;
-        }
-      }
+    } else if (!Util.arrayEquals(this.bindings, other.bindings)) {
+      return false;
     }
 
     return true;

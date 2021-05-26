@@ -9,7 +9,6 @@ import DataTable from './DataTable';
 import Cres from '../Cres';
 import Util from '../util/Util';
 import DataTableSorter from './DataTableSorter';
-import JConstants from '../util/java/JConstants';
 import Comparable from '../util/java/Comparable';
 import MessageFormat from '../util/java/MessageFormat';
 import DataTableQuery from './DataTableQuery';
@@ -42,7 +41,7 @@ export default class SimpleDataTable extends AbstractDataTable implements Compar
   public static createSimpleDataTable(format: TableFormat, ...firstRowData: Array<any>): SimpleDataTable {
     const simpleDataTable = new SimpleDataTable(format);
     if (firstRowData.length > 0) {
-      simpleDataTable.addRecordFromRecord(DataRecord.createAndFill(format, firstRowData));
+      simpleDataTable.addRecordFromRecord(DataRecord.createAndFill(format, ...firstRowData));
     }
 
     return simpleDataTable;
@@ -286,11 +285,16 @@ export default class SimpleDataTable extends AbstractDataTable implements Compar
         const v2: any = r2.getValue(order.getField());
 
         if (v1 == null && v2 != null) {
-          return order.isAscending() ? JConstants.INTEGER_MIN_VALUE : JConstants.INTEGER_MAX_VALUE;
+          return order.isAscending() ? -1 : 1;
         }
 
         if (v2 == null && v1 != null) {
-          return order.isAscending() ? JConstants.INTEGER_MAX_VALUE : JConstants.INTEGER_MIN_VALUE;
+          return order.isAscending() ? 1 : -1;
+        }
+
+        if ((Util.isNumber(v1) || Util.isBoolean(v1)) && (Util.isNumber(v2) || Util.isBoolean(v2))) {
+          if (order.isAscending()) return v1 > v2 ? 1 : -1;
+          return v1 > v2 ? -1 : 1;
         }
 
         //TODO check for primitive types

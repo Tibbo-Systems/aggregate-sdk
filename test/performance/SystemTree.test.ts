@@ -4,9 +4,9 @@ import ProxyContext from '../../src/protocol/ProxyContext';
 import Log from '../../src/Log';
 
 async function load(parent: ProxyContext<any, ContextManager<any>>): Promise<void> {
-  await parent.loadContext();
+  await parent.init();
   Log.CONTEXT.info(parent.getPath() + ' loaded');
-  for (const child of parent.getChildren()) {
+  for (const child of await parent.getChildren()) {
     await load(child as ProxyContext<any, any>);
   }
 }
@@ -25,8 +25,8 @@ describe('System tree', () => {
   // eslint-disable-next-line jest/no-test-callback
   it('load tree', async (done) => {
     const root = server.getRlc().getContextManager().getRoot() as ProxyContext<any, any>;
-    await root.loadContext();
-    for (const child of root.getChildren()) {
+    await root.init();
+    for (const child of await root.getChildren()) {
       await load(child as ProxyContext<any, any>);
     }
     done();

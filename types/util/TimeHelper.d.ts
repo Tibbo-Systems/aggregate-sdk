@@ -1,4 +1,5 @@
 import JObject from './java/JObject';
+import TimeUnit from './TimeUnit';
 export default class TimeHelper extends JObject {
     static readonly SECOND_IN_MS: number;
     static readonly MINUTE_IN_MS: number;
@@ -42,4 +43,32 @@ export default class TimeHelper extends JObject {
     static readonly NAME_MONTH: string;
     static readonly NAME_YEAR: string;
     static readonly NAME_Y: string;
+    static readonly CALENDAR_YEAR: number;
+    static readonly CALENDAR_QUARTER: number;
+    static readonly CALENDAR_MONTH: number;
+    static readonly CALENDAR_WEEK_OF_YEAR: number;
+    static readonly CALENDAR_DATE: number;
+    static readonly CALENDAR_DAY_OF_YEAR: number;
+    static readonly CALENDAR_DAY_OF_WEEK: number;
+    static readonly CALENDAR_HOUR: number;
+    static readonly CALENDAR_MINUTE: number;
+    static readonly CALENDAR_SECOND: number;
+    static readonly CALENDAR_MILLISECOND: number;
+    static MILLISECOND_UNIT: TimeUnit;
+    static SECOND_UNIT: TimeUnit;
+    static MINUTE_UNIT: TimeUnit;
+    static HOUR_UNIT: TimeUnit;
+    static DAY_UNIT: TimeUnit;
+    static WEEK_UNIT: TimeUnit;
+    static MONTH_UNIT: TimeUnit;
+    static QUARTER_UNIT: TimeUnit;
+    static YEAR_UNIT: TimeUnit;
+    private static NAMED_UNITS;
+    private static UNITS;
+    private static REVERSED_UNITS;
+    static getTimeUnitByName(name: string): TimeUnit;
+    static getUnits(): Array<TimeUnit>;
+    static getReversedUnits(): Array<TimeUnit>;
+    static initialize(): void;
+    static setTimeZone(date: Date, timeZone: string): Date;
 }

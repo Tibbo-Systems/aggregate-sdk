@@ -1,6 +1,7 @@
 import CallerController from '../context/CallerController';
 import Expression from '../expression/Expression';
 import Event from '../data/Event';
+import EventDefinition from '../context/EventDefinition';
 export default interface ContextEventListener {
     /**
      * Should return true if event should be handled.
@@ -9,7 +10,7 @@ export default interface ContextEventListener {
     /**
      * Handles the event
      */
-    handle(event: Event): void;
+    handle(event: Event, ed: EventDefinition): void;
     getCallerController(): CallerController | undefined;
     getListenerCode(): number | undefined;
     getFilter(): Expression | undefined;

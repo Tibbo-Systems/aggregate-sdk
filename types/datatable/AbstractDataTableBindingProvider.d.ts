@@ -1,3 +1,31 @@
 import AbstractBindingProvider from '../binding/AbstractBindingProvider';
-export default abstract class AbstractDataTableBindingProvider extends AbstractBindingProvider<any> {
+import ErrorCollector from '../util/ErrorCollector';
+import ReferenceListener from '../binding/ReferenceListener';
+import Reference from '../expression/Reference';
+import ReferenceWriter from '../binding/ReferenceWriter';
+export default abstract class AbstractDataTableBindingProvider extends AbstractBindingProvider {
+    static PROPERTY_ENABLED: string;
+    static PROPERTY_HIDDEN: string;
+    static PROPERTY_CHOICES: string;
+    static PROPERTY_OPTIONS: string;
+    protected listeners: [ReferenceListener, Reference][];
+    protected constructor(errorCollector?: ErrorCollector);
+    internalWriteReference(ref: Reference, value: any): void;
+    stop(): void;
+    addReferenceListener(ref: Reference, listener: ReferenceListener): void;
+    clearListeners(): void;
+    private writeToEditor;
+    private writeToField;
+    getListenerCount(): number;
+    getListeners(): Array<[ReferenceListener, Reference]>;
+    isLocalReference(ref: Reference): boolean;
+    protected processBindings(field: string, record: number, startup: boolean, asynchronousProcessing: boolean): void;
+    protected abstract getExternalReferenceWriter(): ReferenceWriter | null;
+    protected abstract callReferenceChanged(cause: Reference, method: number, listener: ReferenceListener, asynchronousProcessing: boolean): void;
+    protected abstract setEnabled(value: any, row: number, field: string): void;
+    protected abstract setCellValue(value: any, row: number, field: string): void;
+    protected abstract setOptions(value: any, row: number, field: string): void;
+    protected abstract setSelectionValues(value: any, row: number, field: string): void;
+    protected abstract setHidden(value: any, row: number, field: string): void;
+    protected abstract setEditorEnabled(enabled: boolean): void;
 }

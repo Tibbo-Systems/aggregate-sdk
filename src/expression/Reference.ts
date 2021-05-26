@@ -187,6 +187,14 @@ export default class Reference extends JObject {
     return this.context;
   }
 
+  public getAppearance(): number {
+    return this.appearance;
+  }
+
+  public setAppearance(appearance: number) {
+    this.appearance = appearance;
+  }
+
   public getEntity(): string | null {
     return this.entity;
   }

@@ -1,6 +1,11 @@
 import AbstractEditorOptionsConverter from './AbstractEditorOptionsConverter';
 import DataTable from '../../DataTable';
 import TableFormat from '../../TableFormat';
+import FieldFormat from '../../FieldFormat';
+import Reference from '../../../expression/Reference';
+import ContextManager from '../../../context/ContextManager';
+import CallerController from '../../../context/CallerController';
+import Context from '../../../context/Context';
 export default class ReferenceConverter extends AbstractEditorOptionsConverter {
     static readonly FIELD_ENTITY_PARAMETERS_VALUE: string;
     static readonly FIELD_APPEARANCE: string;
@@ -22,6 +27,9 @@ export default class ReferenceConverter extends AbstractEditorOptionsConverter {
     private static _init;
     static initialize(): void;
     constructor();
-    convertToString(options: DataTable): string | null;
+    convertToString(options: DataTable): string;
+    static createReference(value: string | null, ff: FieldFormat<any>, cm: ContextManager<any>, cc: CallerController, defaultContext: Context<any, any>): Reference;
+    static toReference(options: DataTable, cm: ContextManager<any>, cc: CallerController, defaultContext: Context<any, any>): Reference;
+    private static evaluate;
     getFormat(): TableFormat;
 }

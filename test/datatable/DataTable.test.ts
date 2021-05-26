@@ -6,8 +6,6 @@ import DataRecord from '../../src/datatable/DataRecord';
 import FieldFormatFactory from '../../src/datatable/FieldFormatFactory';
 import FieldConstants from '../../src/datatable/field/FieldConstants';
 import TransferEncodingHelper from '../../src/datatable/encoding/TransferEncodingHelper';
-import DataTableUtils from '../../src/datatable/DataTableUtils';
-import AggreGateCommand from '../../src/protocol/AggreGateCommand';
 import Data from '../../src/data/Data';
 import ByteBuffer from 'bytebuffer';
 import ExpressionUtils from '../../src/expression/ExpressionUtils';
@@ -104,35 +102,16 @@ describe('TestDataTable', () => {
   });
 
   it('testDataTableEncodingLigth', () => {
-    const data: string =
-      TransferEncodingHelper.ESCAPE_CHAR +
-      ' ' +
-      TransferEncodingHelper.ESCAPE_CHAR +
-      TransferEncodingHelper.ESCAPE_CHAR +
-      ' ' +
-      AggreGateCommand.CLIENT_COMMAND_SEPARATOR +
-      TransferEncodingHelper.SEPARATOR_CHAR +
-      DataTableUtils.ELEMENT_START +
-      DataTableUtils.ELEMENT_VISIBLE_START +
-      DataTableUtils.ELEMENT_END +
-      DataTableUtils.ELEMENT_VISIBLE_END +
-      DataTableUtils.ELEMENT_NAME_VALUE_SEPARATOR +
-      DataTableUtils.ELEMENT_VISIBLE_NAME_VALUE_SEPARATOR +
-      AggreGateCommand.START_CHAR +
-      TransferEncodingHelper.START_CHAR +
-      AggreGateCommand.END_CHAR +
-      TransferEncodingHelper.END_CHAR;
+    const tf = FieldFormatFactory.createType('DATATABLE_FIELD', FieldConstants.DATATABLE_FIELD).wrap();
 
-    const tf: TableFormat = FieldFormatFactory.createType('DATATABLE_FIELD', FieldConstants.DATATABLE_FIELD).wrap();
-
-    const table: DataTable = DataTableFactory.of(tf);
-    const record: DataRecord = table.addRecord();
-    const table2: DataTable = table.clone();
+    const table = DataTableFactory.of(tf);
+    const record = table.addRecord();
+    const table2 = table.clone();
     record.setValue(0, table2);
-    const table3: DataTable = table.clone();
+    const table3 = table.clone();
     table2.getRecord(0).setValue(0, table3);
 
-    const e: string = table.encodeWithSeparators(false);
+    const e = table.encodeWithSeparators(false);
     const r: DataTable = DataTableFactory.createAndDecode(e);
 
     expect(table.equals(r)).toBeTruthy();
@@ -141,83 +120,55 @@ describe('TestDataTable', () => {
   it('testTransfer', () => {
     const data = 'FDATATABLE_FIELDTAF';
 
-    const res: string = (TransferEncodingHelper.encode(data) as StringBuilder).toString();
-    const res2: string = (TransferEncodingHelper.encode(res) as StringBuilder).toString();
-    const res3: string = (TransferEncodingHelper.encode(res2) as StringBuilder).toString();
+    const res = (TransferEncodingHelper.encode(data) as StringBuilder).toString();
+    const res2 = (TransferEncodingHelper.encode(res) as StringBuilder).toString();
+    const res3 = (TransferEncodingHelper.encode(res2) as StringBuilder).toString();
 
-    const res4: string = (TransferEncodingHelper.encode(data, null, 0) as StringBuilder).toString();
-    const res5: string = (TransferEncodingHelper.encode(data, null, 1) as StringBuilder).toString();
-    const res6: string = (TransferEncodingHelper.encode(data, null, 2) as StringBuilder).toString();
-    const res7: string = (TransferEncodingHelper.encode(data, null, 3) as StringBuilder).toString();
+    const res5 = (TransferEncodingHelper.encode(data, null, 1) as StringBuilder).toString();
+    const res6 = (TransferEncodingHelper.encode(data, null, 2) as StringBuilder).toString();
+    const res7 = (TransferEncodingHelper.encode(data, null, 3) as StringBuilder).toString();
 
-    expect(res === res5).toBeTruthy();
-    expect(res2 === res6).toBeTruthy();
-    expect(res3 === res7).toBeTruthy();
-
-    const dec: string = TransferEncodingHelper.decode(res7);
-    const dec2: string = TransferEncodingHelper.decode(dec);
-    const dec3: string = TransferEncodingHelper.decode(dec2);
-
-    console.log(dec);
-    console.log(res3);
-    console.log(res7);
+    expect(res).toBe(res5);
+    expect(res2).toBe(res6);
+    expect(res3).toBe(res7);
   });
 
   it('testDataTableEncoding', () => {
-    const data: string =
-      TransferEncodingHelper.ESCAPE_CHAR +
-      ' ' +
-      TransferEncodingHelper.ESCAPE_CHAR +
-      TransferEncodingHelper.ESCAPE_CHAR +
-      ' ' +
-      AggreGateCommand.CLIENT_COMMAND_SEPARATOR +
-      TransferEncodingHelper.SEPARATOR_CHAR +
-      DataTableUtils.ELEMENT_START +
-      DataTableUtils.ELEMENT_VISIBLE_START +
-      DataTableUtils.ELEMENT_END +
-      DataTableUtils.ELEMENT_VISIBLE_END +
-      DataTableUtils.ELEMENT_NAME_VALUE_SEPARATOR +
-      DataTableUtils.ELEMENT_VISIBLE_NAME_VALUE_SEPARATOR +
-      AggreGateCommand.START_CHAR +
-      TransferEncodingHelper.START_CHAR +
-      AggreGateCommand.END_CHAR +
-      TransferEncodingHelper.END_CHAR;
-
-    const tf: TableFormat = FieldFormatFactory.createType('STRING_FIELD', FieldConstants.STRING_FIELD).wrap();
+    const tf = FieldFormatFactory.createType('STRING_FIELD', FieldConstants.STRING_FIELD).wrap();
 
     tf.addField(FieldFormatFactory.createType('BOOLEAN_FIELD', FieldConstants.BOOLEAN_FIELD));
     tf.addField(FieldFormatFactory.createType('DATA_FIELD', FieldConstants.DATA_FIELD));
     tf.addField(FieldFormatFactory.createType('DATE_FIELD', FieldConstants.DATE_FIELD));
     tf.addField(FieldFormatFactory.createType('DATATABLE_FIELD', FieldConstants.DATATABLE_FIELD));
 
-    const dataF: Data = new Data();
+    const dataF = new Data();
     const dateValue = ByteBuffer.fromUTF8('test data % %% %%%');
     dataF.setData(dateValue);
 
-    const table: DataTable = DataTableFactory.of(tf);
-    const record: DataRecord = table.addRecord();
+    const table = DataTableFactory.of(tf);
+    const record = table.addRecord();
     record.setValue(0, 'test data % %% %%%');
     record.setValue(1, true);
     record.setValue(2, dataF);
     record.setValue(3, new Date());
 
-    const table2: DataTable = table.clone();
+    const table2 = table.clone();
     record.setValue(4, table2);
 
-    const table3: DataTable = table.clone();
+    const table3 = table.clone();
 
     table2.getRecord(0).setValue(4, table3);
 
-    const e: string = table.encodeWithSeparators(false);
+    const e = table.encodeWithSeparators(false);
 
-    const r: DataTable = DataTableFactory.createAndDecode(e);
+    const r = DataTableFactory.createAndDecode(e);
 
     expect(table.equals(r)).toBeTruthy();
   });
 
   it('testEncodingOfNestedTableWithoutDefaultValue', () => {
-    const tableFromat: TableFormat = FieldFormatFactory.createType('DATATABLE_FIELD', FieldConstants.DATATABLE_FIELD).wrap();
-    const mainTable: DataTable = DataTableFactory.of(tableFromat);
+    const tableFormat: TableFormat = FieldFormatFactory.createType('DATATABLE_FIELD', FieldConstants.DATATABLE_FIELD).wrap();
+    const mainTable: DataTable = DataTableFactory.of(tableFormat);
 
     const nestedTableFormat: TableFormat = FieldFormatFactory.createType('STRING_FIELD', FieldConstants.STRING_FIELD).wrap();
     const nestedTable1: DataTable = DataTableFactory.of(nestedTableFormat);

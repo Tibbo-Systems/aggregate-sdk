@@ -62,19 +62,19 @@ describe('Actions', () => {
   const server = new TestServer(false);
 
   async function createDashboard(): Promise<Context<any, any>> {
-    const dashboardsContext = server.getRlc().getContextManager().get('users.admin.dashboards') as Context<any, any>;
-    await dashboardsContext.loadContext();
+    const dashboardsContext = (await server.getRlc().getContextManager().get('users.admin.dashboards')) as Context<any, any>;
+    await dashboardsContext.init();
 
-    if (dashboardsContext.getChild('test') == null) {
+    if ((await dashboardsContext.getChild('test')) == null) {
       const tf = dashboardsContext.getFunctionDefinition('create')?.getInputFormat();
       const input = DataTableFactory.of(tf, true);
       input.rec().setValue('name', 'test');
       await dashboardsContext.callFunction('create', input);
     }
 
-    const dashboardContext = server.getRlc().getContextManager().get('users.admin.dashboards.test') as Context<any, any>;
+    const dashboardContext = (await server.getRlc().getContextManager().get('users.admin.dashboards.test')) as Context<any, any>;
 
-    return dashboardContext.loadContext();
+    return dashboardContext.init();
   }
 
   beforeEach(async () => {
@@ -87,7 +87,7 @@ describe('Actions', () => {
 
   it('Network Discovery', async () => {
     ExecutionHelper.registerExecutor(ActionUtilsConstants.CMD_EDIT_DATA, EditDataStub);
-    const devicesContext = server.getRlc().getContextManager().get(ContextUtils.devicesContextPath('admin')) as Context<any, any>;
+    const devicesContext = (await server.getRlc().getContextManager().get(ContextUtils.devicesContextPath('admin'))) as Context<any, any>;
     const operation = new InvokeActionOperation('discovery', '', '', '', devicesContext, devicesContext);
     await operation.execute();
     expect(mockEditData).toHaveBeenCalledTimes(6);

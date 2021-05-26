@@ -82,6 +82,7 @@ export default class AlertContextConstants {
   public static readonly VF_VARIABLE_TRIGGER_STATUS_DETAILS_FLAPPING = 'flapping';
 
   public static readonly VF_NOTIFICATIONS_NOTIFY_OWNER = 'notifyOwner';
+  public static readonly VF_NOTIFICATIONS_NOTIFICATION_NECESSITY_EXPRESSION = 'notificationNecessityExpression';
   public static readonly VF_NOTIFICATIONS_ACK_REQUIRED = 'ackRequired';
   public static readonly VF_NOTIFICATIONS_LIFETIME = 'lifetime';
   public static readonly VF_NOTIFICATIONS_SOUND = 'sound';

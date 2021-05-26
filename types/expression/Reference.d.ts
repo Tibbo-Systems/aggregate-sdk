@@ -41,6 +41,8 @@ export default class Reference extends JObject {
     protected parse(source: string): void;
     getServer(): string | null;
     getContext(): string | null;
+    getAppearance(): number;
+    setAppearance(appearance: number): void;
     getEntity(): string | null;
     getEntityType(): number | null;
     getField(): string | null;

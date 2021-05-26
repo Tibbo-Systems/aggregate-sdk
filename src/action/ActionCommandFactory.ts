@@ -20,11 +20,11 @@ import ShowSystemTree from './command/ShowSystemTree';
 import ActivateDashboard from './command/ActivateDashboard';
 import CloseDashboard from './command/CloseDashboard';
 import OpenGridDashboard from './command/OpenGridDashboard';
-import DataRecord from '../datatable/DataRecord';
 import EditGridDashboard from './command/EditGridDashboard';
 import ShowHtmlSnippet from './command/ShowHtmlSnippet';
 import ShowDiff from './command/ShowDiff';
 import ActionUtilsConstants from './ActionUtilsConstants';
+import EditExpression from './command/EditExpression';
 
 export default class ActionCommandFactory {
   public static createActionCommand(type: string, title: string, parameters: DataTable): GenericActionCommand {
@@ -79,6 +79,8 @@ export default class ActionCommandFactory {
         return ShowHtmlSnippet.createShowHtmlSnippetWithDataTable(title, parameters);
       case ActionUtilsConstants.CMD_SHOW_DIFF:
         return ShowDiff.createShowDiffWithDataTable(title, parameters);
+      case ActionUtilsConstants.CMD_EDIT_EXPRESSION:
+        return new EditExpression(title);
       default:
         throw new Error("Error creating action command of type '" + type);
     }

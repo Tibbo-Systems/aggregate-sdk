@@ -1,244 +1,258 @@
 import { ParserRuleContext } from 'antlr4';
 import AttributedObject from './AttributedObject';
+import AggregateExpressionVisitor from './parser/AggregateExpressionVisitor';
 
-const AggregateExpressionVisitor = require('./parser/AggregateExpressionVisitor.js').AggregateExpressionVisitor;
-export default abstract class ExpressionVisitorFaced extends AggregateExpressionVisitor {
-  public visitCompilationUnit(ctx: ParserRuleContext): AttributedObject | null {
+export default class ExpressionVisitorFacade extends AggregateExpressionVisitor {
+  public visitChildren(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
+    //TODO SMELL CODE
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    return super.visitChildren(ctx);
+  }
+
+  public visit(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
+    //TODO SMELL CODE
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    return super.visit(ctx);
+  }
+
+  public visitCompilationUnit(ctx: ParserRuleContext): Promise<AttributedObject | null> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#LogicalAndNode.
-  public visitLogicalAndNode(ctx: ParserRuleContext): AttributedObject {
+  public visitLogicalAndNode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#BitwiseOrNode.
-  public visitBitwiseOrNode(ctx: ParserRuleContext): AttributedObject {
+  public visitBitwiseOrNode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#BitwiseXorNode.
-  public visitBitwiseXorNode(ctx: ParserRuleContext): AttributedObject {
+  public visitBitwiseXorNode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#NENode.
-  public visitNENode(ctx: ParserRuleContext): AttributedObject {
+  public visitNENode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#ConditionalNode.
-  public visitConditionalNode(ctx: ParserRuleContext): AttributedObject {
+  public visitConditionalNode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#ModNode.
-  public visitModNode(ctx: ParserRuleContext): AttributedObject {
+  public visitModNode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#LogicalNotNode.
-  public visitLogicalNotNode(ctx: ParserRuleContext): AttributedObject {
+  public visitLogicalNotNode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#EQNode.
-  public visitEQNode(ctx: ParserRuleContext): AttributedObject {
+  public visitEQNode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#BitwiseAndNode.
-  public visitBitwiseAndNode(ctx: ParserRuleContext): AttributedObject {
+  public visitBitwiseAndNode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#GENode.
-  public visitGENode(ctx: ParserRuleContext): AttributedObject {
+  public visitGENode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#UnsignedRightShiftNode.
-  public visitUnsignedRightShiftNode(ctx: ParserRuleContext): AttributedObject {
+  public visitUnsignedRightShiftNode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#AddNode.
-  public visitAddNode(ctx: ParserRuleContext): AttributedObject {
+  public visitAddNode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#LTNode.
-  public visitLTNode(ctx: ParserRuleContext): AttributedObject {
+  public visitLTNode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#BitwiseNotNode.
-  public visitBitwiseNotNode(ctx: ParserRuleContext): AttributedObject {
+  public visitBitwiseNotNode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#SubtractNode.
-  public visitSubtractNode(ctx: ParserRuleContext): AttributedObject {
+  public visitSubtractNode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#GTNode.
-  public visitGTNode(ctx: ParserRuleContext): AttributedObject {
+  public visitGTNode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#ValueReferenceNode.
-  public visitValueReferenceNode(ctx: ParserRuleContext): AttributedObject {
+  public visitValueReferenceNode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#RegexMatchNode.
-  public visitRegexMatchNode(ctx: ParserRuleContext): AttributedObject {
+  public visitRegexMatchNode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#LiteralExpression.
-  public visitLiteralExpression(ctx: ParserRuleContext): AttributedObject {
+  public visitLiteralExpression(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#FunctionNode.
-  public visitFunctionNode(ctx: ParserRuleContext): AttributedObject {
+  public visitFunctionNode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#RightShiftNode.
-  public visitRightShiftNode(ctx: ParserRuleContext): AttributedObject {
+  public visitRightShiftNode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#DivNode.
-  public visitDivNode(ctx: ParserRuleContext): AttributedObject {
+  public visitDivNode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#LeftShiftNode.
-  public visitLeftShiftNode(ctx: ParserRuleContext): AttributedObject {
+  public visitLeftShiftNode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#ExpressionNode.
-  public visitExpressionNode(ctx: ParserRuleContext): AttributedObject {
+  public visitExpressionNode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#LENode.
-  public visitLENode(ctx: ParserRuleContext): AttributedObject {
+  public visitLENode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#LogicalOrNode.
-  public visitLogicalOrNode(ctx: ParserRuleContext): AttributedObject {
+  public visitLogicalOrNode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#MulNode.
-  public visitMulNode(ctx: ParserRuleContext): AttributedObject {
+  public visitMulNode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#UnaryNode.
-  public visitUnaryNode(ctx: ParserRuleContext): AttributedObject {
+  public visitUnaryNode(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#functionExpression.
-  public visitFunctionExpression(ctx: ParserRuleContext): AttributedObject {
+  public visitFunctionExpression(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#functionReferenceExpression.
-  public visitFunctionReferenceExpression(ctx: ParserRuleContext): AttributedObject {
+  public visitFunctionReferenceExpression(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#actionReferenceExpression.
-  public visitActionReferenceExpression(ctx: ParserRuleContext): AttributedObject {
+  public visitActionReferenceExpression(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#eventReferenceExpression.
-  public visitEventReferenceExpression(ctx: ParserRuleContext): AttributedObject {
+  public visitEventReferenceExpression(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#referenceSchema.
-  public visitReferenceSchema(ctx: ParserRuleContext): AttributedObject {
+  public visitReferenceSchema(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#referenceServer.
-  public visitReferenceServer(ctx: ParserRuleContext): AttributedObject {
+  public visitReferenceServer(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#referenceContextMask.
-  public visitReferenceContextMask(ctx: ParserRuleContext): AttributedObject {
+  public visitReferenceContextMask(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#referenceEntity.
-  public visitReferenceEntity(ctx: ParserRuleContext): AttributedObject {
+  public visitReferenceEntity(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#referenceRow.
-  public visitReferenceRow(ctx: ParserRuleContext): AttributedObject {
+  public visitReferenceRow(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#referenceProperty.
-  public visitReferenceProperty(ctx: ParserRuleContext): AttributedObject {
+  public visitReferenceProperty(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#valueReference.
-  public visitValueReference(ctx: ParserRuleContext): AttributedObject {
+  public visitValueReference(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#arguments.
-  public visitArguments(ctx: ParserRuleContext): any {
+  public visitArguments(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#agIdentifier.
-  public visitAgIdentifier(ctx: ParserRuleContext): AttributedObject {
+  public visitAgIdentifier(ctx: ParserRuleContext): Promise<AttributedObject> | AttributedObject {
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#LongConstNode.
   public visitLongConstNode(ctx: ParserRuleContext): AttributedObject {
-    return this.visitChildren(ctx);
+    return new AttributedObject();
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#FloatConstNode.
   public visitFloatConstNode(ctx: ParserRuleContext): AttributedObject {
-    return this.visitChildren(ctx);
+    return new AttributedObject();
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#StringConstNode.
   public visitStringConstNode(ctx: ParserRuleContext): AttributedObject {
-    return this.visitChildren(ctx);
+    return new AttributedObject();
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#TrueNode.
   public visitTrueNode(ctx: ParserRuleContext): AttributedObject {
-    return this.visitChildren(ctx);
+    return new AttributedObject();
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#FalseNode.
   public visitFalseNode(ctx: ParserRuleContext): AttributedObject {
-    return this.visitChildren(ctx);
+    return new AttributedObject();
   }
 
   // Visit a parse tree produced by AggregateExpressionParser#NullNode.
   public visitNullNode(ctx: ParserRuleContext): AttributedObject {
-    return this.visitChildren(ctx);
+    return new AttributedObject();
   }
 }

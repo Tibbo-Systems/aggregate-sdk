@@ -1,13 +1,22 @@
+import Binding from './Binding';
+import EvaluationOptions from './EvaluationOptions';
+import EvaluationEnvironment from '../expression/EvaluationEnvironment';
+import Reference from '../expression/Reference';
+import ChangeCache from './ChangeCache';
+import AsyncRunnable from '../util/java/AsyncRunnable';
+
 export default interface BindingProcessor {
-  start(): boolean;
-  //
+  start(): Promise<boolean>;
+
   stop(): void;
-  //
-  // setEnabled(enabled: boolean): void;
-  //
-  // submit(task: Callable): void;
-  //
-  // getExecutorService(): ExecutorService;
-  //
-  // getTimer(): Timer;
+
+  isStopped(): boolean;
+
+  setEnabled(enabled: boolean): void;
+
+  isEnabled(): boolean;
+
+  submit(task: AsyncRunnable, executeInThreadPool: boolean): Promise<void>;
+
+  evaluateBindingExpression(method: number, binding: Binding, options: EvaluationOptions, evaluationEnvironment?: EvaluationEnvironment, cause?: Reference, cache?: ChangeCache): Promise<void>;
 }

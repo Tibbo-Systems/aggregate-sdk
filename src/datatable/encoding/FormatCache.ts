@@ -152,8 +152,8 @@ export default class FormatCache extends JObject {
 
         const cm: ContextManager<any> | null = this.controller.getContextManager();
 
-        const rootContext: AbstractContext<any, any> | null = cm != null ? cm.get(Contexts.CTX_ROOT, cm.getCallerController()) : null;
-        const utilitiesContext: AbstractContext<any, any> | null = cm != null ? cm.get(Contexts.CTX_UTILITIES, cm.getCallerController()) : null;
+        const rootContext: AbstractContext<any, any> | null = cm != null ? await cm.get(Contexts.CTX_ROOT, cm.getCallerController()) : null;
+        const utilitiesContext: AbstractContext<any, any> | null = cm != null ? await cm.get(Contexts.CTX_UTILITIES, cm.getCallerController()) : null;
 
         if (rootContext != null && rootContext.getFunctionDefinition(RootContextConstants.F_GET_FORMAT) != null) {
           output = await rootContext.callFunction(RootContextConstants.F_GET_FORMAT, [id]);

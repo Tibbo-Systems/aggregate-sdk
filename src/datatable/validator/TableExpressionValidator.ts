@@ -2,8 +2,6 @@ import AbstractTableValidator from './AbstractTableValidator';
 import DataTable from '../DataTable';
 import Expression from '../../expression/Expression';
 import TableFormat from '../TableFormat';
-import JObject from '../../util/java/JObject';
-import Log from '../../Log';
 
 export default class TableExpressionValidator extends AbstractTableValidator {
   private readonly expression: Expression;
@@ -13,8 +11,12 @@ export default class TableExpressionValidator extends AbstractTableValidator {
     this.expression = new Expression(expression);
   }
 
+  public static valueOf(encodedBase64: string): TableExpressionValidator {
+    return new TableExpressionValidator(atob(encodedBase64));
+  }
+
   public encode(): string {
-    return this.expression.getText();
+    return btoa(this.expression.getText());
   }
 
   public getType(): string {

@@ -46,10 +46,10 @@ export default class ContextUtils {
     static pluginIdToContextName(pluginId: string): string;
     static matchesToMask(mask: string, context: string, contextMayExtendMask?: boolean, maskMayExtendContext?: boolean): boolean;
     static isMask(name: string): boolean;
-    static expandMaskListToContexts(masks: string, contextManager: ContextManager<any>, useVisibleChildren?: boolean, caller?: CallerController): Array<Context<any, any>>;
-    static expandMaskToContexts(mask: string, contextManager: ContextManager<any>, useVisibleChildren?: boolean, caller?: CallerController): Array<Context<any, any>>;
-    static expandMaskToPaths(mask: string, contextManager: ContextManager<any>, useVisibleChildren?: boolean, caller?: CallerController): Array<string>;
-    static expandMaskPart(head: string, tail: string, contextManager: ContextManager<any>, useVisibleChildren: boolean, caller?: CallerController): Array<string>;
+    static expandMaskListToContexts(masks: string, contextManager: ContextManager<any>, useVisibleChildren?: boolean, caller?: CallerController): Promise<Array<Context<any, any>>>;
+    static expandMaskToContexts(mask: string, contextManager: ContextManager<any>, useVisibleChildren?: boolean, caller?: CallerController): Promise<Array<Context<any, any>>>;
+    static expandMaskToPaths(mask: string, contextManager: ContextManager<any>, useVisibleChildren?: boolean, caller?: CallerController): Promise<Array<string>>;
+    static expandMaskPart(head: string, tail: string, contextManager: ContextManager<any>, useVisibleChildren: boolean, caller?: CallerController): Promise<Array<string>>;
     static isRelative(name: string): boolean;
     /**
      * Returns base group name. Useful for composite group names that contain several group names delimited with group separator symbol.

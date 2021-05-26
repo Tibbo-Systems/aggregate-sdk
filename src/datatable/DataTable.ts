@@ -157,7 +157,7 @@ export default abstract class DataTable extends AttributedObject implements Stri
    * Returns human-readable description of the table.
    * @return {string}
    */
-  abstract getDescription(): string | null;
+  abstract getDescription(): Promise<string | null>;
 
   abstract toDefaultString(): string;
 
@@ -211,11 +211,7 @@ export default abstract class DataTable extends AttributedObject implements Stri
   abstract [Symbol.iterator](): any;
 
   public clone(): DataTable {
-    try {
-      return super.clone() as DataTable;
-    } catch (ex) {
-      throw new Error(ex.message);
-    }
+    return super.clone() as DataTable;
   }
 
   abstract equals(obj: any): boolean;

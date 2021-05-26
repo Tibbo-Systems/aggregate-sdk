@@ -14,8 +14,8 @@ i18next.init({
 });
 
 export default class Cres {
-  private static readonly GET_LANG = '/web/internalization/current-locale';
-  private static readonly GET_CRES = `/web/internalization/locales/`;
+  private static readonly GET_LANG = '/web/v1/public/internalization/current-locale';
+  private static readonly GET_CRES = `/web/v1/public/internalization/locales/`;
 
   private static readonly res: Cres = new Cres();
 

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import Cres from './Cres';
 import StorageHelper from './view/StorageHelper';
 import Log from './Log';
@@ -163,7 +162,7 @@ import CachedVariableValue from './protocol/CachedVariableValue';
 import CompressedCommandWriter from './protocol/CompressedCommandWriter';
 import DefaultCommandWriter from './protocol/DefaultCommandWriter';
 import IncomingAggreGateCommand from './protocol/IncomingAggreGateCommand';
-import Functions from './expression/functions/Functions';
+import Functions from './expression/function/Functions';
 import OutgoingJsonCommand from './protocol/OutgoingJsonCommand';
 import RemoteContextManager from './protocol/RemoteContextManager';
 import ProtocolVersion from './protocol/ProtocolVersion';
@@ -247,7 +246,6 @@ import BatchContext from './action/BatchContext';
 import GenericActionResponse from './action/GenericActionResponse';
 import BindingProcessor from './binding/BindingProcessor';
 import BatchAction from './action/BatchAction';
-import BasicActionDefinitionConstants from './action/BasicActionDefinitionConstants';
 import ActionUtils from './action/ActionUtils';
 import ActionResult from './action/ActionResult';
 import ActionLocator from './action/ActionLocator';
@@ -271,7 +269,7 @@ import SelectEntities from './action/command/SelectEntities';
 import OpenGridDashboard from './action/command/OpenGridDashboard';
 import EditReport from './action/command/EditReport';
 import GridDashboardActionCommand from './action/command/GridDashboardActionCommand';
-import DumperVisitor from './expression/DumperVisitor';
+import DumpingVisitor from './expression/util/DumpingVisitor';
 import AbstractEvaluatingVisitor from './expression/AbstractEvaluatingVisitor';
 import AbstractCommandExecutor from './action/client/AbstractCommandExecutor';
 import AbstractOperation from './action/client/AbstractOperation';
@@ -291,12 +289,33 @@ import AlertConstants from './server/AlertConstants';
 import AlertContextConstants from './server/AlertContextConstants';
 import JOptionPane from './server/JOptionPane';
 import AlertsContextConstants from './server/AlertsContextConstants';
-const AggregateExpressionLexer = require('./expression/parser/AggregateExpressionLexer.js');
-const AggregateExpressionParser = require('./expression/parser/AggregateExpressionParser.js');
-const AggregateExpressionVisitor = require('./expression/parser/AggregateExpressionVisitor.js');
+import WebWindowLocation from './util/WebWindowLocation';
+import DataTableConstruction from './datatable/DataTableConstruction';
+import WebContextConstants from './server/WebContextConstants';
+import AggregateExpressionParser from './expression/parser/AggregateExpressionParser';
+import AggregateExpressionVisitor from './expression/parser/AggregateExpressionVisitor';
+import AggregateExpressionLexer from './expression/parser/AggregateExpressionLexer';
+import BindingsEventsHelper from './binding/BindingsEventsHelper';
+import ChangeCache from './binding/ChangeCache';
+import DefaultBindingProcessor from './binding/DefaultBindingProcessor';
+import ReferenceListener from './binding/ReferenceListener';
+import WebsocketHandler from './protocol/WebsocketHandler';
+import BindingReferenceListener from './binding/BindingReferenceListener';
+import EvaluationTimerTask from './binding/EvaluationTimerTask';
+import ReferenceWriter from './binding/ReferenceWriter';
+import AsyncRunnable from './util/java/AsyncRunnable';
+import ThreadPoolExecutor from './util/java/ThreadPoolExecutor';
+import TimerExecutor from './util/java/TimerExecutor';
+import AbstractDataTableBindingProvider from './datatable/AbstractDataTableBindingProvider';
 
 export {
   AggregateExpressionLexer,
+  AsyncRunnable,
+  ThreadPoolExecutor,
+  ReferenceWriter,
+  TimerExecutor,
+  EvaluationTimerTask,
+  BindingReferenceListener,
   AggregateExpressionParser,
   AggregateExpressionVisitor,
   AbstractCommandExecutor,
@@ -348,7 +367,6 @@ export {
   ActionLocator,
   ActionResult,
   ActionUtils,
-  BasicActionDefinitionConstants,
   BatchAction,
   BatchContext,
   BatchEntry,
@@ -397,7 +415,7 @@ export {
   AsyncCommandProcessor,
   BufferedCommandParser,
   AbstractEvaluatingVisitor,
-  DumperVisitor,
+  DumpingVisitor,
   Command,
   CommandParser,
   CommandParserListener,
@@ -445,6 +463,7 @@ export {
   DataRecord,
   DataTable,
   DataTableBindingProvider,
+  AbstractDataTableBindingProvider,
   DataTableBuilding,
   DataTableBuildingConstants,
   DataTableConversion,
@@ -591,4 +610,12 @@ export {
   StorageHelper,
   ActionUtilsConstants,
   ViewFilterElement,
+  WebWindowLocation,
+  DataTableConstruction,
+  WebContextConstants,
+  BindingsEventsHelper,
+  ChangeCache,
+  DefaultBindingProcessor,
+  ReferenceListener,
+  WebsocketHandler,
 };

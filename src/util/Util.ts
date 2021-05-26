@@ -10,6 +10,7 @@ import JSBI from 'jsbi';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const isEqual = require('lodash.isequal');
+import { v4 as uuidv4 } from 'uuid';
 
 export default class Util {
   private static readonly NULL: string = 'NULL';
@@ -42,6 +43,14 @@ export default class Util {
     } else {
       return isEqual(o1, o2);
     }
+  }
+
+  public static arrayEquals(o1: Array<any>, o2: Array<any>): boolean {
+    if (o1.length !== o2.length) return false;
+    for (let i = 0; i < o1.length; i++) {
+      if (!Util.equals(o1[i], o2[i])) return false;
+    }
+    return true;
   }
 
   public static byteBufferEquals(o1: ByteBuffer | null, o2: ByteBuffer | null): boolean {
@@ -87,6 +96,9 @@ export default class Util {
   public static isBigInt(value: any): value is JSBI {
     return value instanceof JSBI;
   }
+  public static isPrimitive(value: any): boolean {
+    return Object(value) !== value;
+  }
 
   public static convertToLong(value: any, validate: boolean, allowNull: boolean): JSBI | null {
     const result = Util.convertTo(value, validate, allowNull, true);
@@ -131,6 +143,9 @@ export default class Util {
              */
 
     if (this.isNumber(value)) {
+      if (isBigInt) {
+        return Number.parseInt(value.toString());
+      }
       return value;
     }
 
@@ -146,15 +161,10 @@ export default class Util {
       return (value as boolean) ? 1 : 0;
     }
 
-    let parseResult = parseInt(value.toString());
-    if (!isNaN(parseResult)) {
+    const convertResult = Number(value.toString());
+    if (!isNaN(convertResult)) {
       if (isBigInt) return value;
-      else return parseResult;
-    }
-
-    parseResult = parseFloat(value.toString());
-    if (!isNaN(parseResult)) {
-      return parseResult;
+      else return convertResult;
     }
 
     const aBoolean: boolean | null = this.convertToBoolean(value, false, true);
@@ -362,5 +372,9 @@ export default class Util {
     }
 
     return sb.toString();
+  }
+
+  public static generateId(): string {
+    return uuidv4();
   }
 }

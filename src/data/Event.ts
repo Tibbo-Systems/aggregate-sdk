@@ -7,7 +7,6 @@ import Acknowledgement from '../event/Acknowledgement';
 import DataTableConversion from '../datatable/DataTableConversion';
 import JObject from '../util/java/JObject';
 import CloneUtils from '../util/CloneUtils';
-import FieldFormat from '../datatable/FieldFormat';
 
 export default class Event extends JObject {
   public static readonly DEFAULT_EVENT_EXPIRATION_PERIOD = 100 * TimeHelper.DAY_IN_MS; // Milliseconds

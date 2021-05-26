@@ -7,7 +7,7 @@ import StringFieldFormat from '../../field/StringFieldFormat';
 import Contexts from '../../../context/Contexts';
 import DataTableBindingProvider from '../../DataTableBindingProvider';
 import StorageHelper from '../../../view/StorageHelper';
-import Functions from '../../../expression/functions/Functions';
+import Functions from '../../../expression/function/Functions';
 import DataTableBuilding from '../../DataTableBuilding';
 import UtilitiesContextConstants from '../../../server/UtilitiesContextConstants';
 
@@ -251,7 +251,7 @@ export default class ForeignInstanceConverter extends AbstractEditorOptionsConve
     this.types.push(FieldConstants.STRING_FIELD);
   }
 
-  convertToString(options: DataTable): string | null {
+  convertToString(options: DataTable): string {
     return options.encodeToString();
   }
 

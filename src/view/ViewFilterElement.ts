@@ -6,7 +6,7 @@ import Cres from '../Cres';
 import FieldConstants from '../datatable/field/FieldConstants';
 import DataTableBindingProvider from '../datatable/DataTableBindingProvider';
 import DefaultReferenceResolver from '../expression/DefaultReferenceResolver';
-import Functions from '../expression/functions/Functions';
+import Functions from '../expression/function/Functions';
 import DataRecord from '../datatable/DataRecord';
 
 export default class ViewFilterElement extends AggreGateBean {

@@ -1,6 +1,5 @@
 import AbstractEditorOptionsConverter from './AbstractEditorOptionsConverter';
 import TableFormat from '../../TableFormat';
-import Reference from '../../../expression/Reference';
 import DataTable from '../../DataTable';
 import FieldConstants from '../../field/FieldConstants';
 import StringFieldFormat from '../../field/StringFieldFormat';
@@ -18,18 +17,18 @@ export default class ExpressionConverter extends AbstractEditorOptionsConverter 
     this.types.push(FieldConstants.STRING_FIELD);
   }
 
-  public convertToString(options: DataTable): string | null {
-    const additionalReferences: Map<Reference, string> = new Map<Reference, string>();
+  public convertToString(options: DataTable): string {
+    const additionalReferences = new Map<string, string>();
 
-    const defaultContext: string = options.rec().getString(FieldConstants.FIELD_DEFAULT_CONTEXT);
-    const defaultTable: DataTable = options.rec().getDataTable(FieldConstants.FIELD_DEFAULT_TABLE);
-    const references: DataTable = options.rec().getDataTable(FieldConstants.FIELD_REFERENCES);
+    const defaultContext = options.rec().getNullableString(FieldConstants.FIELD_DEFAULT_CONTEXT);
+    const defaultTable = options.rec().getNullableDataTable(FieldConstants.FIELD_DEFAULT_TABLE);
+    const references = options.rec().getNullableDataTable(FieldConstants.FIELD_REFERENCES);
 
     if (references !== null) {
-      for (const rec of references) additionalReferences.set(new Reference(rec.getString(ExpressionConverter.FIELD_ADDITIONAL_REFERENCES_REFERENCE)), rec.getString(ExpressionConverter.FIELD_ADDITIONAL_REFERENCES_DESCRIPTION));
+      for (const rec of references) additionalReferences.set(rec.getString(ExpressionConverter.FIELD_ADDITIONAL_REFERENCES_REFERENCE), rec.getString(ExpressionConverter.FIELD_ADDITIONAL_REFERENCES_DESCRIPTION));
     }
 
-    return StringFieldFormat.encodeExpressionEditorOptions(null, null, additionalReferences);
+    return StringFieldFormat.encodeExpressionEditorOptions(defaultContext, defaultTable, additionalReferences);
   }
 
   public getFormat(): TableFormat {

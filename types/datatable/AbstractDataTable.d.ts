@@ -22,14 +22,13 @@ export default abstract class AbstractDataTable extends DataTable {
     static readonly ELEMENT_ID: string;
     static readonly ELEMENT_RECORD: string;
     static readonly ELEMENT_FIELD_NAME: string;
-    private static readonly DEFAULT_ESTIMATE_RECORD_COUNT;
+    static DEFAULT_FORMAT: TableFormat;
     private quality;
     private timestamp;
     private invalidationMessage;
     protected immutable: boolean;
     protected id: number | null;
     protected namingEvaluator: Evaluator | null;
-    static DEFAULT_FORMAT: TableFormat;
     protected format: TableFormat;
     isImmutable(): boolean;
     abstract getRecordCount(): number;
@@ -76,7 +75,7 @@ export default abstract class AbstractDataTable extends DataTable {
     getEncodedDataFromEncodingSettings(settings: ClassicEncodingSettings): string;
     rec(): DataRecord;
     getValue(): any;
-    getDescription(): string | null;
+    getDescription(): Promise<string | null>;
     private getNamingExpression;
     private ensureEvaluator;
     dataAsString(showFieldNames?: boolean, showHiddenFields?: boolean, showPasswords?: boolean): string;

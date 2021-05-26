@@ -59,7 +59,7 @@ export default class EntityReference extends JObject implements Comparable<Entit
     try {
       return super.clone() as EntityReference;
     } catch (ex) {
-      throw new Error(ex.getMessage());
+      throw new Error(ex.message);
     }
   }
 }

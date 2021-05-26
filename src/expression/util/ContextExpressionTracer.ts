@@ -16,8 +16,8 @@ export default class ContextExpressionTracer implements Tracer {
     ContextExpressionTracer.EFT_TRACE.addField('<' + ContextExpressionTracer.EF_TRACE_MESSAGE + '><S><F=N><D=' + Cres.get().getString('message') + '>');
   }
 
-  private context: Context<any, any>;
-  private traceEventGroup: string;
+  private readonly context: Context<any, any>;
+  private readonly traceEventGroup: string;
 
   constructor(context: Context<any, any>, traceEventGroup: string) {
     this.context = context;
@@ -25,7 +25,7 @@ export default class ContextExpressionTracer implements Tracer {
     this.install();
   }
 
-  install() {
+  public install() {
     const target = this.getContext();
 
     if (target == null) {
@@ -42,7 +42,7 @@ export default class ContextExpressionTracer implements Tracer {
     target.addEventDefinition(ed);
   }
 
-  trace(value: any, message: string): void {
+  public trace(value: any, message: string): void {
     this.install();
 
     const target = this.getContext();

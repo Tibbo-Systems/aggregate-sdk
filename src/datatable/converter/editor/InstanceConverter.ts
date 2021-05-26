@@ -6,7 +6,7 @@ import Cres from '../../../Cres';
 import StringFieldFormat from '../../field/StringFieldFormat';
 import Contexts from '../../../context/Contexts';
 import DataTableBindingProvider from '../../DataTableBindingProvider';
-import Functions from '../../../expression/functions/Functions';
+import Functions from '../../../expression/function/Functions';
 import DataTableBuildingConstants from '../../DataTableBuildingConstants';
 import UtilitiesContextConstants from '../../../server/UtilitiesContextConstants';
 import StorageHelper from '../../../view/StorageHelper';
@@ -84,7 +84,7 @@ export default class InstanceConverter extends AbstractEditorOptionsConverter {
     this.types.push(FieldConstants.STRING_FIELD);
   }
 
-  convertToString(options: DataTable): string | null {
+  convertToString(options: DataTable): string {
     return options.encodeToString();
   }
 

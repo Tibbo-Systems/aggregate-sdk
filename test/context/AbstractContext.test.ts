@@ -27,11 +27,11 @@ describe('TestAbstractContext', () => {
     contextManager.start();
   });
 
-  it('testAddChild', () => {
+  it('testAddChild', async () => {
     const child1 = new StubContext('child1');
     root.addChild(child1);
-    expect(root.getChildren().length).toBe(1);
-    expect(root.getChildren()[0]).toBe(child1);
+    expect((await root.getChildren()).length).toBe(1);
+    expect((await root.getChildren())[0]).toBe(child1);
     expect(child1.getParent()).toBe(root);
   });
 
@@ -44,41 +44,41 @@ describe('TestAbstractContext', () => {
     }).toThrowError('Cannot add child with pre-defined index as children sorting is enabled');
   });
 
-  it('testAddChildWithIndexWhenSortingDisabled', () => {
+  it('testAddChildWithIndexWhenSortingDisabled', async () => {
     root.setChildrenSortingEnabled(false);
     const child1 = new StubContext('child1');
     root.addChild(child1);
     const child2 = new StubContext('child2');
     root.addChild(child2, 0);
-    expect(root.getChildren()[0]).toBe(child2);
+    expect((await root.getChildren())[0]).toBe(child2);
   });
 
-  it('testDestroyChild', () => {
+  it('testDestroyChild', async () => {
     const child1 = new StubContext('child1');
     root.addChild(child1);
     root.destroyChild(child1, false);
-    expect(root.getChildren().length).toBe(0);
+    expect((await root.getChildren()).length).toBe(0);
     expect(child1.getParent()).toBe(null);
   });
 
-  it('testDestroy', () => {
+  it('testDestroy', async () => {
     const child1 = new StubContext('child1');
     root.addChild(child1);
     expect(root.isStarted()).toBeTruthy();
     root.destroy(false);
-    expect(root.getChildren().length).toBe(0);
+    expect((await root.getChildren()).length).toBe(0);
     expect(child1.isStopped()).toBeTruthy();
   });
 
-  it('testMoveAndRename', () => {
+  it('testMoveAndRename', async () => {
     const child1 = new StubContext('child1');
     root.addChild(child1);
     const child2 = new StubContext('child2');
     root.addChild(child2);
     child2.move(root, 'newChild2');
-    expect(root.getChildren().length).toBe(2);
-    expect(root.getChild('newChild2')).toBe(child2);
-    expect(child1.getChild('child2')).toBe(null);
+    expect((await root.getChildren()).length).toBe(2);
+    expect(await root.getChild('newChild2')).toBe(child2);
+    expect(await child1.getChild('child2')).toBe(null);
   });
 
   it('testReoderChildWhenSortingEnabled', () => {
@@ -92,7 +92,7 @@ describe('TestAbstractContext', () => {
     }).toThrowError('Cannot reorder children when children sorting is enabled');
   });
 
-  it('testReorderChildWhenSortingDisabled', () => {
+  it('testReorderChildWhenSortingDisabled', async () => {
     root.setChildrenSortingEnabled(false);
     const child1 = new StubContext('child1');
     root.addChild(child1);
@@ -100,7 +100,7 @@ describe('TestAbstractContext', () => {
     root.addChild(child2);
 
     root.reorderChild(child2, 0);
-    expect(root.getChildren()[0]).toBe(child2);
+    expect((await root.getChildren())[0]).toBe(child2);
   });
 
   it('testGetFunctionDefinitions', () => {
@@ -290,7 +290,7 @@ describe('TestAbstractContext', () => {
   });
 
   it('testExceptionWhenSettingVariableField', () => {
-    return new Promise((done) => {
+    return new Promise<void>((done) => {
       root.setVariableField(StubContext.V_TEST, StubContext.VF_TEST_INT, 1, 123).catch((reason) => {
         expect(reason.message).toBe('index is out of range');
         done();
@@ -328,10 +328,16 @@ describe('TestAbstractContext', () => {
     expect(root.getVariableStatus(StubContext.V_TEST).getComment()).toBe(vs.getComment());
   });
 
-  it('testVariableStatusWhenDisabledStatuses', () => {
-    expect(() => {
-      root.updateVariableStatus(StubContext.V_TEST, new VariableStatus('status', 'comment'), true);
-    }).toThrowError(MessageFormat.format(Cres.get().getString('conEvtNotAvailExt'), 'variableStatusChanged', 'root'));
+  it('testVariableStatusWhenDisabledStatuses', async () => {
+    try {
+      await root.updateVariableStatus(StubContext.V_TEST, new VariableStatus('status', 'comment'), true);
+    } catch (e) {
+      expect(e.message).toBe(MessageFormat.format(Cres.get().getString('conEvtNotAvailExt'), 'variableStatusChanged', 'root'));
+    }
+
+    /*  expect(async () => {
+      await root.updateVariableStatus(StubContext.V_TEST, new VariableStatus('status', 'comment'), true);
+    }).toThrowError(MessageFormat.format(Cres.get().getString('conEvtNotAvailExt'), 'variableStatusChanged', 'root'));*/
   });
 
   it('testStatusWhenDisabled', () => {
@@ -340,13 +346,14 @@ describe('TestAbstractContext', () => {
     }).toThrowError('Status is disabled');
   });
 
-  it('testStatus', () => {
+  it('testStatus', async () => {
     root.enableStatus();
     root.setStatus(1, 'comment');
 
-    expect(root.getStatus()?.getStatus()).toBe(1);
+    const status = await root.getStatus();
+    expect(status?.getStatus()).toBe(1);
 
-    expect(root.getStatus()?.getComment()).toBe('comment');
+    expect(status?.getComment()).toBe('comment');
   });
 
   it('testInvalidNames', () => {

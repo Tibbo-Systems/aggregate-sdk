@@ -10,6 +10,7 @@ export default class RemoteServer extends AggreGateNetworkDevice {
 
   private username: string;
   private password: string;
+  private effectiveUsername: string;
   private readonly requestAddress: string;
 
   constructor(
@@ -22,6 +23,7 @@ export default class RemoteServer extends AggreGateNetworkDevice {
     super('server', Cres.get().getString('server'), address, port);
     this.username = username;
     this.password = password;
+    this.effectiveUsername = username;
     this.requestAddress = requestAddress;
   }
 
@@ -35,6 +37,14 @@ export default class RemoteServer extends AggreGateNetworkDevice {
 
   public getUsername(): string {
     return this.username;
+  }
+
+  public getEffectiveUsername(): string {
+    return this.effectiveUsername;
+  }
+
+  public setEffectiveUsername(effectiveUsername: string): void {
+    this.effectiveUsername = effectiveUsername;
   }
 
   public setUsername(username: string): void {

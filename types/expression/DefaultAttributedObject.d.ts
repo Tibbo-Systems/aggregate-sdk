@@ -7,7 +7,7 @@ export default class DefaultAttributedObject extends AttributedObject {
     getQuality(): number | null;
     getTimestamp(): Date | null;
     getValue(): any;
-    setQuality(quality: number): void;
-    setTimestamp(timestamp: Date): void;
+    setQuality(quality: number | null): void;
+    setTimestamp(timestamp: Date | null): void;
     toString(): string;
 }
