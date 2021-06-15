@@ -93,6 +93,8 @@ export default class ServerContextConstants {
 
   public static readonly FIF_INIT_ACTION_EXECUTION_MODE: string = 'executionMode';
 
+  public static readonly FIF_INIT_ACTION_ACTION_ID = 'actionId';
+
   public static readonly FIF_STEP_ACTION_ACTION_RESPONSE: string = 'actionResponse';
 
   public static readonly FIF_STEP_ACTION_ACTION_ID: string = 'actionId';

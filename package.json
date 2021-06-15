@@ -1,7 +1,7 @@
 {
   "name": "aggregate-sdk",
   "homepage": "https://aggregate.tibbo.com/",
-  "version": "6.1.0-dev.20210526",
+  "version": "6.1.0-dev.20210615",
   "description": "AggreGate SDK (TypeScript, open-source) - Official Release",
   "scripts": {
     "lint": "tsc --noEmit && eslint '*/**/*.{js,ts}' --quiet --fix",
@@ -13,7 +13,7 @@
     "test:full": "npm run test && npm run test:integration",
     "test:coverage": "jest --coverage",
     "test:jenkins": "npm run test",
-    "publish:next": "npm version 6.1.0-dev.20210526 && npm publish --tag next",
+    "publish:next": "npm version 6.1.0-dev.20210615 && npm publish --tag next",
     "publish:last": "npm publish",
     "prettier": "prettier --write \"src/**/*.ts\" && prettier --write \"test/**/*.test.ts\"",
     "antrl4-js-linux": "java -Xmx500M -cp '/usr/local/lib/antlr-4.9.2-complete.jar:$CLASSPATH' org.antlr.v4.Tool  -Dlanguage=JavaScript -lib src/expression/grammar -o src/expression/parser -visitor -no-listener -Xexact-output-dir src/expression/grammar/AggregateExpression.g4",

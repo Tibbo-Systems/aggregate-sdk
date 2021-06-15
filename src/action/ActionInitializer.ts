@@ -15,6 +15,7 @@ export default interface ActionInitializer {
     environment: Map<string, any> | null,
     mode: ActionExecutionMode,
     callerController?: CallerController,
+    actionId?: string | null,
     collector?: ErrorCollector
   ): Promise<ActionIdentifier>;
 }

@@ -98,8 +98,16 @@ export default abstract class ActionUtils {
     return new ServerActionInput(SimpleDataTable.createSimpleDataTable(ActionUtils.FORMAT_NORMAL_ACTION, executionParameters));
   }
 
-  public static initActionCreate(context: Context<any, any>, actionName: string, initialParameters: ServerActionInput, inputData: DataTable, mode: ActionExecutionMode, callerController: CallerController): Promise<ActionIdentifier> {
-    return ActionUtils.initAction(context, actionName, initialParameters, inputData, null, mode, callerController);
+  public static initActionCreate(
+    context: Context<any, any>,
+    actionName: string,
+    initialParameters: ServerActionInput,
+    inputData: DataTable,
+    mode: ActionExecutionMode,
+    callerController: CallerController,
+    actionId: string | null
+  ): Promise<ActionIdentifier> {
+    return ActionUtils.initAction(context, actionName, initialParameters, inputData, null, mode, callerController, actionId);
   }
 
   public static initAction(
@@ -110,9 +118,10 @@ export default abstract class ActionUtils {
     environment: Map<string, any> | null,
     mode: ActionExecutionMode,
     callerController?: CallerController,
+    actionId: string | null = null,
     collector?: ErrorCollector
   ): Promise<ActionIdentifier> {
-    return ActionUtils.ACTION_INITIALIZER.initAction(context, actionName, initialParameters, inputData, environment, mode, callerController, collector);
+    return ActionUtils.ACTION_INITIALIZER.initAction(context, actionName, initialParameters, inputData, environment, mode, callerController, actionId, collector);
   }
 
   public static async stepAction(context: Context<any, any>, actionId: ActionIdentifier, actionResponse: GenericActionResponse | null, callerController?: CallerController): Promise<GenericActionCommand | null> {

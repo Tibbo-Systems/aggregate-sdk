@@ -1,8 +1,8 @@
 import JSBI from 'jsbi';
-import StringEncodable from '../util/StringEncodable';
-import StringBuilder from '../util/java/StringBuilder';
-import ClassicEncodingSettings from '../datatable/encoding/ClassicEncodingSettings';
-import ByteBuffer from 'bytebuffer';
+import ByteBuffer from "bytebuffer";
+import StringEncodable from "../util/StringEncodable";
+import StringBuilder from "../util/java/StringBuilder";
+import ClassicEncodingSettings from "../datatable/encoding/ClassicEncodingSettings";
 import JObject from '../util/java/JObject';
 import ContextManager from '../context/ContextManager';
 import Context from '../context/Context';
@@ -37,6 +37,7 @@ export default class Data extends JObject implements StringEncodable {
     private checksum;
     toDetailedString(): string;
     toString(): string;
+    toJsonString(): string;
     toCleanString(): string;
     clone(): Data;
     equals(obj: JObject | null): boolean;

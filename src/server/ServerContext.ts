@@ -56,7 +56,7 @@ export default interface ServerContext extends Context<any, ServerContextManager
 
   // The following methods should not be called via public API
 
-  initAction(def: ActionDefinition, actionInput: ServerActionInput, mode: ActionExecutionMode, caller: CallerController): ActionIdentifier;
+  initAction(def: ActionDefinition, actionInput: ServerActionInput, mode: ActionExecutionMode, caller: CallerController, customActionId: string): ActionIdentifier;
 
   checkPermissions(needPermissions: Permissions, caller: CallerController, accessedContext: Context<any, any>, accessedEntityDefinition: EntityDefinition): boolean;
 

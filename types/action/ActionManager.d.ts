@@ -20,7 +20,7 @@ export default class ActionManager extends JObject {
     ActionManager(actionDirectory: ActionDirectory<any>): void;
     resolveDefinitions(actionLocators: Array<ActionLocator>): Array<ActionDefinition>;
     initActions(entries: Array<BatchEntry>, batchActionContext: ActionContext): ActionIdentifier;
-    initAction(actionContext: ActionContext, initialParameters: InitialRequest, mode: ActionExecutionMode): ActionIdentifier;
+    initAction(actionContext: ActionContext, initialParameters: InitialRequest, mode: ActionExecutionMode, customActionId: string | null): ActionIdentifier;
     protected instantiateAction(actionDefinition: ActionDefinition | null): Action<InitialRequest, ActionCommand, ActionResponse>;
     service(actionId: ActionIdentifier, actionRequest: ActionResponse | null): ActionCommand | null;
     destroyAction(actionId: ActionIdentifier): ActionResult | null;
@@ -29,5 +29,5 @@ export default class ActionManager extends JObject {
     getActionID(action: Action<InitialRequest, ActionCommand, ActionResponse>): ActionIdentifier | null;
     getAction(actionID: ActionIdentifier): Action<InitialRequest, ActionCommand, ActionResponse> | null;
     getActionDirectory(): ActionDirectory<any> | null;
-    protected registerAction(actionContext: ActionContext, action: Action<InitialRequest, ActionCommand, ActionResponse>, mode: ActionExecutionMode): ActionIdentifier;
+    protected registerAction(actionContext: ActionContext, action: Action<InitialRequest, ActionCommand, ActionResponse>, mode: ActionExecutionMode, customActionId: string | null): ActionIdentifier;
 }

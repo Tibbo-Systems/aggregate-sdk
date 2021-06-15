@@ -5,7 +5,7 @@ import AggregateExpressionVisitor from './AggregateExpressionVisitor.js';
 
 
 const serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786",
-    "\u5964\u00033\u00e8\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004",
+    "\u5964\u00033\u00ea\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004",
     "\t\u0004\u0004\u0005\t\u0005\u0004\u0006\t\u0006\u0004\u0007\t\u0007",
     "\u0004\b\t\b\u0004\t\t\t\u0004\n\t\n\u0004\u000b\t\u000b\u0004\f\t\f",
     "\u0004\r\t\r\u0004\u000e\t\u000e\u0004\u000f\t\u000f\u0004\u0010\t\u0010",
@@ -34,24 +34,24 @@ const serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786",
     "\u000b\u0005\u000b\u00ab\n\u000b\u0003\f\u0003\f\u0003\f\u0003\f\u0003",
     "\r\u0003\r\u0003\r\u0003\u000e\u0005\u000e\u00b5\n\u000e\u0003\u000e",
     "\u0005\u000e\u00b8\n\u000e\u0003\u000e\u0005\u000e\u00bb\n\u000e\u0003",
-    "\u000e\u0003\u000e\u0005\u000e\u00bf\n\u000e\u0003\u000e\u0003\u000e",
-    "\u0005\u000e\u00c3\n\u000e\u0003\u000e\u0005\u000e\u00c6\n\u000e\u0003",
-    "\u000e\u0005\u000e\u00c9\n\u000e\u0003\u000e\u0005\u000e\u00cc\n\u000e",
-    "\u0003\u000e\u0005\u000e\u00cf\n\u000e\u0003\u000f\u0003\u000f\u0003",
-    "\u000f\u0003\u000f\u0007\u000f\u00d5\n\u000f\f\u000f\u000e\u000f\u00d8",
-    "\u000b\u000f\u0005\u000f\u00da\n\u000f\u0003\u000f\u0003\u000f\u0003",
-    "\u0010\u0003\u0010\u0003\u0011\u0003\u0011\u0003\u0011\u0003\u0011\u0003",
-    "\u0011\u0003\u0011\u0005\u0011\u00e6\n\u0011\u0003\u0011\u0002\u0003",
-    "\u0004\u0012\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012\u0014\u0016\u0018",
-    "\u001a\u001c\u001e \u0002\u0004\u0003\u0002\'\'\u0005\u0002\u0003\u0003",
-    "*,22\u0002\u010e\u0002#\u0003\u0002\u0002\u0002\u00048\u0003\u0002\u0002",
+    "\u000e\u0005\u000e\u00be\n\u000e\u0003\u000e\u0005\u000e\u00c1\n\u000e",
+    "\u0003\u000e\u0003\u000e\u0005\u000e\u00c5\n\u000e\u0003\u000e\u0005",
+    "\u000e\u00c8\n\u000e\u0003\u000e\u0005\u000e\u00cb\n\u000e\u0003\u000e",
+    "\u0005\u000e\u00ce\n\u000e\u0003\u000e\u0005\u000e\u00d1\n\u000e\u0003",
+    "\u000f\u0003\u000f\u0003\u000f\u0003\u000f\u0007\u000f\u00d7\n\u000f",
+    "\f\u000f\u000e\u000f\u00da\u000b\u000f\u0005\u000f\u00dc\n\u000f\u0003",
+    "\u000f\u0003\u000f\u0003\u0010\u0003\u0010\u0003\u0011\u0003\u0011\u0003",
+    "\u0011\u0003\u0011\u0003\u0011\u0003\u0011\u0005\u0011\u00e8\n\u0011",
+    "\u0003\u0011\u0002\u0003\u0004\u0012\u0002\u0004\u0006\b\n\f\u000e\u0010",
+    "\u0012\u0014\u0016\u0018\u001a\u001c\u001e \u0002\u0003\u0003\u0002",
+    "\'\'\u0002\u0111\u0002#\u0003\u0002\u0002\u0002\u00048\u0003\u0002\u0002",
     "\u0002\u0006\u0081\u0003\u0002\u0002\u0002\b\u0084\u0003\u0002\u0002",
     "\u0002\n\u0087\u0003\u0002\u0002\u0002\f\u008d\u0003\u0002\u0002\u0002",
     "\u000e\u0090\u0003\u0002\u0002\u0002\u0010\u0096\u0003\u0002\u0002\u0002",
     "\u0012\u00a4\u0003\u0002\u0002\u0002\u0014\u00aa\u0003\u0002\u0002\u0002",
     "\u0016\u00ac\u0003\u0002\u0002\u0002\u0018\u00b0\u0003\u0002\u0002\u0002",
-    "\u001a\u00ce\u0003\u0002\u0002\u0002\u001c\u00d0\u0003\u0002\u0002\u0002",
-    "\u001e\u00dd\u0003\u0002\u0002\u0002 \u00e5\u0003\u0002\u0002\u0002",
+    "\u001a\u00d0\u0003\u0002\u0002\u0002\u001c\u00d2\u0003\u0002\u0002\u0002",
+    "\u001e\u00df\u0003\u0002\u0002\u0002 \u00e7\u0003\u0002\u0002\u0002",
     "\"$\u0005\u0004\u0003\u0002#\"\u0003\u0002\u0002\u0002#$\u0003\u0002",
     "\u0002\u0002$%\u0003\u0002\u0002\u0002%&\u0007\u0002\u0002\u0003&\u0003",
     "\u0003\u0002\u0002\u0002\'(\b\u0003\u0001\u0002()\u0007\u0007\u0002",
@@ -129,39 +129,41 @@ const serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786",
     "\b\u0002\u00b4\u00b3\u0003\u0002\u0002\u0002\u00b4\u00b5\u0003\u0002",
     "\u0002\u0002\u00b5\u00b7\u0003\u0002\u0002\u0002\u00b6\u00b8\u0005\u0010",
     "\t\u0002\u00b7\u00b6\u0003\u0002\u0002\u0002\u00b7\u00b8\u0003\u0002",
-    "\u0002\u0002\u00b8\u00c5\u0003\u0002\u0002\u0002\u00b9\u00bb\u0005\u0012",
+    "\u0002\u0002\u00b8\u00c7\u0003\u0002\u0002\u0002\u00b9\u00bb\u0005\u0012",
     "\n\u0002\u00ba\u00b9\u0003\u0002\u0002\u0002\u00ba\u00bb\u0003\u0002",
     "\u0002\u0002\u00bb\u00bc\u0003\u0002\u0002\u0002\u00bc\u00be\u0007\u0018",
-    "\u0002\u0002\u00bd\u00bf\u0005\u0014\u000b\u0002\u00be\u00bd\u0003\u0002",
-    "\u0002\u0002\u00be\u00bf\u0003\u0002\u0002\u0002\u00bf\u00c2\u0003\u0002",
-    "\u0002\u0002\u00c0\u00c1\u0007\u0011\u0002\u0002\u00c1\u00c3\u0005\u001e",
-    "\u0010\u0002\u00c2\u00c0\u0003\u0002\u0002\u0002\u00c2\u00c3\u0003\u0002",
-    "\u0002\u0002\u00c3\u00c6\u0003\u0002\u0002\u0002\u00c4\u00c6\u0005\u001e",
-    "\u0010\u0002\u00c5\u00ba\u0003\u0002\u0002\u0002\u00c5\u00c4\u0003\u0002",
-    "\u0002\u0002\u00c6\u00c8\u0003\u0002\u0002\u0002\u00c7\u00c9\u0005\u0016",
-    "\f\u0002\u00c8\u00c7\u0003\u0002\u0002\u0002\u00c8\u00c9\u0003\u0002",
-    "\u0002\u0002\u00c9\u00cb\u0003\u0002\u0002\u0002\u00ca\u00cc\u0005\u0018",
-    "\r\u0002\u00cb\u00ca\u0003\u0002\u0002\u0002\u00cb\u00cc\u0003\u0002",
-    "\u0002\u0002\u00cc\u00cf\u0003\u0002\u0002\u0002\u00cd\u00cf\u0005\u0018",
-    "\r\u0002\u00ce\u00b4\u0003\u0002\u0002\u0002\u00ce\u00cd\u0003\u0002",
-    "\u0002\u0002\u00ce\u00cf\u0003\u0002\u0002\u0002\u00cf\u001b\u0003\u0002",
-    "\u0002\u0002\u00d0\u00d9\u0007\u0007\u0002\u0002\u00d1\u00d6\u0005\u0004",
-    "\u0003\u0002\u00d2\u00d3\u0007\r\u0002\u0002\u00d3\u00d5\u0005\u0004",
-    "\u0003\u0002\u00d4\u00d2\u0003\u0002\u0002\u0002\u00d5\u00d8\u0003\u0002",
-    "\u0002\u0002\u00d6\u00d4\u0003\u0002\u0002\u0002\u00d6\u00d7\u0003\u0002",
+    "\u0002\u0002\u00bd\u00ba\u0003\u0002\u0002\u0002\u00bd\u00be\u0003\u0002",
+    "\u0002\u0002\u00be\u00c0\u0003\u0002\u0002\u0002\u00bf\u00c1\u0005\u0014",
+    "\u000b\u0002\u00c0\u00bf\u0003\u0002\u0002\u0002\u00c0\u00c1\u0003\u0002",
+    "\u0002\u0002\u00c1\u00c4\u0003\u0002\u0002\u0002\u00c2\u00c3\u0007\u0011",
+    "\u0002\u0002\u00c3\u00c5\u0005\u001e\u0010\u0002\u00c4\u00c2\u0003\u0002",
+    "\u0002\u0002\u00c4\u00c5\u0003\u0002\u0002\u0002\u00c5\u00c8\u0003\u0002",
+    "\u0002\u0002\u00c6\u00c8\u0005\u001e\u0010\u0002\u00c7\u00bd\u0003\u0002",
+    "\u0002\u0002\u00c7\u00c6\u0003\u0002\u0002\u0002\u00c8\u00ca\u0003\u0002",
+    "\u0002\u0002\u00c9\u00cb\u0005\u0016\f\u0002\u00ca\u00c9\u0003\u0002",
+    "\u0002\u0002\u00ca\u00cb\u0003\u0002\u0002\u0002\u00cb\u00cd\u0003\u0002",
+    "\u0002\u0002\u00cc\u00ce\u0005\u0018\r\u0002\u00cd\u00cc\u0003\u0002",
+    "\u0002\u0002\u00cd\u00ce\u0003\u0002\u0002\u0002\u00ce\u00d1\u0003\u0002",
+    "\u0002\u0002\u00cf\u00d1\u0005\u0018\r\u0002\u00d0\u00b4\u0003\u0002",
+    "\u0002\u0002\u00d0\u00cf\u0003\u0002\u0002\u0002\u00d0\u00d1\u0003\u0002",
+    "\u0002\u0002\u00d1\u001b\u0003\u0002\u0002\u0002\u00d2\u00db\u0007\u0007",
+    "\u0002\u0002\u00d3\u00d8\u0005\u0004\u0003\u0002\u00d4\u00d5\u0007\r",
+    "\u0002\u0002\u00d5\u00d7\u0005\u0004\u0003\u0002\u00d6\u00d4\u0003\u0002",
     "\u0002\u0002\u00d7\u00da\u0003\u0002\u0002\u0002\u00d8\u00d6\u0003\u0002",
-    "\u0002\u0002\u00d9\u00d1\u0003\u0002\u0002\u0002\u00d9\u00da\u0003\u0002",
-    "\u0002\u0002\u00da\u00db\u0003\u0002\u0002\u0002\u00db\u00dc\u0007\b",
-    "\u0002\u0002\u00dc\u001d\u0003\u0002\u0002\u0002\u00dd\u00de\t\u0003",
-    "\u0002\u0002\u00de\u001f\u0003\u0002\u0002\u0002\u00df\u00e6\u0007\u0003",
-    "\u0002\u0002\u00e0\u00e6\u0007\u0004\u0002\u0002\u00e1\u00e6\u0007\u0005",
-    "\u0002\u0002\u00e2\u00e6\u0007*\u0002\u0002\u00e3\u00e6\u0007+\u0002",
-    "\u0002\u00e4\u00e6\u0007,\u0002\u0002\u00e5\u00df\u0003\u0002\u0002",
-    "\u0002\u00e5\u00e0\u0003\u0002\u0002\u0002\u00e5\u00e1\u0003\u0002\u0002",
-    "\u0002\u00e5\u00e2\u0003\u0002\u0002\u0002\u00e5\u00e3\u0003\u0002\u0002",
-    "\u0002\u00e5\u00e4\u0003\u0002\u0002\u0002\u00e6!\u0003\u0002\u0002",
-    "\u0002\u0018#8|~\u0089\u0096\u009f\u00a1\u00a4\u00aa\u00b4\u00b7\u00ba",
-    "\u00be\u00c2\u00c5\u00c8\u00cb\u00ce\u00d6\u00d9\u00e5"].join("");
+    "\u0002\u0002\u00d8\u00d9\u0003\u0002\u0002\u0002\u00d9\u00dc\u0003\u0002",
+    "\u0002\u0002\u00da\u00d8\u0003\u0002\u0002\u0002\u00db\u00d3\u0003\u0002",
+    "\u0002\u0002\u00db\u00dc\u0003\u0002\u0002\u0002\u00dc\u00dd\u0003\u0002",
+    "\u0002\u0002\u00dd\u00de\u0007\b\u0002\u0002\u00de\u001d\u0003\u0002",
+    "\u0002\u0002\u00df\u00e0\u00072\u0002\u0002\u00e0\u001f\u0003\u0002",
+    "\u0002\u0002\u00e1\u00e8\u0007\u0003\u0002\u0002\u00e2\u00e8\u0007\u0004",
+    "\u0002\u0002\u00e3\u00e8\u0007\u0005\u0002\u0002\u00e4\u00e8\u0007*",
+    "\u0002\u0002\u00e5\u00e8\u0007+\u0002\u0002\u00e6\u00e8\u0007,\u0002",
+    "\u0002\u00e7\u00e1\u0003\u0002\u0002\u0002\u00e7\u00e2\u0003\u0002\u0002",
+    "\u0002\u00e7\u00e3\u0003\u0002\u0002\u0002\u00e7\u00e4\u0003\u0002\u0002",
+    "\u0002\u00e7\u00e5\u0003\u0002\u0002\u0002\u00e7\u00e6\u0003\u0002\u0002",
+    "\u0002\u00e8!\u0003\u0002\u0002\u0002\u0019#8|~\u0089\u0096\u009f\u00a1",
+    "\u00a4\u00aa\u00b4\u00b7\u00ba\u00bd\u00c0\u00c4\u00c7\u00ca\u00cd\u00d0",
+    "\u00d8\u00db\u00e7"].join("");
 
 
 const atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
@@ -897,10 +899,6 @@ export default class AggregateExpressionParser extends antlr4.Parser {
 	                this.state = 157;
 	                this._errHandler.sync(this);
 	                switch(this._input.LA(1)) {
-	                case AggregateExpressionParser.INTEGER_LITERAL:
-	                case AggregateExpressionParser.TRUE:
-	                case AggregateExpressionParser.FALSE:
-	                case AggregateExpressionParser.NULL:
 	                case AggregateExpressionParser.IDENTIFIER:
 	                    this.state = 153;
 	                    this.agIdentifier();
@@ -923,7 +921,7 @@ export default class AggregateExpressionParser extends antlr4.Parser {
 	                this.state = 159; 
 	                this._errHandler.sync(this);
 	                _la = this._input.LA(1);
-	            } while((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << AggregateExpressionParser.INTEGER_LITERAL) | (1 << AggregateExpressionParser.FLOATING_POINT_LITERAL) | (1 << AggregateExpressionParser.DOT) | (1 << AggregateExpressionParser.MUL))) !== 0) || ((((_la - 40)) & ~0x1f) == 0 && ((1 << (_la - 40)) & ((1 << (AggregateExpressionParser.TRUE - 40)) | (1 << (AggregateExpressionParser.FALSE - 40)) | (1 << (AggregateExpressionParser.NULL - 40)) | (1 << (AggregateExpressionParser.IDENTIFIER - 40)))) !== 0));
+	            } while((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << AggregateExpressionParser.FLOATING_POINT_LITERAL) | (1 << AggregateExpressionParser.DOT) | (1 << AggregateExpressionParser.MUL))) !== 0) || _la===AggregateExpressionParser.IDENTIFIER);
 	            break;
 
 	        case 2:
@@ -1056,9 +1054,9 @@ export default class AggregateExpressionParser extends antlr4.Parser {
 	    var _la = 0; // Token type
 	    try {
 	        this.enterOuterAlt(localctx, 1);
-	        this.state = 204;
+	        this.state = 206;
 	        this._errHandler.sync(this);
-	        var la_ = this._interp.adaptivePredict(this._input,18,this._ctx);
+	        var la_ = this._interp.adaptivePredict(this._input,19,this._ctx);
 	        if(la_===1) {
 	            this.state = 178;
 	            this._errHandler.sync(this);
@@ -1076,66 +1074,72 @@ export default class AggregateExpressionParser extends antlr4.Parser {
 	                this.referenceServer();
 
 	            }
-	            this.state = 195;
+	            this.state = 197;
 	            this._errHandler.sync(this);
-	            var la_ = this._interp.adaptivePredict(this._input,15,this._ctx);
+	            var la_ = this._interp.adaptivePredict(this._input,16,this._ctx);
 	            switch(la_) {
 	            case 1:
-	                this.state = 184;
+	                this.state = 187;
 	                this._errHandler.sync(this);
-	                _la = this._input.LA(1);
-	                if((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << AggregateExpressionParser.INTEGER_LITERAL) | (1 << AggregateExpressionParser.FLOATING_POINT_LITERAL) | (1 << AggregateExpressionParser.DOT) | (1 << AggregateExpressionParser.MUL))) !== 0) || ((((_la - 40)) & ~0x1f) == 0 && ((1 << (_la - 40)) & ((1 << (AggregateExpressionParser.TRUE - 40)) | (1 << (AggregateExpressionParser.FALSE - 40)) | (1 << (AggregateExpressionParser.NULL - 40)) | (1 << (AggregateExpressionParser.IDENTIFIER - 40)))) !== 0)) {
-	                    this.state = 183;
-	                    this.referenceContextMask();
-	                }
+	                var la_ = this._interp.adaptivePredict(this._input,13,this._ctx);
+	                if(la_===1) {
+	                    this.state = 184;
+	                    this._errHandler.sync(this);
+	                    _la = this._input.LA(1);
+	                    if((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << AggregateExpressionParser.FLOATING_POINT_LITERAL) | (1 << AggregateExpressionParser.DOT) | (1 << AggregateExpressionParser.MUL))) !== 0) || _la===AggregateExpressionParser.IDENTIFIER) {
+	                        this.state = 183;
+	                        this.referenceContextMask();
+	                    }
 
-	                this.state = 186;
-	                this.match(AggregateExpressionParser.COLON);
-	                this.state = 188;
+	                    this.state = 186;
+	                    this.match(AggregateExpressionParser.COLON);
+
+	                }
+	                this.state = 190;
 	                this._errHandler.sync(this);
 	                _la = this._input.LA(1);
-	                if(_la===AggregateExpressionParser.INTEGER_LITERAL || ((((_la - 40)) & ~0x1f) == 0 && ((1 << (_la - 40)) & ((1 << (AggregateExpressionParser.TRUE - 40)) | (1 << (AggregateExpressionParser.FALSE - 40)) | (1 << (AggregateExpressionParser.NULL - 40)) | (1 << (AggregateExpressionParser.IDENTIFIER - 40)))) !== 0)) {
-	                    this.state = 187;
+	                if(_la===AggregateExpressionParser.IDENTIFIER) {
+	                    this.state = 189;
 	                    this.referenceEntity();
 	                }
 
-	                this.state = 192;
+	                this.state = 194;
 	                this._errHandler.sync(this);
 	                _la = this._input.LA(1);
 	                if(_la===AggregateExpressionParser.DOLLAR) {
-	                    this.state = 190;
+	                    this.state = 192;
 	                    this.match(AggregateExpressionParser.DOLLAR);
-	                    this.state = 191;
+	                    this.state = 193;
 	                    this.agIdentifier();
 	                }
 
 	                break;
 
 	            case 2:
-	                this.state = 194;
+	                this.state = 196;
 	                this.agIdentifier();
 	                break;
 
 	            }
-	            this.state = 198;
+	            this.state = 200;
 	            this._errHandler.sync(this);
 	            _la = this._input.LA(1);
 	            if(_la===AggregateExpressionParser.LBRACKET) {
-	                this.state = 197;
+	                this.state = 199;
 	                this.referenceRow();
 	            }
 
-	            this.state = 201;
+	            this.state = 203;
 	            this._errHandler.sync(this);
 	            _la = this._input.LA(1);
 	            if(_la===AggregateExpressionParser.HASH) {
-	                this.state = 200;
+	                this.state = 202;
 	                this.referenceProperty();
 	            }
 
 
 	        } else if(la_===2) {
-	            this.state = 203;
+	            this.state = 205;
 	            this.referenceProperty();
 
 	        }
@@ -1161,29 +1165,29 @@ export default class AggregateExpressionParser extends antlr4.Parser {
 	    var _la = 0; // Token type
 	    try {
 	        this.enterOuterAlt(localctx, 1);
-	        this.state = 206;
+	        this.state = 208;
 	        this.match(AggregateExpressionParser.LPAREN);
-	        this.state = 215;
+	        this.state = 217;
 	        this._errHandler.sync(this);
 	        _la = this._input.LA(1);
 	        if((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << AggregateExpressionParser.INTEGER_LITERAL) | (1 << AggregateExpressionParser.FLOATING_POINT_LITERAL) | (1 << AggregateExpressionParser.STRING_LITERAL) | (1 << AggregateExpressionParser.LPAREN) | (1 << AggregateExpressionParser.LBRACE) | (1 << AggregateExpressionParser.MINUS))) !== 0) || ((((_la - 35)) & ~0x1f) == 0 && ((1 << (_la - 35)) & ((1 << (AggregateExpressionParser.NOT - 35)) | (1 << (AggregateExpressionParser.BITWISE_NOT - 35)) | (1 << (AggregateExpressionParser.TRUE - 35)) | (1 << (AggregateExpressionParser.FALSE - 35)) | (1 << (AggregateExpressionParser.NULL - 35)) | (1 << (AggregateExpressionParser.IDENTIFIER - 35)))) !== 0)) {
-	            this.state = 207;
+	            this.state = 209;
 	            this.expression(0);
-	            this.state = 212;
+	            this.state = 214;
 	            this._errHandler.sync(this);
 	            _la = this._input.LA(1);
 	            while(_la===AggregateExpressionParser.COMMA) {
-	                this.state = 208;
+	                this.state = 210;
 	                this.match(AggregateExpressionParser.COMMA);
-	                this.state = 209;
+	                this.state = 211;
 	                this.expression(0);
-	                this.state = 214;
+	                this.state = 216;
 	                this._errHandler.sync(this);
 	                _la = this._input.LA(1);
 	            }
 	        }
 
-	        this.state = 217;
+	        this.state = 219;
 	        this.match(AggregateExpressionParser.RPAREN);
 	    } catch (re) {
 	    	if(re instanceof antlr4.error.RecognitionException) {
@@ -1204,18 +1208,10 @@ export default class AggregateExpressionParser extends antlr4.Parser {
 	agIdentifier() {
 	    let localctx = new AgIdentifierContext(this, this._ctx, this.state);
 	    this.enterRule(localctx, 28, AggregateExpressionParser.RULE_agIdentifier);
-	    var _la = 0; // Token type
 	    try {
 	        this.enterOuterAlt(localctx, 1);
-	        this.state = 219;
-	        _la = this._input.LA(1);
-	        if(!(_la===AggregateExpressionParser.INTEGER_LITERAL || ((((_la - 40)) & ~0x1f) == 0 && ((1 << (_la - 40)) & ((1 << (AggregateExpressionParser.TRUE - 40)) | (1 << (AggregateExpressionParser.FALSE - 40)) | (1 << (AggregateExpressionParser.NULL - 40)) | (1 << (AggregateExpressionParser.IDENTIFIER - 40)))) !== 0))) {
-	        this._errHandler.recoverInline(this);
-	        }
-	        else {
-	        	this._errHandler.reportMatch(this);
-	            this.consume();
-	        }
+	        this.state = 221;
+	        this.match(AggregateExpressionParser.IDENTIFIER);
 	    } catch (re) {
 	    	if(re instanceof antlr4.error.RecognitionException) {
 		        localctx.exception = re;
@@ -1236,43 +1232,43 @@ export default class AggregateExpressionParser extends antlr4.Parser {
 	    let localctx = new LiteralContext(this, this._ctx, this.state);
 	    this.enterRule(localctx, 30, AggregateExpressionParser.RULE_literal);
 	    try {
-	        this.state = 227;
+	        this.state = 229;
 	        this._errHandler.sync(this);
 	        switch(this._input.LA(1)) {
 	        case AggregateExpressionParser.INTEGER_LITERAL:
 	            localctx = new LongConstNodeContext(this, localctx);
 	            this.enterOuterAlt(localctx, 1);
-	            this.state = 221;
+	            this.state = 223;
 	            this.match(AggregateExpressionParser.INTEGER_LITERAL);
 	            break;
 	        case AggregateExpressionParser.FLOATING_POINT_LITERAL:
 	            localctx = new FloatConstNodeContext(this, localctx);
 	            this.enterOuterAlt(localctx, 2);
-	            this.state = 222;
+	            this.state = 224;
 	            this.match(AggregateExpressionParser.FLOATING_POINT_LITERAL);
 	            break;
 	        case AggregateExpressionParser.STRING_LITERAL:
 	            localctx = new StringConstNodeContext(this, localctx);
 	            this.enterOuterAlt(localctx, 3);
-	            this.state = 223;
+	            this.state = 225;
 	            this.match(AggregateExpressionParser.STRING_LITERAL);
 	            break;
 	        case AggregateExpressionParser.TRUE:
 	            localctx = new TrueNodeContext(this, localctx);
 	            this.enterOuterAlt(localctx, 4);
-	            this.state = 224;
+	            this.state = 226;
 	            this.match(AggregateExpressionParser.TRUE);
 	            break;
 	        case AggregateExpressionParser.FALSE:
 	            localctx = new FalseNodeContext(this, localctx);
 	            this.enterOuterAlt(localctx, 5);
-	            this.state = 225;
+	            this.state = 227;
 	            this.match(AggregateExpressionParser.FALSE);
 	            break;
 	        case AggregateExpressionParser.NULL:
 	            localctx = new NullNodeContext(this, localctx);
 	            this.enterOuterAlt(localctx, 6);
-	            this.state = 226;
+	            this.state = 228;
 	            this.match(AggregateExpressionParser.NULL);
 	            break;
 	        default:
@@ -2783,10 +2779,6 @@ class ValueReferenceContext extends antlr4.ParserRuleContext {
 	    return this.getTypedRuleContext(ReferencePropertyContext,0);
 	};
 
-	COLON() {
-	    return this.getToken(AggregateExpressionParser.COLON, 0);
-	};
-
 	agIdentifier() {
 	    return this.getTypedRuleContext(AgIdentifierContext,0);
 	};
@@ -2803,8 +2795,8 @@ class ValueReferenceContext extends antlr4.ParserRuleContext {
 	    return this.getTypedRuleContext(ReferenceRowContext,0);
 	};
 
-	referenceContextMask() {
-	    return this.getTypedRuleContext(ReferenceContextMaskContext,0);
+	COLON() {
+	    return this.getToken(AggregateExpressionParser.COLON, 0);
 	};
 
 	referenceEntity() {
@@ -2813,6 +2805,10 @@ class ValueReferenceContext extends antlr4.ParserRuleContext {
 
 	DOLLAR() {
 	    return this.getToken(AggregateExpressionParser.DOLLAR, 0);
+	};
+
+	referenceContextMask() {
+	    return this.getTypedRuleContext(ReferenceContextMaskContext,0);
 	};
 
 	accept(visitor) {
@@ -2902,22 +2898,6 @@ class AgIdentifierContext extends antlr4.ParserRuleContext {
 
 	IDENTIFIER() {
 	    return this.getToken(AggregateExpressionParser.IDENTIFIER, 0);
-	};
-
-	INTEGER_LITERAL() {
-	    return this.getToken(AggregateExpressionParser.INTEGER_LITERAL, 0);
-	};
-
-	TRUE() {
-	    return this.getToken(AggregateExpressionParser.TRUE, 0);
-	};
-
-	FALSE() {
-	    return this.getToken(AggregateExpressionParser.FALSE, 0);
-	};
-
-	NULL() {
-	    return this.getToken(AggregateExpressionParser.NULL, 0);
 	};
 
 	accept(visitor) {

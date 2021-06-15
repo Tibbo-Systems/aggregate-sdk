@@ -68,17 +68,17 @@ export default class ActionManager extends JObject {
 
     batchActionContext.setActionState(ActionState.INITIALIZED);
 
-    return this.registerAction(batchActionContext, batchAction, new ActionExecutionMode(ActionExecutionMode.BATCH));
+    return this.registerAction(batchActionContext, batchAction, new ActionExecutionMode(ActionExecutionMode.BATCH), null);
   }
 
-  public initAction(actionContext: ActionContext, initialParameters: InitialRequest, mode: ActionExecutionMode): ActionIdentifier {
+  public initAction(actionContext: ActionContext, initialParameters: InitialRequest, mode: ActionExecutionMode, customActionId: string | null): ActionIdentifier {
     const actionDefinition = actionContext.getActionDefinition();
     const action = this.instantiateAction(actionDefinition);
     actionContext.setActionState(ActionState.CREATED);
     action.init(actionContext, initialParameters);
     actionContext.setActionState(ActionState.INITIALIZED);
 
-    return this.registerAction(actionContext, action, mode);
+    return this.registerAction(actionContext, action, mode, customActionId);
   }
 
   protected instantiateAction(actionDefinition: ActionDefinition | null): Action<InitialRequest, ActionCommand, ActionResponse> {
@@ -184,8 +184,11 @@ export default class ActionManager extends JObject {
     return this.actionDirectory;
   }
 
-  protected registerAction(actionContext: ActionContext, action: Action<InitialRequest, ActionCommand, ActionResponse>, mode: ActionExecutionMode): ActionIdentifier {
-    const actionId: ActionIdentifier = this.actionIdGenerator.generate(action);
+  protected registerAction(actionContext: ActionContext, action: Action<InitialRequest, ActionCommand, ActionResponse>, mode: ActionExecutionMode, customActionId: string | null): ActionIdentifier {
+    let actionId: ActionIdentifier = this.actionIdGenerator.generate(action);
+    if (customActionId) {
+      actionId = new ActionIdentifier(customActionId);
+    }
 
     actionContext.setActionExecutionMode(mode);
 

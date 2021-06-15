@@ -1059,7 +1059,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
     if (reply == null) throw new Error("Error parsing variable '" + name);
     const encodedReply = reply.getEncodedDataTableFromReply();
     try {
-      return this.controller.decodeRemoteDataTable(format, encodedReply);
+      return await this.controller.decodeRemoteDataTable(format, encodedReply);
     } catch (ex) {
       throw new Error("Error parsing encoded data table '" + encodedReply + "': " + ex.message);
     }
@@ -1106,7 +1106,7 @@ export default class ProxyContext<C extends Context<C, M>, M extends ContextMana
       const ans: IncomingAggreGateCommand | null = await this.sendGetVariable(def.getName(), null);
       if (ans == null) return new SimpleDataTable();
 
-      const value = this.controller.decodeRemoteDataTable(def.getFormat(), ans.getEncodedDataTableFromReply());
+      const value = await this.controller.decodeRemoteDataTable(def.getFormat(), ans.getEncodedDataTableFromReply());
 
       if (def.getRemoteCacheTime() != null) {
         this.cacheVariableValue(def.getName(), value);
