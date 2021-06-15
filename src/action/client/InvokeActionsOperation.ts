@@ -69,7 +69,7 @@ export default class InvokeActionsOperation extends InvokeActionOperation {
 
         return;
       }
-    })('initBatchAction', params, this.getContext(), connector ? connector.getCallerController() : undefined, this.actionName, this.stepInterceptor, this);
+    })('initBatchAction', params, this.getContext(), connector ? connector.getCallerController() : undefined, this.actionName, this.stepInterceptor, this, null);
     return aw.run();
   }
 }

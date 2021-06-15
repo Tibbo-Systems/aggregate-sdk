@@ -104,7 +104,8 @@ export default class ServerActionHelper {
     inputData: DataTable,
     environment: Map<string, any>,
     mode: ActionExecutionMode,
-    caller: CallerController
+    caller: CallerController,
+    customActionId: string
   ): Promise<Map<string, string | null>> {
     const messages: Map<string, string | null> = new Map();
 
@@ -119,7 +120,7 @@ export default class ServerActionHelper {
 
     const collector: ErrorCollector = new ErrorCollector();
 
-    const actionId = await ActionUtils.initAction(context, action, new ServerActionInput(initialParameters), inputData, environment, mode, caller, collector);
+    const actionId = await ActionUtils.initAction(context, action, new ServerActionInput(initialParameters), inputData, environment, mode, caller, customActionId, collector);
 
     for (const error of collector.getErrors()) {
       messages.set(error.message, error.toString());

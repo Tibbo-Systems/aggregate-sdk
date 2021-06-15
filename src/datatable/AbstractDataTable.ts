@@ -600,7 +600,17 @@ export default abstract class AbstractDataTable extends DataTable {
           const format = formatCache.get(formatId);
 
           if (format == null) {
-            throw new Error('Format with specified ID not found in the cache: ' + formatId);
+            throw new (class ErrorFormatId extends Error {
+              private readonly formatId: number;
+              constructor(formatId: number, message: string) {
+                super(message);
+                this.formatId = formatId;
+              }
+
+              getFormatId() {
+                return this.formatId;
+              }
+            })(formatId, 'Format with specified ID not found in the cache: ' + formatId);
           }
 
           this.setFormat(format);

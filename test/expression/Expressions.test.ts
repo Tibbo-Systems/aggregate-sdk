@@ -5,6 +5,7 @@ import Functions from '../../src/expression/function/Functions';
 import EvaluationEnvironment from '../../src/expression/EvaluationEnvironment';
 import Cres from '../../src/Cres';
 import JSBI from 'jsbi';
+import {ExpressionUtils} from "../../src";
 
 describe('TestExpressions', () => {
   const ev: Evaluator = new Evaluator();
@@ -316,5 +317,13 @@ describe('TestExpressions', () => {
 
   it('testEmptyExpression', () => {
     expect(ev.evaluate(new Expression(''))).toBeNull();
+  });
+
+  it('testCreateEditorOptions', () => {
+    ExpressionUtils.findReferences(new Expression('{childInfo}'));
+    ExpressionUtils.findReferences(new Expression('{childInfo$type}'));
+    ExpressionUtils.findReferences(new Expression('{childInfo$type[0]}'));
+    ExpressionUtils.findReferences(new Expression('{childInfo$defaultContext[0]}'));
+    ExpressionUtils.findReferences(new Expression('expressionEditorOptions({childInfo$type[0]} == 0 ? {childInfo$defaultContext[0]} : {.:})'));
   });
 });

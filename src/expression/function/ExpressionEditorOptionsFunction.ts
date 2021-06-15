@@ -107,6 +107,6 @@ export default class ExpressionEditorOptionsFunction extends AbstractFunction {
 
     const StringFieldFormat = require('../../datatable/field/StringFieldFormat').default;
 
-    return StringFieldFormat.encodeExpressionEditorOptions(defaultContext !== null ? defaultContext.getName() : null, defaultTable, references);
+    return StringFieldFormat.encodeExpressionEditorOptions(defaultContext !== null ? defaultContext.getPath() : null, defaultTable, references);
   }
 }

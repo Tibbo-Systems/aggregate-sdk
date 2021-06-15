@@ -58,7 +58,8 @@ export default abstract class AbstractAggreGateDeviceController<D extends AggreG
     toString(): string;
     callRemoteFunction(context: string, name: string, outputFormat: TableFormat | null, parameters: DataTable, queueName: string | null, isReplyRequired?: boolean): Promise<DataTable>;
     private releaseShallowData;
-    decodeRemoteDataTable(format: TableFormat | null, encodedReply: string): DataTable;
+    decodeRemoteDataTable(format: TableFormat | null, encodedReply: string): Promise<DataTable>;
+    replyDecodeRemoteDataTable(format: TableFormat | null, encodedReply: string, formatId: number): Promise<DataTable>;
     private choseAppropriateDataTable;
     isUsesCompression(): boolean;
     setUsesCompression(usesCompression: boolean): void;

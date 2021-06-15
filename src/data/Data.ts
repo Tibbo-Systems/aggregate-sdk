@@ -1,8 +1,8 @@
 import JSBI from 'jsbi';
-import StringEncodable from '../util/StringEncodable';
-import StringBuilder from '../util/java/StringBuilder';
-import ClassicEncodingSettings from '../datatable/encoding/ClassicEncodingSettings';
-import ByteBuffer from 'bytebuffer';
+import ByteBuffer from "bytebuffer";
+import StringEncodable from "../util/StringEncodable";
+import StringBuilder from "../util/java/StringBuilder";
+import ClassicEncodingSettings from "../datatable/encoding/ClassicEncodingSettings";
 import JObject from '../util/java/JObject';
 import StringUtils from '../util/StringUtils';
 import DataTableUtils from '../datatable/DataTableUtils';
@@ -14,7 +14,7 @@ import UtilitiesContextConstants from '../server/UtilitiesContextConstants';
 import Util from '../util/Util';
 import TransferEncodingHelper from '../datatable/encoding/TransferEncodingHelper';
 
-//TODO check ASCII_CHARSET
+// TODO check ASCII_CHARSET
 export default class Data extends JObject implements StringEncodable {
   private static readonly TRANSCODER_VERSION: string = '0';
   public static readonly BUFFER_MULTIPLIER: number = 1.15;
@@ -136,7 +136,7 @@ export default class Data extends JObject implements StringEncodable {
     }
 
     const context = await cm.get(Contexts.CTX_UTILITIES, cc);
-    if (!context) throw new Error(Contexts.CTX_UTILITIES + ' not found');
+    if (!context) throw new Error(`${Contexts.CTX_UTILITIES} not found`);
     const parameters = new Array<JSBI | null>();
     parameters.push(this.getId());
     const dt = await context.callFunction(UtilitiesContextConstants.F_GET_DATA, parameters, cc);
@@ -166,9 +166,9 @@ export default class Data extends JObject implements StringEncodable {
       ', name: ' +
       (this.name != null ? this.id : 'null') +
       ', preview: ' +
-      (this.preview != null ? 'len=' + this.preview.limit + ' checksum=' + this.checksum(this.preview) : 'null') +
+      (this.preview != null ? `len=${this.preview.limit} checksum=${this.checksum(this.preview)}` : "null") +
       ', data: ' +
-      (this.data != null ? 'len=' + this.data.limit + ' checksum=' + this.checksum(this.data) : 'null') +
+      (this.data != null ? `len=${this.data.limit} checksum=${this.checksum(this.data)}` : "null") +
       ']'
     );
   }
@@ -180,11 +180,25 @@ export default class Data extends JObject implements StringEncodable {
       ', name: ' +
       (this.name != null ? this.name : 'null') +
       ', preview: ' +
-      (this.preview != null ? 'len=' + this.preview.limit : 'null') +
+      (this.preview != null ? `len=${this.preview.limit}` : "null") +
       ', data: ' +
-      (this.data != null ? 'len=' + this.data.limit : 'null' + ', shallow copy: ' + this.shallowCopy) +
+      (this.data != null ? `len=${this.data.limit}` : `${"null" + ", shallow copy: "}${this.shallowCopy}`) +
       ']'
     );
+  }
+
+  public toJsonString(): string {
+    const data = this.data;
+    const data64 = data ? btoa(data.toUTF8()) : 'null';
+    const newData = {
+      id: this.id ? this.id.toString() : 'null',
+      name: this.name ? this.name : 'null',
+      preview: this.preview ? `len=${this.preview.buffer.length}` : 'null',
+      data: data64,
+      'shallow copy': this.shallowCopy,
+    };
+
+    return JSON.stringify(newData);
   }
 
   public toCleanString(): string {

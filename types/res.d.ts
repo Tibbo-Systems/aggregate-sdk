@@ -53,6 +53,9 @@ declare const resources: {
     action: string;
     actionGroup: string;
     actionName: string;
+    actionFinished: string;
+    actionId: string;
+    actionResult: string;
     actionSpecified: string;
     actions: string;
     actionsForContext: string;
@@ -873,6 +876,7 @@ declare const resources: {
     dynamicStep: string;
     edgeId: string;
     edit: string;
+    editOptions: string;
     editType: string;
     editable: string;
     efContextName: string;
@@ -1752,6 +1756,7 @@ declare const resources: {
     seriesColor: string;
     server: string;
     selectable: string;
+    selectDataArea: string;
     service: string;
     serviceStatusChange: string;
     sessionGet: string;

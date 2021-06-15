@@ -273,7 +273,7 @@ export default abstract class AbstractAggreGateDeviceController<D extends AggreG
               continue;
             }
 
-            const data = _this.decodeRemoteDataTable(ed.getFormat(), cmd.getEncodedDataTableFromEventMessage());
+            const data = await _this.decodeRemoteDataTable(ed.getFormat(), cmd.getEncodedDataTableFromEventMessage());
 
             let timestamp: Date | null = null;
             if (cmd.hasParameter(AggreGateCommand.INDEX_EVENT_TIMESTAMP)) {
@@ -316,7 +316,7 @@ export default abstract class AbstractAggreGateDeviceController<D extends AggreG
 
     if (isShallowDataReleased) cmd.setTimeout(ProxyContext.DURABLE_OPERATIONS_TIMEOUT);
     const ans = await this.sendCommandAndCheckReplyCode(cmd);
-    return ans != null ? this.decodeRemoteDataTable(outputFormat, ans.getEncodedDataTableFromReply()) : new SimpleDataTable(outputFormat);
+    return ans != null ? await this.decodeRemoteDataTable(outputFormat, ans.getEncodedDataTableFromReply()) : new SimpleDataTable(outputFormat);
   }
 
   private releaseShallowData(parameters: DataTable): boolean {
@@ -351,7 +351,7 @@ export default abstract class AbstractAggreGateDeviceController<D extends AggreG
     return false;
   }
 
-  decodeRemoteDataTable(format: TableFormat | null, encodedReply: string): DataTable {
+  async decodeRemoteDataTable(format: TableFormat | null, encodedReply: string): Promise<DataTable> {
     if (this.isAvoidSendingFormats()) {
       const settings = new ClassicEncodingSettings(false, format);
       settings.setProtocolVersion(this.protocolVersion);
@@ -363,9 +363,17 @@ export default abstract class AbstractAggreGateDeviceController<D extends AggreG
     try {
       return this.choseAppropriateDataTable(encodedReply, this.createClassicEncodingSettings(false), false);
     } catch (ex) {
+      if (ex.getFormatId !== undefined) {
+        return this.replyDecodeRemoteDataTable(format, encodedReply, ex.getFormatId());
+      }
       ex.message = "Error parsing encoded data table '" + encodedReply + "': " + ex.message;
       throw ex;
     }
+  }
+
+  async replyDecodeRemoteDataTable(format: TableFormat | null, encodedReply: string, formatId: number): Promise<DataTable> {
+    await this.getFormatCache().getFormatFromServer(formatId);
+    return this.decodeRemoteDataTable(format, encodedReply);
   }
 
   private choseAppropriateDataTable(encodedReply: string, settings: ClassicEncodingSettings, validate: boolean): DataTable {

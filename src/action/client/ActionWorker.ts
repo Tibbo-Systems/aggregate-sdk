@@ -21,14 +21,15 @@ export default class ActionWorker {
   private actionName: string;
   private readonly stepInterceptor: StepActionInterceptor;
   private operation: Operation;
-
-  constructor(name: string, params: DataTable | null, context: Context<any, any>, controller: CallerController | undefined, actionName: string, stepInterceptor: StepActionInterceptor, operation: Operation) {
+  private actionId: string | null;
+  constructor(name: string, params: DataTable | null, context: Context<any, any>, controller: CallerController | undefined, actionName: string, stepInterceptor: StepActionInterceptor, operation: Operation, actionId: string | null) {
     this.params = params;
     this.context = context;
     this.controller = controller;
     this.actionName = actionName;
     this.stepInterceptor = stepInterceptor;
     this.operation = operation;
+    this.actionId = actionId;
   }
 
   async run(): Promise<void> {
@@ -36,7 +37,7 @@ export default class ActionWorker {
       let serverActionInput;
       if (this.params) serverActionInput = new ServerActionInput(this.params);
       else serverActionInput = new ServerActionInput();
-      const actionId = await ActionUtils.initAction(this.context, this.actionName, serverActionInput, null, null, new ActionExecutionMode(ActionExecutionMode.NORMAL), this.controller);
+      const actionId = await ActionUtils.initAction(this.context, this.actionName, serverActionInput, null, null, new ActionExecutionMode(ActionExecutionMode.NORMAL), this.controller, this.actionId);
 
       if (actionId == null || actionId.getId().length === 0) {
         throw new Error('Unexpected actionId == NULL');

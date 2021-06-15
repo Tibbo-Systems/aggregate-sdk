@@ -81,7 +81,7 @@ referenceProperty:
     ;
 
 valueReference:
-    (referenceSchema? referenceServer? (referenceContextMask? COLON referenceEntity? (DOLLAR agIdentifier)? | agIdentifier) referenceRow? referenceProperty?
+    (referenceSchema? referenceServer? ((referenceContextMask? COLON)? referenceEntity? (DOLLAR agIdentifier)? | agIdentifier) referenceRow? referenceProperty?
     | referenceProperty)?
     ;
 
@@ -90,12 +90,7 @@ arguments:
     ;
 
 agIdentifier:
-    IDENTIFIER
-    | INTEGER_LITERAL
-    | TRUE
-    | FALSE
-    | NULL
-    ;
+    IDENTIFIER;
 
 literal
     : INTEGER_LITERAL                                              #LongConstNode

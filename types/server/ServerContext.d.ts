@@ -47,7 +47,7 @@ export default interface ServerContext extends Context<any, ServerContextManager
      *          Name of variable those value should be removed.
      */
     removeVariableValue(name: string): void;
-    initAction(def: ActionDefinition, actionInput: ServerActionInput, mode: ActionExecutionMode, caller: CallerController): ActionIdentifier;
+    initAction(def: ActionDefinition, actionInput: ServerActionInput, mode: ActionExecutionMode, caller: CallerController, customActionId: string): ActionIdentifier;
     checkPermissions(needPermissions: Permissions, caller: CallerController, accessedContext: Context<any, any>, accessedEntityDefinition: EntityDefinition): boolean;
     getMembers(includeSubgroups: boolean, cc: CallerController): Array<string>;
     getMembers(includeSubgroups: boolean, detectNestedLoop: boolean, cc: CallerController): Array<string>;

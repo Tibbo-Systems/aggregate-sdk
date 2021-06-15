@@ -14,6 +14,7 @@ export default class InvokeActionOperation extends AbstractOperation {
   protected readonly actionName: string;
   protected readonly userSettings: UserSettings | null;
   protected readonly stepInterceptor: StepActionInterceptor;
+  protected readonly actionId: string | null = null;
 
   private connector: RemoteConnector | null = null;
 
@@ -29,10 +30,21 @@ export default class InvokeActionOperation extends AbstractOperation {
 
   private defaultParameters: DataTable | null = null;
 
-  constructor(name: string, description: string, iconId: string, group: string, context: Context<any, any>, invokerContext: Context<any, any>, userSettings: UserSettings | null = null, interceptor: StepActionInterceptor | null = null) {
+  constructor(
+    name: string,
+    description: string,
+    iconId: string,
+    group: string,
+    context: Context<any, any>,
+    invokerContext: Context<any, any>,
+    userSettings: UserSettings | null = null,
+    interceptor: StepActionInterceptor | null = null,
+    actionId: string | null = null
+  ) {
     super(name, description, iconId, group, context, invokerContext);
     this.actionName = name;
     this.userSettings = userSettings;
+    this.actionId = actionId;
     this.stepInterceptor = interceptor != null ? interceptor : new DefaultStepActionInterceptor();
   }
 
@@ -95,7 +107,8 @@ export default class InvokeActionOperation extends AbstractOperation {
       this.getCallerController(this.connector),
       this.actionName,
       this.stepInterceptor,
-      this
+      this,
+      this.actionId
     );
 
     return this.actionWorker.start();

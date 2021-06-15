@@ -11,6 +11,7 @@ export default class InvokeActionOperation extends AbstractOperation {
     protected readonly actionName: string;
     protected readonly userSettings: UserSettings | null;
     protected readonly stepInterceptor: StepActionInterceptor;
+    protected readonly actionId: string | null;
     private connector;
     private actionWorker;
     private default;
@@ -18,7 +19,7 @@ export default class InvokeActionOperation extends AbstractOperation {
     private executionGroup;
     private executor;
     private defaultParameters;
-    constructor(name: string, description: string, iconId: string, group: string, context: Context<any, any>, invokerContext: Context<any, any>, userSettings?: UserSettings | null, interceptor?: StepActionInterceptor | null);
+    constructor(name: string, description: string, iconId: string, group: string, context: Context<any, any>, invokerContext: Context<any, any>, userSettings?: UserSettings | null, interceptor?: StepActionInterceptor | null, actionId?: string | null);
     getConnector(): RemoteConnector | null;
     setConnector(connector: RemoteConnector): void;
     getDefaultParameters(): DataTable | null;

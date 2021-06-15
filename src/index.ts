@@ -63,6 +63,7 @@ import VariableDefinition from './context/VariableDefinition';
 import VariableStatus from './context/VariableStatus';
 import Data from './data/Data';
 import User from './data/User';
+import AbstractFunction from './expression/function/AbstractFunction';
 import AbstractDataTable from './datatable/AbstractDataTable';
 import AggreGateBean from './datatable/AggreGateBean';
 import DataRecord from './datatable/DataRecord';
@@ -318,6 +319,7 @@ export {
   BindingReferenceListener,
   AggregateExpressionParser,
   AggregateExpressionVisitor,
+  AbstractFunction,
   AbstractCommandExecutor,
   ActionCommandExecutor,
   AbstractOperation,

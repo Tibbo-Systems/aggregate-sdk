@@ -14,7 +14,8 @@ export default class ActionWorker {
     private actionName;
     private readonly stepInterceptor;
     private operation;
-    constructor(name: string, params: DataTable | null, context: Context<any, any>, controller: CallerController | undefined, actionName: string, stepInterceptor: StepActionInterceptor, operation: Operation);
+    private actionId;
+    constructor(name: string, params: DataTable | null, context: Context<any, any>, controller: CallerController | undefined, actionName: string, stepInterceptor: StepActionInterceptor, operation: Operation, actionId: string | null);
     run(): Promise<void>;
     protected stepAction(resp: GenericActionResponse | null, actionId: ActionIdentifier): Promise<void>;
     private processCommand;

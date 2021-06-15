@@ -46,6 +46,7 @@ export default class ServerContextConstants {
     static readonly FIF_INIT_ACTION_INITIAL_PARAMETERS: string;
     static readonly FIF_INIT_ACTION_ACTION_NAME: string;
     static readonly FIF_INIT_ACTION_EXECUTION_MODE: string;
+    static readonly FIF_INIT_ACTION_ACTION_ID = "actionId";
     static readonly FIF_STEP_ACTION_ACTION_RESPONSE: string;
     static readonly FIF_STEP_ACTION_ACTION_ID: string;
     static readonly FIF_REORDER_INDEX: string;
